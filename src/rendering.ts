@@ -4,6 +4,21 @@ import { parseDocument } from './parsing';
 import { resolveMark, sourceOffset } from './anchors';
 import type { CodeBlock, CodeMark } from './domain';
 
+const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string }>();
+
+export function clearRenderedCode(code: HTMLElement): void {
+  const previous = rendered.get(code);
+  if (previous && code.querySelector('.hb-code-row')) {
+    if (previous.original.map(node => node.textContent ?? '').join('') === code.textContent) {
+      code.replaceChildren(...previous.original.map(node => node.cloneNode(true)));
+    } else {
+      for (const element of code.querySelectorAll('.hb-text, .hb-code-row')) element.replaceWith(...element.childNodes);
+    }
+  }
+  rendered.delete(code);
+  delete code.dataset.hbRendered;
+}
+
 function editorDecorations(text: string): DecorationSet {
   const ranges = [];
   for (const block of parseDocument(text).blocks) for (const mark of block.metadata?.marks ?? []) {
@@ -66,9 +81,14 @@ function rangeFor(element: HTMLElement, from: number, to: number): Range | undef
 }
 
 export function renderCode(code: HTMLElement, block: CodeBlock): void {
-  if (code.dataset.hbRendered) return;
+  const signature = JSON.stringify({ text: block.text, marks: block.metadata?.marks ?? [] });
+  const previous = rendered.get(code);
+  if (previous?.signature === signature && code.querySelector('.hb-code-row')) return;
+  clearRenderedCode(code);
+  if (!block.metadata?.marks.length) return;
   const original = code.textContent ?? '';
   if (original !== block.text && original !== `${block.text}\n`) return;
+  rendered.set(code, { original: [...code.childNodes].map(node => node.cloneNode(true)), signature });
   const doc = code.ownerDocument;
   const output = doc.createDocumentFragment();
   let offset = 0;

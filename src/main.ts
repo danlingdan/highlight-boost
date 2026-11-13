@@ -5,6 +5,7 @@ import { applyChanges, planCodeRebind, planHighlight } from './editing';
 import { parseDocument, sourceLines } from './parsing';
 import { highlightExtension, renderCode, unchangedHistory } from './rendering';
 import { createMetadataFolding } from './metadata-folding';
+import { readingTargets } from './reading-mapping';
 
 const VIEW = 'highlight-boost';
 interface Settings { schemaVersion: 1; defaultPreset: string }
@@ -105,22 +106,7 @@ export default class HighlightBoost extends Plugin {
     const file = this.app.vault.getFileByPath(context.sourcePath);
     if (!file) return;
     const text = await this.app.vault.cachedRead(file);
-    const parsed = parseDocument(text);
-    const section = context.getSectionInfo(element);
-    const candidates = parsed.blocks.filter(block => {
-      if (!section) return true;
-      const line = text.slice(0, block.fenceFrom).split('\n').length - 1;
-      return section.lineStart <= line && line <= section.lineEnd;
-    });
-    const used = new Set<number>();
-    for (const code of element.querySelectorAll<HTMLElement>('pre > code')) {
-      const value = code.textContent ?? '';
-      const index = candidates.findIndex((block, index) => !used.has(index) && (value === block.text || value === `${block.text}\n`));
-      if (index < 0) continue;
-      used.add(index);
-      const block = candidates[index]!;
-      if (block.metadata?.marks.length) renderCode(code, block);
-    }
+    for (const { code, block } of readingTargets(element, text, element => context.getSectionInfo(element))) renderCode(code, block);
   }
 }
 

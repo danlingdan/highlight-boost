@@ -1,8 +1,9 @@
-import { EditorState, StateField, Transaction } from '@codemirror/state';
+import { StateField } from '@codemirror/state';
 import { Decoration, EditorView, type DecorationSet } from '@codemirror/view';
 import { parseDocument } from './parsing';
 import { resolveMark, sourceOffset } from './anchors';
 import type { CodeBlock, CodeMark } from './domain';
+import { composingState } from './composition';
 
 const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string }>();
 
@@ -44,15 +45,10 @@ function editorDecorations(text: string): DecorationSet {
 
 export const highlightExtension = StateField.define<DecorationSet>({
   create: state => editorDecorations(state.doc.toString()),
-  update: (value, transaction) => transaction.docChanged ? editorDecorations(transaction.state.doc.toString()) : value,
+  update: (value, transaction) => transaction.state.field(composingState, false) ? value.map(transaction.changes) :
+    transaction.docChanged || transaction.startState.field(composingState, false) !== transaction.state.field(composingState, false)
+      ? editorDecorations(transaction.state.doc.toString()) : value,
   provide: field => EditorView.decorations.from(field),
-});
-
-export const unchangedHistory = EditorState.transactionExtender.of(transaction => {
-  if (transaction.docChanged && !transaction.effects.length && transaction.startState.doc.eq(transaction.newDoc)) {
-    return { annotations: Transaction.addToHistory.of(false) };
-  }
-  return null;
 });
 
 function textNodes(element: HTMLElement): Text[] {

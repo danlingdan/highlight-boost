@@ -3,9 +3,11 @@ import { collectItems } from './anchors';
 import { colorLabels, colorPreset, colors, presets, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
 import { parseDocument, sourceLines } from './parsing';
-import { highlightExtension, renderCode, unchangedHistory } from './rendering';
+import { highlightExtension, renderCode } from './rendering';
+import { editorHistory } from './history';
 import { createMetadataFolding } from './metadata-folding';
 import { readingTargets } from './reading-mapping';
+import { composingState, compositionEvents } from './composition';
 
 const VIEW = 'highlight-boost';
 interface Settings { schemaVersion: 1; defaultPreset: string }
@@ -14,7 +16,7 @@ export default class HighlightBoost extends Plugin {
   settings: Settings = { schemaVersion: 1, defaultPreset: 'important' };
   async onload(): Promise<void> {
     this.settings = { ...this.settings, ...await this.loadData() };
-    this.registerEditorExtension([highlightExtension, unchangedHistory, createMetadataFolding(editorLivePreviewField)]);
+    this.registerEditorExtension([composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField)]);
     this.registerView(VIEW, leaf => new HighlightsView(leaf, this));
     this.addSettingTab(new HighlightSettings(this));
     for (const preset of presets) {

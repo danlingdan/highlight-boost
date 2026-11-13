@@ -1,6 +1,7 @@
 import { StateField, type EditorState } from '@codemirror/state';
 import { Decoration, EditorView, WidgetType, type DecorationSet } from '@codemirror/view';
 import { parseDocument } from './parsing';
+import { composingState } from './composition';
 
 class MetadataWidget extends WidgetType {
   constructor(private from: number, private to: number, private count: number) { super(); }
@@ -43,7 +44,8 @@ export function createMetadataFolding(livePreview: StateField<boolean>): StateFi
   }
   return StateField.define<DecorationSet>({
     create: decorations,
-    update: (value, transaction) => transaction.docChanged || transaction.selection ||
+    update: (value, transaction) => transaction.state.field(composingState, false) ? value.map(transaction.changes) : transaction.docChanged || transaction.selection ||
+      transaction.startState.field(composingState, false) !== transaction.state.field(composingState, false) ||
       transaction.startState.field(livePreview, false) !== transaction.state.field(livePreview, false)
       ? decorations(transaction.state) : value,
     provide: field => EditorView.decorations.from(field),

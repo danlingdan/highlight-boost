@@ -1,0 +1,10 @@
+{
+  "id": "highlight-boost",
+  "name": "Highlight Boost",
+  "version": "0.1.0",
+  "minAppVersion": "1.14.0",
+  "description": "Highlight prose, code lines and exact code selections with shared semantic colors.",
+  "author": "danlingdan",
+  "authorUrl": "https://github.com/danlingdan",
+  "isDesktopOnly": true
+}

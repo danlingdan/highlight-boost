@@ -4,6 +4,10 @@ coverage/
 .cache/
 .research-cache/
 .test-vault/
+.test-profile/
+.test-host-profile/
+main.js
+main.js.map
 .env
 .env.*
 !.env.example

@@ -37,6 +37,15 @@
   assert('code-exact-text', editor.getValue().includes('%%hb:') && editor.getValue().includes('  memcpy(dst, src, n);'));
   await tick();
   assert('editor-code-decoration', view.containerEl.querySelector('.hb-text')?.textContent === 'src', view.containerEl.querySelector('.hb-text')?.textContent);
+  const chip = view.containerEl.querySelector('.hb-metadata-chip');
+  assert('live-preview-metadata-folded', Boolean(chip));
+  chip.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
+  assert('metadata-widget-expands', editor.getSelection().startsWith('%%hb:'));
+  const sourcePosition = editor.getValue().lastIndexOf('memcpy(dst, src, n)') + 'memcpy(dst, '.length;
+  editor.setSelection(editor.offsetToPos(sourcePosition), editor.offsetToPos(sourcePosition + 3));
+  view.containerEl.querySelector('.hb-metadata-chip').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+  assert('metadata-keyboard-expands', editor.getSelection().startsWith('%%hb:'));
+  editor.setSelection(editor.offsetToPos(sourcePosition), editor.offsetToPos(sourcePosition + 3));
   const marked = editor.getValue();
   editor.transaction({ changes: [{ from: { line: 0, ch: 0 }, to: { line: 0, ch: 1 }, text: marked[0] }] }, 'input');
   editor.undo();
@@ -95,6 +104,7 @@
 
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: true } });
   assert('source-mode', view.getState().source === true);
+  assert('source-shows-metadata', !view.containerEl.querySelector('.hb-metadata-chip'));
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: false } });
   assert('live-preview-mode', view.getState().source === false);
 

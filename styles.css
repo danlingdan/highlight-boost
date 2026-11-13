@@ -34,3 +34,13 @@
 .hb-code-quote { font-family: var(--font-monospace); }
 .hb-card small { display: block; margin-block: var(--size-4-2); color: var(--text-muted); }
 .hb-copy-excerpt { font-size: var(--font-ui-smaller); }
+.hb-metadata-chip {
+  height: auto;
+  padding: 2px var(--size-4-2);
+  font-size: var(--font-ui-smaller);
+  color: var(--text-muted);
+  background: var(--background-secondary);
+  box-shadow: none;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+}

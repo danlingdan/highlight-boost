@@ -1,0 +1,99 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "plugin-load",
+      "passed": true
+    },
+    {
+      "name": "desktop-only",
+      "passed": true
+    },
+    {
+      "name": "prose-partial-recolor",
+      "passed": true
+    },
+    {
+      "name": "prose-selection-preserved",
+      "passed": true
+    },
+    {
+      "name": "single-undo",
+      "passed": true
+    },
+    {
+      "name": "redo",
+      "passed": true
+    },
+    {
+      "name": "code-exact-text",
+      "passed": true
+    },
+    {
+      "name": "editor-code-decoration",
+      "passed": true
+    },
+    {
+      "name": "code-single-undo",
+      "passed": true
+    },
+    {
+      "name": "code-redo",
+      "passed": true
+    },
+    {
+      "name": "code-line-mark",
+      "passed": true
+    },
+    {
+      "name": "callout-code-mark",
+      "passed": true
+    },
+    {
+      "name": "list-code-mark",
+      "passed": true
+    },
+    {
+      "name": "unified-sidebar",
+      "passed": true
+    },
+    {
+      "name": "sidebar-source-jump",
+      "passed": true
+    },
+    {
+      "name": "reading-code-decoration",
+      "passed": true
+    },
+    {
+      "name": "reading-code-preserves-text",
+      "passed": true
+    },
+    {
+      "name": "reading-token-preserved",
+      "passed": true
+    },
+    {
+      "name": "source-mode",
+      "passed": true
+    },
+    {
+      "name": "live-preview-mode",
+      "passed": true
+    },
+    {
+      "name": "plugin-unload",
+      "passed": true
+    },
+    {
+      "name": "plugin-reload",
+      "passed": true
+    },
+    {
+      "name": "metadata-persisted",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

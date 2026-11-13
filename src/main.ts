@@ -1,6 +1,6 @@
-import { editorLivePreviewField, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, type Editor, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
+import { editorLivePreviewField, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, SuggestModal, type Editor, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
 import { collectItems } from './anchors';
-import { presets, type EditPlan, type HighlightItem, type Preset } from './domain';
+import { colorLabels, colorPreset, colors, presets, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
 import { parseDocument, sourceLines } from './parsing';
 import { highlightExtension, renderCode, unchangedHistory } from './rendering';
@@ -20,6 +20,11 @@ export default class HighlightBoost extends Plugin {
       this.addCommand({ id: `apply-${preset.id}`, name: `标记为${preset.name}`, editorCallback: editor => this.apply(editor, preset) });
       this.addCommand({ id: `lines-${preset.id}`, name: `代码行：${preset.name}`, editorCallback: editor => this.apply(editor, preset, 'lines') });
     }
+    for (const color of colors) this.addCommand({
+      id: `color-${color}`, name: `高亮颜色：${colorLabels[color]}`,
+      editorCallback: editor => this.apply(editor, colorPreset(color)),
+    });
+    this.addCommand({ id: 'choose-color', name: '选择高亮颜色', editorCallback: editor => new ColorPicker(this, editor).open() });
     this.addCommand({ id: 'remove', name: '移除所选标注', editorCallback: editor => this.apply(editor, null) });
     this.addCommand({ id: 'open-highlights', name: '打开当前笔记重点', callback: () => { void this.openPanel(); } });
     this.addCommand({ id: 'copy-code', name: '复制当前代码块', editorCallback: editor => { void this.copyCode(editor); } });
@@ -27,6 +32,7 @@ export default class HighlightBoost extends Plugin {
     this.registerEvent(this.app.workspace.on('editor-menu', (menu, editor) => {
       for (const preset of presets) menu.addItem(item => item.setTitle(`标记为${preset.name}`).setIcon('highlighter').onClick(() => this.apply(editor, preset)));
       menu.addSeparator();
+      menu.addItem(item => item.setTitle('选择高亮颜色…').setIcon('palette').onClick(() => new ColorPicker(this, editor).open()));
       menu.addItem(item => item.setTitle('标记所选代码行').setIcon('list-ordered').onClick(() => this.apply(editor, this.defaultPreset(), 'lines')));
       menu.addItem(item => item.setTitle('移除所选标注').setIcon('eraser').onClick(() => this.apply(editor, null)));
     }));
@@ -178,4 +184,14 @@ class HighlightSettings extends PluginSettingTab {
     });
     this.containerEl.createEl('p', { text: '在快捷键中为“标记为重点”“代码行：疑问”等命令配置按键。' });
   }
+}
+
+class ColorPicker extends SuggestModal<Color> {
+  constructor(private plugin: HighlightBoost, private editor: Editor) {
+    super(plugin.app);
+    this.setPlaceholder('选择高亮颜色');
+  }
+  getSuggestions(query: string): Color[] { return colors.filter(color => colorLabels[color].includes(query) || color.includes(query.toLowerCase())); }
+  renderSuggestion(color: Color, element: HTMLElement): void { element.createSpan({ text: colorLabels[color] }); }
+  onChooseSuggestion(color: Color): void { this.plugin.apply(this.editor, colorPreset(color)); }
 }

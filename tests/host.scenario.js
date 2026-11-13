@@ -19,6 +19,27 @@
   const view = leaf.view;
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: false } });
   const editor = view.editor;
+  const colorCases = [['default', ''], ['red', '🔴'], ['orange', '🟠'], ['yellow', '🟡'], ['green', '🟢'], ['blue', '🔵'], ['purple', '🟣']];
+  for (const [color, emoji] of colorCases) {
+    const word = `样例${color}`;
+    const at = editor.getValue().lastIndexOf(word);
+    editor.setSelection(editor.offsetToPos(at), editor.offsetToPos(at + word.length));
+    app.commands.executeCommandById(`highlight-boost:color-${color}`);
+    assert(`color-command-${color}`, editor.getValue().includes(`==${emoji}${word}==`) && editor.getSelection() === word);
+  }
+  await app.vault.modify(file, editor.getValue());
+  await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'preview' } });
+  const colorsScroller = view.containerEl.querySelector('.markdown-preview-view');
+  colorsScroller.scrollTop = colorsScroller.scrollHeight;
+  colorsScroller.dispatchEvent(new Event('scroll'));
+  for (let i = 0; i < 40 && !Array.from(view.containerEl.querySelectorAll('mark')).some(mark=>mark.textContent.includes('样例purple')); i++) await tick();
+  const renderedColors = Array.from(view.containerEl.querySelectorAll('mark'));
+  for (const [color] of colorCases) {
+    const rendered = renderedColors.find(mark=>mark.textContent.includes(`样例${color}`));
+    assert(`native-color-${color}`, Boolean(rendered) && (rendered.dataset.highlight || 'default') === color,
+      renderedColors.map(mark=>({text:mark.textContent, color:mark.dataset.highlight})));
+  }
+  await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: false } });
   const initial = editor.getValue();
   let from = initial.indexOf('beta');
   editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 4));

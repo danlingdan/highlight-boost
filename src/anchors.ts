@@ -1,4 +1,4 @@
-import type { CodeBlock, CodeMark, HighlightItem, Span } from './domain';
+import { colorLabels, type CodeBlock, type CodeMark, type HighlightItem, type Span } from './domain';
 import { parseDocument } from './parsing';
 
 export function logicalOffset(block: CodeBlock, source: number): number {
@@ -45,7 +45,7 @@ export function resolveMark(block: CodeBlock, mark: CodeMark): { span: Span; sta
 export function collectItems(text: string): HighlightItem[] {
   const parsed = parseDocument(text);
   const items: HighlightItem[] = parsed.highlights.map(highlight => ({
-    ...highlight, id: `prose:${highlight.from}`, kind: 'prose', label: highlight.color, status: 'resolved',
+    ...highlight, id: `prose:${highlight.from}`, kind: 'prose', label: colorLabels[highlight.color], status: 'resolved',
   }));
   for (const block of parsed.blocks) for (const mark of block.metadata?.marks ?? []) {
     const resolved = resolveMark(block, mark);

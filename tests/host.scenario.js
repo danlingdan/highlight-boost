@@ -129,11 +129,15 @@
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: false } });
   assert('live-preview-mode', view.getState().source === false);
 
+  plugin.settings.defaultPreset = 'question';
+  await plugin.saveData(plugin.settings);
   await app.plugins.disablePlugin('highlight-boost');
   assert('plugin-unload', !app.plugins.plugins['highlight-boost']);
   await app.plugins.enablePlugin('highlight-boost');
   assert('plugin-reload', Boolean(app.plugins.plugins['highlight-boost']));
+  assert('settings-reloaded', app.plugins.plugins['highlight-boost'].settings.defaultPreset === 'question');
   const persisted = await app.vault.read(file);
   assert('metadata-persisted', persisted.includes('%%hb:') && persisted.includes('"quote":"source"'));
+  await app.vault.adapter.write(`${app.vault.configDir}/hb-restart-expected.json`, JSON.stringify({ text: persisted }));
   return checks;
 })()

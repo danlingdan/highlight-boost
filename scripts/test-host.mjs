@@ -10,12 +10,23 @@ if (!existsSync(join(resources, 'obsidian.asar'))) {
 }
 const environment = { ...process.env };
 delete environment.ELECTRON_RUN_AS_NODE;
-const resultFile = 'docs/verification/host-results.json';
-if (existsSync(resultFile)) unlinkSync(resultFile);
-const child = spawn(executable, ['scripts/host-main.cjs'], { stdio: 'inherit', windowsHide: true, env: environment });
-child.on('exit', code => {
-  if (!existsSync(resultFile)) { console.error('Host exited before producing test results.'); process.exitCode = 1; return; }
+for (const restart of [false, true]) {
+  const resultFile = `docs/verification/${restart ? 'host-restart-results.json' : 'host-results.json'}`;
+  if (existsSync(resultFile)) unlinkSync(resultFile);
+  const code = await new Promise((resolve, reject) => {
+    const child = spawn(executable, ['scripts/host-main.cjs'], {
+      stdio: 'inherit', windowsHide: true, env: { ...environment, HB_HOST_RESTART: restart ? '1' : '0' },
+    });
+    const timeout = setTimeout(() => { child.kill(); reject(new Error('Host process did not exit.')); }, 75000);
+    child.once('error', error => { clearTimeout(timeout); reject(error); });
+    child.once('exit', code => { clearTimeout(timeout); resolve(code); });
+  });
+  if (!existsSync(resultFile)) throw new Error('Host exited before producing test results.');
   const results = JSON.parse(readFileSync(resultFile, 'utf8'));
-  console.log(JSON.stringify(results, null, 2));
-  process.exitCode = code || (results.errors.length || !results.checks.length ? 1 : 0);
-});
+  console.log(`${restart ? 'Restart' : 'Functional'} host: ${results.checks.length} checks, ${results.errors.length} errors.`);
+  if (code || results.errors.length || !results.checks.length) {
+    console.error(results.errors.join('\n'));
+    process.exitCode = 1;
+    break;
+  }
+}

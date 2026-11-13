@@ -12,7 +12,9 @@ pnpm prepare:vault
 
 `pnpm dev` 监听源码并生成 `main.js`。重新构建后运行 `pnpm prepare:vault` 将产物复制到项目内 `.test-vault/.obsidian/plugins/highlight-boost/`。
 
-功能命令包含“标记为重点/疑问/引用/行动”“代码行：重点/疑问/引用/行动”“移除所选标注”“复制当前代码块”和“打开当前笔记重点”。编辑器右键菜单提供同类操作。
+功能命令包含“标记为重点/疑问/引用/行动”“代码行：重点/疑问/引用/行动”“高亮颜色：默认色/红色/橙色/黄色/绿色/蓝色/紫色”“选择高亮颜色”“移除所选标注”“复制当前代码块”和“打开当前笔记重点”。编辑器右键菜单提供同类操作。
+
+Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空格同样可操作。代码原句变化后，在该代码块中选择新位置，再点击侧栏“绑定到当前选区”。
 
 ## 自动化测试
 
@@ -20,7 +22,7 @@ pnpm prepare:vault
 - `pnpm typecheck`：类型检查。
 - `pnpm test`：文档解析、纯编辑计划、锚定和 DOM 渲染断言。
 - `pnpm build`：生成宿主加载的 CommonJS 插件。
-- `pnpm test:host`：构建并运行独立 Electron 宿主，自动验证真实 Obsidian API、撤销与渲染。
+- `pnpm test:host`：构建并依次运行两个独立 Electron 进程，验证真实 Obsidian API、撤销、渲染与重启恢复。
 
 宿主测试优先使用 Electron JavaScript、[官方 CLI](https://obsidian.md/help/cli) 和 CDP。当前测试通过 `webContents.executeJavaScript` 操作项目样例，使用原生 Editor 和 WorkspaceLeaf 接口执行变更与切换视图。
 
@@ -35,6 +37,7 @@ pnpm prepare:vault
 3. 在独立 Electron 38.8.6 中加载本机 `obsidian.asar`，复用真实解析、编辑与阅读渲染代码。
 4. 为测试 CLI 管道添加独立后缀，避免和日常应用争用同名管道。
 5. 经路径校验后执行宿主断言，写入 `docs/verification/host-results.json`，测试进程退出。
+6. 启动第二个进程，读取第一进程保存的测试库与设置，写入 `docs/verification/host-restart-results.json`。
 
 测试启动器保留既有系统协议注册，测试配置与输出均位于项目目录。
 

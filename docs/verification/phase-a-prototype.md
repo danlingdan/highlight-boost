@@ -2,6 +2,8 @@
 
 日期：2026-11-14。版本：0.1.0。阶段 A 状态：进行中。
 
+本文件记录首轮结果。最新进度见 [第二轮验证](phase-a-iteration-2.md)。
+
 ## 本轮交付
 
 - 桌面插件骨架、manifest、MIT 许可、锁文件、lint/typecheck/build 和 CI。
@@ -16,7 +18,7 @@
 
 `pnpm check` 通过：lint、类型检查、20 项逻辑/DOM 测试和构建。
 
-`pnpm test:host` 通过：Obsidian 1.15.0 运行包、Electron 38.8.6、项目独立用户目录和测试 Vault，共 23 项宿主断言。原始结果见 [host-results.json](host-results.json)。
+`pnpm test:host` 通过：Obsidian 1.15.0 运行包、Electron 38.8.6、项目独立用户目录和测试 Vault，共 23 项宿主断言。[首轮宿主结果](https://github.com/danlingdan/highlight-boost/blob/0d114b66a3a123102005e740d569417f496c64e5/docs/verification/host-results.json)保存在对应提交中，当前结果文件随后续实验更新。
 
 宿主断言覆盖加载、桌面标识、正文局部改色、撤销和重做、代码精确选区、编辑器装饰、代码行标记、callout/列表内代码、统一侧栏、来源跳转、阅读装饰、代码文本与语法 token 保留、Source/Live Preview 切换、插件启停和持久元数据读取。
 

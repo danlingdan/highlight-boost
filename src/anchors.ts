@@ -34,8 +34,11 @@ export function resolveMark(block: CodeBlock, mark: CodeMark): { span: Span; sta
   const contextual = candidates.filter(at =>
     block.text.slice(Math.max(0, at - mark.prefix.length), at) === mark.prefix &&
     block.text.slice(at + mark.quote.length, at + mark.quote.length + mark.suffix.length) === mark.suffix);
-  const matches = contextual.length ? contextual : candidates;
-  if (matches.length === 1 && (contextual.length || (mark.occurrenceCount ?? 1) <= 1)) {
+  const oneSided = candidates.length >= (mark.occurrenceCount ?? 1) ? candidates.filter(at =>
+    (mark.prefix.length >= 4 && block.text.slice(Math.max(0, at - mark.prefix.length), at) === mark.prefix) ||
+    (mark.suffix.length >= 4 && block.text.slice(at + mark.quote.length, at + mark.quote.length + mark.suffix.length) === mark.suffix)) : [];
+  const matches = contextual.length ? contextual : oneSided.length ? oneSided : candidates;
+  if (matches.length === 1 && (contextual.length || oneSided.length || (mark.occurrenceCount ?? 1) <= 1)) {
     const from = matches[0]!;
     return { span: { from, to: from + mark.quote.length }, status: 'resolved' };
   }

@@ -40,6 +40,11 @@ describe('persistent block identity', () => {
     const annotated = annotate('```js\nleft(); count();\nright(); count();\n```', 'count');
     expect(collectItems(annotated)[0]!.status).toBe('resolved');
   });
+  it('retains a duplicate anchor when nearby edits change only one context', () => {
+    const annotated = annotate('```js\nfirst(value);\nsecond(value);\nconst message = "";\n```', 'value');
+    const changed = annotated.replace('\nconst message = "";', '\nconst message = "中文";');
+    expect(collectItems(changed)[0]!.status).toBe('resolved');
+  });
 
   it('rebinds rewritten code while retaining its identity and selected text', () => {
     const annotated = annotate('```js\nconst count = 1;\n```', 'count');

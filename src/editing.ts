@@ -59,6 +59,7 @@ function codeMark(block: CodeBlock, span: Span, preset: Preset, mode: 'lines' | 
     id: crypto.randomUUID(), kind: mode, from, to, quote: block.text.slice(from, to),
     prefix: block.text.slice(Math.max(0, from - 32), from), suffix: block.text.slice(to, to + 32),
     color: preset.color, semantic: preset.id, label: preset.name,
+    occurrenceCount: to > from ? block.text.split(block.text.slice(from, to)).length - 1 : 1,
   };
 }
 
@@ -91,9 +92,20 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
   }
   for (const [block, spans] of codeSelections) {
     const metadata = block.metadata ? structuredClone(block.metadata) : { v: 1 as const, blockId: crypto.randomUUID(), marks: [] };
+    const earlier = parsed.blocks.filter(other => other.fenceFrom < block.fenceFrom);
+    if (earlier.some(other => other.metadata?.blockId === metadata.blockId)) metadata.blockId = crypto.randomUUID();
+    const seen = new Set(earlier.flatMap(other => other.metadata?.marks.map(mark => mark.id) ?? []));
+    for (const mark of metadata.marks) {
+      if (seen.has(mark.id)) mark.id = crypto.randomUUID();
+      seen.add(mark.id);
+    }
     metadata.marks = metadata.marks.map(mark => {
       const resolved = resolveMark(block, mark);
-      return resolved.status === 'resolved' ? { ...mark, ...resolved.span } : mark;
+      return resolved.status === 'resolved' ? {
+        ...mark, ...resolved.span,
+        prefix: block.text.slice(Math.max(0, resolved.span.from - 32), resolved.span.from),
+        suffix: block.text.slice(resolved.span.to, resolved.span.to + 32),
+      } : mark;
     });
     for (const span of spans) {
       const target = codeMark(block, span, preset ?? { id: '', name: '', color: 'default' }, mode);

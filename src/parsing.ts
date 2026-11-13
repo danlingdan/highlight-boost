@@ -21,7 +21,8 @@ function isMetadata(value: unknown): value is CodeMetadata {
     mark && typeof mark.id === 'string' && (mark.kind === 'lines' || mark.kind === 'text') &&
     Number.isSafeInteger(mark.from) && Number.isSafeInteger(mark.to) && mark.from >= 0 && mark.to >= mark.from &&
     typeof mark.quote === 'string' && typeof mark.prefix === 'string' && typeof mark.suffix === 'string' &&
-    typeof mark.semantic === 'string' && typeof mark.label === 'string' && colors.includes(mark.color));
+    typeof mark.semantic === 'string' && typeof mark.label === 'string' && colors.includes(mark.color) &&
+    (mark.occurrenceCount === undefined || (Number.isSafeInteger(mark.occurrenceCount) && mark.occurrenceCount > 0)));
 }
 
 export function serializeMetadata(data: CodeMetadata): string {
@@ -67,7 +68,8 @@ export function parseDocument(text: string): ParsedDocument {
       };
       const previous = lines[first.number - 2];
       const metadataMatch = previous?.text.match(/%%hb:(.+)%%\s*$/);
-      if (metadataMatch && previous) {
+      const metadataPrefix = previous?.text.slice(0, previous.text.indexOf('%%hb:')).replace(/(?:[-+*]|\d+[.)])\s+/g, token => ' '.repeat(token.length));
+      if (metadataMatch && previous && metadataPrefix === block.prefix) {
         try {
           const metadata: unknown = JSON.parse(metadataMatch[1]!);
           if (isMetadata(metadata)) {

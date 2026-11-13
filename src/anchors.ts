@@ -35,7 +35,7 @@ export function resolveMark(block: CodeBlock, mark: CodeMark): { span: Span; sta
     block.text.slice(Math.max(0, at - mark.prefix.length), at) === mark.prefix &&
     block.text.slice(at + mark.quote.length, at + mark.quote.length + mark.suffix.length) === mark.suffix);
   const matches = contextual.length ? contextual : candidates;
-  if (matches.length === 1) {
+  if (matches.length === 1 && (contextual.length || (mark.occurrenceCount ?? 1) <= 1)) {
     const from = matches[0]!;
     return { span: { from, to: from + mark.quote.length }, status: 'resolved' };
   }
@@ -51,10 +51,11 @@ export function collectItems(text: string): HighlightItem[] {
     const resolved = resolveMark(block, mark);
     const from = sourceOffset(block, resolved.span.from);
     items.push({
-      id: mark.id, kind: mark.kind === 'lines' ? 'code-line' : 'code-range',
+      id: `${block.metadata!.blockId}:${mark.id}:${block.fenceFrom}`, kind: mark.kind === 'lines' ? 'code-line' : 'code-range',
       from, to: sourceOffset(block, resolved.span.to), color: mark.color, label: mark.label,
       quote: mark.quote, language: block.language, status: resolved.status,
       line: block.lines.findIndex(line => from <= line.to) + 1,
+      blockFrom: block.fenceFrom, blockId: block.metadata!.blockId, markId: mark.id,
     });
   }
   return items.sort((a, b) => a.from - b.from);

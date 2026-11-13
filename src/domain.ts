@@ -22,6 +22,7 @@ export interface CodeMark {
   color: Color;
   semantic: string;
   label: string;
+  occurrenceCount?: number;
 }
 export interface CodeMetadata { v: 1; blockId: string; marks: CodeMark[] }
 export interface SourceLine extends Span { text: string; number: number }
@@ -48,6 +49,9 @@ export interface HighlightItem extends Span {
   language?: string;
   line?: number;
   status: 'resolved' | 'ambiguous' | 'missing';
+  blockFrom?: number;
+  blockId?: string;
+  markId?: string;
 }
 export interface ParsedDocument {
   blocks: CodeBlock[];

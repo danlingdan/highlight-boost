@@ -11,6 +11,62 @@
       "passed": true
     },
     {
+      "name": "color-command-default",
+      "passed": true
+    },
+    {
+      "name": "color-command-red",
+      "passed": true
+    },
+    {
+      "name": "color-command-orange",
+      "passed": true
+    },
+    {
+      "name": "color-command-yellow",
+      "passed": true
+    },
+    {
+      "name": "color-command-green",
+      "passed": true
+    },
+    {
+      "name": "color-command-blue",
+      "passed": true
+    },
+    {
+      "name": "color-command-purple",
+      "passed": true
+    },
+    {
+      "name": "native-color-default",
+      "passed": true
+    },
+    {
+      "name": "native-color-red",
+      "passed": true
+    },
+    {
+      "name": "native-color-orange",
+      "passed": true
+    },
+    {
+      "name": "native-color-yellow",
+      "passed": true
+    },
+    {
+      "name": "native-color-green",
+      "passed": true
+    },
+    {
+      "name": "native-color-blue",
+      "passed": true
+    },
+    {
+      "name": "native-color-purple",
+      "passed": true
+    },
+    {
       "name": "prose-partial-recolor",
       "passed": true
     },
@@ -32,6 +88,18 @@
     },
     {
       "name": "editor-code-decoration",
+      "passed": true
+    },
+    {
+      "name": "live-preview-metadata-folded",
+      "passed": true
+    },
+    {
+      "name": "metadata-widget-expands",
+      "passed": true
+    },
+    {
+      "name": "metadata-keyboard-expands",
       "passed": true
     },
     {
@@ -63,6 +131,22 @@
       "passed": true
     },
     {
+      "name": "rewritten-mark-pending",
+      "passed": true
+    },
+    {
+      "name": "sidebar-rebind",
+      "passed": true
+    },
+    {
+      "name": "rebind-single-undo",
+      "passed": true
+    },
+    {
+      "name": "rebind-redo",
+      "passed": true
+    },
+    {
       "name": "reading-code-decoration",
       "passed": true
     },
@@ -79,6 +163,10 @@
       "passed": true
     },
     {
+      "name": "source-shows-metadata",
+      "passed": true
+    },
+    {
       "name": "live-preview-mode",
       "passed": true
     },
@@ -88,6 +176,10 @@
     },
     {
       "name": "plugin-reload",
+      "passed": true
+    },
+    {
+      "name": "settings-reloaded",
       "passed": true
     },
     {

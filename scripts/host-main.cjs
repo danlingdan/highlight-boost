@@ -16,8 +16,8 @@ const profile = path.join(root, '.test-host-profile');
 const vault = path.join(root, '.test-vault');
 const resources = process.env.OBSIDIAN_RESOURCES || 'C:\\Program Files\\Obsidian\\resources';
 const source = path.join(resources, 'obsidian.asar');
-const restart = process.env.HB_HOST_RESTART === '1';
-const resultName = restart ? 'host-restart-results.json' : 'host-results.json';
+const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'] };
+const [scenarioName, resultName] = scenarios[process.env.HB_HOST_MODE] ?? scenarios.functional;
 const version = require(path.join(source, 'package.json')).version;
 fs.mkdirSync(profile, { recursive: true });
 fs.writeFileSync(path.join(profile, 'obsidian.json'), JSON.stringify({
@@ -62,7 +62,7 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      const script = fs.readFileSync(path.join(root, 'tests', restart ? 'restart.scenario.js' : 'host.scenario.js'), 'utf8');
+      const script = fs.readFileSync(path.join(root, 'tests', scenarioName), 'utf8');
       const outcome = await contents.executeJavaScript(script);
       results.checks.push(...outcome);
       finish();

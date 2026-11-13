@@ -10,12 +10,13 @@ if (!existsSync(join(resources, 'obsidian.asar'))) {
 }
 const environment = { ...process.env };
 delete environment.ELECTRON_RUN_AS_NODE;
-for (const restart of [false, true]) {
-  const resultFile = `docs/verification/${restart ? 'host-restart-results.json' : 'host-results.json'}`;
+const modes = process.argv.includes('--shiki') ? ['shiki'] : process.argv.includes('--advanced') ? ['advanced'] : ['functional', 'advanced', 'restart'];
+for (const mode of modes) {
+  const resultFile = `docs/verification/${mode === 'functional' ? 'host-results' : `host-${mode}-results`}.json`;
   if (existsSync(resultFile)) unlinkSync(resultFile);
   const code = await new Promise((resolve, reject) => {
     const child = spawn(executable, ['scripts/host-main.cjs'], {
-      stdio: 'inherit', windowsHide: true, env: { ...environment, HB_HOST_RESTART: restart ? '1' : '0' },
+      stdio: 'inherit', windowsHide: true, env: { ...environment, HB_HOST_MODE: mode },
     });
     const timeout = setTimeout(() => { child.kill(); reject(new Error('Host process did not exit.')); }, 75000);
     child.once('error', error => { clearTimeout(timeout); reject(error); });
@@ -23,7 +24,7 @@ for (const restart of [false, true]) {
   });
   if (!existsSync(resultFile)) throw new Error('Host exited before producing test results.');
   const results = JSON.parse(readFileSync(resultFile, 'utf8'));
-  console.log(`${restart ? 'Restart' : 'Functional'} host: ${results.checks.length} checks, ${results.errors.length} errors.`);
+  console.log(`${mode} host: ${results.checks.length} checks, ${results.errors.length} errors.`);
   if (code || results.errors.length || !results.checks.length) {
     console.error(results.errors.join('\n'));
     process.exitCode = 1;

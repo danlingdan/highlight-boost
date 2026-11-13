@@ -1,4 +1,4 @@
-import { contains, emojis, overlaps, type Change, type CodeBlock, type CodeMark, type EditPlan, type Preset, type Span } from './domain';
+import { contains, emojis, overlaps, type Change, type CodeBlock, type CodeMark, type CodeMetadata, type EditPlan, type HighlightItem, type Preset, type Span } from './domain';
 import { logicalOffset, resolveMark } from './anchors';
 import { parseDocument, serializeMetadata, sourceLines } from './parsing';
 
@@ -55,12 +55,51 @@ function codeMark(block: CodeBlock, span: Span, preset: Preset, mode: 'lines' | 
     const end = block.text.indexOf('\n', Math.max(from, to - 1));
     to = end < 0 ? block.text.length : end;
   }
+  const quote = block.text.slice(from, to);
+  let occurrenceCount = 0;
+  if (quote) for (let at = block.text.indexOf(quote); at >= 0; at = block.text.indexOf(quote, at + 1)) occurrenceCount++;
   return {
     id: crypto.randomUUID(), kind: mode, from, to, quote: block.text.slice(from, to),
     prefix: block.text.slice(Math.max(0, from - 32), from), suffix: block.text.slice(to, to + 32),
     color: preset.color, semantic: preset.id, label: preset.name,
-    occurrenceCount: to > from ? block.text.split(block.text.slice(from, to)).length - 1 : 1,
+    occurrenceCount: occurrenceCount || 1,
   };
+}
+
+function editableMetadata(block: CodeBlock, blocks: CodeBlock[]): CodeMetadata {
+  const metadata = block.metadata ? structuredClone(block.metadata) : { v: 1 as const, blockId: crypto.randomUUID(), marks: [] };
+  const earlier = blocks.filter(other => other.fenceFrom < block.fenceFrom);
+  if (earlier.some(other => other.metadata?.blockId === metadata.blockId)) metadata.blockId = crypto.randomUUID();
+  const seen = new Set(earlier.flatMap(other => other.metadata?.marks.map(mark => mark.id) ?? []));
+  metadata.marks = metadata.marks.map(mark => {
+    if (seen.has(mark.id)) mark.id = crypto.randomUUID();
+    seen.add(mark.id);
+    const resolved = resolveMark(block, mark);
+    return resolved.status === 'resolved' ? {
+      ...mark, ...resolved.span,
+      prefix: block.text.slice(Math.max(0, resolved.span.from - 32), resolved.span.from),
+      suffix: block.text.slice(resolved.span.to, resolved.span.to + 32),
+    } : mark;
+  });
+  return metadata;
+}
+
+export function planCodeRebind(text: string, reference: Pick<HighlightItem, 'blockFrom' | 'blockId' | 'markId'>, span: Span): EditPlan {
+  const parsed = parseDocument(text);
+  const block = parsed.blocks.find(block => block.fenceFrom === reference.blockFrom && block.metadata?.blockId === reference.blockId);
+  const index = block?.metadata?.marks.findIndex(mark => mark.id === reference.markId) ?? -1;
+  if (!block?.metadataSpan || index < 0) throw new Error('标注位置已变化，请刷新侧栏后重试。');
+  const previous = block.metadata!.marks[index]!;
+  const content = { from: block.lines[0]?.from ?? block.to, to: block.lines.at(-1)?.to ?? block.from };
+  if (!contains(content, span) || (span.from === span.to && previous.kind === 'text')) throw new Error('请在该代码块中选择新的标注位置。');
+  const metadata = editableMetadata(block, parsed.blocks);
+  metadata.marks[index] = {
+    ...codeMark(block, span, { id: previous.semantic, name: previous.label, color: previous.color }, previous.kind),
+    id: metadata.marks[index]!.id,
+  };
+  const insert = serializeMetadata(metadata);
+  const delta = insert.length - (block.metadataSpan.to - block.metadataSpan.from);
+  return { changes: [{ ...block.metadataSpan, insert }], selections: [{ from: span.from + delta, to: span.to + delta }] };
 }
 
 export function planHighlight(text: string, selections: Span[], preset: Preset | null, mode: 'lines' | 'text' = 'text'): EditPlan {
@@ -91,22 +130,7 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
     }
   }
   for (const [block, spans] of codeSelections) {
-    const metadata = block.metadata ? structuredClone(block.metadata) : { v: 1 as const, blockId: crypto.randomUUID(), marks: [] };
-    const earlier = parsed.blocks.filter(other => other.fenceFrom < block.fenceFrom);
-    if (earlier.some(other => other.metadata?.blockId === metadata.blockId)) metadata.blockId = crypto.randomUUID();
-    const seen = new Set(earlier.flatMap(other => other.metadata?.marks.map(mark => mark.id) ?? []));
-    for (const mark of metadata.marks) {
-      if (seen.has(mark.id)) mark.id = crypto.randomUUID();
-      seen.add(mark.id);
-    }
-    metadata.marks = metadata.marks.map(mark => {
-      const resolved = resolveMark(block, mark);
-      return resolved.status === 'resolved' ? {
-        ...mark, ...resolved.span,
-        prefix: block.text.slice(Math.max(0, resolved.span.from - 32), resolved.span.from),
-        suffix: block.text.slice(resolved.span.to, resolved.span.to + 32),
-      } : mark;
-    });
+    const metadata = editableMetadata(block, parsed.blocks);
     for (const span of spans) {
       const target = codeMark(block, span, preset ?? { id: '', name: '', color: 'default' }, mode);
       const matches = (mark: CodeMark) => span.from === span.to

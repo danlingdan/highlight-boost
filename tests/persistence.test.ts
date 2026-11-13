@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { collectItems } from '../src/anchors';
-import { applyChanges, planHighlight } from '../src/editing';
+import { applyChanges, planCodeRebind, planHighlight } from '../src/editing';
 import { parseDocument } from '../src/parsing';
 import { presets } from '../src/domain';
 
@@ -39,5 +39,30 @@ describe('persistent block identity', () => {
   it('continues resolving a duplicate when one of its contexts identifies it', () => {
     const annotated = annotate('```js\nleft(); count();\nright(); count();\n```', 'count');
     expect(collectItems(annotated)[0]!.status).toBe('resolved');
+  });
+
+  it('rebinds rewritten code while retaining its identity and selected text', () => {
+    const annotated = annotate('```js\nconst count = 1;\n```', 'count');
+    const updated = annotated.replace('\nconst count = 1;', '\nconst total = 1;');
+    const item = collectItems(updated)[0]!;
+    expect(item.status).toBe('missing');
+    const from = updated.lastIndexOf('total');
+    const plan = planCodeRebind(updated, item, { from, to: from + 5 });
+    const rebound = applyChanges(updated, plan.changes);
+    const result = collectItems(rebound)[0]!;
+    expect(result.status).toBe('resolved');
+    expect(result.markId).toBe(item.markId);
+    expect(result.quote).toBe('total');
+    expect(result.label).toBe(item.label);
+    expect(rebound.slice(plan.selections[0]!.from, plan.selections[0]!.to)).toBe('total');
+    expect(parseDocument(rebound).blocks[0]!.text).toBe('const total = 1;');
+  });
+
+  it('keeps a rebind within its own code block', () => {
+    const annotated = annotate('```js\ncount();\n```', 'count');
+    const text = `${annotated}\n\n\`\`\`js\nother();\n\`\`\``;
+    const item = collectItems(text)[0]!;
+    const from = text.lastIndexOf('other');
+    expect(() => planCodeRebind(text, item, { from, to: from + 5 })).toThrow('该代码块');
   });
 });

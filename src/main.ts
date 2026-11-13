@@ -1,7 +1,7 @@
 import { ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, type Editor, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
 import { collectItems } from './anchors';
-import { presets, type HighlightItem, type Preset } from './domain';
-import { applyChanges, planHighlight } from './editing';
+import { presets, type EditPlan, type HighlightItem, type Preset } from './domain';
+import { applyChanges, planCodeRebind, planHighlight } from './editing';
 import { parseDocument, sourceLines } from './parsing';
 import { highlightExtension, renderCode, unchangedHistory } from './rendering';
 
@@ -43,6 +43,21 @@ export default class HighlightBoost extends Plugin {
         return { from: Math.min(a, b), to: Math.max(a, b) };
       });
       const plan = planHighlight(editor.getValue(), selections, preset, mode);
+      this.commitPlan(editor, plan);
+    } catch (error) { new Notice(error instanceof Error ? error.message : String(error)); }
+  }
+
+  rebind(editor: Editor, item: HighlightItem): void {
+    try {
+      const selections = editor.listSelections();
+      if (selections.length !== 1) throw new Error('请选择一处新的标注位置。');
+      const selected = selections[0]!;
+      const a = editor.posToOffset(selected.anchor), b = editor.posToOffset(selected.head);
+      this.commitPlan(editor, planCodeRebind(editor.getValue(), item, { from: Math.min(a, b), to: Math.max(a, b) }));
+    } catch (error) { new Notice(error instanceof Error ? error.message : String(error)); }
+  }
+
+  private commitPlan(editor: Editor, plan: EditPlan): void {
       if (!plan.changes.length) { new Notice('请选择文本，或将光标放入已有高亮。'); return; }
       const updatedLines = sourceLines(applyChanges(editor.getValue(), plan.changes));
       const position = (offset: number) => {
@@ -54,7 +69,6 @@ export default class HighlightBoost extends Plugin {
         selections: plan.selections.map(span => ({ from: position(span.from), to: position(span.to) })),
       }, 'highlight-boost');
       this.refreshPanels();
-    } catch (error) { new Notice(error instanceof Error ? error.message : String(error)); }
   }
 
   async copyCode(editor: Editor): Promise<void> {
@@ -137,6 +151,11 @@ class HighlightsView extends ItemView {
       view.editor.scrollIntoView({ from, to }, true);
       view.editor.focus();
     });
+    if (item.kind !== 'prose') {
+      const rebind = card.createEl('button', { text: '绑定到当前选区', cls: 'hb-rebind' });
+      rebind.title = '在该代码块中选择新的位置，再点击绑定。';
+      this.registerDomEvent(rebind, 'click', () => this.plugin.rebind(view.editor, item));
+    }
     const copy = card.createEl('button', { text: '复制摘录', cls: 'hb-copy-excerpt' });
     this.registerDomEvent(copy, 'click', () => {
       const quote = item.kind === 'prose' ? `> ${item.quote}` : `\`\`\`${item.language}\n${item.quote}\n\`\`\``;

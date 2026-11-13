@@ -66,6 +66,21 @@
   jump.click();
   assert('sidebar-source-jump', editor.getSelection() === 'src');
 
+  editor.replaceSelection('source');
+  plugin.refreshPanels();
+  const rewritten = editor.getValue();
+  const repair = Array.from(document.querySelectorAll('.hb-card')).find(card=>card.querySelector('.hb-quote')?.textContent === 'src');
+  assert('rewritten-mark-pending', repair?.textContent.includes('待重新定位'));
+  const sourceFrom = rewritten.lastIndexOf('memcpy(dst, source, n)') + 'memcpy(dst, '.length;
+  editor.setSelection(editor.offsetToPos(sourceFrom), editor.offsetToPos(sourceFrom + 6));
+  repair.querySelector('.hb-rebind').click();
+  const rebound = editor.getValue();
+  assert('sidebar-rebind', rebound.includes('"quote":"source"') && editor.getSelection() === 'source');
+  editor.undo();
+  assert('rebind-single-undo', editor.getValue() === rewritten);
+  editor.redo();
+  assert('rebind-redo', editor.getValue() === rebound);
+
   await app.vault.modify(file, editor.getValue());
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'preview' } });
   app.workspace.setActiveLeaf(leaf, { focus: true });
@@ -75,7 +90,7 @@
   for (let i = 0; i < 40 && !view.containerEl.querySelector('pre .hb-text'); i++) await tick();
   assert('reading-code-decoration', Boolean(view.containerEl.querySelector('pre .hb-text')), { state: view.getState(), pre: view.containerEl.querySelectorAll('pre').length, text: view.containerEl.querySelector('pre')?.outerHTML, saved: (await app.vault.read(file)).includes('%%hb:') });
   const code = Array.from(view.containerEl.querySelectorAll('pre code')).find(code => code.textContent.includes('memcpy'));
-  assert('reading-code-preserves-text', code.textContent === 'void copy(char *dst, const char *src, size_t n) {\n  memcpy(dst, src, n);\n}\n', code.textContent);
+  assert('reading-code-preserves-text', code.textContent === 'void copy(char *dst, const char *src, size_t n) {\n  memcpy(dst, source, n);\n}\n', code.textContent);
   assert('reading-token-preserved', Boolean(code.querySelector('.token')));
 
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: true } });
@@ -88,6 +103,6 @@
   await app.plugins.enablePlugin('highlight-boost');
   assert('plugin-reload', Boolean(app.plugins.plugins['highlight-boost']));
   const persisted = await app.vault.read(file);
-  assert('metadata-persisted', persisted.includes('%%hb:') && persisted.includes('"quote":"src"'));
+  assert('metadata-persisted', persisted.includes('%%hb:') && persisted.includes('"quote":"source"'));
   return checks;
 })()

@@ -125,6 +125,20 @@
         "live-preview": true,
         "reading": false
       },
+      "editorRendering": {
+        "source": {
+          "nativeTokens": true,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        },
+        "live-preview": {
+          "nativeTokens": true,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        }
+      },
       "readingRenderer": "native"
     },
     {
@@ -134,6 +148,20 @@
         "source": true,
         "live-preview": true,
         "reading": true
+      },
+      "editorRendering": {
+        "source": {
+          "nativeTokens": true,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        },
+        "live-preview": {
+          "nativeTokens": true,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        }
       },
       "readingRenderer": "native"
     },
@@ -145,6 +173,20 @@
         "live-preview": true,
         "reading": true
       },
+      "editorRendering": {
+        "source": {
+          "nativeTokens": true,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        },
+        "live-preview": {
+          "nativeTokens": true,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        }
+      },
       "readingRenderer": "native"
     },
     {
@@ -154,6 +196,20 @@
         "source": false,
         "live-preview": false,
         "reading": false
+      },
+      "editorRendering": {
+        "source": {
+          "nativeTokens": false,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        },
+        "live-preview": {
+          "nativeTokens": false,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        }
       },
       "readingRenderer": "native"
     },
@@ -165,6 +221,20 @@
         "live-preview": false,
         "reading": true
       },
+      "editorRendering": {
+        "source": {
+          "nativeTokens": false,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        },
+        "live-preview": {
+          "nativeTokens": false,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        }
+      },
       "readingRenderer": "native"
     },
     {
@@ -175,6 +245,20 @@
         "live-preview": false,
         "reading": false
       },
+      "editorRendering": {
+        "source": {
+          "nativeTokens": false,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        },
+        "live-preview": {
+          "nativeTokens": false,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        }
+      },
       "readingRenderer": "native"
     },
     {
@@ -184,6 +268,20 @@
         "source": false,
         "live-preview": false,
         "reading": false
+      },
+      "editorRendering": {
+        "source": {
+          "nativeTokens": false,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        },
+        "live-preview": {
+          "nativeTokens": false,
+          "shikiInlineColors": false,
+          "expressiveCode": false,
+          "expressiveCopyButton": false
+        }
       },
       "readingRenderer": "native"
     }

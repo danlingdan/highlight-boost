@@ -254,7 +254,7 @@ class HighlightsView extends ItemView {
     if (!view?.file || !this.app.workspace.getLeavesOfType('markdown').includes(view.leaf) || this.app.vault.getFileByPath(view.file.path) !== view.file) { results.createEl('p', { text: this.plugin.t('panelEmpty') }); return; }
     const text = view.editor.getValue();
     const all = collectItems(text), query = this.search.value.trim().toLocaleLowerCase();
-    const items = all.filter(item => (!query || `${item.quote}\n${item.label}\n${item.language ?? ''}`.toLocaleLowerCase().includes(query)) &&
+    const items = all.filter(item => (!query || `${item.quote}\n${item.markId ? item.label : this.plugin.colorLabel(item.color)}\n${item.language ?? ''}`.toLocaleLowerCase().includes(query)) &&
       (!this.typeFilter!.value || (this.typeFilter!.value === 'code' ? item.kind.startsWith('code-') : item.kind === this.typeFilter!.value)) &&
       (!this.semanticFilter!.value || item.semantic === this.semanticFilter!.value));
     results.createEl('p', { text: this.plugin.t(items.length === 1 ? 'summaryOne' : 'summary', { note: view.file.basename, count: items.length }), cls: 'hb-summary' });

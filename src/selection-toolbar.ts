@@ -85,7 +85,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
       const context = selectionContext(view.state.doc.toString(), view.state.selection.ranges);
       const contextLabel = context.kind === 'code' ? plugin.t('blockSelection', { block: context.block!, from: context.from!, to: context.to! }) : plugin.t(context.kind === 'mixed' ? 'mixedSelection' : context.kind === 'inline-code' ? 'inlineCode' : 'prose');
       const label = document.createElement('div'); label.className = 'hb-selection-context';
-      label.textContent = plugin.t('selectionContext', { context: contextLabel, count: context.count }); element.append(label);
+      label.textContent = plugin.t(context.count === 1 ? 'selectionContextOne' : 'selectionContext', { context: contextLabel, count: context.count }); element.append(label);
       const button = (id: string, text: string, run: () => void, color?: Color) => {
         const button = document.createElement('button');
         button.textContent = text; button.dataset.hbAction = id; button.setAttribute('aria-label', text);

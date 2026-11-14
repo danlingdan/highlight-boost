@@ -145,4 +145,3 @@
   assert('toolbar-no-page-errors', errors.length === 0, errors);
   return checks;
 })()
-

@@ -13,6 +13,8 @@ import { SyntaxService } from './syntax/service';
 import { inlineExcerpt } from './inline-rendering';
 import { colorName, colorSearch, errorMessage, presetName, resolveLocale, translate, type Language, type Locale, type Message } from './i18n';
 import type { Extension } from '@codemirror/state';
+import { selectionToolbar } from './selection-toolbar';
+import { planItemUpdate } from './item-editing';
 
 const VIEW = 'highlight-boost';
 
@@ -26,6 +28,7 @@ export default class HighlightBoost extends Plugin {
   private settingTab?: HighlightSettings;
   private colorPickers = new Set<ColorPicker>();
   private readingChildren = new Set<ReadingHighlights>();
+  toolbars = new Set<{ refresh(): void; open(): void; matches(editor: Editor): boolean; destroy(): void }>();
   syntax?: SyntaxService;
   async onload(): Promise<void> {
     const loaded: unknown = await this.loadData();
@@ -36,7 +39,7 @@ export default class HighlightBoost extends Plugin {
       this.syntax = this.addChild(new SyntaxService(this, (element, context) => this.createReadingChild(element, context), () => this.locale));
       await this.syntax.initialize();
     }
-    this.uiExtensions.push(metadataLocale.of(this.locale), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField));
+    this.uiExtensions.push(metadataLocale.of(this.locale), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField), selectionToolbar(this));
     this.registerEditorExtension(this.uiExtensions);
     this.registerView(VIEW, leaf => new HighlightsView(leaf, this));
     this.settingTab = new HighlightSettings(this);
@@ -56,6 +59,9 @@ export default class HighlightBoost extends Plugin {
     this.addTranslatedCommand({ id: 'remove', editorCallback: editor => this.apply(editor, null) }, () => this.t('remove'));
     this.addTranslatedCommand({ id: 'open-highlights', callback: () => { void this.openPanel(); } }, () => this.t('openPanel'));
     this.addTranslatedCommand({ id: 'copy-code', editorCallback: editor => { void this.copyCode(editor); } }, () => this.t('copyCode'));
+    this.addTranslatedCommand({ id: 'selection-toolbar', editorCallback: editor => {
+      for (const toolbar of this.toolbars) if (toolbar.matches(editor)) toolbar.open();
+    } }, () => this.t('openSelectionToolbar'));
     this.ribbon = this.addRibbonIcon('highlighter', this.t('panelTitle'), () => { void this.openPanel(); });
     this.registerEvent(this.app.workspace.on('editor-menu', (menu, editor) => {
       for (const preset of this.settings.presets) menu.addItem(item => item.setTitle(this.t('applyPreset', { preset: this.presetLabel(preset) })).setIcon('highlighter').onClick(() => this.apply(editor, this.presetForAction(preset.id))));
@@ -73,8 +79,11 @@ export default class HighlightBoost extends Plugin {
       context.addChild(this.createReadingChild(element, context));
     }, 100);
     this.registerEvent(this.app.vault.on('modify', file => {
+      this.refreshPanels();
       for (const child of this.readingChildren) if (child.context.sourcePath === file.path) child.refresh();
     }));
+    this.registerEvent(this.app.vault.on('rename', () => this.refreshPanels()));
+    this.registerEvent(this.app.vault.on('delete', () => this.refreshPanels()));
   }
 
   get locale(): Locale { return resolveLocale(this.settings.language, getLanguage()); }
@@ -83,7 +92,12 @@ export default class HighlightBoost extends Plugin {
   presetLabel(preset: ConfiguredPreset): string { return presetName(preset, this.locale); }
   getPreset(id: string): ConfiguredPreset { return this.settings.presets.find(preset => preset.id === id) ?? this.settings.presets[0]!; }
   presetForAction(id: string): Preset { const preset = this.getPreset(id); return { ...preset, name: this.presetLabel(preset) }; }
-  applyColor(editor: Editor, color: Color): void { this.apply(editor, { ...colorPreset(color), name: this.colorLabel(color) }); }
+  applyColor(editor: Editor, color: Color, mode: 'text' | 'lines' = 'text'): void {
+    if (this.apply(editor, { ...colorPreset(color), name: this.colorLabel(color) }, mode)) {
+      this.settings.recentColors = [color, ...this.settings.recentColors.filter(item => item !== color)].slice(0, 3);
+      void this.saveSettings();
+    }
+  }
   chooseColor(editor: Editor): void {
     const picker = new ColorPicker(this, editor, () => this.colorPickers.delete(picker));
     this.colorPickers.add(picker);
@@ -115,13 +129,14 @@ export default class HighlightBoost extends Plugin {
       if (this.syntax) updates.push(this.syntax.refresh());
     }
     this.refreshPanels();
+    for (const toolbar of this.toolbars) toolbar.refresh();
     const snapshot = structuredClone(this.settings);
     const write = this.settingsWrites.catch(() => {}).then(() => this.saveData(snapshot));
     this.settingsWrites = write;
     return Promise.all([write, ...updates]).then(() => {});
   }
 
-  apply(editor: Editor, preset: Preset | null, mode: 'text' | 'lines' = 'text'): void {
+  apply(editor: Editor, preset: Preset | null, mode: 'text' | 'lines' = 'text'): boolean {
     try {
       const selections = editor.listSelections().map(selection => {
         const a = editor.posToOffset(selection.anchor), b = editor.posToOffset(selection.head);
@@ -129,7 +144,13 @@ export default class HighlightBoost extends Plugin {
       });
       const plan = planHighlight(editor.getValue(), selections, preset, mode);
       this.commitPlan(editor, plan);
-    } catch (error) { new Notice(errorMessage(error, this.locale)); }
+      return plan.changes.length > 0;
+    } catch (error) { new Notice(errorMessage(error, this.locale)); return false; }
+  }
+
+  updateItem(editor: Editor, item: HighlightItem, preset: Preset | null): void {
+    try { this.commitPlan(editor, planItemUpdate(editor.getValue(), item, preset)); }
+    catch (error) { new Notice(errorMessage(error, this.locale)); }
   }
 
   rebind(editor: Editor, item: HighlightItem): void {
@@ -182,6 +203,7 @@ export default class HighlightBoost extends Plugin {
   }
 
   onunload(): void {
+    for (const toolbar of this.toolbars) toolbar.destroy();
     for (const picker of this.colorPickers) picker.close();
     for (const child of this.readingChildren) child.unload();
   }
@@ -259,6 +281,13 @@ class HighlightSettings extends PluginSettingTab {
         await this.plugin.saveSettings();
       });
     });
+    new Setting(this.containerEl).setName(t('selectionToolbar')).setDesc(t('selectionToolbarHint')).addToggle(toggle => {
+      toggle.toggleEl.dataset.hbSetting = 'selectionToolbar';
+      toggle.setValue(this.plugin.settings.selectionToolbar).onChange(async value => {
+        this.plugin.settings.selectionToolbar = value;
+        await this.plugin.saveSettings();
+      });
+    });
     let defaults: HTMLSelectElement;
     new Setting(this.containerEl).setName(t('defaultPreset')).setDesc(t('defaultPresetHint')).addDropdown(dropdown => {
       defaults = dropdown.selectEl;
@@ -296,7 +325,7 @@ class HighlightSettings extends PluginSettingTab {
         });
     }
     new Setting(this.containerEl).setName(t('resetPresets')).addButton(button => button.setButtonText(t('reset')).onClick(async () => {
-      this.plugin.settings = normalizeSettings({ syntaxProvider: this.plugin.settings.syntaxProvider, language: this.plugin.settings.language });
+      this.plugin.settings = normalizeSettings({ ...this.plugin.settings, presets: undefined, defaultPreset: undefined });
       await this.plugin.saveSettings();
       this.display();
     }));

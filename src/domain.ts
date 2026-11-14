@@ -61,6 +61,7 @@ export interface ParsedDocument {
   blocks: CodeBlock[];
   highlights: ProseHighlight[];
   excluded: Span[];
+  prose: Span[];
 }
 export interface Change extends Span { insert: string; positions?: { starts: number[]; ends: number[] } }
 export interface EditPlan { changes: Change[]; selections: Span[] }

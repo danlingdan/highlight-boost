@@ -32,7 +32,7 @@ export function serializeMetadata(data: CodeMetadata): string {
 export function parseDocument(text: string): ParsedDocument {
   const tree = fromMarkdown(text, { extensions: [gfm()], mdastExtensions: [gfmFromMarkdown()] });
   const lines = sourceLines(text);
-  const result: ParsedDocument = { blocks: [], highlights: [], excluded: [] };
+  const result: ParsedDocument = { blocks: [], highlights: [], excluded: [], prose: [] };
   if (/^---\r?\n/.test(text)) {
     const end = /\r?\n(?:---|\.\.\.)\s*(?:\r?\n|$)/g;
     end.lastIndex = text.indexOf('\n') + 1;
@@ -44,6 +44,16 @@ export function parseDocument(text: string): ParsedDocument {
     const from = node.position?.start.offset;
     const to = node.position?.end.offset;
     if (from === undefined || to === undefined) return;
+    if ((node.type === 'paragraph' || node.type === 'heading' || node.type === 'tableCell') && node.children.length) {
+      const first = node.children[0]!.position!.start.offset!;
+      const last = node.children.at(-1)!.position!.end.offset!;
+      for (const line of lines) {
+        const prefix = line.text.match(/^(?:[ \t]*>[ \t]?)+/)?.[0].length ?? 0;
+        const callout = prefix ? line.text.slice(prefix).match(/^\[![^\]\r\n]+\][+-]?(?:[ \t]+|$)/)?.[0].length ?? 0 : 0;
+        const start = Math.max(first, line.from + prefix + callout), end = Math.min(last, line.to);
+        if (start < end) result.prose.push({ from: start, to: end });
+      }
+    }
     if (node.type === 'code') {
       result.excluded.push({ from, to });
       const first = lines[node.position!.start.line - 1]!;

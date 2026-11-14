@@ -1,6 +1,6 @@
 import { contains, emojis, overlaps, type Change, type CodeBlock, type CodeMark, type CodeMetadata, type EditPlan, type HighlightItem, type Preset, type Span } from './domain';
 import { logicalOffset, resolveMark } from './anchors';
-import { parseDocument, serializeMetadata, sourceLines } from './parsing';
+import { parseDocument, serializeMetadata } from './parsing';
 
 export function applyChanges(text: string, changes: Change[]): string {
   let result = text;
@@ -109,24 +109,33 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
   const codeSelections = new Map<CodeBlock, Span[]>();
   for (const original of selections) {
     let span = { ...original };
-    const block = parsed.blocks.find(item => contains(item, span) && item.lines.some(line => line.from <= span.from && span.from <= line.to));
-    if (block) {
-      if (mode === 'text' && span.from === span.to && preset) throw new Error('请先选择要标记的代码文本。');
+    for (const block of parsed.blocks) {
       if (!block.lines.length) continue;
-      const clipped = { from: Math.max(span.from, block.lines[0]!.from), to: Math.min(span.to, block.lines.at(-1)!.to) };
+      const content = { from: block.lines[0]!.from, to: block.lines.at(-1)!.to };
+      const cursor = span.from === span.to && block.lines.some(line => line.from <= span.from && span.from <= line.to);
+      if (!cursor && !(span.from < span.to && (overlaps(content, span) || (content.from === content.to && span.from <= content.from && content.to < span.to)))) continue;
+      if (mode === 'text' && cursor && preset) throw new Error('请先选择要标记的代码文本。');
+      const clipped = { from: Math.max(span.from, content.from), to: Math.min(span.to, content.to) };
+      if (mode === 'text' && clipped.from === clipped.to && !cursor) continue;
       codeSelections.set(block, [...(codeSelections.get(block) ?? []), clipped]);
-      continue;
     }
     if (span.from === span.to) {
       const existing = parsed.highlights.find(item => item.from <= span.from && span.from <= item.to);
       if (!existing) continue;
       span = { ...existing.content };
     }
-    for (const line of sourceLines(text)) {
-      const part = { from: Math.max(span.from, line.from), to: Math.min(span.to, line.to) };
+    for (const range of parsed.prose) {
+      const part = { from: Math.max(span.from, range.from), to: Math.min(span.to, range.to) };
       if (part.from >= part.to) continue;
-      if (parsed.excluded.some(item => overlaps(item, part))) throw new Error('请分别选择正文或单个代码块中的内容。');
-      prose.push(part);
+      let fragments = [part];
+      for (const excluded of parsed.excluded) fragments = fragments.flatMap(fragment => {
+        if (!overlaps(fragment, excluded)) return [fragment];
+        return [
+          { from: fragment.from, to: Math.min(fragment.to, excluded.from) },
+          { from: Math.max(fragment.from, excluded.to), to: fragment.to },
+        ].filter(fragment => fragment.from < fragment.to);
+      });
+      prose.push(...fragments);
     }
   }
   for (const [block, spans] of codeSelections) {
@@ -151,12 +160,12 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
   for (const span of prose.sort((a, b) => a.from - b.from)) {
     const affected = proseChange(text, span, preset);
     const group = groups.at(-1);
-    const previous = group && proseChange(text, { from: group[0]!.from, to: group.at(-1)!.to }, preset);
+    const previous = group && proseChange(text, { from: group[0]!.from, to: Math.max(...group.map(span => span.to)) }, preset);
     if (group && previous && affected.from <= previous.to) group.push(span);
     else groups.push([span]);
   }
   for (const group of groups) {
-    changes.push(proseChange(text, { from: group[0]!.from, to: group.at(-1)!.to }, preset, group));
+    changes.push(proseChange(text, { from: group[0]!.from, to: Math.max(...group.map(span => span.to)) }, preset, group));
   }
   const ordered = changes.sort((a, b) => a.from - b.from);
   function map(pos: number, association: 'starts' | 'ends'): number {

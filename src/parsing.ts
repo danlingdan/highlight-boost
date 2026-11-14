@@ -2,7 +2,7 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
 import type { Nodes } from 'mdast';
-import { colors, emojis, type CodeBlock, type CodeMetadata, type InlineMetadata, type ParsedDocument, type SourceLine } from './domain';
+import { colors, emojis, type CodeBlock, type CodeMetadata, type InlineMetadata, type ProseMetadata, type ParsedDocument, type SourceLine } from './domain';
 
 export function sourceLines(text: string): SourceLine[] {
   const result: SourceLine[] = [];
@@ -29,8 +29,23 @@ export function serializeMetadata(data: CodeMetadata): string {
   return `%%hb:${JSON.stringify(data).replaceAll('%', '\\u0025')}%%`;
 }
 
+function semanticJson(data: unknown): string {
+  return JSON.stringify(data).replace(/[%|`]/g, character => `\\u${character.charCodeAt(0).toString(16).padStart(4, '0')}`);
+}
+
 export function serializeInlineMetadata(data: InlineMetadata): string {
-  return `%%hbi:${JSON.stringify(data).replaceAll('%', '\\u0025')}%%`;
+  return `%%hbi:${semanticJson(data)}%%`;
+}
+
+export function serializeProseMetadata(data: ProseMetadata): string {
+  return `%%hbp:${semanticJson(data)}%%`;
+}
+
+function isProseMetadata(value: unknown): value is ProseMetadata {
+  if (!value || typeof value !== 'object') return false;
+  const data = value as Partial<ProseMetadata>;
+  return data.v === 1 && typeof data.id === 'string' && data.id.length > 0 &&
+    typeof data.semantic === 'string' && typeof data.label === 'string';
 }
 
 function isInlineMetadata(value: unknown): value is InlineMetadata {
@@ -146,7 +161,18 @@ export function parseDocument(text: string): ParsedDocument {
       const body = match[1]!;
       const color = colors.find(key => emojis[key] && body.startsWith(emojis[key]!)) ?? 'default';
       const content = { from: from + 2 + (emojis[color]?.length ?? 0), to: to - 2 };
-      result.highlights.push({ from, to, content, color, quote: text.slice(content.from, content.to) });
+      const highlight: ParsedDocument['highlights'][number] = { from, to, content, color, quote: text.slice(content.from, content.to) };
+      const comment = text.slice(to).match(/^%%hbp:(.+?)%%/);
+      if (comment) {
+        try {
+          const metadata: unknown = JSON.parse(comment[1]!);
+          if (isProseMetadata(metadata)) {
+            highlight.metadata = metadata;
+            highlight.metadataSpan = { from: to, to: to + comment[0].length };
+          }
+        } catch { /* 未闭合的注释继续作为源文本编辑。 */ }
+      }
+      result.highlights.push(highlight);
     }
   }
   return result;

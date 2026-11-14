@@ -30,6 +30,7 @@ export interface CodeMark {
 }
 export interface CodeMetadata { v: 1; blockId: string; marks: CodeMark[] }
 export interface InlineMetadata { v: 1; id: string; color: Color; semantic: string; label: string }
+export type ProseMetadata = Omit<InlineMetadata, 'color'>;
 export interface InlineCode extends Span {
   content: Span;
   text: string;
@@ -50,12 +51,15 @@ export interface ProseHighlight extends Span {
   content: Span;
   color: Color;
   quote: string;
+  metadata?: ProseMetadata;
+  metadataSpan?: Span;
 }
 export interface HighlightItem extends Span {
   id: string;
   kind: 'prose' | 'inline-code' | 'code-line' | 'code-range';
   color: Color;
   label: string;
+  semantic?: string;
   quote: string;
   language?: string;
   line?: number;

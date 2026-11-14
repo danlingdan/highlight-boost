@@ -48,11 +48,12 @@ export function resolveMark(block: CodeBlock, mark: CodeMark): { span: Span; sta
 export function collectItems(text: string): HighlightItem[] {
   const parsed = parseDocument(text);
   const items: HighlightItem[] = parsed.highlights.map(highlight => ({
-    ...highlight, id: `prose:${highlight.from}`, kind: 'prose', label: colorLabels[highlight.color], status: 'resolved',
+    ...highlight, ...highlight.content, id: highlight.metadata ? `prose:${highlight.metadata.id}:${highlight.from}` : `prose:${highlight.from}`, kind: 'prose',
+    label: highlight.metadata?.label ?? colorLabels[highlight.color], semantic: highlight.metadata?.semantic, markId: highlight.metadata?.id, status: 'resolved',
   }));
   for (const inline of parsed.inlines) if (inline.metadata) items.push({
     ...inline.content, id: `inline:${inline.metadata.id}:${inline.from}`, kind: 'inline-code',
-    color: inline.metadata.color, label: inline.metadata.label, quote: inline.text,
+    color: inline.metadata.color, label: inline.metadata.label, semantic: inline.metadata.semantic, markId: inline.metadata.id, quote: inline.text,
     line: text.slice(0, inline.from).split('\n').length, status: 'resolved',
   });
   for (const block of parsed.blocks) for (const mark of block.metadata?.marks ?? []) {
@@ -60,7 +61,7 @@ export function collectItems(text: string): HighlightItem[] {
     const from = sourceOffset(block, resolved.span.from);
     items.push({
       id: `${block.metadata!.blockId}:${mark.id}:${block.fenceFrom}`, kind: mark.kind === 'lines' ? 'code-line' : 'code-range',
-      from, to: sourceOffset(block, resolved.span.to), color: mark.color, label: mark.label,
+      from, to: sourceOffset(block, resolved.span.to), color: mark.color, label: mark.label, semantic: mark.semantic,
       quote: mark.quote, language: block.language, status: resolved.status,
       line: block.lines.findIndex(line => from <= line.to) + 1,
       blockFrom: block.fenceFrom, blockId: block.metadata!.blockId, markId: mark.id,

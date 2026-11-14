@@ -6,6 +6,7 @@
     checks.push({ name, passed: true });
   };
   const tick = () => new Promise(resolve => setTimeout(resolve, 150));
+  const visibleSource = value => value.replace(/%%hbp:.+?%%/g, '');
   await app.plugins.loadManifests();
   await app.plugins.setEnable(true);
   await app.plugins.enablePlugin('highlight-boost');
@@ -28,7 +29,7 @@
   const a = source.indexOf('one'), b = source.indexOf('two');
   select([[a, a + 3], [b, b + 3]]);
   app.commands.executeCommandById('highlight-boost:apply-question');
-  assert('multi-prose-ranges', editor.getValue().includes('==🔴one== ==🟡gap== ==🔴two=='));
+  assert('multi-prose-ranges', visibleSource(editor.getValue()).includes('==🔴one== ==🟡gap== ==🔴two=='));
   assert('multi-prose-selection', editor.listSelections().length === 2);
   editor.undo(); assert('multi-prose-undo', editor.getValue() === source);
   editor.redo();
@@ -70,7 +71,7 @@
   at = editor.getValue().indexOf('表格字段');
   select([[at, at + 4]]);
   app.commands.executeCommandById('highlight-boost:apply-important');
-  assert('table-structure-preserved', editor.getValue().includes('| ==🟡表格字段== | **强调** |'));
+  assert('table-structure-preserved', visibleSource(editor.getValue()).includes('| ==🟡表格字段== | **强调** |'));
 
   const beforeInput = editor.getValue();
   at = beforeInput.lastIndexOf('const message = "') + 'const message = "'.length;

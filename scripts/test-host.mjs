@@ -11,7 +11,7 @@ if (!existsSync(join(resources, 'obsidian.asar'))) {
 const environment = { ...process.env };
 delete environment.ELECTRON_RUN_AS_NODE;
 const single = process.argv.find(argument => argument.startsWith('--mode='))?.slice(7);
-const available = ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart', 'shiki', 'languages-shiki', 'shiki-live-077', 'shiki-live-080', 'embedded', 'inline', 'inline-restart'];
+const available = ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart', 'shiki', 'languages-shiki', 'shiki-live-077', 'shiki-live-080', 'embedded', 'inline', 'inline-restart', 'prose', 'prose-restart'];
 if (single && !available.includes(single)) throw new Error(`Unknown host scenario: ${single}`);
 const modes = single ? [single] : process.argv.includes('--shiki') ? ['shiki', 'languages-shiki'] : process.argv.includes('--languages-shiki') ? ['languages-shiki'] : process.argv.includes('--advanced') ? ['advanced'] : process.argv.includes('--languages') ? ['languages'] : process.argv.includes('--layout') ? ['layout'] : process.argv.includes('--settings') ? ['settings'] : ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart', 'embedded', 'inline', 'inline-restart'];
 for (const mode of modes) {

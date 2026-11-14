@@ -39,7 +39,7 @@
   assert('inline-remove-restores-source', editor.getValue() === source);
   select(source.indexOf('前文'), source.indexOf('后文') + 2);
   app.commands.executeCommandById('highlight-boost:apply-reference');
-  assert('inline-mixed-prose-transaction', editor.getValue().includes('==🔵前文== `a==b`%%hbi:') && editor.getValue().includes('==🔵后文=='));
+  assert('inline-mixed-prose-transaction', editor.getValue().replace(/%%hbp:.+?%%/g, '').includes('==🔵前文== `a==b`%%hbi:') && editor.getValue().includes('==🔵后文=='));
   editor.undo(); assert('inline-mixed-single-undo', editor.getValue() === source);
   select(source.indexOf('a==b'));
   app.commands.executeCommandById('highlight-boost:apply-question');

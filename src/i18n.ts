@@ -3,6 +3,11 @@ import { colorLabels, presets, type Color, type Preset } from './domain';
 export type Locale = 'zh' | 'en';
 export type Language = 'auto' | Locale;
 export const zh = {
+  selectionToolbar: '选区面板', selectionToolbarHint: '选中文本后显示语义和颜色操作。', openSelectionToolbar: '打开选区面板',
+  selectionContext: '{context} · {count} 处选区', mixedSelection: '混合内容', inlineCode: '行内代码',
+  blockSelection: '代码块 {block} · 第 {from}—{to} 行', textMode: '文本', lineMode: '整行', recentColors: '最近颜色',
+  close: '关闭', searchHighlights: '搜索当前笔记重点', allTypes: '全部类型', allSemantics: '全部语义', noMatches: '没有匹配的重点。',
+  changeSemantic: '更改语义', removeItem: '移除此条标注',
   applyPreset: '标记为{preset}', linesPreset: '代码行：{preset}', colorCommand: '高亮颜色：{color}',
   chooseColor: '选择高亮颜色', remove: '移除所选标注', openPanel: '打开当前笔记重点', copyCode: '复制当前代码块',
   panelTitle: '当前笔记重点', markLines: '标记所选代码行',
@@ -26,6 +31,11 @@ export const zh = {
 } as const;
 export type Message = keyof typeof zh;
 export const en: Record<Message, string> = {
+  selectionToolbar: 'Selection toolbar', selectionToolbarHint: 'Show semantic and color actions when text is selected.', openSelectionToolbar: 'Open selection toolbar',
+  selectionContext: '{context} · {count} selections', mixedSelection: 'Mixed content', inlineCode: 'Inline code',
+  blockSelection: 'Code block {block} · lines {from}–{to}', textMode: 'Text', lineMode: 'Whole lines', recentColors: 'Recent colors',
+  close: 'Close', searchHighlights: 'Search note highlights', allTypes: 'All types', allSemantics: 'All semantics', noMatches: 'No matching highlights.',
+  changeSemantic: 'Change semantic preset', removeItem: 'Remove this annotation',
   applyPreset: 'Mark as {preset}', linesPreset: 'Code lines: {preset}', colorCommand: 'Highlight color: {color}',
   chooseColor: 'Choose highlight color', remove: 'Remove selected annotations', openPanel: 'Open note highlights', copyCode: 'Copy current code block',
   panelTitle: 'Note highlights', markLines: 'Mark selected code lines',

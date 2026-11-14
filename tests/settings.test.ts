@@ -2,6 +2,13 @@ import { describe, expect, it } from 'vitest';
 import { normalizeSettings } from '../src/settings';
 
 describe('设置迁移与校验', () => {
+  it('选区面板默认开启，最近颜色去重并保留三种', () => {
+    expect(normalizeSettings(null).selectionToolbar).toBe(true);
+    const result = normalizeSettings({ selectionToolbar: false, recentColors: ['blue', 'blue', 'bad', 'red', 'green', 'yellow'] });
+    expect(result.selectionToolbar).toBe(false);
+    expect(result.recentColors).toEqual(['blue', 'red', 'green']);
+    expect(normalizeSettings(result)).toEqual(result);
+  });
   it('旧配置默认跟随 Obsidian，校验语言并保持规范化一致', () => {
     expect(normalizeSettings({ schemaVersion: 1 }).language).toBe('auto');
     expect(normalizeSettings({ language: 'en' }).language).toBe('en');

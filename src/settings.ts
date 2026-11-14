@@ -9,6 +9,8 @@ export interface Settings {
   presets: ConfiguredPreset[];
   syntaxProvider: 'native' | 'shiki';
   language: Language;
+  selectionToolbar: boolean;
+  recentColors: Color[];
 }
 
 function record(value: unknown): Record<string, unknown> {
@@ -32,5 +34,7 @@ export function normalizeSettings(value: unknown): Settings {
     presets: normalized,
     syntaxProvider: input.syntaxProvider === 'shiki' ? 'shiki' : 'native',
     language: input.language === 'zh' || input.language === 'en' ? input.language : 'auto',
+    selectionToolbar: input.selectionToolbar !== false,
+    recentColors: Array.isArray(input.recentColors) ? [...new Set(input.recentColors.filter((color): color is Color => colors.includes(color as Color)))].slice(0, 3) : [],
   };
 }

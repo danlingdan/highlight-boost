@@ -19,6 +19,16 @@ function fixture() {
 }
 
 describe('metadata folding', () => {
+  it('正文语义只折叠相邻注释并保留原生高亮', () => {
+    const source = '正文';
+    const doc = applyChanges(source, planHighlight(source, [{ from: 0, to: 2 }], presets[0]!).changes);
+    const highlight = parseDocument(doc).highlights[0]!;
+    const state = EditorState.create({ doc, selection: EditorSelection.cursor(highlight.content.from), extensions: [live, folding] });
+    const ranges: number[][] = [];
+    state.field(folding).between(0, state.doc.length, (from, to) => { ranges.push([from, to]); });
+    expect(ranges).toEqual([[highlight.metadataSpan!.from, highlight.metadataSpan!.to]]);
+    expect(state.update({ effects: switchMode.of(false) }).state.field(folding).size).toBe(0);
+  });
   it('将行内元数据单独折叠，保留代码内容范围', () => {
     const source = '前文 `a==b` 后文';
     const doc = applyChanges(source, planHighlight(source, [{ from: source.indexOf('a==b'), to: source.indexOf('a==b') + 1 }], presets[0]!).changes);

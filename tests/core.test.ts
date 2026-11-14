@@ -6,6 +6,7 @@ import { presets, type Span } from '../src/domain';
 
 const important = presets[0]!;
 const question = presets[1]!;
+const withoutSemantic = (text: string) => text.replace(/%%hbp:.+?%%/g, '');
 function mark(text: string, selection: Span, mode: 'text' | 'lines' = 'text') {
   return applyChanges(text, planHighlight(text, [selection], question, mode).changes);
 }
@@ -42,7 +43,7 @@ describe('prose transformations', () => {
     const text = '==🟡alpha beta gamma==';
     const from = text.indexOf('beta');
     const output = mark(text, { from, to: from + 4 });
-    expect(output).toBe('==🟡alpha== ==🔴beta== ==🟡gamma==');
+    expect(withoutSemantic(output)).toBe('==🟡alpha== ==🔴beta== ==🟡gamma==');
   });
   it('removes only the selected part', () => {
     const text = '==🟡alpha beta gamma==';
@@ -52,7 +53,7 @@ describe('prose transformations', () => {
   });
   it('keeps Markdown inside selected prose', () => {
     const text = '**bold** and [[Note]]';
-    expect(mark(text, { from: 0, to: text.length })).toBe('==🔴**bold** and [[Note]]==');
+    expect(withoutSemantic(mark(text, { from: 0, to: text.length }))).toBe('==🔴**bold** and [[Note]]==');
   });
   it('handles disjoint multi-selections without recoloring the gap', () => {
     const text = '==🟡alpha beta gamma==';

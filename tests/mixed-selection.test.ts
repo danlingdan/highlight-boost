@@ -4,6 +4,7 @@ import { parseDocument } from '../src/parsing';
 import { presets } from '../src/domain';
 
 const preset = presets[1]!;
+const withoutSemantic = (text: string) => text.replace(/%%hbp:.+?%%/g, '');
 function whole(text: string, mode: 'text' | 'lines' = 'text') {
   const plan = planHighlight(text, [{ from: 0, to: text.length }], preset, mode);
   return { plan, output: applyChanges(text, plan.changes) };
@@ -26,7 +27,7 @@ describe('连续跨区域选区', () => {
   it('保留标题、任务列表、引用与表格结构', () => {
     const text = '# 标题 #\n\n- [x] 任务\n\n> 引用\n> 第二行\n\n| 字段 | 含义 |\n| --- | --- |\n| 名称 | **值** |';
     const { output } = whole(text);
-    expect(output).toBe('# ==🔴标题== #\n\n- [x] ==🔴任务==\n\n> ==🔴引用==\n> ==🔴第二行==\n\n| ==🔴字段== | ==🔴含义== |\n| --- | --- |\n| ==🔴名称== | ==🔴**值**== |');
+    expect(withoutSemantic(output)).toBe('# ==🔴标题== #\n\n- [x] ==🔴任务==\n\n> ==🔴引用==\n> ==🔴第二行==\n\n| ==🔴字段== | ==🔴含义== |\n| --- | --- |\n| ==🔴名称== | ==🔴**值**== |');
   });
 
   it('跨 callout 代码块时保持容器及逻辑代码', () => {
@@ -44,7 +45,7 @@ describe('连续跨区域选区', () => {
     const text = '---\ntitle: 标题\n---\n\n前文 `code()` 后文 %%备注%% 尾文\n\n<div>HTML</div>\n\n![图片](file.png)';
     const { output } = whole(text);
     expect(output.startsWith('---\ntitle: 标题\n---')).toBe(true);
-    expect(output).toContain('==🔴前文== `code()`%%hbi:');
+    expect(withoutSemantic(output)).toContain('==🔴前文== `code()`%%hbi:');
     expect(parseDocument(output).inlines[0]?.metadata?.color).toBe('red');
     expect(parseDocument(output).highlights.map(item => item.quote)).toEqual(['前文', '后文', '尾文']);
     expect(output).toContain('<div>HTML</div>');
@@ -66,7 +67,7 @@ describe('连续跨区域选区', () => {
     const text = 'alpha beta gamma';
     const plan = planHighlight(text, [{ from: 0, to: text.length }, { from: 0, to: 5 }], preset);
     const output = applyChanges(text, plan.changes);
-    expect(output).toBe('==🔴alpha beta gamma==');
+    expect(withoutSemantic(output)).toBe('==🔴alpha beta gamma==');
     expect(plan.selections.map(span => output.slice(span.from, span.to))).toEqual([text, 'alpha']);
   });
 });

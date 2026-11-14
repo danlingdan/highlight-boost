@@ -1,6 +1,6 @@
-import { editorLivePreviewField, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, SuggestModal, type Editor, type WorkspaceLeaf } from 'obsidian';
+import { editorLivePreviewField, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, SuggestModal, type Command, type Editor, type WorkspaceLeaf } from 'obsidian';
 import { collectItems } from './anchors';
-import { colorLabels, colorPreset, colors, presets, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
+import { colorLabels, colorPreset, colors, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
 import { parseDocument, sourceLines } from './parsing';
 import { highlightExtension } from './rendering';
@@ -8,21 +8,30 @@ import { editorHistory } from './history';
 import { createMetadataFolding } from './metadata-folding';
 import { ReadingHighlights } from './reading-view';
 import { composingState, compositionEvents } from './composition';
+import { normalizeSettings, type Settings } from './settings';
 
 const VIEW = 'highlight-boost';
-interface Settings { schemaVersion: 1; defaultPreset: string }
 
 export default class HighlightBoost extends Plugin {
-  settings: Settings = { schemaVersion: 1, defaultPreset: 'important' };
+  settings: Settings = normalizeSettings(null);
+  private settingsWrites: Promise<void> = Promise.resolve();
+  private presetCommands: { id: string; lines: boolean; command: Command }[] = [];
   private readingChildren = new Set<ReadingHighlights>();
   async onload(): Promise<void> {
-    this.settings = { ...this.settings, ...await this.loadData() };
+    const loaded: unknown = await this.loadData();
+    this.settings = normalizeSettings(loaded);
+    if (JSON.stringify(loaded) !== JSON.stringify(this.settings)) await this.saveSettings();
     this.registerEditorExtension([composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField)]);
     this.registerView(VIEW, leaf => new HighlightsView(leaf, this));
     this.addSettingTab(new HighlightSettings(this));
-    for (const preset of presets) {
-      this.addCommand({ id: `apply-${preset.id}`, name: `标记为${preset.name}`, editorCallback: editor => this.apply(editor, preset) });
-      this.addCommand({ id: `lines-${preset.id}`, name: `代码行：${preset.name}`, editorCallback: editor => this.apply(editor, preset, 'lines') });
+    for (const preset of this.settings.presets) {
+      for (const lines of [false, true]) {
+        const command = this.addCommand({
+          id: `${lines ? 'lines' : 'apply'}-${preset.id}`, name: `${lines ? '代码行：' : '标记为'}${preset.name}`,
+          editorCallback: editor => this.apply(editor, this.getPreset(preset.id), lines ? 'lines' : 'text'),
+        });
+        this.presetCommands.push({ id: preset.id, lines, command });
+      }
     }
     for (const color of colors) this.addCommand({
       id: `color-${color}`, name: `高亮颜色：${colorLabels[color]}`,
@@ -34,7 +43,7 @@ export default class HighlightBoost extends Plugin {
     this.addCommand({ id: 'copy-code', name: '复制当前代码块', editorCallback: editor => { void this.copyCode(editor); } });
     this.addRibbonIcon('highlighter', '当前笔记重点', () => { void this.openPanel(); });
     this.registerEvent(this.app.workspace.on('editor-menu', (menu, editor) => {
-      for (const preset of presets) menu.addItem(item => item.setTitle(`标记为${preset.name}`).setIcon('highlighter').onClick(() => this.apply(editor, preset)));
+      for (const preset of this.settings.presets) menu.addItem(item => item.setTitle(`标记为${preset.name}`).setIcon('highlighter').onClick(() => this.apply(editor, preset)));
       menu.addSeparator();
       menu.addItem(item => item.setTitle('选择高亮颜色…').setIcon('palette').onClick(() => new ColorPicker(this, editor).open()));
       menu.addItem(item => item.setTitle('标记所选代码行').setIcon('list-ordered').onClick(() => this.apply(editor, this.defaultPreset(), 'lines')));
@@ -52,7 +61,17 @@ export default class HighlightBoost extends Plugin {
     }));
   }
 
-  defaultPreset(): Preset { return presets.find(preset => preset.id === this.settings.defaultPreset) ?? presets[0]!; }
+  getPreset(id: string): Preset { return this.settings.presets.find(preset => preset.id === id) ?? this.settings.presets[0]!; }
+  defaultPreset(): Preset { return this.getPreset(this.settings.defaultPreset); }
+
+  saveSettings(): Promise<void> {
+    this.settings = normalizeSettings(this.settings);
+    for (const entry of this.presetCommands) entry.command.name = `${entry.lines ? '代码行：' : '标记为'}${this.getPreset(entry.id).name}`;
+    const snapshot = structuredClone(this.settings);
+    const write = this.settingsWrites.catch(() => {}).then(() => this.saveData(snapshot));
+    this.settingsWrites = write;
+    return write;
+  }
 
   apply(editor: Editor, preset: Preset | null, mode: 'text' | 'lines' = 'text'): void {
     try {
@@ -167,12 +186,32 @@ class HighlightSettings extends PluginSettingTab {
   display(): void {
     this.containerEl.empty();
     new Setting(this.containerEl).setName('默认语义').setDesc('“标记所选代码行”使用的语义。').addDropdown(dropdown => {
-      for (const preset of presets) dropdown.addOption(preset.id, preset.name);
+      for (const preset of this.plugin.settings.presets) dropdown.addOption(preset.id, preset.name);
       dropdown.setValue(this.plugin.settings.defaultPreset).onChange(async value => {
         this.plugin.settings.defaultPreset = value;
-        await this.plugin.saveData(this.plugin.settings);
+        await this.plugin.saveSettings();
       });
     });
+    this.containerEl.createEl('h3', { text: '语义预设' });
+    this.containerEl.createEl('p', { text: '名称和颜色用于后续标注。代码中已有标注保留创建时的语义与颜色。正文采用原生颜色格式。' });
+    for (const preset of this.plugin.settings.presets) {
+      new Setting(this.containerEl).setName(preset.name).addText(text => text
+        .setPlaceholder(preset.name).setValue(preset.name).onChange(async value => {
+          this.plugin.getPreset(preset.id).name = value;
+          await this.plugin.saveSettings();
+        })).addDropdown(dropdown => {
+          for (const color of colors) dropdown.addOption(color, colorLabels[color]);
+          dropdown.setValue(preset.color).onChange(async value => {
+            this.plugin.getPreset(preset.id).color = value as Color;
+            await this.plugin.saveSettings();
+          });
+        });
+    }
+    new Setting(this.containerEl).setName('恢复默认预设').addButton(button => button.setButtonText('恢复默认').onClick(async () => {
+      this.plugin.settings = normalizeSettings(null);
+      await this.plugin.saveSettings();
+      this.display();
+    }));
     this.containerEl.createEl('p', { text: '在快捷键中为“标记为重点”“代码行：疑问”等命令配置按键。' });
   }
 }

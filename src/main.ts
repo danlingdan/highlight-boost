@@ -10,6 +10,9 @@ import { ReadingHighlights } from './reading-view';
 import { composingState, compositionEvents } from './composition';
 import { normalizeSettings, type Settings } from './settings';
 import { SyntaxService } from './syntax/service';
+import { inlineExcerpt } from './inline-rendering';
+import { EditorSelection, Transaction } from '@codemirror/state';
+import { EditorView } from '@codemirror/view';
 
 const VIEW = 'highlight-boost';
 
@@ -108,7 +111,9 @@ export default class HighlightBoost extends Plugin {
 
   private commitPlan(editor: Editor, plan: EditPlan): void {
       if (!plan.changes.length) { new Notice('请选择文本，或将光标放入已有高亮。'); return; }
-      const updatedLines = sourceLines(applyChanges(editor.getValue(), plan.changes));
+      const before = editor.getValue();
+      const updated = applyChanges(before, plan.changes);
+      const updatedLines = sourceLines(updated);
       const position = (offset: number) => {
         const line = [...updatedLines].reverse().find(line => line.from <= offset)!;
         return { line: line.number - 1, ch: offset - line.from };
@@ -117,6 +122,19 @@ export default class HighlightBoost extends Plugin {
         changes: plan.changes.map(change => ({ from: editor.offsetToPos(change.from), to: editor.offsetToPos(change.to), text: change.insert })),
         selections: plan.selections.map(span => ({ from: position(span.from), to: position(span.to) })),
       }, 'highlight-boost');
+      if (updated !== before && editor.getValue() === before) {
+        const leaf = this.app.workspace.getLeavesOfType('markdown').find(leaf => leaf.view instanceof MarkdownView && leaf.view.editor === editor);
+        const element = leaf?.view.containerEl.querySelector<HTMLElement>('.cm-editor');
+        const view = element && EditorView.findFromDOM(element);
+        if (view && view.state.doc.toString() === before) {
+          // 表格单元格过滤器处理原生输入；标注在源文档中应用已生成的变更。
+          view.dispatch({
+            changes: plan.changes.map(change => ({ from: change.from, to: change.to, insert: change.insert })),
+            selection: EditorSelection.create(plan.selections.map(span => EditorSelection.range(span.from, span.to))),
+            annotations: Transaction.userEvent.of('highlight-boost'), filter: false,
+          });
+        }
+      }
       this.refreshPanels();
   }
 
@@ -170,7 +188,7 @@ class HighlightsView extends ItemView {
   private card(view: MarkdownView, item: HighlightItem): void {
     const card = this.contentEl.createDiv({ cls: `hb-card hb-${item.color}` });
     const jump = card.createEl('button', { text: item.quote || '空行', cls: item.kind === 'prose' ? 'hb-quote' : 'hb-quote hb-code-quote' });
-    const info = item.kind === 'prose' ? '正文' : `${item.language || '代码'} · 第 ${item.line} 行`;
+    const info = item.kind === 'prose' ? '正文' : item.kind === 'inline-code' ? `行内代码 · 第 ${item.line} 行` : `${item.language || '代码'} · 第 ${item.line} 行`;
     card.createEl('small', { text: `${item.label} · ${info}${item.status === 'resolved' ? '' : ' · 待重新定位'}` });
     this.registerDomEvent(jump, 'click', () => {
       if (item.status !== 'resolved') { new Notice('原内容已变化，请重新选择目标。'); return; }
@@ -180,14 +198,14 @@ class HighlightsView extends ItemView {
       view.editor.scrollIntoView({ from, to }, true);
       view.editor.focus();
     });
-    if (item.kind !== 'prose') {
+    if (item.kind === 'code-line' || item.kind === 'code-range') {
       const rebind = card.createEl('button', { text: '绑定到当前选区', cls: 'hb-rebind' });
       rebind.title = '在该代码块中选择新的位置，再点击绑定。';
       this.registerDomEvent(rebind, 'click', () => this.plugin.rebind(view.editor, item));
     }
     const copy = card.createEl('button', { text: '复制摘录', cls: 'hb-copy-excerpt' });
     this.registerDomEvent(copy, 'click', () => {
-      const quote = item.kind === 'prose' ? `> ${item.quote}` : `\`\`\`${item.language}\n${item.quote}\n\`\`\``;
+      const quote = item.kind === 'prose' ? `> ${item.quote}` : item.kind === 'inline-code' ? inlineExcerpt(item.quote) : `\`\`\`${item.language}\n${item.quote}\n\`\`\``;
       void navigator.clipboard.writeText(`${quote}\n\n来源：[[${view.file!.path}]] · ${item.label}`);
     });
   }

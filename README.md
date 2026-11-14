@@ -39,6 +39,8 @@
 
 侧栏显示标题链与可展开的代码上下文。摘录包含精确内容、来源链接、语义和代码行号；代码中的反引号围栏可完整保留。从阅读视图点击条目后进入 Live Preview，并选中对应源范围。
 
+高亮工作台支持当前笔记、目录、全库与集合范围，组合类型、语义、颜色、语言及路径筛选。集合随配置保存，文件和目录改名后更新来源；四种摘录模板可生成带来源的笔记。
+
 ```sh
 pnpm install --frozen-lockfile
 pnpm check
@@ -47,6 +49,6 @@ pnpm prepare:vault
 
 构建生成 `main.js`。将它与 `manifest.json`、`styles.css` 放入测试库的插件目录，即可加载原型。`prepare:vault` 在项目内创建 `.test-vault` 并复制原型及样例。
 
-[桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [最新验收](docs/verification/phase-d.md) · [v1 格式](docs/formats/README.md)
+[桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [最新验收](docs/verification/phase-e.md) · [v1 格式](docs/formats/README.md)
 
-阶段 D 的首个可用版本已完成 P01—P09 验收，v1 标注格式已冻结。116 项逻辑/DOM/引擎测试和 405 项宿主检查通过，当前提供源码及内部构建。下一阶段接入全库增量索引、目录范围、集合和摘录笔记。
+阶段 E 的全库检索、集合与摘录已完成，v1 标注格式保持稳定。127 项逻辑/DOM/引擎测试和 456 项宿主检查通过，当前提供源码及内部构建。下一阶段接入批注、代码展示设置和导入迁移。

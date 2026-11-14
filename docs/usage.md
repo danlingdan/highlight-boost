@@ -1,5 +1,11 @@
 # 桌面操作说明
 
+## 代码展示
+
+设置 → Highlight Boost → 代码展示，可调整标题、逻辑行号、起始编号、字体、长行换行和整块折叠。阅读视图和内置 Shiki 的 Live Preview 使用统一标题栏；编辑器原文显示行号与 diff 背景，使用原生命令折叠。点击侧栏条目会展开目标。
+
+diff 标题栏提供“复制原始 diff”和“复制变更片段”。后者输出新增行与上下文，移除删除行和补丁头。整块折叠时仍可复制。围栏覆盖参数及样例见 [代码展示与 diff](formats/code-display.md)。
+
 ## 加载当前构建
 
 构建后，将 `main.js`、`manifest.json` 和 `styles.css` 放入测试笔记库的 `.obsidian/plugins/highlight-boost/`，在第三方插件中启用 Highlight Boost。项目内可运行 `pnpm prepare:vault` 准备隔离测试库。

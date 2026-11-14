@@ -117,9 +117,9 @@
   const scroller = view.containerEl.querySelector('.markdown-preview-view');
   scroller.scrollTop = 0;
   scroller.dispatchEvent(new Event('scroll'));
-  for (let i = 0; i < 40 && !view.containerEl.querySelector('pre .hb-text'); i++) await tick();
-  assert('reading-code-decoration', Boolean(view.containerEl.querySelector('pre .hb-text')), { state: view.getState(), pre: view.containerEl.querySelectorAll('pre').length, text: view.containerEl.querySelector('pre')?.outerHTML, saved: (await app.vault.read(file)).includes('%%hb:') });
-  const code = Array.from(view.containerEl.querySelectorAll('pre code')).find(code => code.textContent.includes('memcpy'));
+  for (let i = 0; i < 40 && ![...scroller.querySelectorAll('pre .hb-text')].some(mark=>mark.textContent === 'source'); i++) await tick();
+  assert('reading-code-decoration', [...scroller.querySelectorAll('pre .hb-text')].some(mark=>mark.textContent === 'source'));
+  const code = Array.from(scroller.querySelectorAll('pre code')).find(code => code.textContent.includes('memcpy'));
   assert('reading-code-preserves-text', code.textContent === 'void copy(char *dst, const char *src, size_t n) {\n  memcpy(dst, source, n);\n}\n', code.textContent);
   assert('reading-token-preserved', Boolean(code.querySelector('.token')));
 

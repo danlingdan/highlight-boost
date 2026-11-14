@@ -85,8 +85,8 @@
   app.workspace.setActiveLeaf(leaf, { focus: true });
   const scroller = view.containerEl.querySelector('.markdown-preview-view');
   scroller.scrollTop = 0; scroller.dispatchEvent(new Event('scroll'));
-  for (let i = 0; i < 40 && view.containerEl.querySelectorAll('pre .hb-text').length < 2; i++) await tick();
-  const duplicates = [...view.containerEl.querySelectorAll('pre code')].filter(code=>code.textContent === 'same();\n');
+  for (let i = 0; i < 40 && scroller.querySelectorAll('pre .hb-text').length < 2; i++) await tick();
+  const duplicates = [...scroller.querySelectorAll('pre code')].filter(code=>code.textContent === 'same();\n');
   assert('duplicate-reading-block-count', duplicates.length === 2);
   assert('duplicate-first-color', Boolean(duplicates[0].querySelector('.hb-yellow')));
   assert('duplicate-second-color', Boolean(duplicates[1].querySelector('.hb-red')));

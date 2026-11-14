@@ -13,7 +13,8 @@
     "lint": "eslint src tests",
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "prepare:vault": "node scripts/prepare-vault.mjs",
-    "test:host": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs"
+    "test:host": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs",
+    "test:shiki": "pnpm build && pnpm prepare:vault && node scripts/prepare-shiki.mjs && node scripts/test-host.mjs --shiki"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",

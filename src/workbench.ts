@@ -1,7 +1,7 @@
 import { ItemView, MarkdownView, Modal, Notice, Setting, type WorkspaceLeaf, type ViewStateResult } from 'obsidian';
 import { collectItems } from './anchors';
 import { colors } from './domain';
-import { excerptContext, type ExcerptTemplate } from './excerpts';
+import { createExcerptContext, type ExcerptContext, type ExcerptTemplate } from './excerpts';
 import { queryHighlights, type SearchScope } from './query';
 import { resolveEntry } from './collections';
 import { isExportNote, type IndexHit } from './vault-index';
@@ -107,7 +107,8 @@ export class HighlightsView extends ItemView {
     let all = this.searchScope === 'collection' ? collection?.entries.map(entry => resolveEntry(this.plugin.index.notes.get(entry.path), entry)) ?? [] : this.plugin.index.all();
     if (this.searchScope !== 'collection') for (const leaf of this.app.workspace.getLeavesOfType('markdown')) if (leaf.view instanceof MarkdownView && leaf.view.file?.extension === 'md') {
       const path = leaf.view.file.path, text = leaf.view.editor.getValue();
-      if (this.app.vault.getFileByPath(path) === leaf.view.file && !isExportNote(text)) all = [...all.filter(hit => hit.path !== path), ...collectItems(text).map(item => ({ path, text, item }))];
+      const items = this.plugin.index.notes.get(path)?.text === text ? this.plugin.index.notes.get(path)!.items : collectItems(text);
+      if (this.app.vault.getFileByPath(path) === leaf.view.file && !isExportNote(text)) all = [...all.filter(hit => hit.path !== path), ...items.map(item => ({ path, text, item }))];
     }
     const label = (hit: IndexHit) => hit.item.markId ? hit.item.label : this.plugin.colorLabel(hit.item.color);
     const query = { scope: this.searchScope, note: file?.path, search: this.value('search'), type: this.value('type-filter'), semantic: this.value('semantic-filter'), color: this.value('color-filter'), language: this.value('language-filter'), path: this.value('path-filter'), sort: this.value('sort') };
@@ -116,13 +117,16 @@ export class HighlightsView extends ItemView {
     results.createEl('p', { text: t(this.hits.length === 1 ? 'summaryOne' : 'summary', { note: name, count: this.hits.length }), cls: 'hb-summary' });
     if (!this.hits.length) results.createEl('p', { text: this.searchScope === 'collection' && !collection ? t('noCollection') : all.length ? t('noMatches') : t('noHighlights', { preset: this.plugin.presetLabel(this.plugin.getPreset('important')) }) });
     let group = '';
+    const contexts = new Map<string, ReturnType<typeof createExcerptContext>>();
     for (const hit of this.hits) {
       const key = this.value('sort') === 'semantic' ? label(hit) : this.searchScope === 'note' ? '' : hit.path;
       if (key && group !== key) { results.createEl('h5', { text: key, cls: 'hb-result-group' }); group = key; }
-      this.card(hit);
+      let context = contexts.get(hit.text);
+      if (!context) { context = createExcerptContext(hit.text); contexts.set(hit.text, context); }
+      this.card(hit, context(hit.item));
     }
   }
-  private card(hit: IndexHit): void {
+  private card(hit: IndexHit, context: ExcerptContext): void {
     const { item } = hit, t = this.plugin.t.bind(this.plugin);
     const card = this.results!.createDiv({ cls: `hb-card hb-${item.color}` }); card.dataset.hbPath = hit.path;
     if (item.semantic) card.dataset.hbSemantic = item.semantic;
@@ -135,7 +139,6 @@ export class HighlightsView extends ItemView {
       const note = card.createEl('details', { cls: 'hb-note' }); note.createEl('summary', { text: t('annotation') });
       note.createEl('div', { text: item.note, cls: 'hb-note-text' });
     }
-    const context = excerptContext(hit.text, item);
     if (context.headings.length) card.createEl('small', { text: context.headings.join(' › '), cls: 'hb-heading-context' });
     if (context.code !== undefined && context.code !== item.quote) {
       const details = card.createEl('details', { cls: 'hb-card-context' }); details.createEl('summary', { text: t('excerptCodeContext', { from: context.contextFrom!, to: context.contextTo! }) }); details.createEl('pre').createEl('code', { text: context.code });

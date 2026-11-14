@@ -46,8 +46,13 @@
     root = view.containerEl.querySelector('.markdown-source-view');
     assert(`${provider}-parameter-live-callout`, await until(() => root.querySelector('.callout [data-hb-number="20"]') && root.querySelectorAll('.callout [data-hb-param="mark"]').length === 2));
     if (provider === 'shiki') {
-      assert('shiki-parameter-live-components', await until(() => root.querySelectorAll('.hb-code-display .expressive-code').length === 4));
-      assert('shiki-parameter-live-ins', root.querySelector('.expressive-code [data-hb-param="insert"] .hb-text')?.textContent === 'target');
+      for (const title of ['Styler <file>.js', 'Customizer.js', 'Expressive.js']) {
+        const position = editor.offsetToPos(editor.getValue().indexOf(title));
+        editor.scrollIntoView({ from: position, to: position }, true);
+        if (!await until(() => [...root.querySelectorAll('.hb-code-display')].some(node => node.querySelector('.hb-code-title')?.textContent === title && node.querySelector('.expressive-code')))) throw new Error(`shiki-parameter-live-component: ${title}`);
+      }
+      assert('shiki-parameter-live-components', true);
+      assert('shiki-parameter-live-ins', await until(() => root.querySelector('.expressive-code [data-hb-param="insert"] .hb-text')?.textContent === 'target'));
       await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
       await window.require('electron').ipcRenderer.invoke('hb-selection-capture', 'parameters');
     }

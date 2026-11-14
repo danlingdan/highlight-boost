@@ -42,7 +42,8 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 - `pnpm typecheck`：类型检查。
 - `pnpm test`：文档解析、纯编辑计划、锚定和 DOM 渲染断言。
 - `pnpm build`：生成宿主加载的 CommonJS 插件。
-- `pnpm test:host`：构建并依次运行二十二个独立 Electron 进程，覆盖已有标注闭环、全库工作台、脚注批注、代码展示、diff 和独立进程恢复。
+- `pnpm test:host`：构建并依次运行二十三个独立 Electron 进程，覆盖已有标注闭环、全库工作台、脚注批注、代码展示、diff、围栏参数和独立进程恢复。
+- `pnpm test:parameters`：验证四类围栏参数、嵌套 callout、人工标注叠加、纯代码复制及卸载清理。
 - `pnpm test:display`：运行代码展示与重启专项，验证设置控件、折叠跳转、逻辑行号、换行、两种 diff 复制及渲染清理。
 - `pnpm test:notes`：运行批注和新进程恢复专项，归档阅读脚注与 Live Preview 摘要截图。
 - `pnpm test:phase-e`：运行全库工作台及新进程集合恢复专项，归档中英文深浅主题画面。

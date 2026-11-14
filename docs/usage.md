@@ -2,6 +2,8 @@
 
 ## 代码展示
 
+原 Code Styler / Codeblock Customizer 的 `file:"demo.js" ln:20 fold hl:1,3`，以及 Hugo、Expressive Code 的通用参数可直接显示。完整映射见 [第三方围栏参数](formats/fence-parameters.md)。
+
 设置 → Highlight Boost → 代码展示，可调整标题、逻辑行号、起始编号、字体、长行换行和整块折叠。阅读视图和内置 Shiki 的 Live Preview 使用统一标题栏；编辑器原文显示行号与 diff 背景，使用原生命令折叠。点击侧栏条目会展开目标。
 
 diff 标题栏提供“复制原始 diff”和“复制变更片段”。后者输出新增行与上下文，移除删除行和补丁头。整块折叠时仍可复制。围栏覆盖参数及样例见 [代码展示与 diff](formats/code-display.md)。

@@ -45,6 +45,8 @@
 
 代码展示支持标题、逻辑行号及字体、起始行号、长行换行和整块折叠，围栏参数可覆盖默认值。diff 保留原始增删前缀，可复制原始补丁或变更片段；折叠后侧栏跳转展开目标代码。详见 [代码展示与 diff](docs/formats/code-display.md)。
 
+兼容 Code Styler、Codeblock Customizer、Hugo 与 Expressive Code 的通用围栏参数，支持标题、行号、折叠及行强调。原参数保留，Live Preview callout 接入同一展示层。详见 [参数对照](docs/formats/fence-parameters.md)。
+
 ```sh
 pnpm install --frozen-lockfile
 pnpm check
@@ -53,6 +55,6 @@ pnpm prepare:vault
 
 构建生成 `main.js`。将它与 `manifest.json`、`styles.css` 放入测试库的插件目录，即可加载原型。`prepare:vault` 在项目内创建 `.test-vault` 并复制原型及样例。
 
-[桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [最新验证](docs/verification/code-display.md) · [v1 格式](docs/formats/README.md)
+[桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [最新验证](docs/verification/fence-parameters.md) · [v1 格式](docs/formats/README.md)
 
-阶段 E 已完成，阶段 F 的批注、代码展示和 diff 模块已交付。152 项逻辑/DOM/引擎测试和 560 项宿主检查通过，当前提供源码及内部构建。接下来继续阶段 F 的第三方参数适配、导入迁移、预览与逐文件恢复。
+阶段 E 已完成，阶段 F 的批注、代码展示、diff 和通用参数适配已交付。160 项逻辑/DOM/引擎测试和 596 项宿主检查通过，当前提供源码及内部构建。接下来继续导入迁移、预览与逐文件恢复。

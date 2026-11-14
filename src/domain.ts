@@ -29,6 +29,13 @@ export interface CodeMark {
   occurrenceCount?: number;
 }
 export interface CodeMetadata { v: 1; blockId: string; marks: CodeMark[] }
+export interface InlineMetadata { v: 1; id: string; color: Color; semantic: string; label: string }
+export interface InlineCode extends Span {
+  content: Span;
+  text: string;
+  metadata?: InlineMetadata;
+  metadataSpan?: Span;
+}
 export interface SourceLine extends Span { text: string; number: number }
 export interface CodeBlock extends Span {
   language: string;
@@ -46,7 +53,7 @@ export interface ProseHighlight extends Span {
 }
 export interface HighlightItem extends Span {
   id: string;
-  kind: 'prose' | 'code-line' | 'code-range';
+  kind: 'prose' | 'inline-code' | 'code-line' | 'code-range';
   color: Color;
   label: string;
   quote: string;
@@ -62,6 +69,7 @@ export interface ParsedDocument {
   highlights: ProseHighlight[];
   excluded: Span[];
   prose: Span[];
+  inlines: InlineCode[];
 }
 export interface Change extends Span { insert: string; positions?: { starts: number[]; ends: number[] } }
 export interface EditPlan { changes: Change[]; selections: Span[] }

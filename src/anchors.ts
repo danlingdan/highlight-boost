@@ -50,6 +50,11 @@ export function collectItems(text: string): HighlightItem[] {
   const items: HighlightItem[] = parsed.highlights.map(highlight => ({
     ...highlight, id: `prose:${highlight.from}`, kind: 'prose', label: colorLabels[highlight.color], status: 'resolved',
   }));
+  for (const inline of parsed.inlines) if (inline.metadata) items.push({
+    ...inline.content, id: `inline:${inline.metadata.id}:${inline.from}`, kind: 'inline-code',
+    color: inline.metadata.color, label: inline.metadata.label, quote: inline.text,
+    line: text.slice(0, inline.from).split('\n').length, status: 'resolved',
+  });
   for (const block of parsed.blocks) for (const mark of block.metadata?.marks ?? []) {
     const resolved = resolveMark(block, mark);
     const from = sourceOffset(block, resolved.span.from);

@@ -2,7 +2,7 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
 import type { Nodes } from 'mdast';
-import { colors, emojis, type CodeBlock, type CodeMetadata, type ParsedDocument, type SourceLine } from './domain';
+import { colors, emojis, type CodeBlock, type CodeMetadata, type InlineMetadata, type ParsedDocument, type SourceLine } from './domain';
 
 export function sourceLines(text: string): SourceLine[] {
   const result: SourceLine[] = [];
@@ -29,10 +29,21 @@ export function serializeMetadata(data: CodeMetadata): string {
   return `%%hb:${JSON.stringify(data).replaceAll('%', '\\u0025')}%%`;
 }
 
+export function serializeInlineMetadata(data: InlineMetadata): string {
+  return `%%hbi:${JSON.stringify(data).replaceAll('%', '\\u0025')}%%`;
+}
+
+function isInlineMetadata(value: unknown): value is InlineMetadata {
+  if (!value || typeof value !== 'object') return false;
+  const data = value as Partial<InlineMetadata>;
+  return data.v === 1 && typeof data.id === 'string' && data.id.length > 0 &&
+    colors.includes(data.color!) && typeof data.semantic === 'string' && typeof data.label === 'string';
+}
+
 export function parseDocument(text: string): ParsedDocument {
   const tree = fromMarkdown(text, { extensions: [gfm()], mdastExtensions: [gfmFromMarkdown()] });
   const lines = sourceLines(text);
-  const result: ParsedDocument = { blocks: [], highlights: [], excluded: [], prose: [] };
+  const result: ParsedDocument = { blocks: [], highlights: [], excluded: [], prose: [], inlines: [] };
   if (/^---\r?\n/.test(text)) {
     const end = /\r?\n(?:---|\.\.\.)\s*(?:\r?\n|$)/g;
     end.lastIndex = text.indexOf('\n') + 1;
@@ -91,7 +102,24 @@ export function parseDocument(text: string): ParsedDocument {
       result.blocks.push(block);
       return;
     }
-    if (['inlineCode', 'html', 'image'].includes(node.type)) { result.excluded.push({ from, to }); return; }
+    if (node.type === 'inlineCode') {
+      const ticks = text.slice(from, to).match(/^`+/)![0].length;
+      const inline: ParsedDocument['inlines'][number] = { from, to, content: { from: from + ticks, to: to - ticks }, text: node.value.replace(/\r\n|\r|\n/g, ' ') };
+      const comment = text.slice(to).match(/^%%hbi:(.+?)%%/);
+      if (comment) {
+        try {
+          const metadata: unknown = JSON.parse(comment[1]!);
+          if (isInlineMetadata(metadata)) {
+            inline.metadata = metadata;
+            inline.metadataSpan = { from: to, to: to + comment[0].length };
+          }
+        } catch { /* 未闭合的注释继续作为源文本编辑。 */ }
+      }
+      result.inlines.push(inline);
+      result.excluded.push({ from, to });
+      return;
+    }
+    if (['html', 'image'].includes(node.type)) { result.excluded.push({ from, to }); return; }
     if ('children' in node) for (const child of node.children) visit(child);
   }
   visit(tree);
@@ -103,6 +131,8 @@ export function parseDocument(text: string): ParsedDocument {
   for (const match of commentSource.matchAll(/%%[\s\S]*?%%/g)) {
     result.excluded.push({ from: match.index, to: match.index + match[0].length });
   }
+  result.inlines = result.inlines.filter(inline => !result.excluded.some(span =>
+    (span.from !== inline.from || span.to !== inline.to) && span.from < inline.to && inline.from < span.to));
 
   for (const line of lines) {
     const matches = line.text.matchAll(/==([^=\r\n]+(?:=(?!=)[^=\r\n]*)*)==/g);

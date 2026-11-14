@@ -1,10 +1,10 @@
 import { contains, emojis, overlaps, type Change, type CodeBlock, type CodeMark, type CodeMetadata, type EditPlan, type HighlightItem, type Preset, type Span } from './domain';
 import { logicalOffset, resolveMark } from './anchors';
-import { parseDocument, serializeMetadata } from './parsing';
+import { parseDocument, serializeInlineMetadata, serializeMetadata } from './parsing';
 
 export function applyChanges(text: string, changes: Change[]): string {
   let result = text;
-  for (const change of [...changes].sort((a, b) => b.from - a.from)) result = result.slice(0, change.from) + change.insert + result.slice(change.to);
+  for (const change of [...changes].sort((a, b) => b.from - a.from || b.to - a.to)) result = result.slice(0, change.from) + change.insert + result.slice(change.to);
   return result;
 }
 
@@ -107,8 +107,12 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
   const changes: Change[] = [];
   const prose: Span[] = [];
   const codeSelections = new Map<CodeBlock, Span[]>();
+  const inlineSelections = new Set<typeof parsed.inlines[number]>();
   for (const original of selections) {
     let span = { ...original };
+    if (mode === 'text') for (const inline of parsed.inlines) {
+      if (span.from === span.to ? inline.from < span.from && span.from < inline.to : overlaps(inline, span)) inlineSelections.add(inline);
+    }
     for (const block of parsed.blocks) {
       if (!block.lines.length) continue;
       const content = { from: block.lines[0]!.from, to: block.lines.at(-1)!.to };
@@ -137,6 +141,15 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
       });
       prose.push(...fragments);
     }
+  }
+  for (const inline of inlineSelections) {
+    if (!preset && !inline.metadataSpan) continue;
+    const duplicated = parsed.inlines.some(other => other.from < inline.from && other.metadata?.id === inline.metadata?.id);
+    const insert = preset ? serializeInlineMetadata({
+      v: 1, id: inline.metadata && !duplicated ? inline.metadata.id : crypto.randomUUID(),
+      color: preset.color, semantic: preset.id, label: preset.name,
+    }) : '';
+    changes.push({ ...(inline.metadataSpan ?? { from: inline.to, to: inline.to }), insert });
   }
   for (const [block, spans] of codeSelections) {
     const metadata = editableMetadata(block, parsed.blocks);

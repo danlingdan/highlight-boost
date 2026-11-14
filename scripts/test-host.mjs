@@ -10,7 +10,7 @@ if (!existsSync(join(resources, 'obsidian.asar'))) {
 }
 const environment = { ...process.env };
 delete environment.ELECTRON_RUN_AS_NODE;
-const modes = process.argv.includes('--shiki') ? ['shiki', 'languages-shiki'] : process.argv.includes('--languages-shiki') ? ['languages-shiki'] : process.argv.includes('--advanced') ? ['advanced'] : process.argv.includes('--languages') ? ['languages'] : process.argv.includes('--layout') ? ['layout'] : ['functional', 'advanced', 'languages', 'layout', 'restart'];
+const modes = process.argv.includes('--shiki') ? ['shiki', 'languages-shiki'] : process.argv.includes('--languages-shiki') ? ['languages-shiki'] : process.argv.includes('--advanced') ? ['advanced'] : process.argv.includes('--languages') ? ['languages'] : process.argv.includes('--layout') ? ['layout'] : process.argv.includes('--settings') ? ['settings'] : ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart'];
 for (const mode of modes) {
   const resultFile = `docs/verification/${mode === 'functional' ? 'host-results' : `host-${mode}-results`}.json`;
   if (existsSync(resultFile)) unlinkSync(resultFile);

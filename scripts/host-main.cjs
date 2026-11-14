@@ -17,6 +17,7 @@ const vault = path.join(root, '.test-vault');
 const resources = process.env.OBSIDIAN_RESOURCES || 'C:\\Program Files\\Obsidian\\resources';
 const source = path.join(resources, 'obsidian.asar');
 const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
+scenarios.settings = ['settings.scenario.js', 'host-settings-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
 const [scenarioName, resultName] = scenarios[mode];
 const version = require(path.join(source, 'package.json')).version;

@@ -11,6 +11,8 @@
   await app.plugins.enablePlugin('highlight-boost');
   if (!app.plugins.plugins['highlight-boost']) await app.plugins.loadPlugin('highlight-boost');
   const plugin = app.plugins.plugins['highlight-boost'];
+  plugin.settings = { schemaVersion: 1, defaultPreset: 'important' };
+  await plugin.saveSettings();
   assert('plugin-load', Boolean(plugin));
   assert('desktop-only', plugin.manifest.isDesktopOnly === true);
   const file = app.vault.getFileByPath('原型验证.md');

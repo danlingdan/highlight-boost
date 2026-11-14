@@ -16,13 +16,16 @@ pnpm prepare:vault
 
 Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空格同样可操作。代码原句变化后，在该代码块中选择新位置，再点击侧栏“绑定到当前选区”。
 
+插件设置可调整四种语义的名称、颜色和默认语义，也可恢复默认。更改后命令名称即时更新，后续标注使用新配置。已有代码标注保留创建时的快照，正文采用原生颜色格式。插件配置为 schemaVersion 2，首次启用时迁移旧默认语义；笔记中的 HB 元数据仍为 v1。
+
 ## 自动化测试
 
 - `pnpm lint`：代码规范。
 - `pnpm typecheck`：类型检查。
 - `pnpm test`：文档解析、纯编辑计划、锚定和 DOM 渲染断言。
 - `pnpm build`：生成宿主加载的 CommonJS 插件。
-- `pnpm test:host`：构建并依次运行两个独立 Electron 进程，验证真实 Obsidian API、撤销、渲染与重启恢复。
+- `pnpm test:host`：构建并依次运行六个独立 Electron 进程，验证基础操作、多选区与组合事件、语言对照、布局、设置和重启恢复。
+- `pnpm test:shiki`：准备固定版本 Shiki Highlighter 0.8.0，在两个独立进程中验证协作行为和语言对照。
 
 宿主测试优先使用 Electron JavaScript、[官方 CLI](https://obsidian.md/help/cli) 和 CDP。当前测试通过 `webContents.executeJavaScript` 操作项目样例，使用原生 Editor 和 WorkspaceLeaf 接口执行变更与切换视图。
 
@@ -36,14 +39,18 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 2. 只登记项目内 `.test-vault`，加载当前构建的插件和合成样例。
 3. 在独立 Electron 38.8.6 中加载本机 `obsidian.asar`，复用真实解析、编辑与阅读渲染代码。
 4. 为测试 CLI 管道添加独立后缀，避免和日常应用争用同名管道。
-5. 经路径校验后执行宿主断言，写入 `docs/verification/host-results.json`，测试进程退出。
-6. 启动第二个进程，读取第一进程保存的测试库与设置，写入 `docs/verification/host-restart-results.json`。
+5. 经路径校验后执行宿主断言，每个进程将结果写入 `docs/verification/host-*-results.json` 后退出。
+6. 最后启动重启场景，读取基础场景保存的测试库与设置，写入 `host-restart-results.json`。
 
 测试启动器保留既有系统协议注册，测试配置与输出均位于项目目录。
 
 本机 Obsidian 程序包由安装位置读取，仓库包含测试启动器和自有代码。宿主测试记录 Obsidian 包版本与测试 Electron 版本；各桌面系统、最低支持版本和完整安装器环境在后续兼容阶段验证。
 
 测试库与配置目录由 Git 忽略。`prepare:vault` 会重置项目样例和测试库插件清单，用于每次从相同输入运行测试。
+
+基础宿主场景初始化测试插件的默认预设，设置场景验证改名、改色、连续写入、迁移、界面输入及恢复默认，并还原进入场景前的配置。组合测试使用模拟 DOM 组合事件与编辑器事务；系统输入法在阶段 G 验证。
+
+Shiki 测试首次从其官方 Release 下载产物到 `.research-cache`，核对脚本内固定 SHA256 后复制到测试库；之后复用缓存。第三方产物由 Git 忽略。运行原生场景前，`prepare:vault` 将启用清单重置为 HB。语言矩阵保存于对应结果 JSON，详细解释见 [第三轮记录](verification/phase-a-iteration-3.md)。
 
 ## 构建与 CI
 

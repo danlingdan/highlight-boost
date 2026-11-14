@@ -21,7 +21,7 @@
 
 ## 当前原型
 
-已实现正文局部改色、原生六色及默认色、代码整行与精确文本标注、当前笔记侧栏、来源跳转和基础摘录。支持 callout/列表代码、改写后的标注重新绑定，以及 Live Preview 中的元数据折叠。四种语义为重点、疑问、引用、行动。
+已实现正文局部改色、原生六色及默认色、代码整行与精确文本标注、当前笔记侧栏、来源跳转和基础摘录。支持 callout/列表代码、改写后的标注重新绑定、独立撤销，以及 Live Preview 中的元数据折叠。四种语义为重点、疑问、引用、行动，可在设置中改名和改色。阅读视图支持 Shiki Highlighter 0.8.0 的逐行渲染结构和异步更新。
 
 ```sh
 pnpm install --frozen-lockfile
@@ -31,6 +31,6 @@ pnpm prepare:vault
 
 构建生成 `main.js`。将它与 `manifest.json`、`styles.css` 放入测试库的插件目录，即可加载原型。`prepare:vault` 在项目内创建 `.test-vault` 并复制原型及样例。
 
-[开发与接口测试](docs/development.md) · [最新验证记录](docs/verification/phase-a-iteration-2.md)
+[开发与接口测试](docs/development.md) · [最新验证记录](docs/verification/phase-a-iteration-3.md)
 
-当前完成阶段 A 的两轮核心实验，并建立部分阶段 B 工程基础。语法引擎协作、组合输入、完整语义配置和其余计划功能继续按阶段实施。
+当前已交付三轮桌面原型实验、阶段 B 工程基础及配置迁移。41 项逻辑/DOM 测试和 166 项宿主检查通过。中英文文案、行内代码、连续跨正文与代码选区及后续功能继续按阶段实施。

@@ -25,7 +25,8 @@
     "test:phase-e": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=phase-e && node scripts/test-host.mjs --mode=phase-e-restart",
     "test:notes": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=notes && node scripts/test-host.mjs --mode=notes-restart",
     "test:display": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=display && node scripts/test-host.mjs --mode=display-restart",
-    "test:parameters": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=parameters"
+    "test:parameters": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=parameters",
+    "test:migration": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=migration && node scripts/test-host.mjs --mode=migration-restart"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",

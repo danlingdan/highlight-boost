@@ -1,0 +1,80 @@
+(async () => {
+  const checks = [], errors = []; window.__hbChecks = checks;
+  window.addEventListener('error', event => errors.push(event.error?.stack ?? event.message));
+  const assert = (name, value, details) => { if (!value) throw new Error(`${name}: ${JSON.stringify(details)}`); checks.push({ name, passed: true }); };
+  const until = async predicate => { for (let i = 0; i < 60 && !predicate(); i++) await new Promise(resolve => setTimeout(resolve, 100)); return predicate(); };
+  await app.plugins.loadManifests(); await app.plugins.setEnable(true); await app.plugins.enablePlugin('highlight-boost');
+  const plugin = app.plugins.plugins['highlight-boost'], originalSettings = structuredClone(plugin.settings);
+  plugin.settings.language = 'zh'; await plugin.saveSettings();
+  const folder = '迁移验收'; if (!app.vault.getFolderByPath(folder)) await app.vault.createFolder(folder);
+  const originals = {
+    [`${folder}/A.md`]: '# 迁移 A\n\n<mark style="background:#FF5582A6">**alpha**</mark> 和 =={soft-rose}beta==。\n\n`<mark>inline</mark>`\n\n```js hl:2\nfirst();\ntarget();\n```\n',
+    [`${folder}/B.md`]: '# 迁移 B\n\n=={blue}bravo==\n',
+    [`${folder}/C.md`]: '# 迁移 C\n\n<mark class="hltr-green">charlie</mark>\n',
+  };
+  for (const [path, source] of Object.entries(originals)) { const old = app.vault.getFileByPath(path); if (old) await app.vault.modify(old, source); else await app.vault.create(path, source); }
+  const pathA = `${folder}/A.md`, pathB = `${folder}/B.md`, pathC = `${folder}/C.md`, fileA = app.vault.getFileByPath(pathA);
+  const leaf = app.workspace.getLeaf(false); await leaf.openFile(fileA); app.workspace.setActiveLeaf(leaf, { focus: true });
+  await leaf.setViewState({ type: 'markdown', state: { file: pathA, mode: 'source', source: true } });
+  assert('migration-command', app.commands.executeCommandById('highlight-boost:open-migration'));
+  const modal = () => document.querySelector('.hb-migration'), control = key => modal().querySelector(`[data-hb-import="${key}"]`);
+  assert('migration-modal-real-controls', await until(() => control('preview') && !control('preview').disabled));
+  const historyCount = (await plugin.migrations.history()).length;
+  control('scope').value = 'folder'; control('scope').dispatchEvent(new Event('change', { bubbles: true }));
+  control('fences').click(); control('preview').click();
+  assert('migration-preview-three-files', await until(() => modal().querySelectorAll('[data-hb-import-file]').length === 3 && !control('preview').disabled));
+  assert('migration-preview-does-not-write', await app.vault.read(fileA) === originals[pathA] && (await plugin.migrations.history()).length === historyCount);
+  const mapping = modal().querySelector('[data-hb-mapping="hilo:soft-rose"]');
+  assert('migration-custom-color-mapping-control', Boolean(mapping)); mapping.value = 'purple'; mapping.dispatchEvent(new Event('change', { bubbles: true }));
+  assert('migration-option-invalidates-preview', control('apply').disabled && !modal().querySelector('[data-hb-import-file]'));
+  control('preview').click();
+  assert('migration-preview-mapped-native', await until(() => modal().textContent.includes('==🟣beta==') && !control('preview').disabled));
+  assert('migration-preview-count-matches-five', control('status').textContent.includes('5 条标记'));
+  modal().querySelector(`[data-hb-import-file-select="${pathB}"]`).click();
+  assert('migration-selected-preview-count-four', control('status').textContent.includes('2 个可转换文件') && control('status').textContent.includes('4 条标记'));
+  modal().scrollTop = 0;
+  await window.require('electron').ipcRenderer.invoke('hb-selection-capture', 'migration-preview');
+  control('apply').click();
+  assert('migration-apply-selected-real-ui', await until(() => control('status').textContent.includes('已应用 2 个文件') && !control('preview').disabled), control('status').textContent);
+  const run = (await plugin.migrations.history()).find(run => run.files.length === 2 && run.files.some(file => file.path === pathA) && run.files.every(file => file.status === 'applied'));
+  assert('migration-journal-before-after', run && run.files.every(file => file.before === originals[file.path]));
+  assert('migration-apply-count-four', control('status').textContent.includes('4 条标记'));
+  assert('migration-unselected-file-exact', await app.vault.read(app.vault.getFileByPath(pathB)) === originals[pathB]);
+  assert('migration-open-editor-updated', await until(() => leaf.view.editor.getValue() === run.files.find(file => file.path === pathA).after));
+  assert('migration-native-markdown-preserved', leaf.view.editor.getValue().includes('==🔴**alpha**==') && leaf.view.editor.getValue().includes('`<mark>inline</mark>`') && leaf.view.editor.getValue().includes('```js hl:2\nfirst();\ntarget();\n```'));
+  assert('migration-index-prose-and-code', await until(() => plugin.index.notes.get(pathA)?.items.length === 3));
+  const options = { highlightr: true, hilo: true, fences: true, mapping: { 'hilo:soft-rose': 'purple' } };
+  assert('migration-repeat-no-new-changes', !(await plugin.migrations.preview([pathA, pathC], options)).some(file => file.before !== file.after));
+  const previewB = await plugin.migrations.preview([pathB], options), changedB = originals[pathB] + '新增内容';
+  await app.vault.modify(app.vault.getFileByPath(pathB), changedB); const stale = await plugin.migrations.apply(previewB);
+  assert('migration-stale-preview-per-file-result', stale.files[0].status === 'error' && stale.files[0].error === 'migrationChanged');
+  assert('migration-stale-preview-keeps-edit', await app.vault.read(app.vault.getFileByPath(pathB)) === changedB);
+  await app.vault.modify(app.vault.getFileByPath(pathB), originals[pathB]); await plugin.migrations.restore(stale.id, pathB);
+  const restoreButton = (id, path) => modal().querySelector(`[data-hb-import-run="${id}"] [data-hb-restore-file="${path}"] button`);
+  restoreButton(run.id, pathC).click();
+  assert('migration-restore-one-file-ui', await until(() => control('status').textContent.includes(pathC) && !control('preview').disabled));
+  assert('migration-restore-one-file-exact', await app.vault.read(app.vault.getFileByPath(pathC)) === originals[pathC]);
+  assert('migration-other-file-still-applied', await app.vault.read(fileA) === run.files.find(file => file.path === pathA).after);
+  const afterA = run.files.find(file => file.path === pathA).after;
+  await app.vault.modify(fileA, afterA + '\n新的编辑'); await until(() => leaf.view.editor.getValue() === afterA + '\n新的编辑');
+  restoreButton(run.id, pathA).click();
+  assert('migration-restore-edited-file-message', await until(() => control('status').textContent.includes('文件已更新') && !control('preview').disabled));
+  assert('migration-restore-edited-file-unchanged', await app.vault.read(fileA) === afterA + '\n新的编辑');
+  await app.vault.modify(fileA, afterA); await until(() => leaf.view.editor.getValue() === afterA); restoreButton(run.id, pathA).click();
+  assert('migration-restore-open-file-exact', await until(() => leaf.view.editor.getValue() === originals[pathA] && !control('preview').disabled));
+  const second = await plugin.migrations.apply(await plugin.migrations.preview([pathA], options));
+  assert('migration-reapply-for-restart', second.files[0].status === 'applied');
+  const statePath = `${plugin.manifest.dir}/migrations/${second.id}.state.json`, stateText = await app.vault.adapter.read(statePath);
+  await app.vault.adapter.write(statePath, '{');
+  const fallback = (await plugin.migrations.history()).find(run => run.id === second.id);
+  assert('migration-incomplete-state-keeps-snapshot', fallback.files[0].status === 'pending' && fallback.files[0].before === originals[pathA] && fallback.files[0].after === second.files[0].after);
+  await app.vault.adapter.write(statePath, stateText);
+  control('close').click();
+  plugin.settings.language = 'en'; await plugin.saveSettings(); app.commands.executeCommandById('highlight-boost:open-migration');
+  assert('migration-english-interface', await until(() => control('preview')?.textContent === 'Build preview' && !control('preview').disabled));
+  assert('migration-history-read-from-records', Boolean(modal().querySelector(`[data-hb-import-run="${second.id}"]`)));
+  control('close').click();
+  await app.vault.adapter.write(`${app.vault.configDir}/hb-migration-expected.json`, JSON.stringify({ originalSettings, originals, id: second.id, path: pathA, after: second.files[0].after }));
+  assert('migration-no-page-errors', errors.length === 0, errors);
+  return checks;
+})()

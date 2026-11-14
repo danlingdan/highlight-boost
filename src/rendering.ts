@@ -8,9 +8,10 @@ import { composingState } from './composition';
 const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string }>();
 
 function expressiveRows(code: HTMLElement): HTMLElement[] { return [...code.querySelectorAll<HTMLElement>(':scope > .ec-line > .code')]; }
+function expressiveRowText(row: HTMLElement): string { return row.textContent === '\n' ? '' : row.textContent ?? ''; }
 export function renderedCodeText(code: HTMLElement): string {
   const rows = expressiveRows(code);
-  return rows.length ? rows.map(row => row.textContent ?? '').join('\n') : code.textContent ?? '';
+  return rows.length ? rows.map(expressiveRowText).join('\n') : code.textContent ?? '';
 }
 
 export function clearRenderedCode(code: HTMLElement): void {
@@ -100,7 +101,7 @@ export function renderCode(code: HTMLElement, block: CodeBlock): void {
       if (resolved.status !== 'resolved') continue;
       let offset = 0;
       for (const row of rows) {
-        const end = offset + (row.textContent?.length ?? 0);
+        const end = offset + expressiveRowText(row).length;
         if (mark.kind === 'lines') {
           if (resolved.span.from === resolved.span.to ? offset === resolved.span.from : offset < resolved.span.to && resolved.span.from <= end) {
             row.parentElement!.classList.add('hb-line', `hb-${mark.color}`);

@@ -1,4 +1,4 @@
-import { MarkdownRenderChild, type App, type MarkdownPostProcessorContext } from 'obsidian';
+import { MarkdownRenderChild, MarkdownView, type App, type MarkdownPostProcessorContext } from 'obsidian';
 import { clearRenderedCode, renderCode } from './rendering';
 import { readingTargets } from './reading-mapping';
 
@@ -19,7 +19,9 @@ export class ReadingHighlights extends MarkdownRenderChild {
     const file = this.app.vault.getFileByPath(this.context.sourcePath);
     if (!file) return;
     const revision = ++this.revision;
-    void this.app.vault.cachedRead(file).then(text => {
+    const editing = this.app.workspace.getLeavesOfType('markdown').map(leaf => leaf.view).find(view => view instanceof MarkdownView && view.file?.path === file.path && view.getMode() === 'source') as MarkdownView | undefined;
+    const source = editing ? Promise.resolve(editing.editor.getValue()) : this.app.vault.cachedRead(file);
+    void source.then(text => {
       if (!this.active || revision !== this.revision) return;
       this.observer?.disconnect();
       try {

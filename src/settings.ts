@@ -4,6 +4,7 @@ export interface Settings {
   schemaVersion: 2;
   defaultPreset: string;
   presets: Preset[];
+  syntaxProvider: 'native' | 'shiki';
 }
 
 function record(value: unknown): Record<string, unknown> {
@@ -23,5 +24,6 @@ export function normalizeSettings(value: unknown): Settings {
     schemaVersion: 2,
     defaultPreset: normalized.some(preset => preset.id === input.defaultPreset) ? input.defaultPreset as string : presets[0]!.id,
     presets: normalized,
+    syntaxProvider: input.syntaxProvider === 'shiki' ? 'shiki' : 'native',
   };
 }

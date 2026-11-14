@@ -1,4 +1,4 @@
-import { editorLivePreviewField, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, SuggestModal, type Command, type Editor, type WorkspaceLeaf } from 'obsidian';
+import { editorLivePreviewField, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, SuggestModal, type Command, type Editor, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
 import { collectItems } from './anchors';
 import { colorLabels, colorPreset, colors, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
@@ -9,6 +9,7 @@ import { createMetadataFolding } from './metadata-folding';
 import { ReadingHighlights } from './reading-view';
 import { composingState, compositionEvents } from './composition';
 import { normalizeSettings, type Settings } from './settings';
+import { SyntaxService } from './syntax/service';
 
 const VIEW = 'highlight-boost';
 
@@ -17,10 +18,15 @@ export default class HighlightBoost extends Plugin {
   private settingsWrites: Promise<void> = Promise.resolve();
   private presetCommands: { id: string; lines: boolean; command: Command }[] = [];
   private readingChildren = new Set<ReadingHighlights>();
+  syntax?: SyntaxService;
   async onload(): Promise<void> {
     const loaded: unknown = await this.loadData();
     this.settings = normalizeSettings(loaded);
     if (JSON.stringify(loaded) !== JSON.stringify(this.settings)) await this.saveSettings();
+    if (this.settings.syntaxProvider === 'shiki') {
+      this.syntax = this.addChild(new SyntaxService(this, (element, context) => this.createReadingChild(element, context)));
+      await this.syntax.initialize();
+    }
     this.registerEditorExtension([composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField)]);
     this.registerView(VIEW, leaf => new HighlightsView(leaf, this));
     this.addSettingTab(new HighlightSettings(this));
@@ -49,12 +55,13 @@ export default class HighlightBoost extends Plugin {
       menu.addItem(item => item.setTitle('标记所选代码行').setIcon('list-ordered').onClick(() => this.apply(editor, this.defaultPreset(), 'lines')));
       menu.addItem(item => item.setTitle('移除所选标注').setIcon('eraser').onClick(() => this.apply(editor, null)));
     }));
-    this.registerEvent(this.app.workspace.on('editor-change', () => this.refreshPanels()));
+    this.registerEvent(this.app.workspace.on('editor-change', (_editor, info) => {
+      this.refreshPanels();
+      for (const child of this.readingChildren) if (child.context.sourcePath === info.file?.path) child.refresh();
+    }));
     this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.refreshPanels()));
     this.registerMarkdownPostProcessor((element, context) => {
-      const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child));
-      this.readingChildren.add(child);
-      context.addChild(child);
+      context.addChild(this.createReadingChild(element, context));
     }, 100);
     this.registerEvent(this.app.vault.on('modify', file => {
       for (const child of this.readingChildren) if (child.context.sourcePath === file.path) child.refresh();
@@ -62,6 +69,11 @@ export default class HighlightBoost extends Plugin {
   }
 
   getPreset(id: string): Preset { return this.settings.presets.find(preset => preset.id === id) ?? this.settings.presets[0]!; }
+  private createReadingChild(element: HTMLElement, context: MarkdownPostProcessorContext): ReadingHighlights {
+    const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child));
+    this.readingChildren.add(child);
+    return child;
+  }
   defaultPreset(): Preset { return this.getPreset(this.settings.defaultPreset); }
 
   saveSettings(): Promise<void> {
@@ -185,6 +197,12 @@ class HighlightSettings extends PluginSettingTab {
   constructor(private plugin: HighlightBoost) { super(plugin.app, plugin); }
   display(): void {
     this.containerEl.empty();
+    new Setting(this.containerEl).setName('语法着色').setDesc('选择宿主着色或内置 Shiki。更改后重新启用插件。').addDropdown(dropdown => dropdown
+      .addOption('native', '宿主').addOption('shiki', '内置 Shiki')
+      .setValue(this.plugin.settings.syntaxProvider).onChange(async value => {
+        this.plugin.settings.syntaxProvider = value as 'native' | 'shiki';
+        await this.plugin.saveSettings();
+      }));
     new Setting(this.containerEl).setName('默认语义').setDesc('“标记所选代码行”使用的语义。').addDropdown(dropdown => {
       for (const preset of this.plugin.settings.presets) dropdown.addOption(preset.id, preset.name);
       dropdown.setValue(this.plugin.settings.defaultPreset).onChange(async value => {
@@ -208,7 +226,7 @@ class HighlightSettings extends PluginSettingTab {
         });
     }
     new Setting(this.containerEl).setName('恢复默认预设').addButton(button => button.setButtonText('恢复默认').onClick(async () => {
-      this.plugin.settings = normalizeSettings(null);
+      this.plugin.settings = normalizeSettings({ syntaxProvider: this.plugin.settings.syntaxProvider });
       await this.plugin.saveSettings();
       this.display();
     }));

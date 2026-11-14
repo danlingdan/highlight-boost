@@ -1,6 +1,7 @@
 import type { CodeBlock } from './domain';
 import { codeOptions, diffAfter, diffKinds, type CodeDisplaySettings } from './code-options';
 import { translate, type Locale } from './i18n';
+import { parameterLines } from './fence-params';
 
 interface DisplayState { wrapper: HTMLElement; body: HTMLElement; header: HTMLElement; target: HTMLElement; pre: HTMLElement; signature: string }
 const displays = new WeakMap<HTMLElement, DisplayState>();
@@ -8,14 +9,15 @@ const displays = new WeakMap<HTMLElement, DisplayState>();
 export function clearCodeDisplay(code: HTMLElement): void {
   const display = displays.get(code);
   if (!display) return;
-  for (const row of code.querySelectorAll<HTMLElement>('[data-hb-number], [data-hb-diff]')) { delete row.dataset.hbNumber; delete row.dataset.hbDiff; }
+  for (const row of code.querySelectorAll<HTMLElement>('[data-hb-number], [data-hb-diff], [data-hb-param]')) { delete row.dataset.hbNumber; delete row.dataset.hbDiff; delete row.dataset.hbParam; }
   display.pre.classList.remove('hb-code-wrap'); display.pre.style.removeProperty('--hb-number-font');
   display.wrapper.replaceWith(...display.body.childNodes); displays.delete(code);
 }
 
 export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings: CodeDisplaySettings, locale: Locale, sessions: Map<string, boolean>, key: string): void {
   const options = codeOptions(block, settings), isDiff = block.language.toLowerCase() === 'diff';
-  const active = options.showTitle || options.showLineNumbers || options.collapsible || options.wrap || isDiff && options.diff;
+  const markers = parameterLines(block);
+  const active = options.showTitle || options.showLineNumbers || options.collapsible || options.wrap || isDiff && options.diff || markers.some(Boolean);
   const pre = code.closest('pre');
   if (!active || !pre?.parentElement) { clearCodeDisplay(code); return; }
   let display = displays.get(code);
@@ -36,6 +38,7 @@ export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings:
   rows.forEach((row, index) => {
     if (options.showLineNumbers && index < block.lines.length) row.dataset.hbNumber = String(options.startLine + index); else delete row.dataset.hbNumber;
     if (kinds[index]) row.dataset.hbDiff = kinds[index]; else delete row.dataset.hbDiff;
+    if (markers[index]) row.dataset.hbParam = markers[index]; else delete row.dataset.hbParam;
   });
   const t = (message: Parameters<typeof translate>[1]) => translate(locale, message);
   const collapsed = options.collapsible && (sessions.get(key) ?? options.collapseByDefault);

@@ -30,6 +30,17 @@ it('无标注代码重复刷新保留展示外框和展开状态', () => {
   renderCode(code, block); renderCodeDisplay(code, block, defaultCodeDisplay, 'zh', sessions, 'plain');
   expect(root.querySelector('.hb-code-display')).toBe(wrapper);
 });
+it('围栏行强调与人工标注共存，参数变化后清理旧强调', () => {
+  const block = parseDocument('```js hl:2\none();\ntwo();\n```').blocks[0]!;
+  const root = document.createElement('div'); root.innerHTML = '<pre><code>one();\ntwo();</code></pre>';
+  const code = root.querySelector('code')!, sessions = new Map<string, boolean>();
+  renderCode(code, block, 'zh', true); renderCodeDisplay(code, block, defaultCodeDisplay, 'zh', sessions, 'params');
+  expect(root.querySelector('[data-hb-param="mark"]')?.textContent).toBe('two();');
+  renderCodeDisplay(code, { ...block, meta: 'hl:1' }, defaultCodeDisplay, 'zh', sessions, 'params');
+  expect(root.querySelectorAll('[data-hb-param]')).toHaveLength(1);
+  expect(root.querySelector('[data-hb-param="mark"]')?.textContent).toBe('one();');
+  clearRenderedCode(code); expect(root.querySelector('[data-hb-param]')).toBeNull(); expect(code.textContent).toBe(block.text);
+});
 it('diff 增删背景保留原始代码，复制两种内容并保留行号', async () => {
   const block = parseDocument('```diff\n-old\n+new\n same\n```').blocks[0]!;
   const root = document.createElement('div'), pre = document.createElement('pre'), code = document.createElement('code'); code.textContent = block.text; pre.append(code); root.append(pre);

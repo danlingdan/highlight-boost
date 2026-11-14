@@ -112,3 +112,7 @@
 [data-hb-diff="delete"] { background-color: color-mix(in srgb, var(--color-red) 15%, transparent) !important; border-inline-start: 2px solid var(--color-red); }
 [data-hb-diff="meta"] { color: var(--text-muted); }
 .hb-line[data-hb-diff] { background-image: linear-gradient(color-mix(in srgb, var(--hb-color) 12%, transparent), color-mix(in srgb, var(--hb-color) 12%, transparent)); }
+[data-hb-param="mark"] { background-color: color-mix(in srgb, var(--color-yellow) 15%, transparent) !important; }
+[data-hb-param="insert"] { background-color: color-mix(in srgb, var(--color-green) 15%, transparent) !important; }
+[data-hb-param="delete"] { background-color: color-mix(in srgb, var(--color-red) 15%, transparent) !important; }
+.hb-line[data-hb-param] { background-image: linear-gradient(color-mix(in srgb, var(--hb-color) 12%, transparent), color-mix(in srgb, var(--hb-color) 12%, transparent)); }

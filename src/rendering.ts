@@ -7,6 +7,7 @@ import { composingState } from './composition';
 import { translate, type Locale } from './i18n';
 import { codeDisplayFacet, codeOptions, diffKinds, type CodeDisplaySettings } from './code-options';
 import { clearCodeDisplay } from './code-display';
+import { parameterLines } from './fence-params';
 
 const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string }>();
 const noteRegions = new WeakMap<HTMLElement, { element: HTMLElement; signature: string }>();
@@ -39,11 +40,13 @@ function editorDecorations(text: string, settings: CodeDisplaySettings): Decorat
   const parsed = parseDocument(text);
   for (const block of parsed.blocks) {
     const options = codeOptions(block, settings), diff = block.language === 'diff' && options.diff ? diffKinds(block.text) : [];
-    if (!options.showLineNumbers && !diff.length) continue;
+    const markers = parameterLines(block);
+    if (!options.showLineNumbers && !diff.length && !markers.some(Boolean)) continue;
     for (const [index, line] of block.lines.entries()) {
       const start = text.lastIndexOf('\n', Math.max(0, line.from - 1)) + 1;
       ranges.push(Decoration.line({ attributes: { class: options.showLineNumbers ? 'hb-editor-code-line hb-numbered' : 'hb-editor-code-line',
         ...(options.showLineNumbers ? { 'data-hb-number': String(options.startLine + index) } : {}), ...(diff[index] ? { 'data-hb-diff': diff[index]! } : {}),
+        ...(markers[index] ? { 'data-hb-param': markers[index]! } : {}),
         style: `--hb-number-font:var(${options.numberFont === 'interface' ? '--font-interface' : '--font-monospace'})` } }).range(start));
     }
   }

@@ -3,6 +3,7 @@ import { colorLabels, presets, type Color, type Preset } from './domain';
 export type Locale = 'zh' | 'en';
 export type Language = 'auto' | Locale;
 export const zh = {
+  excerptSource: '来源：{link} · {label}', excerptHeadings: '标题：{headings}', excerptLines: '{language} · 第 {from}—{to} 行', excerptCodeContext: '代码上下文 · 第 {from}—{to} 行',
   selectionToolbar: '选区面板', selectionToolbarHint: '选中文本后显示语义和颜色操作。', openSelectionToolbar: '打开选区面板',
   selectionContext: '{context} · {count} 处选区', selectionContextOne: '{context} · 1 处选区', mixedSelection: '混合内容', inlineCode: '行内代码',
   blockSelection: '代码块 {block} · 第 {from}—{to} 行', textMode: '文本', lineMode: '整行', recentColors: '最近颜色',
@@ -31,6 +32,7 @@ export const zh = {
 } as const;
 export type Message = keyof typeof zh;
 export const en: Record<Message, string> = {
+  excerptSource: 'Source: {link} · {label}', excerptHeadings: 'Headings: {headings}', excerptLines: '{language} · lines {from}–{to}', excerptCodeContext: 'Code context · lines {from}–{to}',
   selectionToolbar: 'Selection toolbar', selectionToolbarHint: 'Show semantic and color actions when text is selected.', openSelectionToolbar: 'Open selection toolbar',
   selectionContext: '{context} · {count} selections', selectionContextOne: '{context} · 1 selection', mixedSelection: 'Mixed content', inlineCode: 'Inline code',
   blockSelection: 'Code block {block} · lines {from}–{to}', textMode: 'Text', lineMode: 'Whole lines', recentColors: 'Recent colors',

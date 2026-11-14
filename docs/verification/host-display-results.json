@@ -1,0 +1,167 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "display-settings-real-controls",
+      "passed": true
+    },
+    {
+      "name": "display-settings-start-font",
+      "passed": true
+    },
+    {
+      "name": "display-source-line-numbers",
+      "passed": true
+    },
+    {
+      "name": "display-source-diff-backgrounds",
+      "passed": true
+    },
+    {
+      "name": "display-native-fold-command",
+      "passed": true
+    },
+    {
+      "name": "display-native-folded-placeholder",
+      "passed": true
+    },
+    {
+      "name": "display-native-folded-jump-expands",
+      "passed": true
+    },
+    {
+      "name": "display-native-four-components",
+      "passed": true
+    },
+    {
+      "name": "display-title-as-text",
+      "passed": true
+    },
+    {
+      "name": "display-default-folded",
+      "passed": true
+    },
+    {
+      "name": "display-fold-summary-semantics",
+      "passed": true
+    },
+    {
+      "name": "display-copy-collapsed-diff-raw",
+      "passed": true
+    },
+    {
+      "name": "display-copy-collapsed-diff-after",
+      "passed": true
+    },
+    {
+      "name": "display-toggle-expands",
+      "passed": true
+    },
+    {
+      "name": "display-logical-numbers",
+      "passed": true
+    },
+    {
+      "name": "display-wrap-long-line",
+      "passed": true
+    },
+    {
+      "name": "display-fence-overrides-line-default",
+      "passed": true
+    },
+    {
+      "name": "display-copy-keeps-file-comment",
+      "passed": true
+    },
+    {
+      "name": "display-copy-keeps-shell-comment",
+      "passed": true
+    },
+    {
+      "name": "display-fold-session-survives-view-switch",
+      "passed": true
+    },
+    {
+      "name": "display-folded-sidebar-jump",
+      "passed": true
+    },
+    {
+      "name": "display-jump-remembers-expanded-block",
+      "passed": true
+    },
+    {
+      "name": "display-diff-and-human-mark-coexist",
+      "passed": true
+    },
+    {
+      "name": "display-diff-note-kept",
+      "passed": true
+    },
+    {
+      "name": "display-live-toggle-clears-numbers-and-diff",
+      "passed": true
+    },
+    {
+      "name": "display-live-start-number-change",
+      "passed": true
+    },
+    {
+      "name": "display-settings-source-unchanged",
+      "passed": true
+    },
+    {
+      "name": "display-unload-restores-native-dom",
+      "passed": true
+    },
+    {
+      "name": "display-builtin-preview-components",
+      "passed": true
+    },
+    {
+      "name": "display-builtin-diff-prefixes-kept",
+      "passed": true
+    },
+    {
+      "name": "display-builtin-diff-human-mark",
+      "passed": true
+    },
+    {
+      "name": "display-builtin-original-copy-data",
+      "passed": true
+    },
+    {
+      "name": "display-builtin-shell-copy-data",
+      "passed": true
+    },
+    {
+      "name": "display-builtin-copy-after",
+      "passed": true
+    },
+    {
+      "name": "display-builtin-english-controls",
+      "passed": true
+    },
+    {
+      "name": "display-builtin-wrap",
+      "passed": true
+    },
+    {
+      "name": "display-builtin-logical-start",
+      "passed": true
+    },
+    {
+      "name": "display-diff-copy-command",
+      "passed": true
+    },
+    {
+      "name": "display-all-paths-source-exact",
+      "passed": true
+    },
+    {
+      "name": "display-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

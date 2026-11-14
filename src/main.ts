@@ -1,23 +1,30 @@
-import { editorLivePreviewField, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, SuggestModal, type Command, type Editor, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
+import { editorLivePreviewField, getLanguage, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, setTooltip, SuggestModal, type Command, type Editor, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
 import { collectItems } from './anchors';
-import { colorLabels, colorPreset, colors, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
+import { colorPreset, colors, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
 import { parseDocument, sourceLines } from './parsing';
 import { highlightExtension } from './rendering';
 import { editorHistory } from './history';
-import { createMetadataFolding } from './metadata-folding';
+import { createMetadataFolding, metadataLocale } from './metadata-folding';
 import { ReadingHighlights } from './reading-view';
 import { composingState, compositionEvents } from './composition';
-import { normalizeSettings, type Settings } from './settings';
+import { normalizeSettings, type ConfiguredPreset, type Settings } from './settings';
 import { SyntaxService } from './syntax/service';
 import { inlineExcerpt } from './inline-rendering';
+import { colorName, colorSearch, errorMessage, presetName, resolveLocale, translate, type Language, type Locale, type Message } from './i18n';
+import type { Extension } from '@codemirror/state';
 
 const VIEW = 'highlight-boost';
 
 export default class HighlightBoost extends Plugin {
   settings: Settings = normalizeSettings(null);
   private settingsWrites: Promise<void> = Promise.resolve();
-  private presetCommands: { id: string; lines: boolean; command: Command }[] = [];
+  private translatedCommands: { command: Command; title: () => string }[] = [];
+  private uiExtensions: Extension[] = [];
+  private lastLocale?: Locale;
+  private ribbon?: HTMLElement;
+  private settingTab?: HighlightSettings;
+  private colorPickers = new Set<ColorPicker>();
   private readingChildren = new Set<ReadingHighlights>();
   syntax?: SyntaxService;
   async onload(): Promise<void> {
@@ -25,36 +32,36 @@ export default class HighlightBoost extends Plugin {
     this.settings = normalizeSettings(loaded);
     if (JSON.stringify(loaded) !== JSON.stringify(this.settings)) await this.saveSettings();
     if (this.settings.syntaxProvider === 'shiki') {
-      this.syntax = this.addChild(new SyntaxService(this, (element, context) => this.createReadingChild(element, context)));
+      this.syntax = this.addChild(new SyntaxService(this, (element, context) => this.createReadingChild(element, context), () => this.locale));
       await this.syntax.initialize();
     }
-    this.registerEditorExtension([composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField)]);
+    this.uiExtensions.push(metadataLocale.of(this.locale), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField));
+    this.registerEditorExtension(this.uiExtensions);
     this.registerView(VIEW, leaf => new HighlightsView(leaf, this));
-    this.addSettingTab(new HighlightSettings(this));
+    this.settingTab = new HighlightSettings(this);
+    this.addSettingTab(this.settingTab);
     for (const preset of this.settings.presets) {
       for (const lines of [false, true]) {
-        const command = this.addCommand({
-          id: `${lines ? 'lines' : 'apply'}-${preset.id}`, name: `${lines ? '代码行：' : '标记为'}${preset.name}`,
-          editorCallback: editor => this.apply(editor, this.getPreset(preset.id), lines ? 'lines' : 'text'),
-        });
-        this.presetCommands.push({ id: preset.id, lines, command });
+        this.addTranslatedCommand({
+          id: `${lines ? 'lines' : 'apply'}-${preset.id}`,
+          editorCallback: editor => this.apply(editor, this.presetForAction(preset.id), lines ? 'lines' : 'text'),
+        }, () => this.t(lines ? 'linesPreset' : 'applyPreset', { preset: this.presetLabel(this.getPreset(preset.id)) }));
       }
     }
-    for (const color of colors) this.addCommand({
-      id: `color-${color}`, name: `高亮颜色：${colorLabels[color]}`,
-      editorCallback: editor => this.apply(editor, colorPreset(color)),
-    });
-    this.addCommand({ id: 'choose-color', name: '选择高亮颜色', editorCallback: editor => new ColorPicker(this, editor).open() });
-    this.addCommand({ id: 'remove', name: '移除所选标注', editorCallback: editor => this.apply(editor, null) });
-    this.addCommand({ id: 'open-highlights', name: '打开当前笔记重点', callback: () => { void this.openPanel(); } });
-    this.addCommand({ id: 'copy-code', name: '复制当前代码块', editorCallback: editor => { void this.copyCode(editor); } });
-    this.addRibbonIcon('highlighter', '当前笔记重点', () => { void this.openPanel(); });
+    for (const color of colors) this.addTranslatedCommand({
+      id: `color-${color}`, editorCallback: editor => this.applyColor(editor, color),
+    }, () => this.t('colorCommand', { color: this.colorLabel(color) }));
+    this.addTranslatedCommand({ id: 'choose-color', editorCallback: editor => this.chooseColor(editor) }, () => this.t('chooseColor'));
+    this.addTranslatedCommand({ id: 'remove', editorCallback: editor => this.apply(editor, null) }, () => this.t('remove'));
+    this.addTranslatedCommand({ id: 'open-highlights', callback: () => { void this.openPanel(); } }, () => this.t('openPanel'));
+    this.addTranslatedCommand({ id: 'copy-code', editorCallback: editor => { void this.copyCode(editor); } }, () => this.t('copyCode'));
+    this.ribbon = this.addRibbonIcon('highlighter', this.t('panelTitle'), () => { void this.openPanel(); });
     this.registerEvent(this.app.workspace.on('editor-menu', (menu, editor) => {
-      for (const preset of this.settings.presets) menu.addItem(item => item.setTitle(`标记为${preset.name}`).setIcon('highlighter').onClick(() => this.apply(editor, preset)));
+      for (const preset of this.settings.presets) menu.addItem(item => item.setTitle(this.t('applyPreset', { preset: this.presetLabel(preset) })).setIcon('highlighter').onClick(() => this.apply(editor, this.presetForAction(preset.id))));
       menu.addSeparator();
-      menu.addItem(item => item.setTitle('选择高亮颜色…').setIcon('palette').onClick(() => new ColorPicker(this, editor).open()));
-      menu.addItem(item => item.setTitle('标记所选代码行').setIcon('list-ordered').onClick(() => this.apply(editor, this.defaultPreset(), 'lines')));
-      menu.addItem(item => item.setTitle('移除所选标注').setIcon('eraser').onClick(() => this.apply(editor, null)));
+      menu.addItem(item => item.setTitle(`${this.t('chooseColor')}…`).setIcon('palette').onClick(() => this.chooseColor(editor)));
+      menu.addItem(item => item.setTitle(this.t('markLines')).setIcon('list-ordered').onClick(() => this.apply(editor, this.defaultPreset(), 'lines')));
+      menu.addItem(item => item.setTitle(this.t('remove')).setIcon('eraser').onClick(() => this.apply(editor, null)));
     }));
     this.registerEvent(this.app.workspace.on('editor-change', (_editor, info) => {
       this.refreshPanels();
@@ -69,21 +76,48 @@ export default class HighlightBoost extends Plugin {
     }));
   }
 
-  getPreset(id: string): Preset { return this.settings.presets.find(preset => preset.id === id) ?? this.settings.presets[0]!; }
+  get locale(): Locale { return resolveLocale(this.settings.language, getLanguage()); }
+  t(key: Message, values?: Record<string, string | number>): string { return translate(this.locale, key, values); }
+  colorLabel(color: Color): string { return colorName(color, this.locale); }
+  presetLabel(preset: ConfiguredPreset): string { return presetName(preset, this.locale); }
+  getPreset(id: string): ConfiguredPreset { return this.settings.presets.find(preset => preset.id === id) ?? this.settings.presets[0]!; }
+  presetForAction(id: string): Preset { const preset = this.getPreset(id); return { ...preset, name: this.presetLabel(preset) }; }
+  applyColor(editor: Editor, color: Color): void { this.apply(editor, { ...colorPreset(color), name: this.colorLabel(color) }); }
+  chooseColor(editor: Editor): void {
+    const picker = new ColorPicker(this, editor, () => this.colorPickers.delete(picker));
+    this.colorPickers.add(picker);
+    picker.open();
+  }
+  private addTranslatedCommand(command: Omit<Command, 'name'>, title: () => string): void {
+    this.translatedCommands.push({ command: this.addCommand({ ...command, name: title() }), title });
+  }
   private createReadingChild(element: HTMLElement, context: MarkdownPostProcessorContext): ReadingHighlights {
     const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child));
     this.readingChildren.add(child);
     return child;
   }
-  defaultPreset(): Preset { return this.getPreset(this.settings.defaultPreset); }
+  defaultPreset(): Preset { return this.presetForAction(this.settings.defaultPreset); }
 
   saveSettings(): Promise<void> {
     this.settings = normalizeSettings(this.settings);
-    for (const entry of this.presetCommands) entry.command.name = `${this.manifest.name}: ${entry.lines ? '代码行：' : '标记为'}${this.getPreset(entry.id).name}`;
+    for (const entry of this.translatedCommands) entry.command.name = `${this.manifest.name}: ${entry.title()}`;
+    const locale = this.locale, changed = this.lastLocale !== locale;
+    this.lastLocale = locale;
+    const updates: Promise<unknown>[] = [];
+    if (changed && this.uiExtensions.length) {
+      this.uiExtensions.splice(0, 1, metadataLocale.of(locale));
+      this.app.workspace.updateOptions();
+      if (this.ribbon) setTooltip(this.ribbon, this.t('panelTitle'));
+      for (const picker of this.colorPickers) picker.refreshLocale();
+      this.settingTab?.display();
+      for (const leaf of this.app.workspace.getLeavesOfType(VIEW)) updates.push(leaf.setViewState(leaf.getViewState()));
+      if (this.syntax) updates.push(this.syntax.refresh());
+    }
+    this.refreshPanels();
     const snapshot = structuredClone(this.settings);
     const write = this.settingsWrites.catch(() => {}).then(() => this.saveData(snapshot));
     this.settingsWrites = write;
-    return write;
+    return Promise.all([write, ...updates]).then(() => {});
   }
 
   apply(editor: Editor, preset: Preset | null, mode: 'text' | 'lines' = 'text'): void {
@@ -94,21 +128,21 @@ export default class HighlightBoost extends Plugin {
       });
       const plan = planHighlight(editor.getValue(), selections, preset, mode);
       this.commitPlan(editor, plan);
-    } catch (error) { new Notice(error instanceof Error ? error.message : String(error)); }
+    } catch (error) { new Notice(errorMessage(error, this.locale)); }
   }
 
   rebind(editor: Editor, item: HighlightItem): void {
     try {
       const selections = editor.listSelections();
-      if (selections.length !== 1) throw new Error('请选择一处新的标注位置。');
+      if (selections.length !== 1) throw new Error(this.t('selectTarget'));
       const selected = selections[0]!;
       const a = editor.posToOffset(selected.anchor), b = editor.posToOffset(selected.head);
       this.commitPlan(editor, planCodeRebind(editor.getValue(), item, { from: Math.min(a, b), to: Math.max(a, b) }));
-    } catch (error) { new Notice(error instanceof Error ? error.message : String(error)); }
+    } catch (error) { new Notice(errorMessage(error, this.locale)); }
   }
 
   private commitPlan(editor: Editor, plan: EditPlan): void {
-      if (!plan.changes.length) { new Notice('请选择文本，或将光标放入已有高亮。'); return; }
+      if (!plan.changes.length) { new Notice(this.t('selectText')); return; }
       const before = editor.getValue();
       const updated = applyChanges(before, plan.changes);
       const updatedLines = sourceLines(updated);
@@ -126,9 +160,9 @@ export default class HighlightBoost extends Plugin {
   async copyCode(editor: Editor): Promise<void> {
     const position = editor.posToOffset(editor.getCursor());
     const block = parseDocument(editor.getValue()).blocks.find(block => block.from <= position && position <= block.to);
-    if (!block) { new Notice('请将光标放入代码块。'); return; }
+    if (!block) { new Notice(this.t('cursorInCode')); return; }
     await navigator.clipboard.writeText(block.text);
-    new Notice('已复制代码。');
+    new Notice(this.t('copiedCode'));
   }
 
   async openPanel(): Promise<void> {
@@ -146,14 +180,17 @@ export default class HighlightBoost extends Plugin {
     for (const leaf of this.app.workspace.getLeavesOfType(VIEW)) if (leaf.view instanceof HighlightsView) leaf.view.refresh();
   }
 
-  onunload(): void { for (const child of this.readingChildren) child.unload(); }
+  onunload(): void {
+    for (const picker of this.colorPickers) picker.close();
+    for (const child of this.readingChildren) child.unload();
+  }
 }
 
 class HighlightsView extends ItemView {
   private note: MarkdownView | undefined;
   constructor(leaf: WorkspaceLeaf, private plugin: HighlightBoost) { super(leaf); }
   getViewType(): string { return VIEW; }
-  getDisplayText(): string { return '当前笔记重点'; }
+  getDisplayText(): string { return this.plugin.t('panelTitle'); }
   getIcon(): string { return 'highlighter'; }
   async onOpen(): Promise<void> { this.refresh(); }
   refresh(): void {
@@ -161,23 +198,24 @@ class HighlightsView extends ItemView {
     if (active) this.note = active;
     this.contentEl.empty();
     this.contentEl.addClass('hb-panel');
-    this.contentEl.createEl('h4', { text: '当前笔记重点' });
+    this.contentEl.createEl('h4', { text: this.plugin.t('panelTitle') });
     const view = this.note;
-    if (!view?.file) { this.contentEl.createEl('p', { text: '打开笔记后，在这里查看正文和代码重点。' }); return; }
+    if (!view?.file) { this.contentEl.createEl('p', { text: this.plugin.t('panelEmpty') }); return; }
     const text = view.editor.getValue();
     const items = collectItems(text);
-    this.contentEl.createEl('p', { text: `${view.file.basename} · ${items.length} 条`, cls: 'hb-summary' });
-    if (!items.length) this.contentEl.createEl('p', { text: '选中正文或代码，使用“标记为重点”开始。' });
+    this.contentEl.createEl('p', { text: this.plugin.t(items.length === 1 ? 'summaryOne' : 'summary', { note: view.file.basename, count: items.length }), cls: 'hb-summary' });
+    if (!items.length) this.contentEl.createEl('p', { text: this.plugin.t('noHighlights', { preset: this.plugin.presetLabel(this.plugin.getPreset('important')) }) });
     for (const item of items) this.card(view, item);
   }
   private card(view: MarkdownView, item: HighlightItem): void {
     const card = this.contentEl.createDiv({ cls: `hb-card hb-${item.color}` });
     if (item.semantic) card.dataset.hbSemantic = item.semantic;
-    const jump = card.createEl('button', { text: item.quote || '空行', cls: item.kind === 'prose' ? 'hb-quote' : 'hb-quote hb-code-quote' });
-    const info = item.kind === 'prose' ? '正文' : item.kind === 'inline-code' ? `行内代码 · 第 ${item.line} 行` : `${item.language || '代码'} · 第 ${item.line} 行`;
-    card.createEl('small', { text: `${item.label} · ${info}${item.status === 'resolved' ? '' : ' · 待重新定位'}` });
+    const jump = card.createEl('button', { text: item.quote || this.plugin.t('blankLine'), cls: item.kind === 'prose' ? 'hb-quote' : 'hb-quote hb-code-quote' });
+    const label = item.markId ? item.label : this.plugin.colorLabel(item.color);
+    const info = item.kind === 'prose' ? this.plugin.t('prose') : item.kind === 'inline-code' ? this.plugin.t('inlineInfo', { line: item.line! }) : this.plugin.t('codeInfo', { language: item.language || this.plugin.t('code'), line: item.line! });
+    card.createEl('small', { text: `${label} · ${info}${item.status === 'resolved' ? '' : ` · ${this.plugin.t('pending')}`}` });
     this.registerDomEvent(jump, 'click', () => {
-      if (item.status !== 'resolved') { new Notice('原内容已变化，请重新选择目标。'); return; }
+      if (item.status !== 'resolved') { new Notice(this.plugin.t('contentChanged')); return; }
       void this.app.workspace.revealLeaf(view.leaf);
       const from = view.editor.offsetToPos(item.from), to = view.editor.offsetToPos(item.to);
       view.editor.setSelection(from, to);
@@ -185,14 +223,14 @@ class HighlightsView extends ItemView {
       view.editor.focus();
     });
     if (item.kind === 'code-line' || item.kind === 'code-range') {
-      const rebind = card.createEl('button', { text: '绑定到当前选区', cls: 'hb-rebind' });
-      rebind.title = '在该代码块中选择新的位置，再点击绑定。';
+      const rebind = card.createEl('button', { text: this.plugin.t('rebind'), cls: 'hb-rebind' });
+      rebind.title = this.plugin.t('rebindHint');
       this.registerDomEvent(rebind, 'click', () => this.plugin.rebind(view.editor, item));
     }
-    const copy = card.createEl('button', { text: '复制摘录', cls: 'hb-copy-excerpt' });
+    const copy = card.createEl('button', { text: this.plugin.t('copyExcerpt'), cls: 'hb-copy-excerpt' });
     this.registerDomEvent(copy, 'click', () => {
       const quote = item.kind === 'prose' ? `> ${item.quote}` : item.kind === 'inline-code' ? inlineExcerpt(item.quote) : `\`\`\`${item.language}\n${item.quote}\n\`\`\``;
-      void navigator.clipboard.writeText(`${quote}\n\n来源：[[${view.file!.path}]] · ${item.label}`);
+      void navigator.clipboard.writeText(`${quote}\n\n${this.plugin.t('sourceLine', { path: view.file!.path, label })}`);
     });
   }
 }
@@ -201,49 +239,82 @@ class HighlightSettings extends PluginSettingTab {
   constructor(private plugin: HighlightBoost) { super(plugin.app, plugin); }
   display(): void {
     this.containerEl.empty();
-    new Setting(this.containerEl).setName('语法着色').setDesc('选择宿主着色或内置 Shiki。更改后重新启用插件。').addDropdown(dropdown => dropdown
-      .addOption('native', '宿主').addOption('shiki', '内置 Shiki')
+    const t = this.plugin.t.bind(this.plugin);
+    new Setting(this.containerEl).setName(t('language')).setDesc(t('languageHint')).addDropdown(dropdown => {
+      dropdown.selectEl.dataset.hbSetting = 'language';
+      dropdown.selectEl.setAttribute('aria-label', t('language'));
+      dropdown.addOption('auto', t('autoLanguage')).addOption('zh', '中文').addOption('en', 'English')
+        .setValue(this.plugin.settings.language).onChange(async value => {
+          this.plugin.settings.language = value as Language;
+          await this.plugin.saveSettings();
+        });
+    });
+    new Setting(this.containerEl).setName(t('syntax')).setDesc(t('syntaxHint')).addDropdown(dropdown => {
+      dropdown.selectEl.dataset.hbSetting = 'syntax';
+      dropdown.selectEl.setAttribute('aria-label', t('syntax'));
+      dropdown.addOption('native', t('native')).addOption('shiki', t('builtinShiki'))
       .setValue(this.plugin.settings.syntaxProvider).onChange(async value => {
         this.plugin.settings.syntaxProvider = value as 'native' | 'shiki';
         await this.plugin.saveSettings();
-      }));
-    new Setting(this.containerEl).setName('默认语义').setDesc('“标记所选代码行”使用的语义。').addDropdown(dropdown => {
-      for (const preset of this.plugin.settings.presets) dropdown.addOption(preset.id, preset.name);
+      });
+    });
+    let defaults: HTMLSelectElement;
+    new Setting(this.containerEl).setName(t('defaultPreset')).setDesc(t('defaultPresetHint')).addDropdown(dropdown => {
+      defaults = dropdown.selectEl;
+      defaults.dataset.hbSetting = 'defaultPreset';
+      defaults.setAttribute('aria-label', t('defaultPreset'));
+      for (const preset of this.plugin.settings.presets) dropdown.addOption(preset.id, this.plugin.presetLabel(preset));
       dropdown.setValue(this.plugin.settings.defaultPreset).onChange(async value => {
         this.plugin.settings.defaultPreset = value;
         await this.plugin.saveSettings();
       });
     });
-    this.containerEl.createEl('h3', { text: '语义预设' });
-    this.containerEl.createEl('p', { text: '名称和颜色用于后续标注。已有标注保留名称快照。直接改色保留已有语义；正文颜色使用原生格式。' });
+    this.containerEl.createEl('h3', { text: t('presets') });
+    this.containerEl.createEl('p', { text: t('presetsHint') });
     for (const preset of this.plugin.settings.presets) {
-      new Setting(this.containerEl).setName(preset.name).addText(text => text
-        .setPlaceholder(preset.name).setValue(preset.name).onChange(async value => {
+      const name = this.plugin.presetLabel(preset);
+      const row = new Setting(this.containerEl).setName(name);
+      row.addText(text => {
+        text.inputEl.dataset.hbPreset = preset.id;
+        text.inputEl.setAttribute('aria-label', t('presetName', { preset: name }));
+        text.setPlaceholder(name).setValue(name).onChange(async value => {
           this.plugin.getPreset(preset.id).name = value;
+          this.plugin.getPreset(preset.id).customName = true;
           await this.plugin.saveSettings();
-        })).addDropdown(dropdown => {
-          for (const color of colors) dropdown.addOption(color, colorLabels[color]);
+          row.nameEl.textContent = this.plugin.presetLabel(this.plugin.getPreset(preset.id));
+          for (const option of defaults.options) option.textContent = this.plugin.presetLabel(this.plugin.getPreset(option.value));
+        });
+      }).addDropdown(dropdown => {
+          dropdown.selectEl.dataset.hbPresetColor = preset.id;
+          dropdown.selectEl.setAttribute('aria-label', t('presetColor', { preset: name }));
+          for (const color of colors) dropdown.addOption(color, this.plugin.colorLabel(color));
           dropdown.setValue(preset.color).onChange(async value => {
             this.plugin.getPreset(preset.id).color = value as Color;
             await this.plugin.saveSettings();
           });
         });
     }
-    new Setting(this.containerEl).setName('恢复默认预设').addButton(button => button.setButtonText('恢复默认').onClick(async () => {
-      this.plugin.settings = normalizeSettings({ syntaxProvider: this.plugin.settings.syntaxProvider });
+    new Setting(this.containerEl).setName(t('resetPresets')).addButton(button => button.setButtonText(t('reset')).onClick(async () => {
+      this.plugin.settings = normalizeSettings({ syntaxProvider: this.plugin.settings.syntaxProvider, language: this.plugin.settings.language });
       await this.plugin.saveSettings();
       this.display();
     }));
-    this.containerEl.createEl('p', { text: '在快捷键中为“标记为重点”“代码行：疑问”等命令配置按键。' });
+    this.containerEl.createEl('p', { text: t('shortcutsHint') });
   }
 }
 
 class ColorPicker extends SuggestModal<Color> {
-  constructor(private plugin: HighlightBoost, private editor: Editor) {
+  constructor(private plugin: HighlightBoost, private editor: Editor, private dispose: () => void) {
     super(plugin.app);
-    this.setPlaceholder('选择高亮颜色');
+    this.refreshLocale();
   }
-  getSuggestions(query: string): Color[] { return colors.filter(color => colorLabels[color].includes(query) || color.includes(query.toLowerCase())); }
-  renderSuggestion(color: Color, element: HTMLElement): void { element.createSpan({ text: colorLabels[color] }); }
-  onChooseSuggestion(color: Color): void { this.plugin.apply(this.editor, colorPreset(color)); }
+  refreshLocale(): void {
+    this.setPlaceholder(this.plugin.t('chooseColor'));
+    this.inputEl.setAttribute('aria-label', this.plugin.t('chooseColor'));
+    if (this.inputEl.isConnected) this.inputEl.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+  getSuggestions(query: string): Color[] { return colors.filter(color => colorSearch(color, this.plugin.locale, query)); }
+  renderSuggestion(color: Color, element: HTMLElement): void { element.createSpan({ text: this.plugin.colorLabel(color) }); }
+  onChooseSuggestion(color: Color): void { this.plugin.applyColor(this.editor, color); }
+  onClose(): void { super.onClose(); this.dispose(); }
 }

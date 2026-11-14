@@ -30,7 +30,11 @@ export function clearRenderedCode(code: HTMLElement): void {
 
 function editorDecorations(text: string): DecorationSet {
   const ranges = [];
-  for (const block of parseDocument(text).blocks) for (const mark of block.metadata?.marks ?? []) {
+  const parsed = parseDocument(text);
+  for (const inline of parsed.inlines) if (inline.metadata && inline.content.from < inline.content.to) {
+    ranges.push(Decoration.mark({ class: `hb-inline hb-${inline.metadata.color}`, attributes: { title: inline.metadata.label } }).range(inline.content.from, inline.content.to));
+  }
+  for (const block of parsed.blocks) for (const mark of block.metadata?.marks ?? []) {
     const resolved = resolveMark(block, mark);
     if (resolved.status !== 'resolved') continue;
     const from = sourceOffset(block, resolved.span.from);

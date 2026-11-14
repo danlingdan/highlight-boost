@@ -1,6 +1,7 @@
 import { MarkdownRenderChild, MarkdownView, type App, type MarkdownPostProcessorContext } from 'obsidian';
 import { clearRenderedCode, renderCode } from './rendering';
 import { readingTargets } from './reading-mapping';
+import { clearInlineCode, inlineCodes, inlineTargets, renderInlineCode } from './inline-rendering';
 
 export class ReadingHighlights extends MarkdownRenderChild {
   private observer?: MutationObserver;
@@ -25,6 +26,10 @@ export class ReadingHighlights extends MarkdownRenderChild {
       if (!this.active || revision !== this.revision) return;
       this.observer?.disconnect();
       try {
+        const inlines = inlineTargets(this.containerEl, text, element => this.context.getSectionInfo(element));
+        const matchedInlines = new Set(inlines.map(target => target.code));
+        for (const code of inlineCodes(this.containerEl)) if (!matchedInlines.has(code)) clearInlineCode(code);
+        for (const { code, inline } of inlines) renderInlineCode(code, inline);
         const targets = readingTargets(this.containerEl, text, element => this.context.getSectionInfo(element));
         const matched = new Set(targets.map(target => target.code));
         for (const code of this.containerEl.querySelectorAll<HTMLElement>('pre > code')) if (!matched.has(code)) clearRenderedCode(code);
@@ -36,6 +41,7 @@ export class ReadingHighlights extends MarkdownRenderChild {
     this.active = false;
     this.revision++;
     this.observer?.disconnect();
+    for (const code of inlineCodes(this.containerEl)) clearInlineCode(code);
     for (const code of this.containerEl.querySelectorAll<HTMLElement>('pre > code')) clearRenderedCode(code);
     this.dispose();
   }

@@ -46,7 +46,7 @@
   let from = initial.indexOf('beta');
   editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 4));
   app.commands.executeCommandById('highlight-boost:apply-question');
-  assert('prose-partial-recolor', editor.getValue().includes('==🟡alpha== ==🔴beta== ==🟡gamma=='));
+  assert('prose-partial-recolor', editor.getValue().replace(/%%hbp:.+?%%/g, '').includes('==🟡alpha== ==🔴beta== ==🟡gamma=='));
   assert('prose-selection-preserved', editor.getSelection() === 'beta');
   editor.focus();
   editor.undo();
@@ -60,13 +60,13 @@
   assert('code-exact-text', editor.getValue().includes('%%hb:') && editor.getValue().includes('  memcpy(dst, src, n);'));
   await tick();
   assert('editor-code-decoration', view.containerEl.querySelector('.hb-text')?.textContent === 'src', view.containerEl.querySelector('.hb-text')?.textContent);
-  const chip = view.containerEl.querySelector('.hb-metadata-chip');
+  const chip = view.containerEl.querySelector('.hb-metadata-chip[data-hb-metadata="block"]');
   assert('live-preview-metadata-folded', Boolean(chip));
   chip.dispatchEvent(new MouseEvent('mousedown', { bubbles: true }));
   assert('metadata-widget-expands', editor.getSelection().startsWith('%%hb:'));
   const sourcePosition = editor.getValue().lastIndexOf('memcpy(dst, src, n)') + 'memcpy(dst, '.length;
   editor.setSelection(editor.offsetToPos(sourcePosition), editor.offsetToPos(sourcePosition + 3));
-  view.containerEl.querySelector('.hb-metadata-chip').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
+  view.containerEl.querySelector('.hb-metadata-chip[data-hb-metadata="block"]').dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true }));
   assert('metadata-keyboard-expands', editor.getSelection().startsWith('%%hb:'));
   editor.setSelection(editor.offsetToPos(sourcePosition), editor.offsetToPos(sourcePosition + 3));
   const marked = editor.getValue();

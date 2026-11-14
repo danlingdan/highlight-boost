@@ -9,6 +9,7 @@ class MetadataWidget extends WidgetType {
   toDOM(view: EditorView): HTMLElement {
     const button = view.dom.ownerDocument.createElement('button');
     button.className = 'hb-metadata-chip';
+    button.dataset.hbMetadata = this.kind;
     button.textContent = this.kind === 'inline' ? '行内标注' : this.kind === 'prose' ? '正文标注' : `代码标注 · ${this.count} 条`;
     button.setAttribute('aria-label', '展开标注元数据');
     const expand = () => {

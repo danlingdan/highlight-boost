@@ -57,6 +57,6 @@ pnpm prepare:vault
 
 构建生成 `main.js`。将它与 `manifest.json`、`styles.css` 放入测试库的插件目录，即可加载原型。`prepare:vault` 在项目内创建 `.test-vault` 并复制原型及样例。
 
-[桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [最新验证](docs/verification/migration.md) · [v1 格式](docs/formats/README.md)
+[桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [性能与验收进展](docs/verification/phase-g-performance.md) · [v1 格式](docs/formats/README.md)
 
-阶段 A—F 已完成。174 项逻辑/DOM/引擎测试和 635 项宿主检查通过，当前提供源码及内部构建。接下来进入阶段 G，统一开展桌面兼容验收、性能测试与优化。
+阶段 A—F 已完成，阶段 G 已建立第一轮性能基线并优化解析、侧栏复用和索引调度。180 项逻辑/DOM/引擎测试、500 组解析差分与 638 项宿主功能检查通过。桌面兼容矩阵和剩余性能路径继续推进，当前提供源码及内部构建。

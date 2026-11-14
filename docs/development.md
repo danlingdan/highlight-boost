@@ -88,8 +88,12 @@ Shiki 测试首次从其官方 Release 下载产物到 `.research-cache`，核�
 
 ## 构建与 CI
 
+阶段 G 的 `bench:core` 和 `bench:host` 分别运行 Node 核心和实际宿主性能样例；原始数组、样例大小及计时定义见 [性能记录](verification/phase-g-performance.md)。`verify-parsing.mjs --base=<revision>` 编译指定版本解析器，与当前版本运行固定种子的差分样例。`report-performance.mjs` 核对前后样例及环境后生成对照表。
+
+索引在时间片之间使用 MessageChannel 让出线程，合并批量进度通知，最后发布完整状态。未变内容复用原条目，编辑仍通过版本号优先于旧读取。侧栏单次刷新按源文共享摘录解析；这些缓存与复用均随操作或索引生命周期更新。
+
 Obsidian 与 CodeMirror 模块由宿主提供，构建时保留 external。Markdown 结构解析依赖打包进入 main.js。
 
-GitHub Actions 运行 `pnpm check` 并上传 `main.js`、`manifest.json`、`styles.css` 为构建产物。宿主测试使用本机安装的 Obsidian，单独执行。功能完成后，阶段 G 再建立统一性能基线和优化对照。
+GitHub Actions 在 Windows、macOS、Linux 的 Node 24 上运行 `pnpm check`，分别上传构建产物。宿主测试使用实际 Obsidian 运行包单独执行；Node 矩阵和宿主兼容矩阵分别记录。
 
 内置展示交互脚本在构建时合入 JavaScript，主题 CSS 随模块加载。第三方 MIT 声明写入 `main.js`，构建产物同时包含 `THIRD_PARTY_NOTICES.md` 与 `licenses/`。

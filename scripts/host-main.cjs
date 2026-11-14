@@ -22,12 +22,22 @@ scenarios.embedded = ['embedded-syntax.scenario.js', 'host-embedded-results.json
 scenarios.inline = ['inline.scenario.js', 'host-inline-results.json'];
 scenarios.prose = ['prose.scenario.js', 'host-prose-results.json'];
 scenarios.i18n = ['i18n.scenario.js', 'host-i18n-results.json'];
+scenarios.selection = ['selection-toolbar.scenario.js', 'host-selection-results.json'];
 scenarios['i18n-restart'] = ['i18n-restart.scenario.js', 'host-i18n-restart-results.json'];
 scenarios['prose-restart'] = ['prose-restart.scenario.js', 'host-prose-restart-results.json'];
 scenarios['inline-restart'] = ['inline-restart.scenario.js', 'host-inline-restart-results.json'];
 scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-results.json'];
 scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
+if (mode === 'selection') electron.ipcMain.handle('hb-selection-capture', async (event, name) => {
+  if (!['selection-dark-zh', 'selection-light-en'].includes(name)) throw new Error('Unknown screenshot');
+  await event.sender.capturePage({}, { stayHidden: true, stayAwake: true });
+  await new Promise(resolve => setTimeout(resolve, 500));
+  const screenshot = await event.sender.capturePage({}, { stayHidden: true, stayAwake: true });
+  const directory = path.join(root, 'docs', 'verification', 'images');
+  fs.mkdirSync(directory, { recursive: true });
+  fs.writeFileSync(path.join(directory, `${name}.png`), screenshot.toPNG());
+});
 const [scenarioName, resultName] = scenarios[mode];
 const version = require(path.join(source, 'package.json')).version;
 fs.mkdirSync(profile, { recursive: true });
@@ -73,7 +83,7 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n') {
+      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || mode === 'selection') {
         contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }

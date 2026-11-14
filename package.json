@@ -19,7 +19,8 @@
     "test:embedded": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=embedded",
     "test:inline": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=inline && node scripts/test-host.mjs --mode=inline-restart",
     "test:prose": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=prose && node scripts/test-host.mjs --mode=prose-restart",
-    "test:i18n": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=i18n && node scripts/test-host.mjs --mode=i18n-restart"
+    "test:i18n": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=i18n && node scripts/test-host.mjs --mode=i18n-restart",
+    "test:selection": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=selection"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",

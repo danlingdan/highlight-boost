@@ -1,5 +1,6 @@
 import type { CodeBlock } from './domain';
 import { parseDocument } from './parsing';
+import { renderedCodeText } from './rendering';
 
 export interface ReadingSection { lineStart: number; lineEnd: number }
 
@@ -9,7 +10,7 @@ export function readingTargets(root: HTMLElement, text: string, sectionOf: (elem
   const result: { code: HTMLElement; block: CodeBlock }[] = [];
   const used = new Set<CodeBlock>();
   for (const code of codes) {
-    const value = code.textContent ?? '';
+    const value = renderedCodeText(code);
     const section = sectionOf(code) ?? sectionOf(root);
     const candidates = blocks.filter(block => {
       const line = text.slice(0, block.fenceFrom).split('\n').length - 1;
@@ -18,7 +19,7 @@ export function readingTargets(root: HTMLElement, text: string, sectionOf: (elem
     let block: CodeBlock | undefined;
     if (candidates.length === 1) block = candidates[0];
     else {
-      const matching = codes.filter(other => other.textContent === value);
+      const matching = codes.filter(other => renderedCodeText(other) === value);
       if (matching.length === candidates.length) block = candidates[matching.indexOf(code)];
     }
     if (!block || used.has(block)) continue;

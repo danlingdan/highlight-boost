@@ -16,6 +16,10 @@
   background: color-mix(in srgb, var(--hb-color) 16%, transparent);
   box-shadow: inset 3px 0 var(--hb-color);
 }
+.expressive-code .ec-line.hb-line {
+  background: color-mix(in srgb, var(--hb-color) 16%, transparent);
+  box-shadow: inset 3px 0 var(--hb-color);
+}
 .hb-code-row { display: inline-block; min-width: 100%; }
 .hb-panel { padding: var(--size-4-3); }
 .hb-summary { color: var(--text-muted); font-size: var(--font-ui-small); }

@@ -7,13 +7,20 @@ import { composingState } from './composition';
 
 const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string }>();
 
+function expressiveRows(code: HTMLElement): HTMLElement[] { return [...code.querySelectorAll<HTMLElement>(':scope > .ec-line > .code')]; }
+export function renderedCodeText(code: HTMLElement): string {
+  const rows = expressiveRows(code);
+  return rows.length ? rows.map(row => row.textContent ?? '').join('\n') : code.textContent ?? '';
+}
+
 export function clearRenderedCode(code: HTMLElement): void {
   const previous = rendered.get(code);
-  if (previous && code.querySelector('.hb-code-row')) {
+  if (previous && code.querySelector('.hb-code-row, .hb-text, .ec-line.hb-line')) {
     if (previous.original.map(node => node.textContent ?? '').join('') === code.textContent) {
       code.replaceChildren(...previous.original.map(node => node.cloneNode(true)));
     } else {
       for (const element of code.querySelectorAll('.hb-text, .hb-code-row')) element.replaceWith(...element.childNodes);
+      for (const row of code.querySelectorAll('.ec-line.hb-line')) row.classList.remove('hb-line', 'hb-default', 'hb-red', 'hb-orange', 'hb-yellow', 'hb-green', 'hb-blue', 'hb-purple');
     }
   }
   rendered.delete(code);
@@ -79,12 +86,34 @@ function rangeFor(element: HTMLElement, from: number, to: number): Range | undef
 export function renderCode(code: HTMLElement, block: CodeBlock): void {
   const signature = JSON.stringify({ text: block.text, marks: block.metadata?.marks ?? [] });
   const previous = rendered.get(code);
-  if (previous?.signature === signature && code.querySelector('.hb-code-row')) return;
+  if (previous?.signature === signature && code.querySelector('.hb-code-row, .hb-text, .ec-line.hb-line')) return;
   clearRenderedCode(code);
   if (!block.metadata?.marks.length) return;
-  const original = code.textContent ?? '';
+  const original = renderedCodeText(code);
   if (original !== block.text && original !== `${block.text}\n`) return;
   rendered.set(code, { original: [...code.childNodes].map(node => node.cloneNode(true)), signature });
+  const rows = expressiveRows(code);
+  if (rows.length) {
+    code.dataset.hbRendered = '1';
+    for (const mark of block.metadata!.marks) {
+      const resolved = resolveMark(block, mark);
+      if (resolved.status !== 'resolved') continue;
+      let offset = 0;
+      for (const row of rows) {
+        const end = offset + (row.textContent?.length ?? 0);
+        if (mark.kind === 'lines') {
+          if (resolved.span.from === resolved.span.to ? offset === resolved.span.from : offset < resolved.span.to && resolved.span.from <= end) {
+            row.parentElement!.classList.add('hb-line', `hb-${mark.color}`);
+          }
+        } else {
+          const a = Math.max(0, resolved.span.from - offset), b = Math.min(end - offset, resolved.span.to - offset);
+          if (a < b) wrapMark(row, a, b, mark, false);
+        }
+        offset = end + 1;
+      }
+    }
+    return;
+  }
   const doc = code.ownerDocument;
   const output = doc.createDocumentFragment();
   let offset = 0;
@@ -130,12 +159,12 @@ export function renderCode(code: HTMLElement, block: CodeBlock): void {
   }
 }
 
-function wrapMark(code: HTMLElement, from: number, to: number, mark: CodeMark): void {
+function wrapMark(code: HTMLElement, from: number, to: number, mark: CodeMark, requireRow = true): void {
   let offset = 0;
   for (const node of textNodes(code)) {
     const end = offset + node.length;
     const a = Math.max(0, from - offset), b = Math.min(node.length, to - offset);
-    if (a < b && node.parentElement?.closest('.hb-code-row')) {
+    if (a < b && (!requireRow || node.parentElement?.closest('.hb-code-row'))) {
       const range = code.ownerDocument.createRange();
       range.setStart(node, a); range.setEnd(node, b);
       const wrapper = code.ownerDocument.createElement('span');

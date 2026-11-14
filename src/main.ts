@@ -1,12 +1,12 @@
-import { editorLivePreviewField, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, SuggestModal, type Editor, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
+import { editorLivePreviewField, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, SuggestModal, type Editor, type WorkspaceLeaf } from 'obsidian';
 import { collectItems } from './anchors';
 import { colorLabels, colorPreset, colors, presets, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
 import { parseDocument, sourceLines } from './parsing';
-import { highlightExtension, renderCode } from './rendering';
+import { highlightExtension } from './rendering';
 import { editorHistory } from './history';
 import { createMetadataFolding } from './metadata-folding';
-import { readingTargets } from './reading-mapping';
+import { ReadingHighlights } from './reading-view';
 import { composingState, compositionEvents } from './composition';
 
 const VIEW = 'highlight-boost';
@@ -14,6 +14,7 @@ interface Settings { schemaVersion: 1; defaultPreset: string }
 
 export default class HighlightBoost extends Plugin {
   settings: Settings = { schemaVersion: 1, defaultPreset: 'important' };
+  private readingChildren = new Set<ReadingHighlights>();
   async onload(): Promise<void> {
     this.settings = { ...this.settings, ...await this.loadData() };
     this.registerEditorExtension([composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField)]);
@@ -41,7 +42,14 @@ export default class HighlightBoost extends Plugin {
     }));
     this.registerEvent(this.app.workspace.on('editor-change', () => this.refreshPanels()));
     this.registerEvent(this.app.workspace.on('active-leaf-change', () => this.refreshPanels()));
-    this.registerMarkdownPostProcessor((element, context) => this.renderReading(element, context));
+    this.registerMarkdownPostProcessor((element, context) => {
+      const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child));
+      this.readingChildren.add(child);
+      context.addChild(child);
+    }, 100);
+    this.registerEvent(this.app.vault.on('modify', file => {
+      for (const child of this.readingChildren) if (child.context.sourcePath === file.path) child.refresh();
+    }));
   }
 
   defaultPreset(): Preset { return presets.find(preset => preset.id === this.settings.defaultPreset) ?? presets[0]!; }
@@ -104,12 +112,7 @@ export default class HighlightBoost extends Plugin {
     for (const leaf of this.app.workspace.getLeavesOfType(VIEW)) if (leaf.view instanceof HighlightsView) leaf.view.refresh();
   }
 
-  async renderReading(element: HTMLElement, context: MarkdownPostProcessorContext): Promise<void> {
-    const file = this.app.vault.getFileByPath(context.sourcePath);
-    if (!file) return;
-    const text = await this.app.vault.cachedRead(file);
-    for (const { code, block } of readingTargets(element, text, element => context.getSectionInfo(element))) renderCode(code, block);
-  }
+  onunload(): void { for (const child of this.readingChildren) child.unload(); }
 }
 
 class HighlightsView extends ItemView {

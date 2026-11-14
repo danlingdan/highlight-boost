@@ -3,6 +3,13 @@ import { colorLabels, presets, type Color, type Preset } from './domain';
 export type Locale = 'zh' | 'en';
 export type Language = 'auto' | Locale;
 export const zh = {
+  workbench: '高亮工作台', searchAllHighlights: '搜索重点', scope: '检索范围', noteScope: '当前笔记', folderScope: '当前目录', vaultScope: '全库', collectionScope: '集合',
+  allColors: '全部颜色', allLanguages: '全部语言', pathFilter: '路径包含', sortOrder: '排序', sourceOrder: '原文顺序', semanticOrder: '语义顺序',
+  rebuildIndex: '重建索引', indexErrors: '{count} 个文件读取失败，可重建重试。', indexedNotes: '已索引 {count} 篇笔记',
+  newCollection: '新建集合', collectionName: '集合名称', create: '创建', addCollection: '加入集合', removeCollectionEntry: '从集合移除',
+  chooseCollection: '选择集合', noCollection: '先创建集合，再从卡片加入重点。', deleteCollection: '删除集合',
+  exportNote: '生成摘录笔记', exportTemplate: '摘录模板', templateMarkdown: '保留格式', templatePlain: '纯文本', templateQuote: '引用块', templateCode: '代码围栏',
+  excerptNoteTitle: '高亮摘录', exported: '已生成摘录笔记：{path}', noExport: '当前结果没有条目。', missingSource: '源文件已删除，集合保留原摘录。',
   excerptSource: '来源：{link} · {label}', excerptHeadings: '标题：{headings}', excerptLines: '{language} · 第 {from}—{to} 行', excerptCodeContext: '代码上下文 · 第 {from}—{to} 行',
   selectionToolbar: '选区面板', selectionToolbarHint: '选中文本后显示语义和颜色操作。', openSelectionToolbar: '打开选区面板',
   selectionContext: '{context} · {count} 处选区', selectionContextOne: '{context} · 1 处选区', mixedSelection: '混合内容', inlineCode: '行内代码',
@@ -32,6 +39,13 @@ export const zh = {
 } as const;
 export type Message = keyof typeof zh;
 export const en: Record<Message, string> = {
+  workbench: 'Highlight workbench', searchAllHighlights: 'Search highlights', scope: 'Search scope', noteScope: 'Current note', folderScope: 'Current folder', vaultScope: 'Vault', collectionScope: 'Collection',
+  allColors: 'All colors', allLanguages: 'All languages', pathFilter: 'Path contains', sortOrder: 'Sort order', sourceOrder: 'Source order', semanticOrder: 'Semantic order',
+  rebuildIndex: 'Rebuild index', indexErrors: '{count} files could not be read. Rebuild to retry.', indexedNotes: '{count} notes indexed',
+  newCollection: 'New collection', collectionName: 'Collection name', create: 'Create', addCollection: 'Add to collection', removeCollectionEntry: 'Remove from collection',
+  chooseCollection: 'Choose collection', noCollection: 'Create a collection, then add highlights from cards.', deleteCollection: 'Delete collection',
+  exportNote: 'Create excerpt note', exportTemplate: 'Excerpt template', templateMarkdown: 'Keep formatting', templatePlain: 'Plain text', templateQuote: 'Block quote', templateCode: 'Code fence',
+  excerptNoteTitle: 'Highlight excerpts', exported: 'Created excerpt note: {path}', noExport: 'There are no results to export.', missingSource: 'The source file was deleted. The collection keeps its excerpt.',
   excerptSource: 'Source: {link} · {label}', excerptHeadings: 'Headings: {headings}', excerptLines: '{language} · lines {from}–{to}', excerptCodeContext: 'Code context · lines {from}–{to}',
   selectionToolbar: 'Selection toolbar', selectionToolbarHint: 'Show semantic and color actions when text is selected.', openSelectionToolbar: 'Open selection toolbar',
   selectionContext: '{context} · {count} selections', selectionContextOne: '{context} · 1 selection', mixedSelection: 'Mixed content', inlineCode: 'Inline code',

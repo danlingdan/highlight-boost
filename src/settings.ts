@@ -1,5 +1,7 @@
 import { colors, presets, type Color, type Preset } from './domain';
 import type { Language } from './i18n';
+import { normalizeCollections, type HighlightCollection } from './collections';
+import type { ExcerptTemplate } from './excerpts';
 
 export interface ConfiguredPreset extends Preset { customName?: true }
 
@@ -11,6 +13,8 @@ export interface Settings {
   language: Language;
   selectionToolbar: boolean;
   recentColors: Color[];
+  collections: HighlightCollection[];
+  excerptTemplate: ExcerptTemplate;
 }
 
 function record(value: unknown): Record<string, unknown> {
@@ -36,5 +40,7 @@ export function normalizeSettings(value: unknown): Settings {
     language: input.language === 'zh' || input.language === 'en' ? input.language : 'auto',
     selectionToolbar: input.selectionToolbar !== false,
     recentColors: Array.isArray(input.recentColors) ? [...new Set(input.recentColors.filter((color): color is Color => colors.includes(color as Color)))].slice(0, 3) : [],
+    collections: normalizeCollections(input.collections),
+    excerptTemplate: ['plain', 'quote', 'code'].includes(String(input.excerptTemplate)) ? input.excerptTemplate as ExcerptTemplate : 'markdown',
   };
 }

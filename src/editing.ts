@@ -1,6 +1,6 @@
-import { contains, emojis, overlaps, type Change, type CodeBlock, type CodeMark, type CodeMetadata, type EditPlan, type HighlightItem, type Preset, type Span } from './domain';
+import { contains, emojis, overlaps, type Change, type CodeBlock, type CodeMark, type CodeMetadata, type EditPlan, type HighlightItem, type Preset, type ProseMetadata, type Span } from './domain';
 import { logicalOffset, resolveMark } from './anchors';
-import { parseDocument, serializeInlineMetadata, serializeMetadata } from './parsing';
+import { parseDocument, serializeInlineMetadata, serializeMetadata, serializeProseMetadata } from './parsing';
 
 export function applyChanges(text: string, changes: Change[]): string {
   let result = text;
@@ -9,25 +9,32 @@ export function applyChanges(text: string, changes: Change[]): string {
 }
 
 function proseChange(text: string, span: Span, preset: Preset | null, selections: Span[] = [span]): Change {
-  const highlights = parseDocument(text).highlights.filter(item => overlaps(item, span));
+  const parsed = parseDocument(text);
+  const highlights = parsed.highlights.filter(item => overlaps(item, span));
   const from = Math.min(span.from, ...highlights.map(item => item.from));
-  const to = Math.max(span.to, ...highlights.map(item => item.to));
-  const runs: { text: string; color: string | null; sources: number[] }[] = [];
-  function add(value: string, color: string | null, source: number) {
+  const to = Math.max(span.to, ...highlights.map(item => item.metadataSpan?.to ?? item.to));
+  const runs: { text: string; color: string | null; metadata?: ProseMetadata; sources: number[] }[] = [];
+  const whole = highlights.length === 1 && selections.some(selection => contains(selection, highlights[0]!.content)) ? highlights[0]!.metadata : undefined;
+  const applied: ProseMetadata | undefined = preset && !preset.id.startsWith('color:') ? { v: 1, id: whole?.id ?? '', semantic: preset.id, label: preset.name } : undefined;
+  function add(value: string, color: string | null, metadata: ProseMetadata | undefined, source: number) {
     const last = runs.at(-1);
-    if (last && last.color === color) { last.text += value; last.sources.push(source); }
-    else runs.push({ text: value, color, sources: [source] });
+    if (last && last.color === color && last.metadata?.id === metadata?.id && last.metadata?.semantic === metadata?.semantic && last.metadata?.label === metadata?.label) { last.text += value; last.sources.push(source); }
+    else runs.push({ text: value, color, metadata, sources: [source] });
   }
   for (let p = from; p < to;) {
+    const metadata = highlights.find(item => item.metadataSpan && item.metadataSpan.from <= p && p < item.metadataSpan.to)?.metadataSpan;
+    if (metadata) { p = metadata.to; continue; }
     const highlight = highlights.find(item => item.from <= p && p < item.to);
     if (highlight && (p < highlight.content.from || p >= highlight.content.to)) { p++; continue; }
     const selected = selections.some(selection => selection.from <= p && p < selection.to);
-    add(text[p]!, selected ? preset?.color ?? null : highlight?.color ?? null, p);
+    add(text[p]!, selected ? preset?.color ?? null : highlight?.color ?? null,
+      selected ? preset ? applied ?? highlight?.metadata : undefined : highlight?.metadata, p);
     p++;
   }
   let insert = '';
   const starts = new Array<number>(to - from + 1).fill(-1);
   const ends = new Array<number>(to - from + 1).fill(-1);
+  const usedIds = new Set(parsed.highlights.filter(item => item.from < from).flatMap(item => item.metadata ? [item.metadata.id] : []));
   for (const run of runs) {
     const base = insert.length;
     const parts = run.text.match(/^(\s*)([\s\S]*?)(\s*)$/)!;
@@ -38,7 +45,17 @@ function proseChange(text: string, span: Span, preset: Preset | null, selections
       starts[run.sources[i]! - from] = at;
       ends[run.sources[i]! + 1 - from] = at + 1;
     }
-    insert += opening ? `${parts[1]}${opening}${parts[2]}==${parts[3]}` : run.text;
+    let suffix = '';
+    if (opening && run.metadata) {
+      const id = run.metadata.id && !usedIds.has(run.metadata.id) ? run.metadata.id : crypto.randomUUID();
+      usedIds.add(id);
+      suffix = serializeProseMetadata({ ...run.metadata, id });
+    }
+    if (suffix) for (let i = trailing; i < run.sources.length; i++) {
+      starts[run.sources[i]! - from] = starts[run.sources[i]! - from]! + suffix.length;
+      ends[run.sources[i]! + 1 - from] = ends[run.sources[i]! + 1 - from]! + suffix.length;
+    }
+    insert += opening ? `${parts[1]}${opening}${parts[2]}==${suffix}${parts[3]}` : run.text;
   }
   let next = insert.length;
   for (let i = starts.length - 1; i >= 0; i--) { if (starts[i]! >= 0) next = starts[i]!; else starts[i] = next; }
@@ -147,7 +164,8 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
     const duplicated = parsed.inlines.some(other => other.from < inline.from && other.metadata?.id === inline.metadata?.id);
     const insert = preset ? serializeInlineMetadata({
       v: 1, id: inline.metadata && !duplicated ? inline.metadata.id : crypto.randomUUID(),
-      color: preset.color, semantic: preset.id, label: preset.name,
+      color: preset.color, semantic: preset.id.startsWith('color:') && inline.metadata && !inline.metadata.semantic.startsWith('color:') ? inline.metadata.semantic : preset.id,
+      label: preset.id.startsWith('color:') && inline.metadata && !inline.metadata.semantic.startsWith('color:') ? inline.metadata.label : preset.name,
     }) : '';
     changes.push({ ...(inline.metadataSpan ?? { from: inline.to, to: inline.to }), insert });
   }
@@ -161,7 +179,10 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
       if (!preset) metadata.marks = metadata.marks.filter(mark => !matches(mark));
       else {
         const existing = metadata.marks.find(mark => mark.from === target.from && mark.to === target.to && mark.kind === mode);
-        if (existing) Object.assign(existing, { ...target, id: existing.id });
+        if (existing) Object.assign(existing, { ...target, id: existing.id,
+          semantic: preset.id.startsWith('color:') && !existing.semantic.startsWith('color:') ? existing.semantic : target.semantic,
+          label: preset.id.startsWith('color:') && !existing.semantic.startsWith('color:') ? existing.label : target.label,
+        });
         else metadata.marks.push(target);
       }
     }

@@ -10,6 +10,20 @@ function annotate(text: string, word: string) {
 }
 
 describe('persistent block identity', () => {
+  it('保留三类未知版本注释，读取和正文编辑不将其改写为 v1', () => {
+    const source = 'prose `inline`\n\n```js\nvalue\n```';
+    const annotated = applyChanges(source, planHighlight(source, [{ from: 0, to: source.length }], presets[0]!).changes);
+    const future = annotated.replaceAll('"v":1', '"v":2');
+    const comments = [...future.matchAll(/%%hb[pi]?:.+?%%/g)].map(match => match[0]);
+    expect(comments).toHaveLength(3);
+    const parsed = parseDocument(future);
+    expect(parsed.highlights.every(item => !item.metadata)).toBe(true);
+    expect(parsed.inlines.every(item => !item.metadata)).toBe(true);
+    expect(parsed.blocks.every(item => !item.metadata)).toBe(true);
+    const from = future.indexOf('prose');
+    const edited = applyChanges(future, planHighlight(future, [{ from, to: from + 5 }], null).changes);
+    for (const comment of comments) expect(edited).toContain(comment);
+  });
   it('assigns fresh IDs when editing a copied block and retains the original', () => {
     const original = annotate('```js\nconst count = 1;\n```', 'count');
     const copy = `${original}\n\n${original}`;

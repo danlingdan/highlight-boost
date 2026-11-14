@@ -41,6 +41,7 @@ export interface InlineCode extends Span {
 export interface SourceLine extends Span { text: string; number: number }
 export interface CodeBlock extends Span {
   language: string;
+  meta?: string;
   text: string;
   lines: SourceLine[];
   fenceFrom: number;

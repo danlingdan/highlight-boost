@@ -108,7 +108,7 @@ export function parseDocument(text: string): ParsedDocument {
         mapped.push({ from: raw.from + Math.max(0, column), to: raw.from + Math.max(0, column) + value.length, text: value, number: i + 1 });
       }
       const block: CodeBlock = {
-        from, to, fenceFrom: from, language: node.lang ?? '', text: node.value, lines: mapped,
+        from, to, fenceFrom: from, language: node.lang ?? '', meta: node.meta ?? '', text: node.value, lines: mapped,
         prefix: text.slice(first.from, from).replace(/(?:[-+*]|\d+[.)])\s+/g, token => ' '.repeat(token.length)),
       };
       const previous = lines[first.number - 2];

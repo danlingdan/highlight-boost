@@ -1,0 +1,115 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "prose-semantic-snapshot",
+      "passed": true
+    },
+    {
+      "name": "prose-selection-retained",
+      "passed": true
+    },
+    {
+      "name": "prose-repeat-keeps-source-and-id",
+      "passed": true
+    },
+    {
+      "name": "prose-split-selection-retained",
+      "passed": true
+    },
+    {
+      "name": "prose-split-ownership",
+      "passed": true
+    },
+    {
+      "name": "prose-split-identities",
+      "passed": true
+    },
+    {
+      "name": "prose-split-single-undo",
+      "passed": true
+    },
+    {
+      "name": "prose-split-redo",
+      "passed": true
+    },
+    {
+      "name": "prose-color-keeps-semantic",
+      "passed": true
+    },
+    {
+      "name": "prose-native-color-changes",
+      "passed": true
+    },
+    {
+      "name": "prose-remove-keeps-outer-ownership",
+      "passed": true
+    },
+    {
+      "name": "prose-remove-single-undo",
+      "passed": true
+    },
+    {
+      "name": "prose-merge-semantic",
+      "passed": true
+    },
+    {
+      "name": "prose-preset-rename-keeps-existing-snapshot",
+      "passed": true
+    },
+    {
+      "name": "prose-table-async-commit",
+      "passed": true
+    },
+    {
+      "name": "prose-new-mark-uses-renamed-preset",
+      "passed": true
+    },
+    {
+      "name": "prose-sidebar-semantic-identities",
+      "passed": true
+    },
+    {
+      "name": "prose-sidebar-snapshot-label",
+      "passed": true
+    },
+    {
+      "name": "prose-sidebar-source-jump",
+      "passed": true
+    },
+    {
+      "name": "prose-source-raw-metadata",
+      "passed": true
+    },
+    {
+      "name": "prose-live-metadata-folding",
+      "passed": true
+    },
+    {
+      "name": "prose-metadata-keyboard-expand",
+      "passed": true
+    },
+    {
+      "name": "prose-reading-native-highlights",
+      "passed": true
+    },
+    {
+      "name": "prose-reading-metadata-hidden",
+      "passed": true
+    },
+    {
+      "name": "prose-reading-inline-markdown",
+      "passed": true
+    },
+    {
+      "name": "prose-reading-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "prose-no-runtime-errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

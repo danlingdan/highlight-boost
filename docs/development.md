@@ -36,13 +36,16 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 
 “界面语言”支持跟随 Obsidian、中文和 English，即时更新已打开的侧栏、颜色选择器、元数据按钮及内置代码组件。自动模式识别中文，其余语言使用英文。配置 schemaVersion 2 增加 `language: auto | zh | en`；预设可带 `customName: true`，记录用户明确编辑过的名称，包括与默认中文同名的自定义名称。内置默认名称随界面翻译，自定义名称和已有标注快照保持原文；新标注保存操作时显示的名称。恢复预设默认值保留界面语言与语法提供者。
 
+迁移核心分为 `migration-plan.ts` 的纯转换计划、`migration-service.ts` 的逐文件执行与恢复、`migration-obsidian.ts` 的宿主存储，以及 `migration-ui.ts` 的预览窗口。应用复用预览快照；宿主使用 `Vault.process` 核对并更新源文，同时核对已打开编辑器。原始恢复记录独立保存，状态文件可从基础快照重新读取。格式和用户流程见 [迁移说明](formats/migration.md)。
+
 ## 自动化测试
 
 - `pnpm lint`：代码规范。
 - `pnpm typecheck`：类型检查。
 - `pnpm test`：文档解析、纯编辑计划、锚定和 DOM 渲染断言。
 - `pnpm build`：生成宿主加载的 CommonJS 插件。
-- `pnpm test:host`：构建并依次运行二十三个独立 Electron 进程，覆盖已有标注闭环、全库工作台、脚注批注、代码展示、diff、围栏参数和独立进程恢复。
+- `pnpm test:host`：构建并依次运行二十五个独立 Electron 进程，覆盖已有标注闭环、工作台、批注、代码展示、diff、围栏参数、导入迁移和独立进程恢复。
+- `pnpm test:migration`：通过真实窗口验证预览、颜色映射、文件选择、应用计数和逐文件恢复，并在新进程恢复原文。
 - `pnpm test:parameters`：验证四类围栏参数、嵌套 callout、人工标注叠加、纯代码复制及卸载清理。
 - `pnpm test:display`：运行代码展示与重启专项，验证设置控件、折叠跳转、逻辑行号、换行、两种 diff 复制及渲染清理。
 - `pnpm test:notes`：运行批注和新进程恢复专项，归档阅读脚注与 Live Preview 摘要截图。

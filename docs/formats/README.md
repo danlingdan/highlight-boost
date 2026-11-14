@@ -22,3 +22,5 @@
 展示配置与标注格式独立。围栏参数、全局默认值、会话折叠和 diff 复制规则见 [代码展示与 diff](code-display.md)。
 
 第三方围栏参数直接参与展示，语义元数据独立保存。字段优先级、行选择规则、扩展字段与样例见 [参数对照](fence-parameters.md)。
+
+Highlightr、Hilo 与代码行参数可通过独立窗口迁移，预览和逐文件恢复格式见 [迁移说明](migration.md)。迁移记录独立于笔记 v1 和插件配置 schemaVersion 2。

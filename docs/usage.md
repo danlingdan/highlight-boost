@@ -1,5 +1,9 @@
 # 桌面操作说明
 
+## 导入与迁移
+
+命令面板执行“Highlight Boost：导入与迁移”，选择当前笔记、目录或全库。生成预览，调整颜色映射，勾选文件后应用。Highlightr 与 Hilo 转为原生颜色；围栏行强调可选转为 HB 标注。历史记录中点击“恢复此文件”逐文件还原，重启后仍可操作。完整示例见 [迁移说明](formats/migration.md)。
+
 ## 代码展示
 
 原 Code Styler / Codeblock Customizer 的 `file:"demo.js" ln:20 fold hl:1,3`，以及 Hugo、Expressive Code 的通用参数可直接显示。完整映射见 [第三方围栏参数](formats/fence-parameters.md)。

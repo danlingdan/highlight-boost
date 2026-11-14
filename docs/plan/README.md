@@ -32,6 +32,6 @@ Obsidian 1.14 已提供六色正文高亮。项目采用“正文与代码统一
 
 ## 状态说明
 
-本目录已完成资料检索、官方 API 核查、竞品源码抽样及方案制定。阶段 D 已完成 P01—P09 验收，阶段 E 已完成全库检索、集合与摘录。阶段 F 已交付 [批注](../verification/annotations.md)、[代码展示与 diff](../verification/code-display.md)、[通用围栏参数适配](../verification/fence-parameters.md)。接下来继续导入迁移、预览与逐文件恢复。
+阶段 A—F 已完成。阶段 D 覆盖 P01—P09，阶段 E 提供全库检索、集合与摘录；阶段 F 完成批注、代码展示、diff、通用参数和导入迁移，完整覆盖矩阵见 [阶段 F 验收](../verification/migration.md)。接下来进入阶段 G 的统一兼容验收、性能测试与优化。
 
 宿主测试采用隔离 Electron、JavaScript、官方 CLI 或 CDP 接口；功能自动化通过程序接口执行。

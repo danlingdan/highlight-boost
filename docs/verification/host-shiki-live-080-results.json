@@ -1,0 +1,545 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "fixed-shiki-version",
+      "passed": true
+    },
+    {
+      "name": "no-other-code-plugins",
+      "passed": true
+    },
+    {
+      "name": "false-sql-navigation-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "false-sql-edit-applies",
+      "passed": true
+    },
+    {
+      "name": "false-sql-undo-restores-source",
+      "passed": true
+    },
+    {
+      "name": "false-sql-reading-widget",
+      "passed": true
+    },
+    {
+      "name": "false-sql-reading-copy",
+      "passed": true
+    },
+    {
+      "name": "false-abap-navigation-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "false-abap-edit-applies",
+      "passed": true
+    },
+    {
+      "name": "false-abap-undo-restores-source",
+      "passed": true
+    },
+    {
+      "name": "false-abap-reading-widget",
+      "passed": true
+    },
+    {
+      "name": "false-abap-reading-copy",
+      "passed": true
+    },
+    {
+      "name": "false-asm-navigation-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "false-asm-edit-applies",
+      "passed": true
+    },
+    {
+      "name": "false-asm-undo-restores-source",
+      "passed": true
+    },
+    {
+      "name": "false-asm-reading-widget",
+      "passed": true
+    },
+    {
+      "name": "false-asm-reading-copy",
+      "passed": true
+    },
+    {
+      "name": "true-sql-navigation-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "true-sql-edit-applies",
+      "passed": true
+    },
+    {
+      "name": "true-sql-undo-restores-source",
+      "passed": true
+    },
+    {
+      "name": "true-sql-reading-widget",
+      "passed": true
+    },
+    {
+      "name": "true-sql-reading-copy",
+      "passed": true
+    },
+    {
+      "name": "true-abap-navigation-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "true-abap-edit-applies",
+      "passed": true
+    },
+    {
+      "name": "true-abap-undo-restores-source",
+      "passed": true
+    },
+    {
+      "name": "true-abap-reading-widget",
+      "passed": true
+    },
+    {
+      "name": "true-abap-reading-copy",
+      "passed": true
+    },
+    {
+      "name": "true-asm-navigation-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "true-asm-edit-applies",
+      "passed": true
+    },
+    {
+      "name": "true-asm-undo-restores-source",
+      "passed": true
+    },
+    {
+      "name": "true-asm-reading-widget",
+      "passed": true
+    },
+    {
+      "name": "true-asm-reading-copy",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": [
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "sql",
+      "phase": "open-without-edit",
+      "nativeTokens": 15,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "sql",
+      "phase": "cursor-only",
+      "nativeTokens": 15,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "sql",
+      "phase": "scroll-only",
+      "nativeTokens": 15,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "sql",
+      "phase": "document-edit",
+      "nativeTokens": 19,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 2
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "sql",
+      "phase": "reading",
+      "expressiveCode": 1,
+      "expressiveCopyButtons": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "sql",
+      "phase": "return-to-live",
+      "nativeTokens": 15,
+      "shikiInlineColors": 10,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 3
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "abap",
+      "phase": "open-without-edit",
+      "nativeTokens": 7,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "abap",
+      "phase": "cursor-only",
+      "nativeTokens": 7,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "abap",
+      "phase": "scroll-only",
+      "nativeTokens": 7,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "abap",
+      "phase": "document-edit",
+      "nativeTokens": 10,
+      "shikiInlineColors": 12,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 2
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "abap",
+      "phase": "reading",
+      "expressiveCode": 1,
+      "expressiveCopyButtons": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "abap",
+      "phase": "return-to-live",
+      "nativeTokens": 7,
+      "shikiInlineColors": 11,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 3
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "asm",
+      "phase": "open-without-edit",
+      "nativeTokens": 8,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "asm",
+      "phase": "cursor-only",
+      "nativeTokens": 8,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "asm",
+      "phase": "scroll-only",
+      "nativeTokens": 8,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "asm",
+      "phase": "document-edit",
+      "nativeTokens": 11,
+      "shikiInlineColors": 12,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 2
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "asm",
+      "phase": "reading",
+      "expressiveCode": 1,
+      "expressiveCopyButtons": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": false,
+      "language": "asm",
+      "phase": "return-to-live",
+      "nativeTokens": 8,
+      "shikiInlineColors": 11,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 3
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "sql",
+      "phase": "open-without-edit",
+      "nativeTokens": 15,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "sql",
+      "phase": "cursor-only",
+      "nativeTokens": 15,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "sql",
+      "phase": "scroll-only",
+      "nativeTokens": 15,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "sql",
+      "phase": "document-edit",
+      "nativeTokens": 19,
+      "shikiInlineColors": 11,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 2
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "sql",
+      "phase": "reading",
+      "expressiveCode": 1,
+      "expressiveCopyButtons": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "sql",
+      "phase": "return-to-live",
+      "nativeTokens": 15,
+      "shikiInlineColors": 10,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 3
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "abap",
+      "phase": "open-without-edit",
+      "nativeTokens": 7,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "abap",
+      "phase": "cursor-only",
+      "nativeTokens": 7,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "abap",
+      "phase": "scroll-only",
+      "nativeTokens": 7,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "abap",
+      "phase": "document-edit",
+      "nativeTokens": 10,
+      "shikiInlineColors": 12,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 2
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "abap",
+      "phase": "reading",
+      "expressiveCode": 1,
+      "expressiveCopyButtons": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "abap",
+      "phase": "return-to-live",
+      "nativeTokens": 7,
+      "shikiInlineColors": 11,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 3
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "asm",
+      "phase": "open-without-edit",
+      "nativeTokens": 8,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "asm",
+      "phase": "cursor-only",
+      "nativeTokens": 8,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "asm",
+      "phase": "scroll-only",
+      "nativeTokens": 8,
+      "shikiInlineColors": 0,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "asm",
+      "phase": "document-edit",
+      "nativeTokens": 11,
+      "shikiInlineColors": 12,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 2
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "asm",
+      "phase": "reading",
+      "expressiveCode": 1,
+      "expressiveCopyButtons": 1
+    },
+    {
+      "version": "0.8.0",
+      "hb": true,
+      "language": "asm",
+      "phase": "return-to-live",
+      "nativeTokens": 8,
+      "shikiInlineColors": 11,
+      "expressiveCode": 0,
+      "expressiveCopyButtons": 0,
+      "editButtons": 0,
+      "tokenRequests": 3
+    }
+  ]
+}

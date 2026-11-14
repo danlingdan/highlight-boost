@@ -18,7 +18,7 @@ function proseChange(text: string, span: Span, preset: Preset | null, selections
   const applied: ProseMetadata | undefined = preset && !preset.id.startsWith('color:') ? { v: 1, id: whole?.id ?? '', semantic: preset.id, label: preset.name } : undefined;
   function add(value: string, color: string | null, metadata: ProseMetadata | undefined, source: number) {
     const last = runs.at(-1);
-    if (last && last.color === color && last.metadata?.id === metadata?.id && last.metadata?.semantic === metadata?.semantic && last.metadata?.label === metadata?.label) { last.text += value; last.sources.push(source); }
+    if (last && last.color === color && last.metadata?.id === metadata?.id && last.metadata?.semantic === metadata?.semantic && last.metadata?.label === metadata?.label && last.metadata?.noteRef === metadata?.noteRef) { last.text += value; last.sources.push(source); }
     else runs.push({ text: value, color, metadata, sources: [source] });
   }
   for (let p = from; p < to;) {
@@ -28,7 +28,7 @@ function proseChange(text: string, span: Span, preset: Preset | null, selections
     if (highlight && (p < highlight.content.from || p >= highlight.content.to)) { p++; continue; }
     const selected = selections.some(selection => selection.from <= p && p < selection.to);
     add(text[p]!, selected ? preset?.color ?? null : highlight?.color ?? null,
-      selected ? preset ? applied ?? highlight?.metadata : undefined : highlight?.metadata, p);
+      selected ? preset ? applied ? { ...applied, ...(highlight?.metadata?.noteRef ? { noteRef: highlight.metadata.noteRef } : {}) } : highlight?.metadata : undefined : highlight?.metadata, p);
     p++;
   }
   let insert = '';
@@ -113,6 +113,7 @@ export function planCodeRebind(text: string, reference: Pick<HighlightItem, 'blo
   metadata.marks[index] = {
     ...codeMark(block, span, { id: previous.semantic, name: previous.label, color: previous.color }, previous.kind),
     id: metadata.marks[index]!.id,
+    ...(previous.note ? { note: previous.note } : {}),
   };
   const insert = serializeMetadata(metadata);
   const delta = insert.length - (block.metadataSpan.to - block.metadataSpan.from);
@@ -166,6 +167,7 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
       v: 1, id: inline.metadata && !duplicated ? inline.metadata.id : crypto.randomUUID(),
       color: preset.color, semantic: preset.id.startsWith('color:') && inline.metadata && !inline.metadata.semantic.startsWith('color:') ? inline.metadata.semantic : preset.id,
       label: preset.id.startsWith('color:') && inline.metadata && !inline.metadata.semantic.startsWith('color:') ? inline.metadata.label : preset.name,
+      ...(inline.metadata?.note ? { note: inline.metadata.note } : {}),
     }) : '';
     changes.push({ ...(inline.metadataSpan ?? { from: inline.to, to: inline.to }), insert });
   }

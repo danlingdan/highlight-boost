@@ -30,7 +30,7 @@ export function excerptContext(text: string, item: HighlightItem): ExcerptContex
     const from = heading.position!.start.offset!, to = heading.position!.end.offset!;
     if (parsed.excluded.some(span => span.from <= from && to <= span.to)) continue;
     const removals = parsed.highlights.flatMap(mark => [
-      { from: mark.from, to: mark.content.from }, { from: mark.content.to, to: mark.to }, ...(mark.metadataSpan ? [mark.metadataSpan] : []),
+      { from: mark.from, to: mark.content.from }, { from: mark.content.to, to: mark.to }, ...(mark.metadataSpan ? [mark.metadataSpan] : []), ...(mark.footnoteSpan ? [mark.footnoteSpan] : []),
     ]).concat(parsed.inlines.flatMap(inline => inline.metadataSpan ? [inline.metadataSpan] : []))
       .filter(span => from <= span.from && span.to <= to).map(span => ({ from: span.from - from, to: span.to - from, insert: '' }));
     const title = plainText(fromMarkdown(applyChanges(text.slice(from, to), removals)).children[0]!).trim();
@@ -72,5 +72,6 @@ export function formatExcerpt(item: HighlightItem, context: ExcerptContext, sour
   if (context.line !== undefined) parts.push(translate(locale, 'excerptLines', { language: item.language || translate(locale, 'code'), from: context.line, to: context.endLine! }));
   if (context.code !== undefined && context.code !== item.quote) parts.push(`${translate(locale, 'excerptCodeContext', { from: context.contextFrom!, to: context.contextTo! })}\n\n${template === 'plain' ? context.code : template === 'quote' ? fencedExcerpt(context.code, item.language).split('\n').map(line => `> ${line}`).join('\n') : fencedExcerpt(context.code, item.language)}`);
   if (item.status !== 'resolved') parts.push(translate(locale, 'pending'));
+  if (item.note) parts.push(`${translate(locale, 'annotation')}\n\n${item.note}`);
   return parts.join('\n\n');
 }

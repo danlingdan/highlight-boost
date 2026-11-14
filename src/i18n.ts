@@ -3,6 +3,7 @@ import { colorLabels, presets, type Color, type Preset } from './domain';
 export type Locale = 'zh' | 'en';
 export type Language = 'auto' | Locale;
 export const zh = {
+  annotation: '批注', editAnnotation: '编辑批注', annotationHint: '保存后随笔记保留。清空内容可移除批注。', save: '保存', cancel: '取消', footnote: '脚注', expandFootnote: '展开脚注',
   workbench: '高亮工作台', searchAllHighlights: '搜索重点', scope: '检索范围', noteScope: '当前笔记', folderScope: '当前目录', vaultScope: '全库', collectionScope: '集合',
   allColors: '全部颜色', allLanguages: '全部语言', pathFilter: '路径包含', sortOrder: '排序', sourceOrder: '原文顺序', semanticOrder: '语义顺序',
   rebuildIndex: '重建索引', indexErrors: '{count} 个文件读取失败，可重建重试。', indexedNotes: '已索引 {count} 篇笔记',
@@ -39,6 +40,7 @@ export const zh = {
 } as const;
 export type Message = keyof typeof zh;
 export const en: Record<Message, string> = {
+  annotation: 'Annotation', editAnnotation: 'Edit annotation', annotationHint: 'Saved in the note. Clear the text to remove the annotation.', save: 'Save', cancel: 'Cancel', footnote: 'Footnote', expandFootnote: 'Expand footnote',
   workbench: 'Highlight workbench', searchAllHighlights: 'Search highlights', scope: 'Search scope', noteScope: 'Current note', folderScope: 'Current folder', vaultScope: 'Vault', collectionScope: 'Collection',
   allColors: 'All colors', allLanguages: 'All languages', pathFilter: 'Path contains', sortOrder: 'Sort order', sourceOrder: 'Source order', semanticOrder: 'Semantic order',
   rebuildIndex: 'Rebuild index', indexErrors: '{count} files could not be read. Rebuild to retry.', indexedNotes: '{count} notes indexed',

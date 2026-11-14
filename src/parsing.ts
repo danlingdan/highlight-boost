@@ -22,7 +22,7 @@ function isMetadata(value: unknown): value is CodeMetadata {
     Number.isSafeInteger(mark.from) && Number.isSafeInteger(mark.to) && mark.from >= 0 && mark.to >= mark.from &&
     typeof mark.quote === 'string' && typeof mark.prefix === 'string' && typeof mark.suffix === 'string' &&
     typeof mark.semantic === 'string' && typeof mark.label === 'string' && colors.includes(mark.color) &&
-    (mark.occurrenceCount === undefined || (Number.isSafeInteger(mark.occurrenceCount) && mark.occurrenceCount > 0)));
+      (mark.occurrenceCount === undefined || (Number.isSafeInteger(mark.occurrenceCount) && mark.occurrenceCount > 0)) && (mark.note === undefined || typeof mark.note === 'string'));
 }
 
 export function serializeMetadata(data: CodeMetadata): string {
@@ -45,20 +45,20 @@ function isProseMetadata(value: unknown): value is ProseMetadata {
   if (!value || typeof value !== 'object') return false;
   const data = value as Partial<ProseMetadata>;
   return data.v === 1 && typeof data.id === 'string' && data.id.length > 0 &&
-    typeof data.semantic === 'string' && typeof data.label === 'string';
+    typeof data.semantic === 'string' && typeof data.label === 'string' && (data.noteRef === undefined || typeof data.noteRef === 'string' && /^hb-[A-Za-z0-9-]+$/.test(data.noteRef));
 }
 
 function isInlineMetadata(value: unknown): value is InlineMetadata {
   if (!value || typeof value !== 'object') return false;
   const data = value as Partial<InlineMetadata>;
   return data.v === 1 && typeof data.id === 'string' && data.id.length > 0 &&
-    colors.includes(data.color!) && typeof data.semantic === 'string' && typeof data.label === 'string';
+    colors.includes(data.color!) && typeof data.semantic === 'string' && typeof data.label === 'string' && (data.note === undefined || typeof data.note === 'string');
 }
 
 export function parseDocument(text: string): ParsedDocument {
   const tree = fromMarkdown(text, { extensions: [gfm()], mdastExtensions: [gfmFromMarkdown()] });
   const lines = sourceLines(text);
-  const result: ParsedDocument = { blocks: [], highlights: [], excluded: [], prose: [], inlines: [] };
+  const result: ParsedDocument = { blocks: [], highlights: [], excluded: [], prose: [], inlines: [], footnotes: [], footnoteReferences: [] };
   if (/^---\r?\n/.test(text)) {
     const end = /\r?\n(?:---|\.\.\.)\s*(?:\r?\n|$)/g;
     end.lastIndex = text.indexOf('\n') + 1;
@@ -70,6 +70,15 @@ export function parseDocument(text: string): ParsedDocument {
     const from = node.position?.start.offset;
     const to = node.position?.end.offset;
     if (from === undefined || to === undefined) return;
+    if (node.type === 'footnoteDefinition') {
+      const raw = text.slice(from, to).replace(/^\[\^[^\]]+\]:[ \t]*/, '');
+      const content = raw.split(/\r\n|\n|\r/).map((line, index) => index ? line.replace(/^(?: {4}|\t)/, '') : line).join('\n');
+      result.footnotes.push({ id: node.identifier, text: content, span: { from, to } });
+      if (node.identifier.startsWith('hb-')) { result.excluded.push({ from, to }); return; }
+    }
+    if (node.type === 'footnoteReference') {
+      result.footnoteReferences.push({ id: node.identifier, span: { from, to } }); result.excluded.push({ from, to }); return;
+    }
     if ((node.type === 'paragraph' || node.type === 'heading' || node.type === 'tableCell') && node.children.length) {
       const first = node.children[0]!.position!.start.offset!;
       const last = node.children.at(-1)!.position!.end.offset!;
@@ -169,6 +178,8 @@ export function parseDocument(text: string): ParsedDocument {
           if (isProseMetadata(metadata)) {
             highlight.metadata = metadata;
             highlight.metadataSpan = { from: to, to: to + comment[0].length };
+            const reference = text.slice(highlight.metadataSpan.to).match(/^\[\^(hb-[A-Za-z0-9-]+)\]/);
+            if (reference && reference[1]!.toLowerCase() === metadata.noteRef?.toLowerCase()) highlight.footnoteSpan = { from: highlight.metadataSpan.to, to: highlight.metadataSpan.to + reference[0].length };
           }
         } catch { /* 未闭合的注释继续作为源文本编辑。 */ }
       }

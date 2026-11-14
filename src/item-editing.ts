@@ -5,7 +5,7 @@ import type { EditPlan, HighlightItem, Preset } from './domain';
 
 export function currentItem(text: string, reference: HighlightItem): HighlightItem {
   const current = collectItems(text).find(item => item.id === reference.id);
-  if (!current || current.status !== 'resolved' || current.quote !== reference.quote || current.from !== reference.from || current.to !== reference.to || current.semantic !== reference.semantic || current.color !== reference.color || current.label !== reference.label) throw new Error('标注位置已变化，请刷新侧栏后重试。');
+  if (!current || current.status !== 'resolved' || current.quote !== reference.quote || current.from !== reference.from || current.to !== reference.to || current.semantic !== reference.semantic || current.color !== reference.color || current.label !== reference.label || current.note !== reference.note) throw new Error('标注位置已变化，请刷新侧栏后重试。');
   return current;
 }
 

@@ -16,6 +16,8 @@ pnpm prepare:vault
 
 Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空格同样可操作。代码原句变化后，在该代码块中选择新位置，再点击侧栏“绑定到当前选区”。
 
+行内代码可用同一组语义、颜色和移除命令，选区或空光标作用于整段代码。Live Preview 点击“行内标注”展开注释，Source 显示原文。侧栏按行内代码类型定位和摘录；格式详见 [inline-v1](formats/inline-v1.md)。
+
 插件设置可调整四种语义的名称、颜色和默认语义，也可恢复默认。更改后命令名称即时更新，后续标注使用新配置。已有代码标注保留创建时的快照，正文采用原生颜色格式。插件配置为 schemaVersion 2，首次启用时迁移旧默认语义；笔记中的 HB 元数据仍为 v1。
 
 “语法着色”可选择宿主或内置 Shiki，保存后重新启用 HB 生效。内置模块的主题、展示配置和样式来自 Shiki Highlighter 0.8.0 源码，宿主注册与编辑器生命周期在本项目实现，特别致谢见 [来源声明](../THIRD_PARTY_NOTICES.md)。
@@ -26,7 +28,8 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 - `pnpm typecheck`：类型检查。
 - `pnpm test`：文档解析、纯编辑计划、锚定和 DOM 渲染断言。
 - `pnpm build`：生成宿主加载的 CommonJS 插件。
-- `pnpm test:host`：构建并依次运行七个独立 Electron 进程，验证基础操作、多选区与组合事件、语言对照、布局、设置、重启恢复和内置语法。
+- `pnpm test:host`：构建并依次运行九个独立 Electron 进程，验证基础操作、多选区与组合事件、语言对照、布局、设置、重启恢复、内置语法和行内代码闭环。
+- `pnpm test:inline`：运行行内代码宿主验收及独立进程恢复。
 - `pnpm test:embedded`：单独运行内置 Shiki 验收。
 - `pnpm test:shiki`：准备固定版本 Shiki Highlighter 0.8.0，在两个独立进程中验证协作行为和语言对照。
 - `pnpm test:shiki-live`：对照上游 0.7.7 与 0.8.0，记录冷打开、移动光标、滚动、输入和阅读路径。

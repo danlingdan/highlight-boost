@@ -1,0 +1,47 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "e-restart-collection-and-paths",
+      "passed": true
+    },
+    {
+      "name": "e-restart-source-exact",
+      "passed": true
+    },
+    {
+      "name": "e-restart-export-excluded",
+      "passed": true
+    },
+    {
+      "name": "e-restart-deleted-file-absent",
+      "passed": true
+    },
+    {
+      "name": "e-restart-three-collection-cards",
+      "passed": true
+    },
+    {
+      "name": "e-restart-missing-snapshot",
+      "passed": true
+    },
+    {
+      "name": "e-remove-entry-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "e-collection-write-restores-consistently",
+      "passed": true
+    },
+    {
+      "name": "e-delete-collection-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "e-restart-settings-restored",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

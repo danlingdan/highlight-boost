@@ -84,3 +84,9 @@
 .hb-path-filter { width: 100%; margin-bottom: var(--size-4-2); }
 .hb-add-collection { max-width: 100%; }
 .hb-card-context code { font-family: var(--font-monospace); }
+.hb-note { margin-block: var(--size-4-2); }
+.hb-note-text { white-space: pre-wrap; overflow-wrap: anywhere; margin-top: var(--size-4-1); }
+.hb-note-input { width: 100%; resize: vertical; }
+.hb-code-notes { margin-block: var(--size-4-2); padding: var(--size-4-2); border-left: 2px solid var(--interactive-accent); }
+.hb-code-notes details + details { margin-top: var(--size-4-2); }
+.hb-metadata-chip[data-hb-metadata="footnote"] { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }

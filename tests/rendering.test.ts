@@ -3,9 +3,29 @@ import { describe, expect, it } from 'vitest';
 import { parseDocument } from '../src/parsing';
 import { applyChanges, planHighlight } from '../src/editing';
 import { presets } from '../src/domain';
-import { renderCode } from '../src/rendering';
+import { clearRenderedCode, renderCode } from '../src/rendering';
+import { planNote } from '../src/notes';
+import { collectItems } from '../src/anchors';
 
 describe('reading view code decorations', () => {
+  it('批注独立于代码显示，可展开且重复渲染和清理不改变复制内容', () => {
+    const source = '```js\nconst value = 1;\n```', from = source.indexOf('value');
+    let text = applyChanges(source, planHighlight(source, [{ from, to: from + 5 }], presets[0]!).changes);
+    text = applyChanges(text, planNote(text, collectItems(text)[0]!, '<b>literal</b>\n说明').changes);
+    const root = document.createElement('div'), pre = document.createElement('pre'), code = document.createElement('code');
+    code.textContent = 'const value = 1;\n'; pre.append(code); root.append(pre);
+    const block = parseDocument(text).blocks[0]!;
+    renderCode(code, block, 'en');
+    const details = root.querySelector('details')!; details.open = true;
+    expect(root.querySelector('.hb-code-notes')?.getAttribute('aria-label')).toBe('Annotation');
+    expect(root.querySelector('.hb-note-text')?.textContent).toBe('<b>literal</b>\n说明');
+    expect(root.querySelector('b')).toBeNull();
+    renderCode(code, block, 'en');
+    expect(root.querySelectorAll('details')).toHaveLength(1); expect(root.querySelector('details')).toBe(details);
+    expect(details.open).toBe(true); expect(code.textContent).toBe('const value = 1;\n');
+    clearRenderedCode(code);
+    expect(root.querySelector('.hb-code-notes')).toBeNull(); expect(code.textContent).toBe('const value = 1;\n');
+  });
   it('preserves Prism tokens and the exact code text across token boundaries', () => {
     const source = '```js\nconst value = "hello";\nreturn value;\n```';
     const start = source.indexOf('value =');

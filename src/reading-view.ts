@@ -2,12 +2,13 @@ import { MarkdownRenderChild, MarkdownView, type App, type MarkdownPostProcessor
 import { clearRenderedCode, renderCode } from './rendering';
 import { readingTargets } from './reading-mapping';
 import { clearInlineCode, inlineCodes, inlineTargets, renderInlineCode } from './inline-rendering';
+import type { Locale } from './i18n';
 
 export class ReadingHighlights extends MarkdownRenderChild {
   private observer?: MutationObserver;
   private active = false;
   private revision = 0;
-  constructor(element: HTMLElement, readonly context: MarkdownPostProcessorContext, private app: App, private dispose: () => void) { super(element); }
+  constructor(element: HTMLElement, readonly context: MarkdownPostProcessorContext, private app: App, private dispose: () => void, private getLocale: () => Locale = () => 'zh') { super(element); }
   onload(): void {
     this.active = true;
     this.observer = new this.containerEl.ownerDocument.defaultView!.MutationObserver(() => this.refresh());
@@ -33,7 +34,7 @@ export class ReadingHighlights extends MarkdownRenderChild {
         const targets = readingTargets(this.containerEl, text, element => this.context.getSectionInfo(element));
         const matched = new Set(targets.map(target => target.code));
         for (const code of this.containerEl.querySelectorAll<HTMLElement>('pre > code')) if (!matched.has(code)) clearRenderedCode(code);
-        for (const { code, block } of targets) renderCode(code, block);
+        for (const { code, block } of targets) renderCode(code, block, this.getLocale());
       } finally { if (this.active) this.observe(); }
     }).catch(error => console.error('Highlight Boost 阅读渲染失败', error));
   }

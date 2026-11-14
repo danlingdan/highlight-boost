@@ -4,8 +4,10 @@ import { parseDocument } from './parsing';
 import { resolveMark, sourceOffset } from './anchors';
 import type { CodeBlock, CodeMark } from './domain';
 import { composingState } from './composition';
+import { translate, type Locale } from './i18n';
 
 const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string }>();
+const noteRegions = new WeakMap<HTMLElement, { element: HTMLElement; signature: string }>();
 
 function expressiveRows(code: HTMLElement): HTMLElement[] { return [...code.querySelectorAll<HTMLElement>(':scope > .ec-line > .code')]; }
 function expressiveRowText(row: HTMLElement): string { return row.textContent === '\n' ? '' : row.textContent ?? ''; }
@@ -15,6 +17,7 @@ export function renderedCodeText(code: HTMLElement): string {
 }
 
 export function clearRenderedCode(code: HTMLElement): void {
+  noteRegions.get(code)?.element.remove(); noteRegions.delete(code);
   const previous = rendered.get(code);
   if (previous && code.querySelector('.hb-code-row, .hb-text, .ec-line.hb-line')) {
     if (previous.original.map(node => node.textContent ?? '').join('') === code.textContent) {
@@ -32,7 +35,7 @@ function editorDecorations(text: string): DecorationSet {
   const ranges = [];
   const parsed = parseDocument(text);
   for (const inline of parsed.inlines) if (inline.metadata && inline.content.from < inline.content.to) {
-    ranges.push(Decoration.mark({ class: `hb-inline hb-${inline.metadata.color}`, attributes: { title: inline.metadata.label } }).range(inline.content.from, inline.content.to));
+    ranges.push(Decoration.mark({ class: `hb-inline hb-${inline.metadata.color}`, attributes: { title: inline.metadata.note ? `${inline.metadata.label}\n${inline.metadata.note}` : inline.metadata.label } }).range(inline.content.from, inline.content.to));
   }
   for (const block of parsed.blocks) for (const mark of block.metadata?.marks ?? []) {
     const resolved = resolveMark(block, mark);
@@ -43,12 +46,12 @@ function editorDecorations(text: string): DecorationSet {
       for (const line of block.lines) {
         if (from === to ? line.from !== from : line.to < from || line.from >= to) continue;
         const start = text.lastIndexOf('\n', Math.max(0, line.from - 1)) + 1;
-        ranges.push(Decoration.line({ attributes: { class: `hb-line hb-${mark.color}`, 'data-hb-label': mark.label } }).range(start));
+        ranges.push(Decoration.line({ attributes: { class: `hb-line hb-${mark.color}`, 'data-hb-label': mark.label, title: mark.note ? `${mark.label}\n${mark.note}` : mark.label } }).range(start));
       }
     } else if (from < to) {
       for (const line of block.lines) {
         const a = Math.max(from, line.from), b = Math.min(to, line.to);
-        if (a < b) ranges.push(Decoration.mark({ class: `hb-text hb-${mark.color}`, attributes: { title: mark.label } }).range(a, b));
+        if (a < b) ranges.push(Decoration.mark({ class: `hb-text hb-${mark.color}`, attributes: { title: mark.note ? `${mark.label}\n${mark.note}` : mark.label } }).range(a, b));
       }
     }
   }
@@ -88,15 +91,33 @@ function rangeFor(element: HTMLElement, from: number, to: number): Range | undef
   return undefined;
 }
 
-export function renderCode(code: HTMLElement, block: CodeBlock): void {
+function renderNotes(code: HTMLElement, block: CodeBlock, locale: Locale): void {
+  const notes = block.metadata?.marks.filter(mark => mark.note) ?? [], pre = code.closest('pre');
+  const previous = noteRegions.get(code), signature = JSON.stringify({ notes, locale });
+  if (previous?.signature === signature && previous.element.parentElement === pre?.parentElement) return;
+  previous?.element.remove(); noteRegions.delete(code);
+  if (!notes.length || !pre?.parentElement) return;
+  const region = code.ownerDocument.createElement('div'); region.className = 'hb-code-notes';
+  region.setAttribute('aria-label', translate(locale, 'annotation'));
+  for (const mark of notes) {
+    const details = code.ownerDocument.createElement('details'); details.dataset.hbNoteId = mark.id;
+    const summary = code.ownerDocument.createElement('summary'); summary.textContent = `🗨 ${mark.label}`;
+    const content = code.ownerDocument.createElement('div'); content.className = 'hb-note-text'; content.textContent = mark.note!;
+    details.append(summary, content); region.append(details);
+  }
+  pre.after(region); noteRegions.set(code, { element: region, signature });
+}
+
+export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale = 'zh'): void {
   const signature = JSON.stringify({ text: block.text, marks: block.metadata?.marks ?? [] });
   const previous = rendered.get(code);
-  if (previous?.signature === signature && code.querySelector('.hb-code-row, .hb-text, .ec-line.hb-line')) return;
+  if (previous?.signature === signature && code.querySelector('.hb-code-row, .hb-text, .ec-line.hb-line')) { renderNotes(code, block, locale); return; }
   clearRenderedCode(code);
   if (!block.metadata?.marks.length) return;
   const original = renderedCodeText(code);
   if (original !== block.text && original !== `${block.text}\n`) return;
   rendered.set(code, { original: [...code.childNodes].map(node => node.cloneNode(true)), signature });
+  renderNotes(code, block, locale);
   const rows = expressiveRows(code);
   if (rows.length) {
     code.dataset.hbRendered = '1';
@@ -109,6 +130,7 @@ export function renderCode(code: HTMLElement, block: CodeBlock): void {
         if (mark.kind === 'lines') {
           if (resolved.span.from === resolved.span.to ? offset === resolved.span.from : offset < resolved.span.to && resolved.span.from <= end) {
             row.parentElement!.classList.add('hb-line', `hb-${mark.color}`);
+            row.parentElement!.title = mark.note ? `${mark.label}\n${mark.note}` : mark.label;
           }
         } else {
           const a = Math.max(0, resolved.span.from - offset), b = Math.min(end - offset, resolved.span.to - offset);
@@ -156,7 +178,7 @@ export function renderCode(code: HTMLElement, block: CodeBlock): void {
         const end = position + (row.textContent?.length ?? 0);
         if (resolved.span.from === resolved.span.to ? position === resolved.span.from : position < resolved.span.to && resolved.span.from <= end) {
           row.classList.add('hb-line', `hb-${mark.color}`);
-          row.title = mark.label;
+          row.title = mark.note ? `${mark.label}\n${mark.note}` : mark.label;
         }
         position = end + 1;
       }
@@ -174,7 +196,7 @@ function wrapMark(code: HTMLElement, from: number, to: number, mark: CodeMark, r
       range.setStart(node, a); range.setEnd(node, b);
       const wrapper = code.ownerDocument.createElement('span');
       wrapper.className = `hb-text hb-${mark.color}`;
-      wrapper.title = mark.label;
+      wrapper.title = mark.note ? `${mark.label}\n${mark.note}` : mark.label;
       range.surroundContents(wrapper);
     }
     offset = end;

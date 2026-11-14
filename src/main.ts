@@ -1,5 +1,4 @@
-import { editorLivePreviewField, getLanguage, ItemView, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, setTooltip, SuggestModal, type Command, type Editor, type MarkdownPostProcessorContext, type WorkspaceLeaf } from 'obsidian';
-import { collectItems } from './anchors';
+import { editorLivePreviewField, getLanguage, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, setTooltip, SuggestModal, TFile, type Command, type Editor, type MarkdownPostProcessorContext } from 'obsidian';
 import { colorPreset, colors, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
 import { parseDocument, sourceLines } from './parsing';
@@ -15,6 +14,10 @@ import type { Extension } from '@codemirror/state';
 import { selectionToolbar } from './selection-toolbar';
 import { currentItem, planItemUpdate } from './item-editing';
 import { excerptContext, formatExcerpt } from './excerpts';
+import { HighlightIndex, type IndexHit } from './vault-index';
+import { renameCollections, collectionEntry, resolveEntry } from './collections';
+import { HighlightsView } from './workbench';
+import type { SearchScope } from './query';
 
 const VIEW = 'highlight-boost';
 
@@ -30,10 +33,21 @@ export default class HighlightBoost extends Plugin {
   private readingChildren = new Set<ReadingHighlights>();
   toolbars = new Set<{ refresh(): void; open(): void; matches(editor: Editor): boolean; destroy(): void }>();
   syntax?: SyntaxService;
+  index!: HighlightIndex;
   async onload(): Promise<void> {
     const loaded: unknown = await this.loadData();
     this.settings = normalizeSettings(loaded);
     this.lastLocale = this.locale;
+    this.index = new HighlightIndex({
+      paths: () => this.app.vault.getMarkdownFiles().map(file => file.path),
+      read: async path => {
+        const view = this.openView(path);
+        if (view) return view.editor.getValue();
+        const file = this.app.vault.getFileByPath(path);
+        if (!file) throw new Error(path);
+        return this.app.vault.cachedRead(file);
+      },
+    }, () => this.refreshPanels());
     if (JSON.stringify(loaded) !== JSON.stringify(this.settings)) await this.saveSettings();
     if (this.settings.syntaxProvider === 'shiki') {
       this.syntax = this.addChild(new SyntaxService(this, (element, context) => this.createReadingChild(element, context), () => this.locale));
@@ -57,7 +71,8 @@ export default class HighlightBoost extends Plugin {
     }, () => this.t('colorCommand', { color: this.colorLabel(color) }));
     this.addTranslatedCommand({ id: 'choose-color', editorCallback: editor => this.chooseColor(editor) }, () => this.t('chooseColor'));
     this.addTranslatedCommand({ id: 'remove', editorCallback: editor => this.apply(editor, null) }, () => this.t('remove'));
-    this.addTranslatedCommand({ id: 'open-highlights', callback: () => { void this.openPanel(); } }, () => this.t('openPanel'));
+    this.addTranslatedCommand({ id: 'open-highlights', callback: () => { void this.openPanel('note'); } }, () => this.t('openPanel'));
+    this.addTranslatedCommand({ id: 'open-workbench', callback: () => { void this.openPanel('vault'); } }, () => this.t('workbench'));
     this.addTranslatedCommand({ id: 'copy-code', editorCallback: editor => { void this.copyCode(editor); } }, () => this.t('copyCode'));
     this.addTranslatedCommand({ id: 'selection-toolbar', editorCallback: editor => {
       for (const toolbar of this.toolbars) if (toolbar.matches(editor)) toolbar.open();
@@ -70,7 +85,8 @@ export default class HighlightBoost extends Plugin {
       menu.addItem(item => item.setTitle(this.t('markLines')).setIcon('list-ordered').onClick(() => this.apply(editor, this.defaultPreset(), 'lines')));
       menu.addItem(item => item.setTitle(this.t('remove')).setIcon('eraser').onClick(() => this.apply(editor, null)));
     }));
-    this.registerEvent(this.app.workspace.on('editor-change', (_editor, info) => {
+    this.registerEvent(this.app.workspace.on('editor-change', (editor, info) => {
+      if (info.file?.extension === 'md') this.index.set(info.file.path, editor.getValue());
       this.refreshPanels();
       for (const child of this.readingChildren) if (child.context.sourcePath === info.file?.path) child.refresh();
     }));
@@ -79,11 +95,20 @@ export default class HighlightBoost extends Plugin {
       context.addChild(this.createReadingChild(element, context));
     }, 100);
     this.registerEvent(this.app.vault.on('modify', file => {
+      if (file instanceof TFile && file.extension === 'md') void this.index.enqueue(file.path);
       this.refreshPanels();
       for (const child of this.readingChildren) if (child.context.sourcePath === file.path) child.refresh();
     }));
-    this.registerEvent(this.app.vault.on('rename', () => this.refreshPanels()));
-    this.registerEvent(this.app.vault.on('delete', () => this.refreshPanels()));
+    this.registerEvent(this.app.vault.on('create', file => { if (file instanceof TFile && file.extension === 'md') void this.index.enqueue(file.path); }));
+    this.registerEvent(this.app.vault.on('rename', (file, before) => {
+      this.index.rename(before, file.path);
+      if (file instanceof TFile && file.extension !== 'md') this.index.remove(file.path);
+      for (const note of this.app.vault.getMarkdownFiles()) if (note.path === file.path || note.path.startsWith(`${file.path}/`)) void this.index.enqueue(note.path);
+      if (renameCollections(this.settings.collections, before, file.path)) void this.saveSettings();
+      this.refreshPanels();
+    }));
+    this.registerEvent(this.app.vault.on('delete', file => { this.index.remove(file.path); this.refreshPanels(); }));
+    this.app.workspace.onLayoutReady(() => { void this.index.rebuild(); });
   }
 
   get locale(): Locale { return resolveLocale(this.settings.language, getLanguage()); }
@@ -203,7 +228,47 @@ export default class HighlightBoost extends Plugin {
     new Notice(this.t('copiedCode'));
   }
 
-  async openPanel(): Promise<void> {
+  openView(path: string): MarkdownView | undefined {
+    return this.app.workspace.getLeavesOfType('markdown').map(leaf => leaf.view).find((view): view is MarkdownView => view instanceof MarkdownView && view.file?.path === path);
+  }
+  async editHit(hit: IndexHit, run: (view: MarkdownView) => void | Promise<void>): Promise<void> {
+    try {
+      const file = this.app.vault.getFileByPath(hit.path);
+      if (!file) { new Notice(this.t('missingSource')); return; }
+      let view = this.openView(hit.path);
+      if (!view) {
+        const leaf = this.app.workspace.getLeaf('tab'); await leaf.openFile(file); view = leaf.view as MarkdownView;
+      }
+      if (view.getMode() === 'preview') await view.leaf.setViewState({ type: 'markdown', state: { ...view.getState(), mode: 'source', source: false } });
+      if (view.file !== file) throw new Error(this.t('staleMark'));
+      currentItem(view.editor.getValue(), hit.item);
+      await run(view);
+    } catch (error) { new Notice(errorMessage(error, this.locale)); }
+  }
+  excerpt(hit: IndexHit): string {
+    const file = this.app.vault.getFileByPath(hit.path), context = excerptContext(hit.text, hit.item);
+    const subpath = context.blockId ? `#^${context.blockId}` : context.heading ? `#${context.heading}` : '';
+    const link = file ? this.app.fileManager.generateMarkdownLink(file, '', subpath) : `[${hit.path.replace(/[\\[\]]/g, '\\$&')}](<${encodeURI(hit.path).replaceAll('#', '%23').replaceAll('>', '%3E')}>)`;
+    return formatExcerpt(hit.item, context, link, hit.item.markId ? hit.item.label : this.colorLabel(hit.item.color), this.locale, this.settings.excerptTemplate);
+  }
+  async addToCollection(id: string, hit: IndexHit): Promise<void> {
+    const collection = this.settings.collections.find(collection => collection.id === id);
+    if (!collection) return;
+    if (!collection.entries.some(entry => entry.path === hit.path && resolveEntry(this.index.notes.get(entry.path), entry).item.id === hit.item.id)) collection.entries.push(collectionEntry(hit));
+    await this.saveSettings();
+  }
+  async exportHits(hits: IndexHit[]): Promise<TFile | undefined> {
+    if (!hits.length) { new Notice(this.t('noExport')); return; }
+    const folder = 'Highlight Boost';
+    if (!this.app.vault.getFolderByPath(folder)) {
+      try { await this.app.vault.createFolder(folder); } catch (error) { if (!this.app.vault.getFolderByPath(folder)) throw error; }
+    }
+    const title = this.t('excerptNoteTitle'), path = `${folder}/${title}-${new Date().toISOString().replace(/[:.]/g, '-')}-${crypto.randomUUID().slice(0, 8)}.md`;
+    const text = `---\nhighlight-boost-export: true\n---\n\n# ${title}\n\n${hits.map(hit => this.excerpt(hit)).join('\n\n---\n\n')}\n`;
+    const file = await this.app.vault.create(path, text);
+    new Notice(this.t('exported', { path })); return file;
+  }
+  async openPanel(scope: SearchScope = 'note'): Promise<void> {
     let leaf = this.app.workspace.getLeavesOfType(VIEW)[0];
     if (!leaf) {
       leaf = this.app.workspace.getRightLeaf(false) ?? undefined;
@@ -211,6 +276,7 @@ export default class HighlightBoost extends Plugin {
       await leaf.setViewState({ type: VIEW, active: true });
     }
     await this.app.workspace.revealLeaf(leaf);
+    if (leaf.view instanceof HighlightsView) await leaf.view.setScope(scope, true);
     this.refreshPanels();
   }
 
@@ -219,108 +285,10 @@ export default class HighlightBoost extends Plugin {
   }
 
   onunload(): void {
+    this.index.dispose();
     for (const toolbar of this.toolbars) toolbar.destroy();
     for (const picker of this.colorPickers) picker.close();
     for (const child of this.readingChildren) child.unload();
-  }
-}
-
-class HighlightsView extends ItemView {
-  private note: MarkdownView | undefined;
-  private search?: HTMLInputElement;
-  private typeFilter?: HTMLSelectElement;
-  private semanticFilter?: HTMLSelectElement;
-  private results?: HTMLElement;
-  constructor(leaf: WorkspaceLeaf, private plugin: HighlightBoost) { super(leaf); }
-  getViewType(): string { return VIEW; }
-  getDisplayText(): string { return this.plugin.t('panelTitle'); }
-  getIcon(): string { return 'highlighter'; }
-  async onOpen(): Promise<void> { this.refresh(); }
-  refresh(): void {
-    const active = this.app.workspace.getActiveViewOfType(MarkdownView);
-    if (active) this.note = active;
-    this.contentEl.addClass('hb-panel');
-    if (!this.search) {
-      this.contentEl.empty();
-      this.contentEl.createEl('h4');
-      this.search = this.contentEl.createEl('input', { type: 'search', cls: 'hb-search' });
-      this.typeFilter = this.contentEl.createEl('select', { cls: 'hb-type-filter' });
-      this.semanticFilter = this.contentEl.createEl('select', { cls: 'hb-semantic-filter' });
-      this.search.addEventListener('input', () => this.refresh());
-      this.typeFilter.addEventListener('change', () => this.refresh());
-      this.semanticFilter.addEventListener('change', () => this.refresh());
-      this.results = this.contentEl.createDiv({ cls: 'hb-results' });
-    }
-    this.contentEl.querySelector('h4')!.textContent = this.plugin.t('panelTitle');
-    this.search.placeholder = this.plugin.t('searchHighlights');
-    this.search.setAttribute('aria-label', this.plugin.t('searchHighlights'));
-    const options = (select: HTMLSelectElement, entries: [string, string][]) => {
-      const value = select.value;
-      select.replaceChildren(...entries.map(([value, label]) => {
-        const option = select.ownerDocument.createElement('option'); option.value = value; option.textContent = label; return option;
-      }));
-      select.value = entries.some(([key]) => key === value) ? value : '';
-    };
-    this.typeFilter!.setAttribute('aria-label', this.plugin.t('allTypes'));
-    this.semanticFilter!.setAttribute('aria-label', this.plugin.t('allSemantics'));
-    options(this.typeFilter!, [['', this.plugin.t('allTypes')], ['prose', this.plugin.t('prose')], ['inline-code', this.plugin.t('inlineCode')], ['code', this.plugin.t('code')]]);
-    options(this.semanticFilter!, [['', this.plugin.t('allSemantics')], ...this.plugin.settings.presets.map(preset => [preset.id, this.plugin.presetLabel(preset)] as [string, string])]);
-    const results = this.results!; results.empty();
-    const view = this.note;
-    if (!view?.file || !this.app.workspace.getLeavesOfType('markdown').includes(view.leaf) || this.app.vault.getFileByPath(view.file.path) !== view.file) { results.createEl('p', { text: this.plugin.t('panelEmpty') }); return; }
-    const text = view.editor.getValue();
-    const all = collectItems(text), query = this.search.value.trim().toLocaleLowerCase();
-    const items = all.filter(item => (!query || `${item.quote}\n${item.markId ? item.label : this.plugin.colorLabel(item.color)}\n${item.language ?? ''}`.toLocaleLowerCase().includes(query)) &&
-      (!this.typeFilter!.value || (this.typeFilter!.value === 'code' ? item.kind.startsWith('code-') : item.kind === this.typeFilter!.value)) &&
-      (!this.semanticFilter!.value || item.semantic === this.semanticFilter!.value));
-    results.createEl('p', { text: this.plugin.t(items.length === 1 ? 'summaryOne' : 'summary', { note: view.file.basename, count: items.length }), cls: 'hb-summary' });
-    if (!items.length) results.createEl('p', { text: all.length ? this.plugin.t('noMatches') : this.plugin.t('noHighlights', { preset: this.plugin.presetLabel(this.plugin.getPreset('important')) }) });
-    for (const item of items) this.card(view, item);
-  }
-  private card(view: MarkdownView, item: HighlightItem): void {
-    const file = view.file!;
-    const inSource = (run: () => void) => {
-      if (view.file !== file) { new Notice(this.plugin.t('staleMark')); return; }
-      run();
-    };
-    const card = this.results!.createDiv({ cls: `hb-card hb-${item.color}` });
-    if (item.semantic) card.dataset.hbSemantic = item.semantic;
-    const jump = card.createEl('button', { text: item.quote || this.plugin.t('blankLine'), cls: item.kind === 'prose' ? 'hb-quote' : 'hb-quote hb-code-quote' });
-    const label = item.markId ? item.label : this.plugin.colorLabel(item.color);
-    const info = item.kind === 'prose' ? this.plugin.t('prose') : item.kind === 'inline-code' ? this.plugin.t('inlineInfo', { line: item.line! }) : this.plugin.t('codeInfo', { language: item.language || this.plugin.t('code'), line: item.line! });
-    card.createEl('small', { text: `${label} · ${info}${item.status === 'resolved' ? '' : ` · ${this.plugin.t('pending')}`}` });
-    const context = excerptContext(view.editor.getValue(), item);
-    if (context.headings.length) card.createEl('small', { text: context.headings.join(' › '), cls: 'hb-heading-context' });
-    if (context.code !== undefined && context.code !== item.quote) {
-      const details = card.createEl('details', { cls: 'hb-card-context' });
-      details.createEl('summary', { text: this.plugin.t('excerptCodeContext', { from: context.contextFrom!, to: context.contextTo! }) });
-      details.createEl('pre').createEl('code', { text: context.code });
-    }
-    jump.addEventListener('click', () => {
-      if (item.status !== 'resolved') { new Notice(this.plugin.t('contentChanged')); return; }
-      inSource(() => { void this.plugin.jumpToItem(view, item); });
-    });
-    if (item.kind === 'code-line' || item.kind === 'code-range') {
-      const rebind = card.createEl('button', { text: this.plugin.t('rebind'), cls: 'hb-rebind' });
-      rebind.title = this.plugin.t('rebindHint');
-      rebind.addEventListener('click', () => inSource(() => this.plugin.rebind(view.editor, item)));
-    }
-    if (item.status === 'resolved') {
-      const semantic = card.createEl('select', { cls: 'hb-change-semantic' });
-      semantic.setAttribute('aria-label', this.plugin.t('changeSemantic'));
-      semantic.createEl('option', { value: '', text: this.plugin.t('changeSemantic') });
-      for (const preset of this.plugin.settings.presets) semantic.createEl('option', { value: preset.id, text: this.plugin.presetLabel(preset) });
-      semantic.addEventListener('change', () => inSource(() => { if (semantic.value) this.plugin.updateItem(view.editor, item, this.plugin.presetForAction(semantic.value)); }));
-      const remove = card.createEl('button', { text: this.plugin.t('removeItem'), cls: 'hb-remove-item' });
-      remove.addEventListener('click', () => inSource(() => this.plugin.updateItem(view.editor, item, null)));
-    }
-    const copy = card.createEl('button', { text: this.plugin.t('copyExcerpt'), cls: 'hb-copy-excerpt' });
-    copy.addEventListener('click', () => inSource(() => {
-      const context = excerptContext(view.editor.getValue(), item);
-      const subpath = context.blockId ? `#^${context.blockId}` : context.heading ? `#${context.heading}` : '';
-      const link = this.app.fileManager.generateMarkdownLink(file, '', subpath);
-      void navigator.clipboard.writeText(formatExcerpt(item, context, link, label, this.plugin.locale));
-    }));
   }
 }
 

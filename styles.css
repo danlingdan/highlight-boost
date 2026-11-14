@@ -77,3 +77,10 @@
 .hb-type-filter, .hb-semantic-filter, .hb-change-semantic { max-width: 100%; margin: 0 var(--size-4-1) var(--size-4-1) 0; }
 .hb-card-context { margin-block: var(--size-4-2); font-size: var(--font-ui-small); }
 .hb-card-context pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-monospace); }
+.hb-panel > select { max-width: 100%; margin: 0 var(--size-4-1) var(--size-4-1) 0; }
+.hb-panel > input { max-width: 100%; }
+.hb-panel > button { margin: 0 var(--size-4-1) var(--size-4-1) 0; }
+.hb-index-status, .hb-source-path { overflow-wrap: anywhere; color: var(--text-muted); font-size: var(--font-ui-smaller); }
+.hb-path-filter { width: 100%; margin-bottom: var(--size-4-2); }
+.hb-add-collection { max-width: 100%; }
+.hb-card-context code { font-family: var(--font-monospace); }

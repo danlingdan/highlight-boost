@@ -3,6 +3,12 @@ import { toDom } from 'hast-util-to-dom';
 import { bundledLanguages, createHighlighter, type BundledLanguage, type Highlighter } from 'shiki';
 import { createCssVariableThemeBundle, createEcEngineConfig, EC_VIRTUAL_SETTINGS } from './upstream/Config';
 import { OBSIDIAN_THEME } from './upstream/ObsidianTheme';
+import { pluginFramesTexts } from '@expressive-code/plugin-frames';
+import { pluginCollapsibleSectionsTexts } from '@expressive-code/plugin-collapsible-sections';
+import type { Locale } from '../i18n';
+
+pluginFramesTexts.addLocale('zh', { terminalWindowFallbackTitle: '终端窗口', copyButtonTooltip: '复制到剪贴板', copyButtonCopied: '已复制！' });
+pluginCollapsibleSectionsTexts.addLocale('zh', { collapsedLines: '已折叠 {lineCount} 行' });
 
 export class SyntaxEngine {
   private shiki!: Highlighter;
@@ -34,8 +40,8 @@ export class SyntaxEngine {
     }));
   }
 
-  async render(code: string, language: string, meta: string, document: Document): Promise<Node> {
-    const result = await this.ec.render({ code, language, meta });
+  async render(code: string, language: string, meta: string, document: Document, locale: Locale = 'en'): Promise<Node> {
+    const result = await this.ec.render({ code, language, meta, locale });
     const element = toDom(result.renderedGroupAst, { document });
     if (element.nodeType === 1) {
       const root = element as HTMLElement;

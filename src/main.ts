@@ -215,7 +215,7 @@ class HighlightSettings extends PluginSettingTab {
       });
     });
     this.containerEl.createEl('h3', { text: '语义预设' });
-    this.containerEl.createEl('p', { text: '名称和颜色用于后续标注。已有标注保留创建时的语义名称。直接改色保留已有语义；正文颜色使用原生格式。' });
+    this.containerEl.createEl('p', { text: '名称和颜色用于后续标注。已有标注保留名称快照。直接改色保留已有语义；正文颜色使用原生格式。' });
     for (const preset of this.plugin.settings.presets) {
       new Setting(this.containerEl).setName(preset.name).addText(text => text
         .setPlaceholder(preset.name).setValue(preset.name).onChange(async value => {

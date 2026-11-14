@@ -31,6 +31,7 @@ scenarios.notes = ['notes.scenario.js', 'host-notes-results.json'];
 scenarios['notes-restart'] = ['notes-restart.scenario.js', 'host-notes-restart-results.json'];
 scenarios.display = ['code-display.scenario.js', 'host-display-results.json'];
 scenarios['display-restart'] = ['code-display-restart.scenario.js', 'host-display-restart-results.json'];
+scenarios.performance = ['performance.scenario.js', 'host-performance-results.json'];
 scenarios.migration = ['migration.scenario.js', 'host-migration-results.json'];
 scenarios['migration-restart'] = ['migration-restart.scenario.js', 'host-migration-restart-results.json'];
 scenarios.parameters = ['fence-params.scenario.js', 'host-parameters-results.json'];
@@ -40,7 +41,7 @@ scenarios['inline-restart'] = ['inline-restart.scenario.js', 'host-inline-restar
 scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-results.json'];
 scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
-if (mode === 'selection' || mode === 'phase-d' || mode === 'phase-e' || mode === 'notes' || mode === 'display' || mode === 'parameters' || mode === 'migration') electron.ipcMain.handle('hb-selection-capture', async (event, name) => {
+if (mode === 'selection' || mode === 'phase-d' || mode === 'phase-e' || mode === 'notes' || mode === 'display' || mode === 'parameters' || mode === 'migration' || mode === 'performance') electron.ipcMain.handle('hb-selection-capture', async (event, name) => {
   if (!['selection-dark-zh', 'selection-light-en', 'phase-d-live', 'phase-d-reading', 'phase-e-collection', 'phase-e-light', 'notes-reading', 'notes-live', 'display-native', 'display-builtin', 'parameters', 'migration-preview'].includes(name)) throw new Error('Unknown screenshot');
   await event.sender.capturePage({}, { stayHidden: true, stayAwake: true });
   await new Promise(resolve => setTimeout(resolve, 500));
@@ -94,7 +95,7 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || mode === 'selection' || mode === 'phase-d' || mode === 'phase-e' || mode === 'notes' || mode === 'display' || mode === 'parameters' || mode === 'migration') {
+      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || mode === 'selection' || mode === 'phase-d' || mode === 'phase-e' || mode === 'notes' || mode === 'display' || mode === 'parameters' || mode === 'migration' || mode === 'performance') {
         contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }
@@ -113,5 +114,5 @@ app.on('browser-window-created', (_event, window) => {
     }
   });
 });
-setTimeout(() => finish(new Error('Host test timed out')), 60000);
+setTimeout(() => finish(new Error('Host test timed out')), mode === 'performance' ? 300000 : 60000);
 require(path.join(source, 'main.js'))(source, new EventEmitter());

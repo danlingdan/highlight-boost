@@ -11,7 +11,7 @@ if (!existsSync(join(resources, 'obsidian.asar'))) {
 const environment = { ...process.env };
 delete environment.ELECTRON_RUN_AS_NODE;
 const single = process.argv.find(argument => argument.startsWith('--mode='))?.slice(7);
-const available = ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart', 'shiki', 'languages-shiki', 'shiki-live-077', 'shiki-live-080', 'embedded', 'inline', 'inline-restart', 'prose', 'prose-restart', 'i18n', 'i18n-restart', 'selection', 'phase-d', 'phase-d-restart', 'phase-e', 'phase-e-restart', 'notes', 'notes-restart', 'display', 'display-restart', 'parameters', 'migration', 'migration-restart'];
+const available = ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart', 'shiki', 'languages-shiki', 'shiki-live-077', 'shiki-live-080', 'embedded', 'inline', 'inline-restart', 'prose', 'prose-restart', 'i18n', 'i18n-restart', 'selection', 'phase-d', 'phase-d-restart', 'phase-e', 'phase-e-restart', 'notes', 'notes-restart', 'display', 'display-restart', 'parameters', 'migration', 'migration-restart', 'performance'];
 if (single && !available.includes(single)) throw new Error(`Unknown host scenario: ${single}`);
 const modes = single ? [single] : process.argv.includes('--shiki') ? ['shiki', 'languages-shiki'] : process.argv.includes('--languages-shiki') ? ['languages-shiki'] : process.argv.includes('--advanced') ? ['advanced'] : process.argv.includes('--languages') ? ['languages'] : process.argv.includes('--layout') ? ['layout'] : process.argv.includes('--settings') ? ['settings'] : ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart', 'embedded', 'inline', 'inline-restart', 'prose', 'prose-restart', 'i18n', 'i18n-restart', 'selection', 'phase-d', 'phase-d-restart', 'phase-e', 'phase-e-restart', 'notes', 'notes-restart', 'display', 'display-restart', 'parameters', 'migration', 'migration-restart'];
 for (const mode of modes) {
@@ -21,7 +21,7 @@ for (const mode of modes) {
     const child = spawn(executable, ['scripts/host-main.cjs'], {
       stdio: 'inherit', windowsHide: true, env: { ...environment, HB_HOST_MODE: mode },
     });
-    const timeout = setTimeout(() => { child.kill(); reject(new Error('Host process did not exit.')); }, 75000);
+    const timeout = setTimeout(() => { child.kill(); reject(new Error('Host process did not exit.')); }, mode === 'performance' ? 320000 : 75000);
     child.once('error', error => { clearTimeout(timeout); reject(error); });
     child.once('exit', code => { clearTimeout(timeout); resolve(code); });
   });

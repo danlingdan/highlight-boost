@@ -57,12 +57,15 @@
     await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'preview' } });
     const root = view.containerEl.querySelector('.markdown-preview-view');
     for (let i = 0; i < 50 && ![...root.querySelectorAll('.hb-text')].some(mark=>mark.textContent === entry.word); i++) await tick();
+    const expectsSyntax = ['c', 'python', 'js'].includes(entry.language);
+    if (expectsSyntax) for (let i = 0; i < 30 && !root.querySelector('pre > code .token, pre > code [style*="--0"]'); i++) await tick();
     const code = root.querySelector('pre > code');
     assert(`${entry.language}-reading-mark`, [...root.querySelectorAll('pre .hb-text')].some(mark=>mark.textContent === entry.word));
     const rows = [...code.querySelectorAll(':scope > .ec-line > .code')];
     const actual = rows.length ? rows.map(row=>row.textContent).join('\n') : code.textContent.replace(/\n$/, '');
     assert(`${entry.language}-code-preserved`, actual === entry.code, actual);
     record.syntax.reading = Boolean(code.querySelector('.token, [style*="--0"]'));
+    if (expectsSyntax) assert(`${entry.language}-reading-syntax-loaded`, record.syntax.reading);
     record.readingRenderer = rows.length ? 'expressive-code' : 'native';
     matrix.push(record);
   }

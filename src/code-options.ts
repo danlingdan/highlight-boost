@@ -1,6 +1,7 @@
 import { Facet, EditorState, type StateEffect } from '@codemirror/state';
 import { foldedRanges, unfoldEffect } from '@codemirror/language';
 import type { CodeBlock } from './domain';
+import { fenceParameters, parameterValue } from './fence-params';
 
 export interface CodeDisplaySettings {
   showTitle: boolean; showLineNumbers: boolean; startLine: number; numberFont: 'monospace' | 'interface';
@@ -16,13 +17,17 @@ export function normalizeCodeDisplay(value: unknown): CodeDisplaySettings {
 }
 export const codeDisplayFacet = Facet.define<CodeDisplaySettings, CodeDisplaySettings>({ combine: values => values[0] ?? defaultCodeDisplay });
 export function codeOptions(block: CodeBlock, settings: CodeDisplaySettings): CodeDisplaySettings & { title: string } {
-  const meta = block.meta ?? '';
-  const value = (key: string) => new RegExp(`(?:^|\\s)${key}=(?:"([^"]*)"|'([^']*)'|([^\\s]+))(?=\\s|$)`).exec(meta)?.slice(1).find(value => value !== undefined);
-  const flag = (key: string, fallback: boolean) => value(key) !== undefined ? value(key) !== 'false' : new RegExp(`(?:^|\\s)${key}(?=\\s|$)`).test(meta) || fallback;
-  const title = value('title') ?? '', first = Number(value('startLineNumber'));
-  return { ...settings, title, showTitle: settings.showTitle || Boolean(title), showLineNumbers: flag('showLineNumbers', settings.showLineNumbers),
+  const parameters = fenceParameters(block.meta ?? '');
+  const value = (...keys: string[]) => parameterValue(parameters, ...keys);
+  const flag = (key: string, fallback: boolean) => value(key) !== undefined ? value(key) !== 'false' : fallback;
+  const folded = value('fold') !== undefined && value('fold') !== 'false', unfolded = value('unfold') !== undefined && value('unfold') !== 'false';
+  const foldTitle = value('fold');
+  const title = value('title', 'file') ?? (foldTitle && !['true', 'false'].includes(foldTitle) ? foldTitle : '');
+  const ln = value('ln', 'linenos'), numbered = ln === 'true' || ln === 'table' || ln === 'inline' || /^\d+$/.test(ln ?? '');
+  const first = Number(value('startLineNumber', 'linenostart') ?? (/^\d+$/.test(ln ?? '') ? ln : undefined));
+  return { ...settings, title, showTitle: settings.showTitle || Boolean(title), showLineNumbers: flag('showLineNumbers', ln === 'false' ? false : numbered || settings.showLineNumbers),
     startLine: Number.isSafeInteger(first) && first > 0 && first <= 1000000 ? first : settings.startLine,
-    wrap: flag('wrap', settings.wrap), collapsible: flag('hb-fold', settings.collapsible || flag('hb-collapsed', false)), collapseByDefault: flag('hb-collapsed', settings.collapseByDefault) };
+    wrap: flag('wrap', settings.wrap), collapsible: flag('hb-fold', settings.collapsible || folded || unfolded || flag('hb-collapsed', false)), collapseByDefault: flag('hb-collapsed', unfolded ? false : folded || settings.collapseByDefault) };
 }
 export type DiffKind = 'insert' | 'delete' | 'context' | 'meta';
 export function diffKinds(code: string): DiffKind[] {

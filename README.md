@@ -37,6 +37,8 @@
 
 桌面选区面板默认开启，提供语义、颜色、最近颜色及移除操作；代码可切换文本或整行。点击后保留逻辑选区，支持连续改色和单步撤销。侧栏支持当前笔记搜索、类型和语义筛选，以及单条改语义和移除。
 
+侧栏显示标题链与可展开的代码上下文。摘录包含精确内容、来源链接、语义和代码行号；代码中的反引号围栏可完整保留。从阅读视图点击条目后进入 Live Preview，并选中对应源范围。
+
 ```sh
 pnpm install --frozen-lockfile
 pnpm check
@@ -45,6 +47,6 @@ pnpm prepare:vault
 
 构建生成 `main.js`。将它与 `manifest.json`、`styles.css` 放入测试库的插件目录，即可加载原型。`prepare:vault` 在项目内创建 `.test-vault` 并复制原型及样例。
 
-[开发与接口测试](docs/development.md) · [最新验证记录](docs/verification/selection-toolbar.md)
+[桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [最新验收](docs/verification/phase-d.md) · [v1 格式](docs/formats/README.md)
 
-当前已交付四轮原型、正文持久语义、行内代码闭环、中英文界面、桌面选区面板、当前笔记侧栏交互、工程基础及配置迁移。106 项逻辑/DOM/引擎测试和 351 项宿主检查通过。接下来核对阶段 D 的逐项验收，再进入全库检索与摘录。
+阶段 D 的首个可用版本已完成 P01—P09 验收，v1 标注格式已冻结。116 项逻辑/DOM/引擎测试和 405 项宿主检查通过，当前提供源码及内部构建。下一阶段接入全库增量索引、目录范围、集合和摘录笔记。

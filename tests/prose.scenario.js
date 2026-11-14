@@ -13,6 +13,7 @@
   await app.plugins.enablePlugin('highlight-boost');
   const plugin = app.plugins.plugins['highlight-boost'];
   const original = structuredClone(plugin.settings);
+  plugin.settings.language = 'zh';
   plugin.getPreset('important').name = '核心观点';
   plugin.getPreset('important').color = 'yellow';
   plugin.getPreset('question').color = 'red';

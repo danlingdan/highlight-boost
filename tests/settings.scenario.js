@@ -10,7 +10,7 @@
   await app.plugins.enablePlugin('highlight-boost');
   let plugin = app.plugins.plugins['highlight-boost'];
   const original = structuredClone(plugin.settings);
-  await plugin.saveData({ schemaVersion: 1, defaultPreset: 'question' });
+  await plugin.saveData({ schemaVersion: 1, defaultPreset: 'question', language: 'zh' });
   await app.plugins.disablePlugin('highlight-boost');
   await app.plugins.enablePlugin('highlight-boost');
   plugin = app.plugins.plugins['highlight-boost'];

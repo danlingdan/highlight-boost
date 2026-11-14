@@ -14,6 +14,9 @@
   await app.plugins.enablePlugin('highlight-boost');
   let plugin = app.plugins.plugins['highlight-boost'];
   const originalSyntax = plugin.settings.syntaxProvider;
+  const originalLanguage = plugin.settings.language;
+  plugin.settings.language = 'zh';
+  await plugin.saveSettings();
   const source = '# 行内验证\n\n前文 `a==b` 后文\n\n第一次 `same`，第二次 `same`。\n\n复杂 `` a`b ``\n\n> 引用 `one`\n\n跨行 `multi\nline`\n\n| 字段 |\n| --- |\n| `value` |\n';
   const path = '行内验证.md', old = app.vault.getFileByPath(path);
   const file = old ? (await app.vault.modify(old, source), old) : await app.vault.create(path, source);
@@ -112,6 +115,7 @@
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
   assert('inline-builtin-syntax-coexists', await until(() => reading().querySelectorAll('code.hb-inline').length === 7));
   plugin.settings.syntaxProvider = originalSyntax;
+  plugin.settings.language = originalLanguage;
   await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost');
   await app.plugins.enablePlugin('highlight-boost');

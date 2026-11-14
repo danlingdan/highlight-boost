@@ -83,7 +83,7 @@
   assert('prose-sidebar-semantic-identities', cards.map(card => card.dataset.hbSemantic).join(',') === 'action,important,question,important');
   assert('prose-sidebar-snapshot-label', cards.some(card => card.textContent.includes('核心观点')));
   cards[1].querySelector('.hb-quote').click();
-  assert('prose-sidebar-source-jump', editor.getSelection() === '第二段 **强调**');
+  assert('prose-sidebar-source-jump', await until(() => editor.getSelection() === '第二段 **强调**'));
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   assert('prose-source-raw-metadata', !view.containerEl.querySelector('.hb-metadata-chip'));
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: false } });

@@ -10,11 +10,11 @@ import { ReadingHighlights } from './reading-view';
 import { composingState, compositionEvents } from './composition';
 import { normalizeSettings, type ConfiguredPreset, type Settings } from './settings';
 import { SyntaxService } from './syntax/service';
-import { inlineExcerpt } from './inline-rendering';
 import { colorName, colorSearch, errorMessage, presetName, resolveLocale, translate, type Language, type Locale, type Message } from './i18n';
 import type { Extension } from '@codemirror/state';
 import { selectionToolbar } from './selection-toolbar';
-import { planItemUpdate } from './item-editing';
+import { currentItem, planItemUpdate } from './item-editing';
+import { excerptContext, formatExcerpt } from './excerpts';
 
 const VIEW = 'highlight-boost';
 
@@ -153,6 +153,22 @@ export default class HighlightBoost extends Plugin {
     catch (error) { new Notice(errorMessage(error, this.locale)); }
   }
 
+  async jumpToItem(view: MarkdownView, reference: HighlightItem): Promise<void> {
+    try {
+      const file = view.file;
+      if (!file) return;
+      currentItem(view.editor.getValue(), reference);
+      await this.app.workspace.revealLeaf(view.leaf);
+      if (view.getMode() === 'preview') await view.leaf.setViewState({ type: 'markdown', state: { ...view.getState(), mode: 'source', source: false } });
+      if (view.file !== file) throw new Error(this.t('staleMark'));
+      const item = currentItem(view.editor.getValue(), reference);
+      const from = view.editor.offsetToPos(item.from), to = view.editor.offsetToPos(item.to);
+      view.editor.setSelection(from, to);
+      view.editor.scrollIntoView({ from, to }, true);
+      view.editor.focus();
+    } catch (error) { new Notice(errorMessage(error, this.locale)); }
+  }
+
   rebind(editor: Editor, item: HighlightItem): void {
     try {
       const selections = editor.listSelections();
@@ -262,39 +278,49 @@ class HighlightsView extends ItemView {
     for (const item of items) this.card(view, item);
   }
   private card(view: MarkdownView, item: HighlightItem): void {
+    const file = view.file!;
+    const inSource = (run: () => void) => {
+      if (view.file !== file) { new Notice(this.plugin.t('staleMark')); return; }
+      run();
+    };
     const card = this.results!.createDiv({ cls: `hb-card hb-${item.color}` });
     if (item.semantic) card.dataset.hbSemantic = item.semantic;
     const jump = card.createEl('button', { text: item.quote || this.plugin.t('blankLine'), cls: item.kind === 'prose' ? 'hb-quote' : 'hb-quote hb-code-quote' });
     const label = item.markId ? item.label : this.plugin.colorLabel(item.color);
     const info = item.kind === 'prose' ? this.plugin.t('prose') : item.kind === 'inline-code' ? this.plugin.t('inlineInfo', { line: item.line! }) : this.plugin.t('codeInfo', { language: item.language || this.plugin.t('code'), line: item.line! });
     card.createEl('small', { text: `${label} · ${info}${item.status === 'resolved' ? '' : ` · ${this.plugin.t('pending')}`}` });
+    const context = excerptContext(view.editor.getValue(), item);
+    if (context.headings.length) card.createEl('small', { text: context.headings.join(' › '), cls: 'hb-heading-context' });
+    if (context.code !== undefined && context.code !== item.quote) {
+      const details = card.createEl('details', { cls: 'hb-card-context' });
+      details.createEl('summary', { text: this.plugin.t('excerptCodeContext', { from: context.contextFrom!, to: context.contextTo! }) });
+      details.createEl('pre').createEl('code', { text: context.code });
+    }
     jump.addEventListener('click', () => {
       if (item.status !== 'resolved') { new Notice(this.plugin.t('contentChanged')); return; }
-      void this.app.workspace.revealLeaf(view.leaf);
-      const from = view.editor.offsetToPos(item.from), to = view.editor.offsetToPos(item.to);
-      view.editor.setSelection(from, to);
-      view.editor.scrollIntoView({ from, to }, true);
-      view.editor.focus();
+      inSource(() => { void this.plugin.jumpToItem(view, item); });
     });
     if (item.kind === 'code-line' || item.kind === 'code-range') {
       const rebind = card.createEl('button', { text: this.plugin.t('rebind'), cls: 'hb-rebind' });
       rebind.title = this.plugin.t('rebindHint');
-      rebind.addEventListener('click', () => this.plugin.rebind(view.editor, item));
+      rebind.addEventListener('click', () => inSource(() => this.plugin.rebind(view.editor, item)));
     }
     if (item.status === 'resolved') {
       const semantic = card.createEl('select', { cls: 'hb-change-semantic' });
       semantic.setAttribute('aria-label', this.plugin.t('changeSemantic'));
       semantic.createEl('option', { value: '', text: this.plugin.t('changeSemantic') });
       for (const preset of this.plugin.settings.presets) semantic.createEl('option', { value: preset.id, text: this.plugin.presetLabel(preset) });
-      semantic.addEventListener('change', () => { if (semantic.value) this.plugin.updateItem(view.editor, item, this.plugin.presetForAction(semantic.value)); });
+      semantic.addEventListener('change', () => inSource(() => { if (semantic.value) this.plugin.updateItem(view.editor, item, this.plugin.presetForAction(semantic.value)); }));
       const remove = card.createEl('button', { text: this.plugin.t('removeItem'), cls: 'hb-remove-item' });
-      remove.addEventListener('click', () => this.plugin.updateItem(view.editor, item, null));
+      remove.addEventListener('click', () => inSource(() => this.plugin.updateItem(view.editor, item, null)));
     }
     const copy = card.createEl('button', { text: this.plugin.t('copyExcerpt'), cls: 'hb-copy-excerpt' });
-    copy.addEventListener('click', () => {
-      const quote = item.kind === 'prose' ? `> ${item.quote}` : item.kind === 'inline-code' ? inlineExcerpt(item.quote) : `\`\`\`${item.language}\n${item.quote}\n\`\`\``;
-      void navigator.clipboard.writeText(`${quote}\n\n${this.plugin.t('sourceLine', { path: view.file!.path, label })}`);
-    });
+    copy.addEventListener('click', () => inSource(() => {
+      const context = excerptContext(view.editor.getValue(), item);
+      const subpath = context.blockId ? `#^${context.blockId}` : context.heading ? `#${context.heading}` : '';
+      const link = this.app.fileManager.generateMarkdownLink(file, '', subpath);
+      void navigator.clipboard.writeText(formatExcerpt(item, context, link, label, this.plugin.locale));
+    }));
   }
 }
 

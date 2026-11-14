@@ -75,3 +75,5 @@
 .hb-selection-toolbar button:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 2px; }
 .hb-search { width: 100%; margin-bottom: var(--size-4-2); }
 .hb-type-filter, .hb-semantic-filter, .hb-change-semantic { max-width: 100%; margin: 0 var(--size-4-1) var(--size-4-1) 0; }
+.hb-card-context { margin-block: var(--size-4-2); font-size: var(--font-ui-small); }
+.hb-card-context pre { white-space: pre-wrap; overflow-wrap: anywhere; font-family: var(--font-monospace); }

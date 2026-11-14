@@ -75,13 +75,13 @@
   assert('inline-sidebar-no-block-rebind', !document.querySelector('.hb-rebind'));
   const complex = cards.find(card => card.querySelector('.hb-quote').textContent === 'a`b');
   complex.querySelector('.hb-quote').click();
-  assert('inline-sidebar-source-jump', editor.getSelection() === ' a`b ');
+  assert('inline-sidebar-source-jump', await until(() => editor.getSelection() === ' a`b '));
   let copied = '';
   const write = navigator.clipboard.writeText;
   navigator.clipboard.writeText = async value => { copied = value; };
   complex.querySelector('.hb-copy-excerpt').click();
   navigator.clipboard.writeText = write;
-  assert('inline-excerpt-uses-safe-delimiter', copied.startsWith('``a`b``\n\n来源：[[行内验证.md]]'));
+  assert('inline-excerpt-uses-safe-delimiter', copied.startsWith('``a`b``\n\n来源：') && copied.includes('#行内验证'));
   const saved = editor.getValue();
   await app.vault.modify(file, saved);
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });

@@ -101,6 +101,7 @@
   assert('unified-sidebar', document.querySelectorAll('.hb-card').length >= 5, document.querySelectorAll('.hb-card').length);
   const jump = Array.from(document.querySelectorAll('.hb-quote')).find(button=>button.textContent === 'src');
   jump.click();
+  await tick();
   assert('sidebar-source-jump', editor.getSelection() === 'src');
 
   editor.replaceSelection('source');

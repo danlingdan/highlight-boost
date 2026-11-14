@@ -16,7 +16,8 @@
     "test:host": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs",
     "test:shiki": "pnpm build && pnpm prepare:vault && node scripts/prepare-shiki.mjs && node scripts/test-host.mjs --shiki",
     "test:shiki-live": "pnpm build && pnpm prepare:vault && node scripts/test-shiki-live.mjs",
-    "test:embedded": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=embedded"
+    "test:embedded": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=embedded",
+    "test:inline": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=inline && node scripts/test-host.mjs --mode=inline-restart"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",

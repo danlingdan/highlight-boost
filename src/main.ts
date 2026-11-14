@@ -18,6 +18,7 @@ import { HighlightIndex, type IndexHit } from './vault-index';
 import { renameCollections, collectionEntry, resolveEntry } from './collections';
 import { HighlightsView } from './workbench';
 import type { SearchScope } from './query';
+import { planNote } from './notes';
 
 const VIEW = 'highlight-boost';
 
@@ -132,7 +133,7 @@ export default class HighlightBoost extends Plugin {
     this.translatedCommands.push({ command: this.addCommand({ ...command, name: title() }), title });
   }
   private createReadingChild(element: HTMLElement, context: MarkdownPostProcessorContext): ReadingHighlights {
-    const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child));
+    const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child), () => this.locale);
     this.readingChildren.add(child);
     return child;
   }
@@ -152,6 +153,7 @@ export default class HighlightBoost extends Plugin {
       this.settingTab?.display();
       for (const leaf of this.app.workspace.getLeavesOfType(VIEW)) updates.push(leaf.setViewState(leaf.getViewState()));
       if (this.syntax) updates.push(this.syntax.refresh());
+      for (const child of this.readingChildren) child.refresh();
     }
     this.refreshPanels();
     for (const toolbar of this.toolbars) toolbar.refresh();
@@ -176,6 +178,19 @@ export default class HighlightBoost extends Plugin {
   updateItem(editor: Editor, item: HighlightItem, preset: Preset | null): void {
     try { this.commitPlan(editor, planItemUpdate(editor.getValue(), item, preset)); }
     catch (error) { new Notice(errorMessage(error, this.locale)); }
+  }
+  saveNote(editor: Editor, item: HighlightItem, note: string): void {
+    const plan = planNote(editor.getValue(), item, note, item.markId ? item.label : this.colorLabel(item.color));
+    if (plan.changes.length) this.commitPlan(editor, plan);
+  }
+  async editNoteHit(hit: IndexHit, note: string): Promise<void> {
+    const file = this.app.vault.getFileByPath(hit.path);
+    if (!file) throw new Error(this.t('missingSource'));
+    let view = this.openView(hit.path);
+    if (!view) { const leaf = this.app.workspace.getLeaf('tab'); await leaf.openFile(file); view = leaf.view as MarkdownView; }
+    if (view.getMode() === 'preview') await view.leaf.setViewState({ type: 'markdown', state: { ...view.getState(), mode: 'source', source: false } });
+    if (view.file !== file) throw new Error(this.t('staleMark'));
+    this.saveNote(view.editor, hit.item, note);
   }
 
   async jumpToItem(view: MarkdownView, reference: HighlightItem): Promise<void> {

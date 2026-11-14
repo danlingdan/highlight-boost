@@ -6,7 +6,7 @@ import { queryHighlights, type SearchScope } from './query';
 import { resolveEntry } from './collections';
 import { isExportNote, type IndexHit } from './vault-index';
 import type HighlightBoost from './main';
-import type { Message } from './i18n';
+import { errorMessage, type Message } from './i18n';
 
 export class HighlightsView extends ItemView {
   private note?: MarkdownView;
@@ -131,6 +131,10 @@ export class HighlightsView extends ItemView {
     const info = item.kind === 'prose' ? t('prose') : item.kind === 'inline-code' ? item.line ? t('inlineInfo', { line: item.line }) : t('inlineCode') : item.line ? t('codeInfo', { language: item.language || t('code'), line: item.line }) : t('code');
     card.createEl('small', { text: `${label} · ${info}${item.status === 'resolved' ? '' : ` · ${t('pending')}`}` });
     if (this.searchScope !== 'note') card.createEl('small', { text: hit.path, cls: 'hb-source-path' });
+    if (item.note) {
+      const note = card.createEl('details', { cls: 'hb-note' }); note.createEl('summary', { text: t('annotation') });
+      note.createEl('div', { text: item.note, cls: 'hb-note-text' });
+    }
     const context = excerptContext(hit.text, item);
     if (context.headings.length) card.createEl('small', { text: context.headings.join(' › '), cls: 'hb-heading-context' });
     if (context.code !== undefined && context.code !== item.quote) {
@@ -147,6 +151,9 @@ export class HighlightsView extends ItemView {
       rebind.addEventListener('click', () => { if (sourceView.file === file) this.plugin.rebind(sourceView.editor, item); });
     }
     if (item.status === 'resolved') {
+      card.createEl('button', { text: t('editAnnotation'), cls: 'hb-edit-note' }).addEventListener('click', () => {
+        new AnnotationModal(this.plugin, item.note ?? '', note => this.plugin.editNoteHit(hit, note)).open();
+      });
       const semantic = card.createEl('select', { cls: 'hb-change-semantic' }); semantic.setAttribute('aria-label', t('changeSemantic')); semantic.createEl('option', { value: '', text: t('changeSemantic') });
       for (const preset of this.plugin.settings.presets) semantic.createEl('option', { value: preset.id, text: this.plugin.presetLabel(preset) });
       semantic.addEventListener('change', () => { if (semantic.value) act(view => this.plugin.updateItem(view.editor, item, this.plugin.presetForAction(semantic.value))); });
@@ -162,6 +169,21 @@ export class HighlightsView extends ItemView {
     });
     card.createEl('button', { text: t('copyExcerpt'), cls: 'hb-copy-excerpt' }).addEventListener('click', () => { void navigator.clipboard.writeText(this.plugin.excerpt(hit)); });
   }
+}
+
+class AnnotationModal extends Modal {
+  constructor(private plugin: HighlightBoost, private note: string, private submit: (note: string) => Promise<void>) { super(plugin.app); }
+  onOpen(): void {
+    this.contentEl.createEl('h3', { text: this.plugin.t('editAnnotation') });
+    this.contentEl.createEl('p', { text: this.plugin.t('annotationHint') });
+    const input = this.contentEl.createEl('textarea', { cls: 'hb-note-input' }); input.value = this.note;
+    input.setAttribute('aria-label', this.plugin.t('annotation')); input.rows = 8;
+    new Setting(this.contentEl).addButton(button => button.setButtonText(this.plugin.t('save')).onClick(async () => {
+      button.setDisabled(true);
+      try { await this.submit(input.value); this.close(); } catch (error) { new Notice(errorMessage(error, this.plugin.locale)); button.setDisabled(false); }
+    })).addButton(button => button.setButtonText(this.plugin.t('cancel')).onClick(() => this.close()));
+  }
+  onClose(): void { this.contentEl.empty(); }
 }
 
 class CollectionNameModal extends Modal {

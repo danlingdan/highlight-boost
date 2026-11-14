@@ -1,0 +1,28 @@
+(async () => {
+  const checks = [];
+  window.__hbChecks = checks;
+  const assert = (name, value) => { if (!value) throw new Error(name); checks.push({ name, passed: true }); };
+  await app.plugins.loadManifests();
+  await app.plugins.setEnable(true);
+  await app.plugins.enablePlugin('highlight-boost');
+  const plugin = app.plugins.plugins['highlight-boost'];
+  const expected = JSON.parse(await app.vault.adapter.read(`${app.vault.configDir}/hb-i18n-expected.json`));
+  assert('language-survives-new-process', plugin.settings.language === 'en' && plugin.locale === 'en');
+  assert('custom-name-marker-survives', plugin.getPreset('important').name === '重点' && plugin.getPreset('important').customName === true);
+  assert('english-custom-command-restores', app.commands.commands['highlight-boost:apply-important'].name.endsWith('Mark as 重点'));
+  const file = app.vault.getFileByPath('语言验证.md');
+  assert('i18n-restart-note-exact', await app.vault.read(file) === expected.source);
+  const leaf = app.workspace.getLeaf(false);
+  await leaf.openFile(file);
+  await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: false } });
+  await plugin.openPanel();
+  assert('english-sidebar-restores', document.querySelector('.hb-panel h4').textContent === 'Note highlights');
+  assert('snapshot-names-restore', document.querySelector('.hb-panel').textContent.includes('Reference') && document.querySelector('.hb-panel').textContent.includes('疑问'));
+  plugin.settings = expected.originalSettings;
+  await plugin.saveSettings();
+  await app.plugins.disablePlugin('highlight-boost');
+  await app.plugins.enablePlugin('highlight-boost');
+  assert('i18n-test-settings-restored', JSON.stringify(app.plugins.plugins['highlight-boost'].settings) === JSON.stringify(expected.originalSettings));
+  assert('i18n-restoring-settings-keeps-note', await app.vault.read(file) === expected.source);
+  return checks;
+})()

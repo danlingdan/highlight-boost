@@ -21,6 +21,8 @@ scenarios.settings = ['settings.scenario.js', 'host-settings-results.json'];
 scenarios.embedded = ['embedded-syntax.scenario.js', 'host-embedded-results.json'];
 scenarios.inline = ['inline.scenario.js', 'host-inline-results.json'];
 scenarios.prose = ['prose.scenario.js', 'host-prose-results.json'];
+scenarios.i18n = ['i18n.scenario.js', 'host-i18n-results.json'];
+scenarios['i18n-restart'] = ['i18n-restart.scenario.js', 'host-i18n-restart-results.json'];
 scenarios['prose-restart'] = ['prose-restart.scenario.js', 'host-prose-restart-results.json'];
 scenarios['inline-restart'] = ['inline-restart.scenario.js', 'host-inline-restart-results.json'];
 scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-results.json'];
@@ -71,7 +73,7 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose') {
+      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n') {
         contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }

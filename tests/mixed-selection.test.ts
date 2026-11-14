@@ -44,7 +44,9 @@ describe('连续跨区域选区', () => {
     const text = '---\ntitle: 标题\n---\n\n前文 `code()` 后文 %%备注%% 尾文\n\n<div>HTML</div>\n\n![图片](file.png)';
     const { output } = whole(text);
     expect(output.startsWith('---\ntitle: 标题\n---')).toBe(true);
-    expect(output).toContain('==🔴前文== `code()` ==🔴后文== %%备注%% ==🔴尾文==');
+    expect(output).toContain('==🔴前文== `code()`%%hbi:');
+    expect(parseDocument(output).inlines[0]?.metadata?.color).toBe('red');
+    expect(parseDocument(output).highlights.map(item => item.quote)).toEqual(['前文', '后文', '尾文']);
     expect(output).toContain('<div>HTML</div>');
     expect(output).toContain('![图片](file.png)');
   });

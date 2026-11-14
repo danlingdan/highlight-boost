@@ -172,6 +172,7 @@ class HighlightsView extends ItemView {
   }
   private card(view: MarkdownView, item: HighlightItem): void {
     const card = this.contentEl.createDiv({ cls: `hb-card hb-${item.color}` });
+    if (item.semantic) card.dataset.hbSemantic = item.semantic;
     const jump = card.createEl('button', { text: item.quote || '空行', cls: item.kind === 'prose' ? 'hb-quote' : 'hb-quote hb-code-quote' });
     const info = item.kind === 'prose' ? '正文' : item.kind === 'inline-code' ? `行内代码 · 第 ${item.line} 行` : `${item.language || '代码'} · 第 ${item.line} 行`;
     card.createEl('small', { text: `${item.label} · ${info}${item.status === 'resolved' ? '' : ' · 待重新定位'}` });
@@ -214,7 +215,7 @@ class HighlightSettings extends PluginSettingTab {
       });
     });
     this.containerEl.createEl('h3', { text: '语义预设' });
-    this.containerEl.createEl('p', { text: '名称和颜色用于后续标注。代码中已有标注保留创建时的语义与颜色。正文采用原生颜色格式。' });
+    this.containerEl.createEl('p', { text: '名称和颜色用于后续标注。已有标注保留创建时的语义名称。直接改色保留已有语义；正文颜色使用原生格式。' });
     for (const preset of this.plugin.settings.presets) {
       new Setting(this.containerEl).setName(preset.name).addText(text => text
         .setPlaceholder(preset.name).setValue(preset.name).onChange(async value => {

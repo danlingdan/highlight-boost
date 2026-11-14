@@ -4,13 +4,13 @@ import { parseDocument } from './parsing';
 import { composingState } from './composition';
 
 class MetadataWidget extends WidgetType {
-  constructor(private from: number, private to: number, private count: number, private inline = false) { super(); }
-  eq(other: MetadataWidget): boolean { return this.from === other.from && this.to === other.to && this.count === other.count && this.inline === other.inline; }
+  constructor(private from: number, private to: number, private count: number, private kind: 'block' | 'inline' | 'prose' = 'block') { super(); }
+  eq(other: MetadataWidget): boolean { return this.from === other.from && this.to === other.to && this.count === other.count && this.kind === other.kind; }
   toDOM(view: EditorView): HTMLElement {
     const button = view.dom.ownerDocument.createElement('button');
     button.className = 'hb-metadata-chip';
-    button.textContent = this.inline ? '行内标注' : `代码标注 · ${this.count} 条`;
-    button.setAttribute('aria-label', '展开代码标注元数据');
+    button.textContent = this.kind === 'inline' ? '行内标注' : this.kind === 'prose' ? '正文标注' : `代码标注 · ${this.count} 条`;
+    button.setAttribute('aria-label', '展开标注元数据');
     const expand = () => {
       view.dispatch({ selection: { anchor: this.from, head: this.to } });
       view.focus();
@@ -35,10 +35,10 @@ export function createMetadataFolding(livePreview: StateField<boolean>): StateFi
     if (!state.field(livePreview, false)) return Decoration.none;
     const ranges = [];
     const parsed = parseDocument(state.doc.toString());
-    for (const inline of parsed.inlines) {
+    for (const inline of [...parsed.inlines, ...parsed.highlights]) {
       const span = inline.metadataSpan;
       if (!span || state.selection.ranges.some(range => range.from <= span.to && span.from <= range.to)) continue;
-      ranges.push(Decoration.replace({ widget: new MetadataWidget(span.from, span.to, 1, true) }).range(span.from, span.to));
+      ranges.push(Decoration.replace({ widget: new MetadataWidget(span.from, span.to, 1, 'color' in inline ? 'prose' : 'inline') }).range(span.from, span.to));
     }
     for (const block of parsed.blocks) {
       const span = block.metadataSpan;

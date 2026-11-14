@@ -21,6 +21,7 @@
   plugin.settings.defaultPreset = 'important';
   await plugin.saveSettings();
   assert('command-name-updates', app.commands.commands['highlight-boost:apply-important'].name.includes('考点'));
+  assert('command-keeps-plugin-name', app.commands.commands['highlight-boost:apply-important'].name.startsWith(`${plugin.manifest.name}: `));
   assert('line-command-name-updates', app.commands.commands['highlight-boost:lines-important'].name.includes('考点'));
   const path = '配置验证.md', source = '正文考点\n\n```js\nconst target = 7;\n```\n';
   const old = app.vault.getFileByPath(path);

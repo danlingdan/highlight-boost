@@ -66,7 +66,7 @@ export default class HighlightBoost extends Plugin {
 
   saveSettings(): Promise<void> {
     this.settings = normalizeSettings(this.settings);
-    for (const entry of this.presetCommands) entry.command.name = `${entry.lines ? '代码行：' : '标记为'}${this.getPreset(entry.id).name}`;
+    for (const entry of this.presetCommands) entry.command.name = `${this.manifest.name}: ${entry.lines ? '代码行：' : '标记为'}${this.getPreset(entry.id).name}`;
     const snapshot = structuredClone(this.settings);
     const write = this.settingsWrites.catch(() => {}).then(() => this.saveData(snapshot));
     this.settingsWrites = write;

@@ -21,6 +21,9 @@ import type { SearchScope } from './query';
 import { planNote } from './notes';
 import { codeDisplayFacet, codeDisplayKey, diffAfter, unfoldSelectedCode } from './code-options';
 import { liveCalloutHighlights } from './live-callouts';
+import { createMigrationService } from './migration-obsidian';
+import type { MigrationService } from './migration-service';
+import { MigrationModal } from './migration-ui';
 
 const VIEW = 'highlight-boost';
 
@@ -39,9 +42,11 @@ export default class HighlightBoost extends Plugin {
   toolbars = new Set<{ refresh(): void; open(): void; matches(editor: Editor): boolean; destroy(): void }>();
   syntax?: SyntaxService;
   index!: HighlightIndex;
+  migrations!: MigrationService;
   async onload(): Promise<void> {
     const loaded: unknown = await this.loadData();
     this.settings = normalizeSettings(loaded);
+    this.migrations = createMigrationService(this, path => this.openView(path));
     this.lastLocale = this.locale;
     this.lastDisplay = JSON.stringify(this.settings.codeDisplay);
     this.index = new HighlightIndex({
@@ -80,6 +85,7 @@ export default class HighlightBoost extends Plugin {
     this.addTranslatedCommand({ id: 'remove', editorCallback: editor => this.apply(editor, null) }, () => this.t('remove'));
     this.addTranslatedCommand({ id: 'open-highlights', callback: () => { void this.openPanel('note'); } }, () => this.t('openPanel'));
     this.addTranslatedCommand({ id: 'open-workbench', callback: () => { void this.openPanel('vault'); } }, () => this.t('workbench'));
+    this.addTranslatedCommand({ id: 'open-migration', callback: () => new MigrationModal(this).open() }, () => this.t('migration'));
     this.addTranslatedCommand({ id: 'copy-code', editorCallback: editor => { void this.copyCode(editor); } }, () => this.t('copyCode'));
     this.addTranslatedCommand({ id: 'copy-diff-after', editorCallback: editor => { void this.copyDiffAfter(editor); } }, () => this.t('copyDiffAfter'));
     this.addTranslatedCommand({ id: 'selection-toolbar', editorCallback: editor => {
@@ -364,6 +370,7 @@ class HighlightSettings extends PluginSettingTab {
       });
     });
     this.containerEl.createEl('h3', { text: t('codeDisplay') });
+    new Setting(this.containerEl).setName(t('migration')).setDesc(t('migrationHint')).addButton(button => button.setButtonText(t('migration')).onClick(() => new MigrationModal(this.plugin).open()));
     this.containerEl.createEl('p', { text: t('codeDisplayHint') });
     for (const [key, label] of [['showTitle', 'showCodeTitle'], ['showLineNumbers', 'showCodeNumbers'], ['collapsible', 'foldCode'], ['collapseByDefault', 'foldByDefault'], ['wrap', 'wrapCode'], ['diff', 'showDiff']] as const) {
       new Setting(this.containerEl).setName(t(label)).addToggle(toggle => {

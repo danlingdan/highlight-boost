@@ -116,3 +116,7 @@
 [data-hb-param="insert"] { background-color: color-mix(in srgb, var(--color-green) 15%, transparent) !important; }
 [data-hb-param="delete"] { background-color: color-mix(in srgb, var(--color-red) 15%, transparent) !important; }
 .hb-line[data-hb-param] { background-image: linear-gradient(color-mix(in srgb, var(--hb-color) 12%, transparent), color-mix(in srgb, var(--hb-color) 12%, transparent)); }
+.hb-migration-actions { display: flex; flex-wrap: wrap; gap: var(--size-4-2); position: sticky; top: 0; z-index: 1; padding-block: var(--size-4-2); background: var(--background-primary); }
+.hb-migration-preview > details, .hb-migration-history > details { margin-block: var(--size-4-3); padding: var(--size-4-2); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-s); }
+.hb-migration-entry { margin-block: var(--size-4-2); }
+.hb-migration pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 16rem; overflow: auto; }

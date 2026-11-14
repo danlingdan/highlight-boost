@@ -1,0 +1,31 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "inline-restart-plugin-loaded",
+      "passed": true
+    },
+    {
+      "name": "inline-restart-source-equal",
+      "passed": true
+    },
+    {
+      "name": "inline-restart-metadata-identities",
+      "passed": true
+    },
+    {
+      "name": "inline-restart-sidebar",
+      "passed": true
+    },
+    {
+      "name": "inline-restart-reading-decorations",
+      "passed": true
+    },
+    {
+      "name": "inline-restart-does-not-rewrite",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

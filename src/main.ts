@@ -19,6 +19,7 @@ import { renameCollections, collectionEntry, resolveEntry } from './collections'
 import { HighlightsView } from './workbench';
 import type { SearchScope } from './query';
 import { planNote } from './notes';
+import { codeDisplayFacet, codeDisplayKey, diffAfter, unfoldSelectedCode } from './code-options';
 
 const VIEW = 'highlight-boost';
 
@@ -28,6 +29,8 @@ export default class HighlightBoost extends Plugin {
   private translatedCommands: { command: Command; title: () => string }[] = [];
   private uiExtensions: Extension[] = [];
   private lastLocale?: Locale;
+  private lastDisplay = '';
+  readonly codeDisplaySessions = new Map<string, boolean>();
   private ribbon?: HTMLElement;
   private settingTab?: HighlightSettings;
   private colorPickers = new Set<ColorPicker>();
@@ -39,6 +42,7 @@ export default class HighlightBoost extends Plugin {
     const loaded: unknown = await this.loadData();
     this.settings = normalizeSettings(loaded);
     this.lastLocale = this.locale;
+    this.lastDisplay = JSON.stringify(this.settings.codeDisplay);
     this.index = new HighlightIndex({
       paths: () => this.app.vault.getMarkdownFiles().map(file => file.path),
       read: async path => {
@@ -54,7 +58,7 @@ export default class HighlightBoost extends Plugin {
       this.syntax = this.addChild(new SyntaxService(this, (element, context) => this.createReadingChild(element, context), () => this.locale));
       await this.syntax.initialize();
     }
-    this.uiExtensions.push(metadataLocale.of(this.locale), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField), selectionToolbar(this));
+    this.uiExtensions.push(metadataLocale.of(this.locale), codeDisplayFacet.of(this.settings.codeDisplay), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField), selectionToolbar(this), unfoldSelectedCode);
     this.registerEditorExtension(this.uiExtensions);
     this.registerView(VIEW, leaf => new HighlightsView(leaf, this));
     this.settingTab = new HighlightSettings(this);
@@ -75,6 +79,7 @@ export default class HighlightBoost extends Plugin {
     this.addTranslatedCommand({ id: 'open-highlights', callback: () => { void this.openPanel('note'); } }, () => this.t('openPanel'));
     this.addTranslatedCommand({ id: 'open-workbench', callback: () => { void this.openPanel('vault'); } }, () => this.t('workbench'));
     this.addTranslatedCommand({ id: 'copy-code', editorCallback: editor => { void this.copyCode(editor); } }, () => this.t('copyCode'));
+    this.addTranslatedCommand({ id: 'copy-diff-after', editorCallback: editor => { void this.copyDiffAfter(editor); } }, () => this.t('copyDiffAfter'));
     this.addTranslatedCommand({ id: 'selection-toolbar', editorCallback: editor => {
       for (const toolbar of this.toolbars) if (toolbar.matches(editor)) toolbar.open();
     } }, () => this.t('openSelectionToolbar'));
@@ -133,7 +138,7 @@ export default class HighlightBoost extends Plugin {
     this.translatedCommands.push({ command: this.addCommand({ ...command, name: title() }), title });
   }
   private createReadingChild(element: HTMLElement, context: MarkdownPostProcessorContext): ReadingHighlights {
-    const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child), () => this.locale);
+    const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child), () => this.locale, () => this.settings.codeDisplay, this.codeDisplaySessions);
     this.readingChildren.add(child);
     return child;
   }
@@ -145,6 +150,13 @@ export default class HighlightBoost extends Plugin {
     const locale = this.locale, changed = this.lastLocale !== locale;
     this.lastLocale = locale;
     const updates: Promise<unknown>[] = [];
+    const display = JSON.stringify(this.settings.codeDisplay), displayChanged = display !== this.lastDisplay;
+    this.lastDisplay = display;
+    if (displayChanged && this.uiExtensions.length) {
+      this.uiExtensions.splice(1, 1, codeDisplayFacet.of(this.settings.codeDisplay));
+      this.app.workspace.updateOptions();
+      for (const child of this.readingChildren) child.refresh();
+    }
     if (changed && this.uiExtensions.length) {
       this.uiExtensions.splice(0, 1, metadataLocale.of(locale));
       this.app.workspace.updateOptions();
@@ -198,6 +210,11 @@ export default class HighlightBoost extends Plugin {
       const file = view.file;
       if (!file) return;
       currentItem(view.editor.getValue(), reference);
+      if (reference.blockFrom !== undefined) {
+        const blocks = parseDocument(view.editor.getValue()).blocks, block = blocks.find(block => block.fenceFrom === reference.blockFrom);
+        if (block) this.codeDisplaySessions.set(codeDisplayKey(file.path, block, blocks), false);
+        for (const child of this.readingChildren) if (child.context.sourcePath === file.path) { child.revealCode(view.editor.getValue(), reference.blockFrom); child.refresh(); }
+      }
       await this.app.workspace.revealLeaf(view.leaf);
       if (view.getMode() === 'preview') await view.leaf.setViewState({ type: 'markdown', state: { ...view.getState(), mode: 'source', source: false } });
       if (view.file !== file) throw new Error(this.t('staleMark'));
@@ -241,6 +258,12 @@ export default class HighlightBoost extends Plugin {
     if (!block) { new Notice(this.t('cursorInCode')); return; }
     await navigator.clipboard.writeText(block.text);
     new Notice(this.t('copiedCode'));
+  }
+  async copyDiffAfter(editor: Editor): Promise<void> {
+    const position = editor.posToOffset(editor.getCursor());
+    const block = parseDocument(editor.getValue()).blocks.find(block => block.from <= position && position <= block.to && block.language === 'diff');
+    if (!block) { new Notice(this.t('cursorInDiff')); return; }
+    await navigator.clipboard.writeText(diffAfter(block.text)); new Notice(this.t('copiedCode'));
   }
 
   openView(path: string): MarkdownView | undefined {
@@ -304,6 +327,7 @@ export default class HighlightBoost extends Plugin {
     for (const toolbar of this.toolbars) toolbar.destroy();
     for (const picker of this.colorPickers) picker.close();
     for (const child of this.readingChildren) child.unload();
+    this.codeDisplaySessions.clear();
   }
 }
 
@@ -335,6 +359,24 @@ class HighlightSettings extends PluginSettingTab {
       toggle.setValue(this.plugin.settings.selectionToolbar).onChange(async value => {
         this.plugin.settings.selectionToolbar = value;
         await this.plugin.saveSettings();
+      });
+    });
+    this.containerEl.createEl('h3', { text: t('codeDisplay') });
+    this.containerEl.createEl('p', { text: t('codeDisplayHint') });
+    for (const [key, label] of [['showTitle', 'showCodeTitle'], ['showLineNumbers', 'showCodeNumbers'], ['collapsible', 'foldCode'], ['collapseByDefault', 'foldByDefault'], ['wrap', 'wrapCode'], ['diff', 'showDiff']] as const) {
+      new Setting(this.containerEl).setName(t(label)).addToggle(toggle => {
+        toggle.toggleEl.dataset.hbCodeSetting = key;
+        toggle.setValue(this.plugin.settings.codeDisplay[key]).onChange(async value => { this.plugin.settings.codeDisplay[key] = value; await this.plugin.saveSettings(); });
+      });
+    }
+    new Setting(this.containerEl).setName(t('startCodeLine')).addText(text => {
+      text.inputEl.type = 'number'; text.inputEl.min = '1'; text.inputEl.max = '1000000'; text.inputEl.step = '1'; text.inputEl.dataset.hbCodeSetting = 'startLine'; text.inputEl.setAttribute('aria-label', t('startCodeLine'));
+      text.setValue(String(this.plugin.settings.codeDisplay.startLine)).onChange(async value => { this.plugin.settings.codeDisplay.startLine = Number(value); await this.plugin.saveSettings(); });
+    });
+    new Setting(this.containerEl).setName(t('codeNumberFont')).addDropdown(dropdown => {
+      dropdown.selectEl.dataset.hbCodeSetting = 'numberFont'; dropdown.selectEl.setAttribute('aria-label', t('codeNumberFont'));
+      dropdown.addOption('monospace', t('monospaceFont')).addOption('interface', t('interfaceFont')).setValue(this.plugin.settings.codeDisplay.numberFont).onChange(async value => {
+        this.plugin.settings.codeDisplay.numberFont = value as 'monospace' | 'interface'; await this.plugin.saveSettings();
       });
     });
     let defaults: HTMLSelectElement;

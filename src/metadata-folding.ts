@@ -1,17 +1,20 @@
-import { StateField, type EditorState } from '@codemirror/state';
+import { Facet, StateField, type EditorState } from '@codemirror/state';
 import { Decoration, EditorView, WidgetType, type DecorationSet } from '@codemirror/view';
 import { parseDocument } from './parsing';
 import { composingState } from './composition';
+import { translate, type Locale } from './i18n';
+
+export const metadataLocale = Facet.define<Locale, Locale>({ combine: values => values[0] ?? 'zh' });
 
 class MetadataWidget extends WidgetType {
-  constructor(private from: number, private to: number, private count: number, private kind: 'block' | 'inline' | 'prose' = 'block') { super(); }
-  eq(other: MetadataWidget): boolean { return this.from === other.from && this.to === other.to && this.count === other.count && this.kind === other.kind; }
+  constructor(private from: number, private to: number, private count: number, private kind: 'block' | 'inline' | 'prose', private locale: Locale) { super(); }
+  eq(other: MetadataWidget): boolean { return this.from === other.from && this.to === other.to && this.count === other.count && this.kind === other.kind && this.locale === other.locale; }
   toDOM(view: EditorView): HTMLElement {
     const button = view.dom.ownerDocument.createElement('button');
     button.className = 'hb-metadata-chip';
     button.dataset.hbMetadata = this.kind;
-    button.textContent = this.kind === 'inline' ? '行内标注' : this.kind === 'prose' ? '正文标注' : `代码标注 · ${this.count} 条`;
-    button.setAttribute('aria-label', '展开标注元数据');
+    button.textContent = translate(this.locale, this.kind === 'inline' ? 'inlineMark' : this.kind === 'prose' ? 'proseMark' : 'codeMarks', { count: this.count });
+    button.setAttribute('aria-label', translate(this.locale, 'expandMetadata'));
     const expand = () => {
       view.dispatch({ selection: { anchor: this.from, head: this.to } });
       view.focus();
@@ -39,13 +42,13 @@ export function createMetadataFolding(livePreview: StateField<boolean>): StateFi
     for (const inline of [...parsed.inlines, ...parsed.highlights]) {
       const span = inline.metadataSpan;
       if (!span || state.selection.ranges.some(range => range.from <= span.to && span.from <= range.to)) continue;
-      ranges.push(Decoration.replace({ widget: new MetadataWidget(span.from, span.to, 1, 'color' in inline ? 'prose' : 'inline') }).range(span.from, span.to));
+      ranges.push(Decoration.replace({ widget: new MetadataWidget(span.from, span.to, 1, 'color' in inline ? 'prose' : 'inline', state.facet(metadataLocale)) }).range(span.from, span.to));
     }
     for (const block of parsed.blocks) {
       const span = block.metadataSpan;
       if (!span || !block.metadata) continue;
       if (state.selection.ranges.some(range => range.from <= span.to && span.from <= range.to)) continue;
-      ranges.push(Decoration.replace({ widget: new MetadataWidget(span.from, span.to, block.metadata.marks.length) }).range(span.from, span.to));
+      ranges.push(Decoration.replace({ widget: new MetadataWidget(span.from, span.to, block.metadata.marks.length, 'block', state.facet(metadataLocale)) }).range(span.from, span.to));
     }
     return Decoration.set(ranges, true);
   }
@@ -53,6 +56,7 @@ export function createMetadataFolding(livePreview: StateField<boolean>): StateFi
     create: decorations,
     update: (value, transaction) => transaction.state.field(composingState, false) ? value.map(transaction.changes) : transaction.docChanged || transaction.selection ||
       transaction.startState.field(composingState, false) !== transaction.state.field(composingState, false) ||
+      transaction.startState.facet(metadataLocale) !== transaction.state.facet(metadataLocale) ||
       transaction.startState.field(livePreview, false) !== transaction.state.field(livePreview, false)
       ? decorations(transaction.state) : value,
     provide: field => EditorView.decorations.from(field),

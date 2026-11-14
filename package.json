@@ -14,7 +14,9 @@
     "check": "pnpm lint && pnpm typecheck && pnpm test && pnpm build",
     "prepare:vault": "node scripts/prepare-vault.mjs",
     "test:host": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs",
-    "test:shiki": "pnpm build && pnpm prepare:vault && node scripts/prepare-shiki.mjs && node scripts/test-host.mjs --shiki"
+    "test:shiki": "pnpm build && pnpm prepare:vault && node scripts/prepare-shiki.mjs && node scripts/test-host.mjs --shiki",
+    "test:shiki-live": "pnpm build && pnpm prepare:vault && node scripts/test-shiki-live.mjs",
+    "test:embedded": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=embedded"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",
@@ -26,6 +28,7 @@
     "@types/node": "26.6.6",
     "electron": "38.8.6",
     "esbuild": "0.28.2",
+    "esbuild-plugins-node-modules-polyfill": "1.8.2",
     "eslint": "10.14.0",
     "jsdom": "31.0.0",
     "obsidian": "1.14.4",
@@ -34,8 +37,16 @@
     "vitest": "5.1.0"
   },
   "dependencies": {
+    "@expressive-code/core": "0.41.7",
+    "@expressive-code/plugin-collapsible-sections": "0.41.7",
+    "@expressive-code/plugin-frames": "0.41.7",
+    "@expressive-code/plugin-line-numbers": "0.41.7",
+    "@expressive-code/plugin-shiki": "0.41.7",
+    "@expressive-code/plugin-text-markers": "0.41.7",
+    "hast-util-to-dom": "4.0.1",
     "mdast-util-from-markdown": "2.1.0",
     "mdast-util-gfm": "3.1.0",
-    "micromark-extension-gfm": "3.0.0"
+    "micromark-extension-gfm": "3.0.0",
+    "shiki": "3.23.0"
   }
 }

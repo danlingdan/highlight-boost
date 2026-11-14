@@ -32,7 +32,8 @@
   assert('migration-preview-count-matches-five', control('status').textContent.includes('5 条标记'));
   modal().querySelector(`[data-hb-import-file-select="${pathB}"]`).click();
   assert('migration-selected-preview-count-four', control('status').textContent.includes('2 个可转换文件') && control('status').textContent.includes('4 条标记'));
-  modal().scrollTop = 0;
+  document.activeElement?.blur();
+  for (let element = modal(); element; element = element.parentElement) element.scrollTop = 0;
   await window.require('electron').ipcRenderer.invoke('hb-selection-capture', 'migration-preview');
   control('apply').click();
   assert('migration-apply-selected-real-ui', await until(() => control('status').textContent.includes('已应用 2 个文件') && !control('preview').disabled), control('status').textContent);

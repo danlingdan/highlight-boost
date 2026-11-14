@@ -1,0 +1,191 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "c-source-mark",
+      "passed": true
+    },
+    {
+      "name": "c-live-preview-mark",
+      "passed": true
+    },
+    {
+      "name": "c-reading-mark",
+      "passed": true
+    },
+    {
+      "name": "c-code-preserved",
+      "passed": true
+    },
+    {
+      "name": "python-source-mark",
+      "passed": true
+    },
+    {
+      "name": "python-live-preview-mark",
+      "passed": true
+    },
+    {
+      "name": "python-reading-mark",
+      "passed": true
+    },
+    {
+      "name": "python-code-preserved",
+      "passed": true
+    },
+    {
+      "name": "js-source-mark",
+      "passed": true
+    },
+    {
+      "name": "js-live-preview-mark",
+      "passed": true
+    },
+    {
+      "name": "js-reading-mark",
+      "passed": true
+    },
+    {
+      "name": "js-code-preserved",
+      "passed": true
+    },
+    {
+      "name": "asm-source-mark",
+      "passed": true
+    },
+    {
+      "name": "asm-live-preview-mark",
+      "passed": true
+    },
+    {
+      "name": "asm-reading-mark",
+      "passed": true
+    },
+    {
+      "name": "asm-code-preserved",
+      "passed": true
+    },
+    {
+      "name": "nasm-source-mark",
+      "passed": true
+    },
+    {
+      "name": "nasm-live-preview-mark",
+      "passed": true
+    },
+    {
+      "name": "nasm-reading-mark",
+      "passed": true
+    },
+    {
+      "name": "nasm-code-preserved",
+      "passed": true
+    },
+    {
+      "name": "x86asm-source-mark",
+      "passed": true
+    },
+    {
+      "name": "x86asm-live-preview-mark",
+      "passed": true
+    },
+    {
+      "name": "x86asm-reading-mark",
+      "passed": true
+    },
+    {
+      "name": "x86asm-code-preserved",
+      "passed": true
+    },
+    {
+      "name": "hb-unknown-source-mark",
+      "passed": true
+    },
+    {
+      "name": "hb-unknown-live-preview-mark",
+      "passed": true
+    },
+    {
+      "name": "hb-unknown-reading-mark",
+      "passed": true
+    },
+    {
+      "name": "hb-unknown-code-preserved",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "languageMatrix": [
+    {
+      "language": "c",
+      "provider": "shiki-0.8.0",
+      "syntax": {
+        "source": true,
+        "live-preview": true,
+        "reading": true
+      },
+      "readingRenderer": "expressive-code"
+    },
+    {
+      "language": "python",
+      "provider": "shiki-0.8.0",
+      "syntax": {
+        "source": true,
+        "live-preview": true,
+        "reading": true
+      },
+      "readingRenderer": "expressive-code"
+    },
+    {
+      "language": "js",
+      "provider": "shiki-0.8.0",
+      "syntax": {
+        "source": true,
+        "live-preview": true,
+        "reading": true
+      },
+      "readingRenderer": "expressive-code"
+    },
+    {
+      "language": "asm",
+      "provider": "shiki-0.8.0",
+      "syntax": {
+        "source": true,
+        "live-preview": true,
+        "reading": true
+      },
+      "readingRenderer": "expressive-code"
+    },
+    {
+      "language": "nasm",
+      "provider": "shiki-0.8.0",
+      "syntax": {
+        "source": false,
+        "live-preview": false,
+        "reading": true
+      },
+      "readingRenderer": "native"
+    },
+    {
+      "language": "x86asm",
+      "provider": "shiki-0.8.0",
+      "syntax": {
+        "source": false,
+        "live-preview": false,
+        "reading": false
+      },
+      "readingRenderer": "native"
+    },
+    {
+      "language": "hb-unknown",
+      "provider": "shiki-0.8.0",
+      "syntax": {
+        "source": false,
+        "live-preview": false,
+        "reading": false
+      },
+      "readingRenderer": "native"
+    }
+  ]
+}

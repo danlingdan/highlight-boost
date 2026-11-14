@@ -1,0 +1,83 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "advanced-plugin-load",
+      "passed": true
+    },
+    {
+      "name": "multi-prose-ranges",
+      "passed": true
+    },
+    {
+      "name": "multi-prose-selection",
+      "passed": true
+    },
+    {
+      "name": "multi-prose-undo",
+      "passed": true
+    },
+    {
+      "name": "multi-code-ranges",
+      "passed": true
+    },
+    {
+      "name": "multi-code-undo",
+      "passed": true
+    },
+    {
+      "name": "mixed-disjoint-selection",
+      "passed": true
+    },
+    {
+      "name": "mixed-selection-undo",
+      "passed": true
+    },
+    {
+      "name": "table-structure-preserved",
+      "passed": true
+    },
+    {
+      "name": "composition-preedit-visible",
+      "passed": true
+    },
+    {
+      "name": "composition-commit-once",
+      "passed": true
+    },
+    {
+      "name": "composition-anchor-preserved",
+      "passed": true
+    },
+    {
+      "name": "composition-single-undo",
+      "passed": true
+    },
+    {
+      "name": "composition-redo",
+      "passed": true
+    },
+    {
+      "name": "composition-metadata-preserved",
+      "passed": true
+    },
+    {
+      "name": "duplicate-reading-block-count",
+      "passed": true
+    },
+    {
+      "name": "duplicate-first-color",
+      "passed": true
+    },
+    {
+      "name": "duplicate-second-color",
+      "passed": true
+    },
+    {
+      "name": "duplicate-text-preserved",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

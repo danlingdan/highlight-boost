@@ -1,0 +1,63 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "shiki-load",
+      "passed": true
+    },
+    {
+      "name": "shiki-editor-text-mark",
+      "passed": true
+    },
+    {
+      "name": "shiki-editor-line-mark",
+      "passed": true
+    },
+    {
+      "name": "shiki-reading-render",
+      "passed": true
+    },
+    {
+      "name": "shiki-reading-text-mark",
+      "passed": true
+    },
+    {
+      "name": "shiki-reading-line-mark",
+      "passed": true
+    },
+    {
+      "name": "shiki-line-background-visible",
+      "passed": true
+    },
+    {
+      "name": "shiki-native-row-structure",
+      "passed": true
+    },
+    {
+      "name": "shiki-token-color-preserved",
+      "passed": true
+    },
+    {
+      "name": "shiki-copy-data-preserved",
+      "passed": true
+    },
+    {
+      "name": "shiki-rerender-restores-marks",
+      "passed": true
+    },
+    {
+      "name": "shiki-unload-cleans-marks",
+      "passed": true
+    },
+    {
+      "name": "shiki-first-load-order",
+      "passed": true
+    },
+    {
+      "name": "shiki-source-unchanged",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

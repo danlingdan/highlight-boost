@@ -1,0 +1,35 @@
+{
+  "obsidian": "1.15.0",
+  "electron": "38.8.6",
+  "checks": [
+    {
+      "name": "editor-full-line-background",
+      "passed": true
+    },
+    {
+      "name": "reading-line-background",
+      "passed": true
+    },
+    {
+      "name": "reading-full-line-background",
+      "passed": true
+    },
+    {
+      "name": "reading-soft-wrap",
+      "passed": true
+    },
+    {
+      "name": "text-highlight-crosses-wraps",
+      "passed": true
+    },
+    {
+      "name": "layout-keeps-code-text",
+      "passed": true
+    },
+    {
+      "name": "layout-keeps-source",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

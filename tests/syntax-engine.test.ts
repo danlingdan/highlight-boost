@@ -61,3 +61,11 @@ it('未知语言保留原生路径，释放后不再生成 token', async () => {
   disposed.dispose();
   expect(await disposed.tokens('const value = 1;', 'js')).toEqual([]);
 });
+
+it('内置 diff 和文件名注释保留原始字符，复制终端代码包含注释', async () => {
+  for (const [language, code, meta] of [['diff', '-old();\n+new();\n same();', 'lang="js"'], ['js', '// src/example.js\nconst value = 1;', ''], ['bash', '# explanation\necho hello', '']] as const) {
+    const root = document.createElement('div'); root.append(await engine.render(code, language, meta, document));
+    expect(renderedCodeText(root.querySelector('pre > code') as HTMLElement)).toBe(code);
+    expect((root.querySelector('.copy button') as HTMLElement).dataset.code?.replaceAll('\x7f', '\n')).toBe(code);
+  }
+});

@@ -90,6 +90,8 @@ export function createCssVariableThemeBundle(theme: ThemeRegistration): CssVaria
 
 export function createEcEngineConfig(input: EcConfigInput): ExpressiveCodeEngineConfig {
 	const useThemeColors = input.settings.preferThemeColors && !input.usingObsidianTheme;
+	const markers = pluginTextMarkers();
+	if (markers.hooks) delete markers.hooks.preprocessCode;
 
 	return {
 		themes: [new ExpressiveCodeTheme(input.theme)],
@@ -98,9 +100,9 @@ export function createEcEngineConfig(input: EcConfigInput): ExpressiveCodeEngine
 				langs: input.customLanguages,
 			}),
 			pluginCollapsibleSections(),
-			pluginTextMarkers(),
+			markers,
 			pluginLineNumbers(),
-			pluginFrames(),
+			pluginFrames({ extractFileNameFromCode: false, removeCommentsWhenCopyingTerminalFrames: false }),
 		],
 		styleOverrides: getECTheme(useThemeColors),
 		minSyntaxHighlightingColorContrast: 0,

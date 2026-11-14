@@ -10,15 +10,23 @@ export function inlineTargets(root: HTMLElement, text: string, sectionOf: (eleme
   const inlines = parseDocument(text).inlines;
   const codes = inlineCodes(root), used = new Set<InlineCode>();
   const result: { code: HTMLElement; inline: InlineCode }[] = [];
-  for (const code of codes) {
+  const candidatesByCode = new Map(codes.map(code => {
     const section = sectionOf(code) ?? sectionOf(root);
     const candidates = inlines.filter(inline => {
       const first = text.slice(0, inline.from).split('\n').length - 1;
       const last = text.slice(0, inline.to).split('\n').length - 1;
       return code.textContent === inline.text && (!section || section.lineStart <= last && first <= section.lineEnd);
     });
-    const matching = codes.filter(other => other.textContent === code.textContent);
-    const inline = candidates.length === 1 ? candidates[0] : matching.length === candidates.length ? candidates[matching.indexOf(code)] : undefined;
+    return [code, candidates] as const;
+  }));
+  for (const code of codes) {
+    const candidates = candidatesByCode.get(code)!;
+    const matching = codes.filter(other => candidatesByCode.get(other)!.some(candidate => candidates.includes(candidate)));
+    const sameGroup = matching.every(other => {
+      const otherCandidates = candidatesByCode.get(other)!;
+      return otherCandidates.length === candidates.length && otherCandidates.every((candidate, index) => candidate === candidates[index]);
+    });
+    const inline = sameGroup && matching.length === candidates.length ? candidates[matching.indexOf(code)] : undefined;
     if (!inline || used.has(inline)) continue;
     used.add(inline);
     result.push({ code, inline });

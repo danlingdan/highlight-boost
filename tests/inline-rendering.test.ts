@@ -62,3 +62,20 @@ it('跨行代码的阅读区间与完整源区间相交时正确对应', () => {
   root.innerHTML = '<code>multi line</code>';
   expect(inlineTargets(root, marked, () => ({ lineStart: 1, lineEnd: 1 }))).toHaveLength(1);
 });
+
+it('同一段落存在同文 HTML code 时保留来源歧义', () => {
+  const source = '<code>same</code> `same`';
+  const from = source.lastIndexOf('same');
+  const marked = applyChanges(source, planHighlight(source, [{ from, to: from + 4 }], presets[0]!).changes);
+  const root = document.createElement('p');
+  root.innerHTML = '<code>same</code> <code>same</code>';
+  expect(inlineTargets(root, marked, () => ({ lineStart: 0, lineEnd: 0 }))).toEqual([]);
+});
+
+it('宽窄来源区间交叉时保留歧义，避免按 DOM 顺序错配', () => {
+  const source = '`same`\n\n`same`';
+  const root = document.createElement('div');
+  root.innerHTML = '<code>same</code><code>same</code>';
+  const first = root.firstElementChild;
+  expect(inlineTargets(root, source, element => element === first ? { lineStart: 0, lineEnd: 2 } : { lineStart: 0, lineEnd: 0 })).toEqual([]);
+});

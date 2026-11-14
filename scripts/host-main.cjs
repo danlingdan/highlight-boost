@@ -19,6 +19,8 @@ const source = path.join(resources, 'obsidian.asar');
 const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
 scenarios.settings = ['settings.scenario.js', 'host-settings-results.json'];
 scenarios.embedded = ['embedded-syntax.scenario.js', 'host-embedded-results.json'];
+scenarios.inline = ['inline.scenario.js', 'host-inline-results.json'];
+scenarios['inline-restart'] = ['inline-restart.scenario.js', 'host-inline-restart-results.json'];
 scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-results.json'];
 scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
@@ -67,7 +69,7 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded') {
+      if (mode === 'embedded' || mode === 'inline') {
         contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }

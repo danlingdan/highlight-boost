@@ -1,4 +1,4 @@
-import { contains, emojis, overlaps, type Change, type CodeBlock, type CodeMark, type CodeMetadata, type EditPlan, type HighlightItem, type Preset, type ProseMetadata, type Span } from './domain';
+import { contains, emojis, overlaps, type Change, type CodeBlock, type CodeMark, type CodeMetadata, type EditPlan, type HighlightItem, type ParsedDocument, type Preset, type ProseMetadata, type Span } from './domain';
 import { logicalOffset, resolveMark } from './anchors';
 import { parseDocument, serializeInlineMetadata, serializeMetadata, serializeProseMetadata } from './parsing';
 
@@ -8,8 +8,7 @@ export function applyChanges(text: string, changes: Change[]): string {
   return result;
 }
 
-function proseChange(text: string, span: Span, preset: Preset | null, selections: Span[] = [span]): Change {
-  const parsed = parseDocument(text);
+function proseChange(text: string, span: Span, preset: Preset | null, parsed: ParsedDocument, selections: Span[] = [span]): Change {
   const highlights = parsed.highlights.filter(item => overlaps(item, span));
   const from = Math.min(span.from, ...highlights.map(item => item.from));
   const to = Math.max(span.to, ...highlights.map(item => item.metadataSpan?.to ?? item.to));
@@ -194,14 +193,14 @@ export function planHighlight(text: string, selections: Span[], preset: Preset |
   // Selections touching the same existing highlight share one replacement.
   const groups: Span[][] = [];
   for (const span of prose.sort((a, b) => a.from - b.from)) {
-    const affected = proseChange(text, span, preset);
+    const affected = proseChange(text, span, preset, parsed);
     const group = groups.at(-1);
-    const previous = group && proseChange(text, { from: group[0]!.from, to: Math.max(...group.map(span => span.to)) }, preset);
+    const previous = group && proseChange(text, { from: group[0]!.from, to: Math.max(...group.map(span => span.to)) }, preset, parsed);
     if (group && previous && affected.from <= previous.to) group.push(span);
     else groups.push([span]);
   }
   for (const group of groups) {
-    changes.push(proseChange(text, { from: group[0]!.from, to: Math.max(...group.map(span => span.to)) }, preset, group));
+    changes.push(proseChange(text, { from: group[0]!.from, to: Math.max(...group.map(span => span.to)) }, preset, parsed, group));
   }
   const ordered = changes.sort((a, b) => a.from - b.from);
   function map(pos: number, association: 'starts' | 'ends'): number {

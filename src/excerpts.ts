@@ -21,10 +21,13 @@ function plainText(node: Nodes): string {
   return 'children' in node ? node.children.map(plainText).join('') : node.type === 'text' || node.type === 'inlineCode' ? node.value : node.type === 'break' ? ' ' : '';
 }
 
-export function excerptContext(text: string, item: HighlightItem): ExcerptContext {
-  const parsed = parseDocument(text), stack: { depth: number; title: string }[] = [];
+export function excerptContext(text: string, item: HighlightItem): ExcerptContext { return createExcerptContext(text)(item); }
+
+export function createExcerptContext(text: string): (item: HighlightItem) => ExcerptContext {
+  const parsed = parseDocument(text), tree = fromMarkdown(text);
+  return item => {
+  const stack: { depth: number; title: string }[] = [];
   const position = item.blockFrom ?? item.from;
-  const tree = fromMarkdown(text);
   for (const heading of tree.children) {
     if (heading.type !== 'heading' || heading.position!.start.offset! > position) continue;
     const from = heading.position!.start.offset!, to = heading.position!.end.offset!;
@@ -54,6 +57,7 @@ export function excerptContext(text: string, item: HighlightItem): ExcerptContex
   if (first < 0 || last < 0) return context;
   const start = Math.max(0, first - 1), end = Math.min(block.lines.length - 1, last + 1);
   return { ...context, line: first + 1, endLine: last + 1, contextFrom: start + 1, contextTo: end + 1, code: block.lines.slice(start, end + 1).map(line => line.text).join('\n') };
+  };
 }
 
 export function fencedExcerpt(value: string, language = ''): string {

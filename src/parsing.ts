@@ -2,7 +2,22 @@ import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
 import type { Nodes } from 'mdast';
-import { colors, emojis, type CodeBlock, type CodeMetadata, type InlineMetadata, type ProseMetadata, type ParsedDocument, type SourceLine } from './domain';
+import { colors, emojis, type CodeBlock, type CodeMetadata, type InlineMetadata, type ProseMetadata, type ParsedDocument, type SourceLine, type Span } from './domain';
+
+function mergedSpans(spans: Span[]): Span[] {
+  const result: Span[] = [];
+  for (const span of [...spans].sort((a, b) => a.from - b.from || a.to - b.to)) {
+    const last = result.at(-1);
+    if (last && span.from <= last.to) last.to = Math.max(last.to, span.to);
+    else result.push({ ...span });
+  }
+  return result;
+}
+function intersects(spans: Span[], from: number, to: number): boolean {
+  let low = 0, high = spans.length;
+  while (low < high) { const middle = (low + high) >>> 1; if (spans[middle]!.from < to) low = middle + 1; else high = middle; }
+  return low > 0 && spans[low - 1]!.to > from;
+}
 
 export function sourceLines(text: string): SourceLine[] {
   const result: SourceLine[] = [];
@@ -82,7 +97,10 @@ export function parseDocument(text: string): ParsedDocument {
     if ((node.type === 'paragraph' || node.type === 'heading' || node.type === 'tableCell') && node.children.length) {
       const first = node.children[0]!.position!.start.offset!;
       const last = node.children.at(-1)!.position!.end.offset!;
-      for (const line of lines) {
+      const firstLine = node.children[0]!.position!.start.line - 1;
+      const lastLine = node.children.at(-1)!.position!.end.line - 1;
+      for (let i = firstLine; i <= lastLine; i++) {
+        const line = lines[i]!;
         const prefix = line.text.match(/^(?:[ \t]*>[ \t]?)+/)?.[0].length ?? 0;
         const callout = prefix ? line.text.slice(prefix).match(/^\[![^\]\r\n]+\][+-]?(?:[ \t]+|$)/)?.[0].length ?? 0 : 0;
         const start = Math.max(first, line.from + prefix + callout), end = Math.min(last, line.to);
@@ -148,22 +166,24 @@ export function parseDocument(text: string): ParsedDocument {
   }
   visit(tree);
 
-  let commentSource = text;
-  for (const span of [...result.excluded].sort((a, b) => b.from - a.from)) {
-    commentSource = commentSource.slice(0, span.from) + ' '.repeat(span.to - span.from) + commentSource.slice(span.to);
-  }
+  const chunks: string[] = []; let cursor = 0;
+  for (const span of mergedSpans(result.excluded)) { chunks.push(text.slice(cursor, span.from), ' '.repeat(span.to - span.from)); cursor = span.to; }
+  chunks.push(text.slice(cursor));
+  const commentSource = chunks.join('');
   for (const match of commentSource.matchAll(/%%[\s\S]*?%%/g)) {
     result.excluded.push({ from: match.index, to: match.index + match[0].length });
   }
-  result.inlines = result.inlines.filter(inline => !result.excluded.some(span =>
-    (span.from !== inline.from || span.to !== inline.to) && span.from < inline.to && inline.from < span.to));
+  const inlineSpans = new Set(result.inlines.map(inline => `${inline.from}:${inline.to}`));
+  const outerExcluded = mergedSpans(result.excluded.filter(span => !inlineSpans.has(`${span.from}:${span.to}`)));
+  result.inlines = result.inlines.filter(inline => !intersects(outerExcluded, inline.from, inline.to));
+  const excluded = mergedSpans(result.excluded);
 
   for (const line of lines) {
     const matches = line.text.matchAll(/==([^=\r\n]+(?:=(?!=)[^=\r\n]*)*)==/g);
     for (const match of matches) {
       const from = line.from + match.index;
       const to = from + match[0].length;
-      if (result.excluded.some(span => span.from < to && from < span.to)) continue;
+      if (intersects(excluded, from, to)) continue;
       let slashes = 0;
       for (let p = from - 1; p >= 0 && text[p] === '\\'; p--) slashes++;
       if (slashes % 2) continue;

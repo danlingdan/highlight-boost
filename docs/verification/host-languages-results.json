@@ -19,6 +19,10 @@
       "passed": true
     },
     {
+      "name": "c-reading-syntax-loaded",
+      "passed": true
+    },
+    {
       "name": "python-source-mark",
       "passed": true
     },
@@ -35,6 +39,10 @@
       "passed": true
     },
     {
+      "name": "python-reading-syntax-loaded",
+      "passed": true
+    },
+    {
       "name": "js-source-mark",
       "passed": true
     },
@@ -48,6 +56,10 @@
     },
     {
       "name": "js-code-preserved",
+      "passed": true
+    },
+    {
+      "name": "js-reading-syntax-loaded",
       "passed": true
     },
     {

@@ -1,7 +1,10 @@
 // @vitest-environment jsdom
 import { afterAll, beforeAll, expect, it } from 'vitest';
 import { SyntaxEngine } from '../src/syntax/engine';
-import { renderedCodeText } from '../src/rendering';
+import { renderCode, renderedCodeText } from '../src/rendering';
+import { applyChanges, planHighlight } from '../src/editing';
+import { parseDocument } from '../src/parsing';
+import { presets } from '../src/domain';
 
 const engine = new SyntaxEngine();
 let css = '';
@@ -25,6 +28,14 @@ it('阅读容器与复制数据保持代码字符和空行', async () => {
   expect(container.querySelector('.expressive-code')).not.toBeNull();
   expect(renderedCodeText(container.querySelector('pre > code') as HTMLElement)).toBe(code);
   expect((container.querySelector('.copy button') as HTMLElement).dataset.code?.replaceAll('\x7f', '\n')).toBe(code);
+  const source = `\`\`\`js\n${code}\n\`\`\``;
+  const from = source.lastIndexOf('文本');
+  const marked = applyChanges(source, planHighlight(source, [{ from, to: from + 2 }], presets[0]!).changes);
+  const codeElement = container.querySelector('pre > code') as HTMLElement;
+  renderCode(codeElement, parseDocument(marked).blocks[0]!);
+  expect(codeElement.querySelector('.hb-text')?.textContent).toBe('文本');
+  expect(codeElement.querySelectorAll('.ec-line')[2]!.querySelector('.hb-text')).not.toBeNull();
+  expect(renderedCodeText(codeElement)).toBe(code);
 });
 
 it('未知语言保留原生路径，释放后不再生成 token', async () => {

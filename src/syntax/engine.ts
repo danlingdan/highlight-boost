@@ -37,12 +37,13 @@ export class SyntaxEngine {
   async render(code: string, language: string, meta: string, document: Document): Promise<Node> {
     const result = await this.ec.render({ code, language, meta });
     const element = toDom(result.renderedGroupAst, { document });
-    if (element instanceof HTMLElement) {
-      for (const styled of [element, ...element.querySelectorAll<HTMLElement>('[style]')]) {
+    if (element.nodeType === 1) {
+      const root = element as HTMLElement;
+      for (const styled of [root, ...root.querySelectorAll<HTMLElement>('[style]')]) {
         const style = styled.getAttribute('style');
         if (style) styled.setAttribute('style', this.restore(style));
       }
-      element.classList.add('hb-syntax-render');
+      root.classList.add('hb-syntax-render');
     }
     return element;
   }

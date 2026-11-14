@@ -30,6 +30,8 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 
 配置增加 `collections` 与 `excerptTemplate`，沿用 schemaVersion 2；集合引用和导出标记见 [集合说明](formats/collections.md)。工作台范围及控件状态通过 ItemView 状态保存，命令入口重置查询条件，下拉框切换保留条件。源索引排除 frontmatter 中带 `highlight-boost-export: true` 的生成笔记。
 
+`planNote` 生成批注 EditPlan：正文更新 `noteRef`、标准脚注引用和定义，代码更新元数据 `note`。同一位置的新增内容先合并为一个 change，再通过原有事务提交。脚注定义是正文说明的读取来源；解析时将 HB 定义排除于源标注之外。共享脚注清空时维护剩余片段的引用，保存前核对现有说明，旧对话框不会覆盖新保存的批注。字段和继承规则见 [批注格式](formats/annotations.md)。
+
 “语法着色”可选择宿主或内置 Shiki，保存后重新启用 HB 生效。内置模块的主题、展示配置和样式来自 Shiki Highlighter 0.8.0 源码，宿主注册与编辑器生命周期在本项目实现，特别致谢见 [来源声明](../THIRD_PARTY_NOTICES.md)。
 
 “界面语言”支持跟随 Obsidian、中文和 English，即时更新已打开的侧栏、颜色选择器、元数据按钮及内置代码组件。自动模式识别中文，其余语言使用英文。配置 schemaVersion 2 增加 `language: auto | zh | en`；预设可带 `customName: true`，记录用户明确编辑过的名称，包括与默认中文同名的自定义名称。内置默认名称随界面翻译，自定义名称和已有标注快照保持原文；新标注保存操作时显示的名称。恢复预设默认值保留界面语言与语法提供者。
@@ -40,7 +42,8 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 - `pnpm typecheck`：类型检查。
 - `pnpm test`：文档解析、纯编辑计划、锚定和 DOM 渲染断言。
 - `pnpm build`：生成宿主加载的 CommonJS 插件。
-- `pnpm test:host`：构建并依次运行十八个独立 Electron 进程，覆盖已有标注闭环，以及全库检索、集合、改名、生成摘录和独立进程恢复。
+- `pnpm test:host`：构建并依次运行二十个独立 Electron 进程，覆盖已有标注闭环、全库工作台，以及脚注批注、检索摘录和独立进程恢复。
+- `pnpm test:notes`：运行批注和新进程恢复专项，归档阅读脚注与 Live Preview 摘要截图。
 - `pnpm test:phase-e`：运行全库工作台及新进程集合恢复专项，归档中英文深浅主题画面。
 - `pnpm test:phase-d`：运行同一笔记的正文 / 行内 / C / Python / ASM 三视图闭环及独立进程恢复，归档阅读与 Live Preview 截图。
 - `pnpm test:selection`：运行选区面板、键盘操作、侧栏筛选和单条修改专项，归档深浅主题截图。

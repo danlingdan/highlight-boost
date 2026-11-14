@@ -3,12 +3,15 @@ import { clearRenderedCode, renderCode } from './rendering';
 import { readingTargets } from './reading-mapping';
 import { clearInlineCode, inlineCodes, inlineTargets, renderInlineCode } from './inline-rendering';
 import type { Locale } from './i18n';
+import { codeOptions, codeDisplayKey, defaultCodeDisplay, type CodeDisplaySettings } from './code-options';
+import { renderCodeDisplay } from './code-display';
+import { parseDocument } from './parsing';
 
 export class ReadingHighlights extends MarkdownRenderChild {
   private observer?: MutationObserver;
   private active = false;
   private revision = 0;
-  constructor(element: HTMLElement, readonly context: MarkdownPostProcessorContext, private app: App, private dispose: () => void, private getLocale: () => Locale = () => 'zh') { super(element); }
+  constructor(element: HTMLElement, readonly context: MarkdownPostProcessorContext, private app: App, private dispose: () => void, private getLocale: () => Locale = () => 'zh', private getDisplay: () => CodeDisplaySettings = () => defaultCodeDisplay, private sessions = new Map<string, boolean>()) { super(element); }
   onload(): void {
     this.active = true;
     this.observer = new this.containerEl.ownerDocument.defaultView!.MutationObserver(() => this.refresh());
@@ -16,6 +19,11 @@ export class ReadingHighlights extends MarkdownRenderChild {
     this.refresh();
   }
   private observe(): void { this.observer?.observe(this.containerEl, { childList: true, subtree: true }); }
+  revealCode(text: string, fenceFrom: number): void {
+    for (const { code, block } of readingTargets(this.containerEl, text, element => this.context.getSectionInfo(element))) if (block.fenceFrom === fenceFrom) {
+      for (const details of code.querySelectorAll<HTMLDetailsElement>('details')) details.open = true;
+    }
+  }
   refresh(): void {
     if (!this.active) return;
     const file = this.app.vault.getFileByPath(this.context.sourcePath);
@@ -34,7 +42,12 @@ export class ReadingHighlights extends MarkdownRenderChild {
         const targets = readingTargets(this.containerEl, text, element => this.context.getSectionInfo(element));
         const matched = new Set(targets.map(target => target.code));
         for (const code of this.containerEl.querySelectorAll<HTMLElement>('pre > code')) if (!matched.has(code)) clearRenderedCode(code);
-        for (const { code, block } of targets) renderCode(code, block, this.getLocale());
+        const blocks = parseDocument(text).blocks, display = this.getDisplay();
+        for (const { code, block } of targets) {
+          const options = codeOptions(block, display);
+          renderCode(code, block, this.getLocale(), options.showLineNumbers || block.language === 'diff' && options.diff);
+          renderCodeDisplay(code, block, display, this.getLocale(), this.sessions, codeDisplayKey(file.path, block, blocks));
+        }
       } finally { if (this.active) this.observe(); }
     }).catch(error => console.error('Highlight Boost 阅读渲染失败', error));
   }

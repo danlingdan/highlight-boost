@@ -3,6 +3,8 @@ import { colorLabels, presets, type Color, type Preset } from './domain';
 export type Locale = 'zh' | 'en';
 export type Language = 'auto' | Locale;
 export const zh = {
+  codeDisplay: '代码展示', codeDisplayHint: '默认值即时生效；围栏参数可覆盖标题、行号与换行。', showCodeTitle: '显示代码标题', showCodeNumbers: '显示代码行号', startCodeLine: '起始显示行号', codeNumberFont: '行号字体', monospaceFont: '等宽字体', interfaceFont: '界面字体',
+  foldCode: '允许折叠代码', foldByDefault: '默认折叠', wrapCode: '预览代码换行', showDiff: '显示 diff 增删背景', expandCode: '展开代码', collapseCode: '折叠代码', copyRawDiff: '复制原始 diff', copyDiffAfter: '复制变更后片段', cursorInDiff: '请将光标放入 diff 代码块。', copyFailed: '复制失败，请重试',
   annotation: '批注', editAnnotation: '编辑批注', annotationHint: '保存后随笔记保留。清空内容可移除批注。', save: '保存', cancel: '取消', footnote: '脚注', expandFootnote: '展开脚注',
   workbench: '高亮工作台', searchAllHighlights: '搜索重点', scope: '检索范围', noteScope: '当前笔记', folderScope: '当前目录', vaultScope: '全库', collectionScope: '集合',
   allColors: '全部颜色', allLanguages: '全部语言', pathFilter: '路径包含', sortOrder: '排序', sourceOrder: '原文顺序', semanticOrder: '语义顺序',
@@ -40,6 +42,8 @@ export const zh = {
 } as const;
 export type Message = keyof typeof zh;
 export const en: Record<Message, string> = {
+  codeDisplay: 'Code display', codeDisplayHint: 'Defaults update immediately. Fence options can override titles, line numbers, and wrapping.', showCodeTitle: 'Show code titles', showCodeNumbers: 'Show code line numbers', startCodeLine: 'Starting line number', codeNumberFont: 'Line number font', monospaceFont: 'Monospace font', interfaceFont: 'Interface font',
+  foldCode: 'Allow code folding', foldByDefault: 'Fold by default', wrapCode: 'Wrap preview code', showDiff: 'Show diff backgrounds', expandCode: 'Expand code', collapseCode: 'Fold code', copyRawDiff: 'Copy original diff', copyDiffAfter: 'Copy changed snippets', cursorInDiff: 'Place the cursor in a diff block.', copyFailed: 'Copy failed. Try again.',
   annotation: 'Annotation', editAnnotation: 'Edit annotation', annotationHint: 'Saved in the note. Clear the text to remove the annotation.', save: 'Save', cancel: 'Cancel', footnote: 'Footnote', expandFootnote: 'Expand footnote',
   workbench: 'Highlight workbench', searchAllHighlights: 'Search highlights', scope: 'Search scope', noteScope: 'Current note', folderScope: 'Current folder', vaultScope: 'Vault', collectionScope: 'Collection',
   allColors: 'All colors', allLanguages: 'All languages', pathFilter: 'Path contains', sortOrder: 'Sort order', sourceOrder: 'Source order', semanticOrder: 'Semantic order',

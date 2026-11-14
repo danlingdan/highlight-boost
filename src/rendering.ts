@@ -5,11 +5,13 @@ import { resolveMark, sourceOffset } from './anchors';
 import type { CodeBlock, CodeMark } from './domain';
 import { composingState } from './composition';
 import { translate, type Locale } from './i18n';
+import { codeDisplayFacet, codeOptions, diffKinds, type CodeDisplaySettings } from './code-options';
+import { clearCodeDisplay } from './code-display';
 
 const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string }>();
 const noteRegions = new WeakMap<HTMLElement, { element: HTMLElement; signature: string }>();
 
-function expressiveRows(code: HTMLElement): HTMLElement[] { return [...code.querySelectorAll<HTMLElement>(':scope > .ec-line > .code')]; }
+function expressiveRows(code: HTMLElement): HTMLElement[] { return [...code.querySelectorAll<HTMLElement>('.ec-line > .code')].filter(row => !row.closest('summary')); }
 function expressiveRowText(row: HTMLElement): string { return row.textContent === '\n' ? '' : row.textContent ?? ''; }
 export function renderedCodeText(code: HTMLElement): string {
   const rows = expressiveRows(code);
@@ -17,6 +19,7 @@ export function renderedCodeText(code: HTMLElement): string {
 }
 
 export function clearRenderedCode(code: HTMLElement): void {
+  clearCodeDisplay(code);
   noteRegions.get(code)?.element.remove(); noteRegions.delete(code);
   const previous = rendered.get(code);
   if (previous && code.querySelector('.hb-code-row, .hb-text, .ec-line.hb-line')) {
@@ -31,9 +34,19 @@ export function clearRenderedCode(code: HTMLElement): void {
   delete code.dataset.hbRendered;
 }
 
-function editorDecorations(text: string): DecorationSet {
+function editorDecorations(text: string, settings: CodeDisplaySettings): DecorationSet {
   const ranges = [];
   const parsed = parseDocument(text);
+  for (const block of parsed.blocks) {
+    const options = codeOptions(block, settings), diff = block.language === 'diff' && options.diff ? diffKinds(block.text) : [];
+    if (!options.showLineNumbers && !diff.length) continue;
+    for (const [index, line] of block.lines.entries()) {
+      const start = text.lastIndexOf('\n', Math.max(0, line.from - 1)) + 1;
+      ranges.push(Decoration.line({ attributes: { class: options.showLineNumbers ? 'hb-editor-code-line hb-numbered' : 'hb-editor-code-line',
+        ...(options.showLineNumbers ? { 'data-hb-number': String(options.startLine + index) } : {}), ...(diff[index] ? { 'data-hb-diff': diff[index]! } : {}),
+        style: `--hb-number-font:var(${options.numberFont === 'interface' ? '--font-interface' : '--font-monospace'})` } }).range(start));
+    }
+  }
   for (const inline of parsed.inlines) if (inline.metadata && inline.content.from < inline.content.to) {
     ranges.push(Decoration.mark({ class: `hb-inline hb-${inline.metadata.color}`, attributes: { title: inline.metadata.note ? `${inline.metadata.label}\n${inline.metadata.note}` : inline.metadata.label } }).range(inline.content.from, inline.content.to));
   }
@@ -59,10 +72,10 @@ function editorDecorations(text: string): DecorationSet {
 }
 
 export const highlightExtension = StateField.define<DecorationSet>({
-  create: state => editorDecorations(state.doc.toString()),
+  create: state => editorDecorations(state.doc.toString(), state.facet(codeDisplayFacet)),
   update: (value, transaction) => transaction.state.field(composingState, false) ? value.map(transaction.changes) :
-    transaction.docChanged || transaction.startState.field(composingState, false) !== transaction.state.field(composingState, false)
-      ? editorDecorations(transaction.state.doc.toString()) : value,
+    transaction.docChanged || transaction.startState.field(composingState, false) !== transaction.state.field(composingState, false) || transaction.startState.facet(codeDisplayFacet) !== transaction.state.facet(codeDisplayFacet)
+      ? editorDecorations(transaction.state.doc.toString(), transaction.state.facet(codeDisplayFacet)) : value,
   provide: field => EditorView.decorations.from(field),
 });
 
@@ -108,12 +121,12 @@ function renderNotes(code: HTMLElement, block: CodeBlock, locale: Locale): void 
   pre.after(region); noteRegions.set(code, { element: region, signature });
 }
 
-export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale = 'zh'): void {
-  const signature = JSON.stringify({ text: block.text, marks: block.metadata?.marks ?? [] });
+export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale = 'zh', rowsRequired = false): void {
+  const signature = JSON.stringify({ text: block.text, marks: block.metadata?.marks ?? [], rowsRequired });
   const previous = rendered.get(code);
-  if (previous?.signature === signature && code.querySelector('.hb-code-row, .hb-text, .ec-line.hb-line')) { renderNotes(code, block, locale); return; }
+  if (!block.metadata?.marks.length && !rowsRequired) { if (previous) clearRenderedCode(code); return; }
+  if (previous?.signature === signature && code.querySelector('.hb-code-row, .hb-text, .ec-line')) { renderNotes(code, block, locale); return; }
   clearRenderedCode(code);
-  if (!block.metadata?.marks.length) return;
   const original = renderedCodeText(code);
   if (original !== block.text && original !== `${block.text}\n`) return;
   rendered.set(code, { original: [...code.childNodes].map(node => node.cloneNode(true)), signature });
@@ -121,7 +134,7 @@ export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale =
   const rows = expressiveRows(code);
   if (rows.length) {
     code.dataset.hbRendered = '1';
-    for (const mark of block.metadata!.marks) {
+    for (const mark of block.metadata?.marks ?? []) {
       const resolved = resolveMark(block, mark);
       if (resolved.status !== 'resolved') continue;
       let offset = 0;

@@ -90,3 +90,25 @@
 .hb-code-notes { margin-block: var(--size-4-2); padding: var(--size-4-2); border-left: 2px solid var(--interactive-accent); }
 .hb-code-notes details + details { margin-top: var(--size-4-2); }
 .hb-metadata-chip[data-hb-metadata="footnote"] { max-width: 100%; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; vertical-align: middle; }
+.hb-code-display { margin-block: var(--size-4-3); border: 1px solid var(--background-modifier-border); border-radius: var(--radius-m); overflow: hidden; }
+.hb-code-header { display: flex; flex-wrap: wrap; align-items: center; gap: var(--size-4-2); padding: var(--size-4-2); background: var(--background-secondary); }
+.hb-code-title { font-family: var(--font-monospace); overflow-wrap: anywhere; }
+.hb-code-mark-count { color: var(--text-muted); font-size: var(--font-ui-smaller); }
+.hb-code-header button { font-size: var(--font-ui-small); }
+.hb-code-header button[data-hb-copied]::after { content: ' ✓'; }
+.hb-code-body[hidden] { display: none !important; }
+.hb-code-body > pre { margin-block: 0; border-radius: 0; }
+.hb-code-display .expressive-code .frame > .header, .hb-code-display .expressive-code .copy, .hb-code-display .copy-code-button { display: none !important; }
+.hb-code-display .expressive-code { margin-block: 0; }
+.hb-code-display .expressive-code .ec-line > .gutter { display: none; }
+.hb-code-wrap, .hb-code-wrap > code { white-space: pre-wrap !important; overflow-wrap: anywhere; }
+.hb-code-wrap .ec-line > .code { white-space: pre-wrap !important; overflow-wrap: anywhere; min-width: 0; }
+.hb-code-row[data-hb-number], .ec-line[data-hb-number], .hb-editor-code-line.hb-numbered { position: relative; padding-inline-start: 4.5ch !important; }
+.hb-code-row[data-hb-number]::before, .ec-line[data-hb-number]::before, .hb-editor-code-line[data-hb-number]::before {
+  content: attr(data-hb-number); position: absolute; inset-inline-start: 0; width: 3.5ch; padding-inline-end: .5ch;
+  text-align: end; color: var(--text-faint); font-family: var(--hb-number-font, var(--font-monospace)); pointer-events: none; user-select: none;
+}
+[data-hb-diff="insert"] { background-color: color-mix(in srgb, var(--color-green) 15%, transparent) !important; border-inline-start: 2px solid var(--color-green); }
+[data-hb-diff="delete"] { background-color: color-mix(in srgb, var(--color-red) 15%, transparent) !important; border-inline-start: 2px solid var(--color-red); }
+[data-hb-diff="meta"] { color: var(--text-muted); }
+.hb-line[data-hb-diff] { background-image: linear-gradient(color-mix(in srgb, var(--hb-color) 12%, transparent), color-mix(in srgb, var(--hb-color) 12%, transparent)); }

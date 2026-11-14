@@ -21,6 +21,12 @@ function code(root: HTMLElement) {
 }
 
 describe('reading source mapping', () => {
+  it('maps code rows inside Expressive Code collapsed sections', () => {
+    const root = document.createElement('div');
+    root.innerHTML = '<pre><code><div class="ec-line"><div class="code">one();</div></div><details><summary><div class="ec-line"><div class="code">2 collapsed lines</div></div></summary><div class="ec-line"><div class="code">two();</div></div><div class="ec-line"><div class="code">three();</div></div></details></code></pre>';
+    const text = '```js collapse={2-3}\none();\ntwo();\nthree();\n```';
+    expect(readingTargets(root, text, () => null)[0]?.block.text).toBe('one();\ntwo();\nthree();');
+  });
   it('uses each code section to distinguish identical blocks', () => {
     const text = fixture();
     const root = document.createElement('div'); const second = code(root);

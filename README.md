@@ -33,6 +33,8 @@
 
 设置可选择“宿主”或“内置 Shiki”着色，更改后重新启用插件。内置模式直接提供阅读及 Live Preview 的代码组件、复制按钮和编辑器着色，与 HB 标注层共同工作。
 
+界面语言支持“跟随 Obsidian / 中文 / English”，切换后命令、设置、侧栏、元数据按钮和内置代码组件即时更新。自定义名称和已有标注名称快照保留原文。
+
 ```sh
 pnpm install --frozen-lockfile
 pnpm check
@@ -41,6 +43,6 @@ pnpm prepare:vault
 
 构建生成 `main.js`。将它与 `manifest.json`、`styles.css` 放入测试库的插件目录，即可加载原型。`prepare:vault` 在项目内创建 `.test-vault` 并复制原型及样例。
 
-[开发与接口测试](docs/development.md) · [最新验证记录](docs/verification/prose-semantic.md)
+[开发与接口测试](docs/development.md) · [最新验证记录](docs/verification/i18n.md)
 
-当前已交付四轮原型、正文持久语义、行内代码闭环、工程基础及配置迁移。89 项逻辑/DOM/引擎测试和 249 项宿主检查通过。中英文界面、桌面选区面板及后续功能继续按阶段实施。
+当前已交付四轮原型、正文持久语义、行内代码闭环、中英文界面、工程基础及配置迁移。99 项逻辑/DOM/引擎测试和 294 项宿主检查通过。下一项为桌面选区面板与侧栏交互。

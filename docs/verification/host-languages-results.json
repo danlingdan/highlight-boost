@@ -123,7 +123,7 @@
       "syntax": {
         "source": true,
         "live-preview": true,
-        "reading": true
+        "reading": false
       },
       "editorRendering": {
         "source": {

@@ -22,13 +22,16 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 
 “语法着色”可选择宿主或内置 Shiki，保存后重新启用 HB 生效。内置模块的主题、展示配置和样式来自 Shiki Highlighter 0.8.0 源码，宿主注册与编辑器生命周期在本项目实现，特别致谢见 [来源声明](../THIRD_PARTY_NOTICES.md)。
 
+“界面语言”支持跟随 Obsidian、中文和 English，即时更新已打开的侧栏、颜色选择器、元数据按钮及内置代码组件。自动模式识别中文，其余语言使用英文。配置 schemaVersion 2 增加 `language: auto | zh | en`；预设可带 `customName: true`，记录用户明确编辑过的名称，包括与默认中文同名的自定义名称。内置默认名称随界面翻译，自定义名称和已有标注快照保持原文；新标注保存操作时显示的名称。恢复预设默认值保留界面语言与语法提供者。
+
 ## 自动化测试
 
 - `pnpm lint`：代码规范。
 - `pnpm typecheck`：类型检查。
 - `pnpm test`：文档解析、纯编辑计划、锚定和 DOM 渲染断言。
 - `pnpm build`：生成宿主加载的 CommonJS 插件。
-- `pnpm test:host`：构建并依次运行十一个独立 Electron 进程，验证基础操作、多选区与组合事件、语言对照、布局、设置、重启恢复、内置语法、行内代码和正文语义闭环。
+- `pnpm test:host`：构建并依次运行十三个独立 Electron 进程，验证基础操作、多选区与组合事件、语言对照、布局、设置、重启恢复、内置语法、行内代码、正文语义及中英文界面。
+- `pnpm test:i18n`：运行界面语言切换及独立进程恢复验收。
 - `pnpm test:prose`：运行正文语义宿主验收及独立进程恢复。
 - `pnpm test:inline`：运行行内代码宿主验收及独立进程恢复。
 - `pnpm test:embedded`：单独运行内置 Shiki 验收。

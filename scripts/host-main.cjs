@@ -16,8 +16,9 @@ const profile = path.join(root, '.test-host-profile');
 const vault = path.join(root, '.test-vault');
 const resources = process.env.OBSIDIAN_RESOURCES || 'C:\\Program Files\\Obsidian\\resources';
 const source = path.join(resources, 'obsidian.asar');
-const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'] };
-const [scenarioName, resultName] = scenarios[process.env.HB_HOST_MODE] ?? scenarios.functional;
+const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
+const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
+const [scenarioName, resultName] = scenarios[mode];
 const version = require(path.join(source, 'package.json')).version;
 fs.mkdirSync(profile, { recursive: true });
 fs.writeFileSync(path.join(profile, 'obsidian.json'), JSON.stringify({
@@ -63,8 +64,11 @@ app.on('browser-window-created', (_event, window) => {
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
       const script = fs.readFileSync(path.join(root, 'tests', scenarioName), 'utf8');
+      await contents.executeJavaScript(`window.__hbHostMode = ${JSON.stringify(mode)}`);
       const outcome = await contents.executeJavaScript(script);
       results.checks.push(...outcome);
+      const matrix = await contents.executeJavaScript('window.__hbLanguageMatrix ?? null');
+      if (matrix) results.languageMatrix = matrix;
       finish();
     } catch (error) {
       try { results.checks.push(...await contents.executeJavaScript('window.__hbChecks ?? []')); } catch { /* The renderer may have exited. */ }

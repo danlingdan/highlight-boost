@@ -20,6 +20,7 @@ import { HighlightsView } from './workbench';
 import type { SearchScope } from './query';
 import { planNote } from './notes';
 import { codeDisplayFacet, codeDisplayKey, diffAfter, unfoldSelectedCode } from './code-options';
+import { liveCalloutHighlights } from './live-callouts';
 
 const VIEW = 'highlight-boost';
 
@@ -60,6 +61,7 @@ export default class HighlightBoost extends Plugin {
     }
     this.uiExtensions.push(metadataLocale.of(this.locale), codeDisplayFacet.of(this.settings.codeDisplay), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField), selectionToolbar(this), unfoldSelectedCode);
     this.registerEditorExtension(this.uiExtensions);
+    this.registerEditorExtension(liveCalloutHighlights((element, context) => this.createReadingChild(element, context)));
     this.registerView(VIEW, leaf => new HighlightsView(leaf, this));
     this.settingTab = new HighlightSettings(this);
     this.addSettingTab(this.settingTab);

@@ -48,3 +48,30 @@ it('导出标记仅从 frontmatter 读取，摘录笔记不回流索引', () => 
   expect(isExportNote('text\nhighlight-boost-export: true\n==word==')).toBe(false);
   expect(isExportNote('---\nother: true\n---\nhighlight-boost-export: true')).toBe(false);
 });
+
+it('冷索引按时间片让出线程，批量通知与最终快照一致', async () => {
+  let clock = 0, yields = 0, changes = 0;
+  const paths = Array.from({ length: 12 }, (_, i) => `${i}.md`);
+  const index = new HighlightIndex({ paths: () => paths, read: async path => { clock += 5; return `==${path}==`; } }, () => { changes++; }, { now: () => clock, budgetMs: 8, yield: async () => { yields++; } });
+  await index.rebuild();
+  expect(yields).toBeGreaterThan(0); expect(changes).toBeLessThan(paths.length);
+  expect(index.notes.size).toBe(paths.length); expect(index.all()).toHaveLength(paths.length);
+});
+
+it('热重建复用未变的条目，清除读取错误时仍通知视图', async () => {
+  let changes = 0;
+  const index = new HighlightIndex({ paths: () => ['a.md'], read: async () => '==same==' }, () => { changes++; });
+  await index.rebuild(); const items = index.notes.get('a.md')!.items, count = changes;
+  await index.rebuild(); expect(index.notes.get('a.md')!.items).toBe(items); expect(changes).toBe(count);
+  index.errors.set('a.md', 'old error'); await index.enqueue('a.md');
+  expect(index.errors.size).toBe(0); expect(changes).toBe(count + 1);
+});
+
+it('索引让出线程时的编辑仍以编辑器新缓冲区为准，卸载清除缓存', async () => {
+  let clock = 0, release!: () => void, entered!: () => void;
+  const blocked = new Promise<void>(resolve => { entered = resolve; });
+  const index = new HighlightIndex({ paths: () => ['a.md', 'b.md'], read: async () => { clock += 20; return '==disk=='; } }, () => {}, { now: () => clock, budgetMs: 8, yield: () => { entered(); return new Promise<void>(resolve => { release = resolve; }); } });
+  const pending = index.rebuild(); await blocked; index.set('b.md', '==buffer=='); release(); await pending;
+  expect(index.notes.get('b.md')!.items[0]!.quote).toBe('buffer');
+  index.dispose(); expect(index.notes.size).toBe(0);
+});

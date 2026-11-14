@@ -30,6 +30,7 @@ export default class HighlightBoost extends Plugin {
   async onload(): Promise<void> {
     const loaded: unknown = await this.loadData();
     this.settings = normalizeSettings(loaded);
+    this.lastLocale = this.locale;
     if (JSON.stringify(loaded) !== JSON.stringify(this.settings)) await this.saveSettings();
     if (this.settings.syntaxProvider === 'shiki') {
       this.syntax = this.addChild(new SyntaxService(this, (element, context) => this.createReadingChild(element, context), () => this.locale));

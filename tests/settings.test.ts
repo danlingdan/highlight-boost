@@ -2,6 +2,21 @@ import { describe, expect, it } from 'vitest';
 import { normalizeSettings } from '../src/settings';
 
 describe('设置迁移与校验', () => {
+  it('旧配置默认跟随 Obsidian，校验语言并保持规范化一致', () => {
+    expect(normalizeSettings({ schemaVersion: 1 }).language).toBe('auto');
+    expect(normalizeSettings({ language: 'en' }).language).toBe('en');
+    expect(normalizeSettings({ language: 'zh' }).language).toBe('zh');
+    const result = normalizeSettings({ language: 'invalid' });
+    expect(result.language).toBe('auto');
+    expect(normalizeSettings(result)).toEqual(result);
+  });
+
+  it('显式自定义的内置同名名称保持身份，清空名称恢复默认', () => {
+    const custom = normalizeSettings({ presets: [{ id: 'important', name: '重点', customName: true }] });
+    expect(custom.presets[0]?.customName).toBe(true);
+    expect(normalizeSettings(custom)).toEqual(custom);
+    expect(normalizeSettings({ presets: [{ id: 'important', name: '', customName: true }] }).presets[0]?.customName).toBeUndefined();
+  });
   it('从旧配置迁移并保持默认语义', () => {
     const result = normalizeSettings({ schemaVersion: 1, defaultPreset: 'question' });
     expect(result.schemaVersion).toBe(2);

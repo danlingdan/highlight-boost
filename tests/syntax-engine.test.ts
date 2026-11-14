@@ -11,6 +11,21 @@ let css = '';
 beforeAll(async () => { css = await engine.initialize(); });
 afterAll(() => engine.dispose());
 
+it('内置代码复制与折叠提示按指定语言生成，复制内容保持原样', async () => {
+  const code = 'const a = 1;\nconst b = 2;\nconsole.log(a + b);';
+  const render = async (locale: 'zh' | 'en') => {
+    const root = document.createElement('div');
+    root.append(await engine.render(code, 'js', 'collapse={2-3}', document, locale));
+    return root;
+  };
+  const chinese = await render('zh'), english = await render('en');
+  expect(chinese.querySelector('button')?.title).toBe('复制到剪贴板');
+  expect(english.querySelector('button')?.title).toBe('Copy to clipboard');
+  expect(chinese.textContent).toContain('已折叠 2 行');
+  expect(english.textContent).toContain('2 collapsed lines');
+  expect((chinese.querySelector('.copy button') as HTMLElement).dataset.code).toBe((english.querySelector('.copy button') as HTMLElement).dataset.code);
+});
+
 it('在未编辑的代码上生成可映射的 token，并恢复主题 CSS 变量', async () => {
   const code = 'mov rax, 7\nadd rax, 1\nret';
   const tokens = await engine.tokens(code, 'asm');

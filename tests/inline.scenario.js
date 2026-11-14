@@ -62,7 +62,7 @@
   select(at, at + 5);
   const beforeTable = editor.getValue();
   app.commands.executeCommandById('highlight-boost:apply-action');
-  assert('inline-table-syntax-preserved', editor.getValue().includes('| `value`%%hbi:'));
+  assert('inline-table-syntax-preserved', await until(() => editor.getValue().includes('| `value`%%hbi:')));
   const afterTable = editor.getValue();
   editor.undo(); assert('inline-table-single-undo', editor.getValue() === beforeTable);
   editor.redo(); assert('inline-table-redo', editor.getValue() === afterTable);
@@ -89,6 +89,7 @@
   const reading = () => view.containerEl.querySelector('.markdown-preview-view');
   assert('inline-reading-count', await until(() => reading().querySelectorAll('code.hb-inline').length === 7), [...reading().querySelectorAll('code')].map(code => ({ text: code.textContent, classes: code.className })));
   const codes = [...reading().querySelectorAll('code.hb-inline')];
+  assert('inline-reading-visible-underline', getComputedStyle(codes[0]).boxShadow !== 'none');
   assert('inline-reading-equals-kept', codes.some(code => code.textContent === 'a==b' && code.classList.contains('hb-red')));
   assert('inline-reading-duplicate-colors', codes.filter(code => code.textContent === 'same').map(code => code.classList.contains('hb-red') ? 'red' : 'yellow').join(',') === 'yellow,red');
   assert('inline-reading-backtick-kept', codes.some(code => code.textContent === 'a`b'));

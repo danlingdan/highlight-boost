@@ -11,8 +11,6 @@ import { composingState, compositionEvents } from './composition';
 import { normalizeSettings, type Settings } from './settings';
 import { SyntaxService } from './syntax/service';
 import { inlineExcerpt } from './inline-rendering';
-import { EditorSelection, Transaction } from '@codemirror/state';
-import { EditorView } from '@codemirror/view';
 
 const VIEW = 'highlight-boost';
 
@@ -122,19 +120,6 @@ export default class HighlightBoost extends Plugin {
         changes: plan.changes.map(change => ({ from: editor.offsetToPos(change.from), to: editor.offsetToPos(change.to), text: change.insert })),
         selections: plan.selections.map(span => ({ from: position(span.from), to: position(span.to) })),
       }, 'highlight-boost');
-      if (updated !== before && editor.getValue() === before) {
-        const leaf = this.app.workspace.getLeavesOfType('markdown').find(leaf => leaf.view instanceof MarkdownView && leaf.view.editor === editor);
-        const element = leaf?.view.containerEl.querySelector<HTMLElement>('.cm-editor');
-        const view = element && EditorView.findFromDOM(element);
-        if (view && view.state.doc.toString() === before) {
-          // 表格单元格过滤器处理原生输入；标注在源文档中应用已生成的变更。
-          view.dispatch({
-            changes: plan.changes.map(change => ({ from: change.from, to: change.to, insert: change.insert })),
-            selection: EditorSelection.create(plan.selections.map(span => EditorSelection.range(span.from, span.to))),
-            annotations: Transaction.userEvent.of('highlight-boost'), filter: false,
-          });
-        }
-      }
       this.refreshPanels();
   }
 

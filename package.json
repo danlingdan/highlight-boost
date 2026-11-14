@@ -21,7 +21,8 @@
     "test:prose": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=prose && node scripts/test-host.mjs --mode=prose-restart",
     "test:i18n": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=i18n && node scripts/test-host.mjs --mode=i18n-restart",
     "test:selection": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=selection",
-    "test:phase-d": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=phase-d && node scripts/test-host.mjs --mode=phase-d-restart"
+    "test:phase-d": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=phase-d && node scripts/test-host.mjs --mode=phase-d-restart",
+    "test:phase-e": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=phase-e && node scripts/test-host.mjs --mode=phase-e-restart"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",

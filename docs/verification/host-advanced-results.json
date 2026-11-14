@@ -35,6 +35,26 @@
       "passed": true
     },
     {
+      "name": "mixed-continuous-selection",
+      "passed": true
+    },
+    {
+      "name": "mixed-continuous-keeps-fences",
+      "passed": true
+    },
+    {
+      "name": "mixed-continuous-keeps-one-selection",
+      "passed": true
+    },
+    {
+      "name": "mixed-continuous-single-undo",
+      "passed": true
+    },
+    {
+      "name": "mixed-continuous-redo",
+      "passed": true
+    },
+    {
       "name": "table-structure-preserved",
       "passed": true
     },

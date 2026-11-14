@@ -55,6 +55,18 @@
   editor.undo(); assert('mixed-selection-undo', editor.getValue() === beforeMixed);
   editor.redo();
 
+  const beforeContinuous = editor.getValue();
+  const start = beforeContinuous.indexOf('跨区域正文'), end = beforeContinuous.lastIndexOf('second(value);') + 'second(value);'.length;
+  select([[start, end]]);
+  app.commands.executeCommandById('highlight-boost:apply-reference');
+  const continuous = editor.getValue();
+  assert('mixed-continuous-selection', continuous.includes('==🔵跨区域正文==') && continuous.includes('"quote":"same();"'));
+  assert('mixed-continuous-keeps-fences', (continuous.match(/^```js$/gm) ?? []).length === 3 && continuous.includes('first(value);\nsecond(value);\nconst message = "";'));
+  assert('mixed-continuous-keeps-one-selection', editor.listSelections().length === 1);
+  editor.undo(); assert('mixed-continuous-single-undo', editor.getValue() === beforeContinuous);
+  editor.redo(); assert('mixed-continuous-redo', editor.getValue() === continuous);
+  editor.undo();
+
   at = editor.getValue().indexOf('表格字段');
   select([[at, at + 4]]);
   app.commands.executeCommandById('highlight-boost:apply-important');

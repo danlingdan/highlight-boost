@@ -13,6 +13,10 @@
 
 当前开发与验收面向桌面端。正式版发布前不承诺移动端支持；正式版之后再根据需求评估。性能测试与优化在计划功能完成后统一开展。
 
+## 特别感谢
+
+特别感谢 **Moritz Jung（mProjectsCode）与 Shiki Highlighter 贡献者**，其主题、展示配置和样式源码已合入本项目；感谢 **Pine Wu、Anthony Fu 与 Shiki 贡献者**以及 **Tibor Schiemann（hippotastic）与 Expressive Code 贡献者**。内置语法模块由 HB 统一维护，来源和 MIT 版权声明见 [第三方致谢](THIRD_PARTY_NOTICES.md)。
+
 ## 文档
 
 完整调研、技术取舍与分阶段实施方案集中在 **[docs/plan/](docs/plan/README.md)**。
@@ -21,7 +25,9 @@
 
 ## 当前原型
 
-已实现正文局部改色、原生六色及默认色、代码整行与精确文本标注、当前笔记侧栏、来源跳转和基础摘录。支持 callout/列表代码、改写后的标注重新绑定、独立撤销，以及 Live Preview 中的元数据折叠。四种语义为重点、疑问、引用、行动，可在设置中改名和改色。阅读视图支持 Shiki Highlighter 0.8.0 的逐行渲染结构和异步更新。
+已实现正文局部改色、原生六色及默认色、代码整行与精确文本标注、连续跨正文与多代码块选区、当前笔记侧栏、来源跳转和基础摘录。支持 callout/列表代码、标注重新绑定、独立撤销和 Live Preview 元数据折叠。四种语义可改名改色。
+
+设置可选择“宿主”或“内置 Shiki”着色，更改后重新启用插件。内置模式直接提供阅读及 Live Preview 的代码组件、复制按钮和编辑器着色，与 HB 标注层共同工作。
 
 ```sh
 pnpm install --frozen-lockfile
@@ -31,6 +37,6 @@ pnpm prepare:vault
 
 构建生成 `main.js`。将它与 `manifest.json`、`styles.css` 放入测试库的插件目录，即可加载原型。`prepare:vault` 在项目内创建 `.test-vault` 并复制原型及样例。
 
-[开发与接口测试](docs/development.md) · [最新验证记录](docs/verification/phase-a-iteration-3.md)
+[开发与接口测试](docs/development.md) · [最新验证记录](docs/verification/phase-a-iteration-4.md)
 
-当前已交付三轮桌面原型实验、阶段 B 工程基础及配置迁移。41 项逻辑/DOM 测试和 166 项宿主检查通过。中英文文案、行内代码、连续跨正文与代码选区及后续功能继续按阶段实施。
+当前已交付四轮桌面原型实验、阶段 B 工程基础及配置迁移。50 项逻辑/DOM/引擎测试和 179 项宿主检查通过。中英文文案、行内代码、正文语义记录及后续功能继续按阶段实施。

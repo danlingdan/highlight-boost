@@ -34,19 +34,24 @@
     editor.setSelection(editor.offsetToPos(at), editor.offsetToPos(at + entry.word.length));
     app.commands.executeCommandById('highlight-boost:apply-important');
     const saved = editor.getValue();
-    const record = { language: entry.language, provider: useShiki ? 'shiki-0.8.0' : 'native', syntax: {} };
+    const record = { language: entry.language, provider: useShiki ? 'shiki-0.8.0' : 'native', syntax: {}, editorRendering: {} };
     for (const live of [false, true]) {
       await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: !live } });
       await tick();
       const root = view.containerEl.querySelector('.markdown-source-view');
       const name = live ? 'live-preview' : 'source';
       assert(`${entry.language}-${name}-mark`, [...root.querySelectorAll('.hb-text')].some(mark=>mark.textContent === entry.word));
-      const hasTokens = () => root.querySelectorAll('.HyperMD-codeblock .cm-keyword, .HyperMD-codeblock .cm-number, .HyperMD-codeblock .cm-type, .HyperMD-codeblock .cm-string, .HyperMD-codeblock .cm-variable, .HyperMD-codeblock .cm-operator').length > 0 ||
-        [...root.querySelectorAll('.HyperMD-codeblock span[style]')].some(span=>/color\s*:|--shiki/.test(span.getAttribute('style')));
+      const nativeTokens = () => root.querySelectorAll('.HyperMD-codeblock .cm-keyword, .HyperMD-codeblock .cm-number, .HyperMD-codeblock .cm-type, .HyperMD-codeblock .cm-string, .HyperMD-codeblock .cm-variable, .HyperMD-codeblock .cm-operator').length > 0;
+      const shikiColors = () => [...root.querySelectorAll('.HyperMD-codeblock span[style]')].some(span => span.style.color);
       if (useShiki && shiki.highlighter.supportedLanguages.includes(entry.language)) {
-        for (let i = 0; i < 30 && !hasTokens(); i++) await tick();
+        for (let i = 0; i < 30 && !shikiColors(); i++) await tick();
       }
-      record.syntax[name] = hasTokens();
+      record.editorRendering[name] = {
+        nativeTokens: nativeTokens(), shikiInlineColors: shikiColors(),
+        expressiveCode: Boolean(root.querySelector('.expressive-code')),
+        expressiveCopyButton: Boolean(root.querySelector('.expressive-code .copy button')),
+      };
+      record.syntax[name] = nativeTokens() || shikiColors();
     }
     await app.vault.modify(file, saved);
     await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'preview' } });

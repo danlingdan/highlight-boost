@@ -62,12 +62,15 @@ export function fencedExcerpt(value: string, language = ''): string {
   return `${fence}${info}\n${value}\n${fence}`;
 }
 
-export function formatExcerpt(item: HighlightItem, context: ExcerptContext, sourceLink: string, label: string, locale: Locale): string {
-  const quote = item.kind === 'prose' ? item.quote.split(/\r\n|\n|\r/).map(line => `> ${line}`).join('\n') : item.kind === 'inline-code' ? inlineExcerpt(item.quote) : fencedExcerpt(item.quote, item.language);
+export type ExcerptTemplate = 'markdown' | 'plain' | 'quote' | 'code';
+export function formatExcerpt(item: HighlightItem, context: ExcerptContext, sourceLink: string, label: string, locale: Locale, template: ExcerptTemplate = 'markdown'): string {
+  const plain = item.kind === 'prose' ? plainText(fromMarkdown(item.quote)) : item.quote;
+  const quoted = item.kind === 'prose' ? plain : item.kind === 'inline-code' ? inlineExcerpt(item.quote) : fencedExcerpt(item.quote, item.language);
+  const quote = template === 'plain' ? plain : template === 'quote' ? quoted.split(/\r\n|\n|\r/).map(line => `> ${line}`).join('\n') : template === 'code' ? fencedExcerpt(item.quote, item.language || 'text') : item.kind === 'prose' ? item.quote.split(/\r\n|\n|\r/).map(line => `> ${line}`).join('\n') : item.kind === 'inline-code' ? inlineExcerpt(item.quote) : fencedExcerpt(item.quote, item.language);
   const parts = [quote, translate(locale, 'excerptSource', { link: sourceLink, label })];
   if (context.headings.length) parts.push(translate(locale, 'excerptHeadings', { headings: context.headings.join(' › ') }));
   if (context.line !== undefined) parts.push(translate(locale, 'excerptLines', { language: item.language || translate(locale, 'code'), from: context.line, to: context.endLine! }));
-  if (context.code !== undefined && context.code !== item.quote) parts.push(`${translate(locale, 'excerptCodeContext', { from: context.contextFrom!, to: context.contextTo! })}\n\n${fencedExcerpt(context.code, item.language)}`);
+  if (context.code !== undefined && context.code !== item.quote) parts.push(`${translate(locale, 'excerptCodeContext', { from: context.contextFrom!, to: context.contextTo! })}\n\n${template === 'plain' ? context.code : template === 'quote' ? fencedExcerpt(context.code, item.language).split('\n').map(line => `> ${line}`).join('\n') : fencedExcerpt(context.code, item.language)}`);
   if (item.status !== 'resolved') parts.push(translate(locale, 'pending'));
   return parts.join('\n\n');
 }

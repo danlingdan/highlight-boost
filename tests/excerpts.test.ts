@@ -56,3 +56,18 @@ it('读取已有正文块 ID 和代码块 ID，代码语言内容中的伪标识
   text = applyChanges(text, planHighlight(text, [{ from, to: from + 4 }], presets[0]!).changes);
   expect(excerptContext(text, collectItems(text)[0]!).blockId).toBe('code-id');
 });
+
+it('摘录模板共用来源信息，正文纯文本去除 Markdown，围栏模板可往返', () => {
+  const item = collectItems('==**word**==')[0]!, context = { headings: [] };
+  expect(formatExcerpt(item, context, '[[note]]', 'label', 'en', 'plain')).toBe('word\n\nSource: [[note]] · label');
+  expect(formatExcerpt(item, context, '[[note]]', 'label', 'en', 'quote').startsWith('> word')).toBe(true);
+  expect(fromMarkdown(formatExcerpt(item, context, '[[note]]', 'label', 'en', 'code')).children[0]).toMatchObject({ type: 'code', lang: 'text', value: '**word**' });
+});
+
+it('引用块模板中的代码字面内容仍作为代码解析', () => {
+  const item = { ...collectItems('==word==')[0]!, kind: 'code-range' as const, quote: '<b>literal</b>\n```', language: 'html' };
+  const tree = fromMarkdown(formatExcerpt(item, { headings: [] }, '[[note]]', 'label', 'en', 'quote'));
+  const block = tree.children[0];
+  expect(block?.type).toBe('blockquote');
+  if (block?.type === 'blockquote') expect(block.children[0]).toMatchObject({ type: 'code', value: item.quote });
+});

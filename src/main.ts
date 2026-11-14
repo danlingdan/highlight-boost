@@ -211,6 +211,10 @@ export default class HighlightBoost extends Plugin {
 
 class HighlightsView extends ItemView {
   private note: MarkdownView | undefined;
+  private search?: HTMLInputElement;
+  private typeFilter?: HTMLSelectElement;
+  private semanticFilter?: HTMLSelectElement;
+  private results?: HTMLElement;
   constructor(leaf: WorkspaceLeaf, private plugin: HighlightBoost) { super(leaf); }
   getViewType(): string { return VIEW; }
   getDisplayText(): string { return this.plugin.t('panelTitle'); }
@@ -219,25 +223,52 @@ class HighlightsView extends ItemView {
   refresh(): void {
     const active = this.app.workspace.getActiveViewOfType(MarkdownView);
     if (active) this.note = active;
-    this.contentEl.empty();
     this.contentEl.addClass('hb-panel');
-    this.contentEl.createEl('h4', { text: this.plugin.t('panelTitle') });
+    if (!this.search) {
+      this.contentEl.empty();
+      this.contentEl.createEl('h4');
+      this.search = this.contentEl.createEl('input', { type: 'search', cls: 'hb-search' });
+      this.typeFilter = this.contentEl.createEl('select', { cls: 'hb-type-filter' });
+      this.semanticFilter = this.contentEl.createEl('select', { cls: 'hb-semantic-filter' });
+      this.search.addEventListener('input', () => this.refresh());
+      this.typeFilter.addEventListener('change', () => this.refresh());
+      this.semanticFilter.addEventListener('change', () => this.refresh());
+      this.results = this.contentEl.createDiv({ cls: 'hb-results' });
+    }
+    this.contentEl.querySelector('h4')!.textContent = this.plugin.t('panelTitle');
+    this.search.placeholder = this.plugin.t('searchHighlights');
+    this.search.setAttribute('aria-label', this.plugin.t('searchHighlights'));
+    const options = (select: HTMLSelectElement, entries: [string, string][]) => {
+      const value = select.value;
+      select.replaceChildren(...entries.map(([value, label]) => {
+        const option = select.ownerDocument.createElement('option'); option.value = value; option.textContent = label; return option;
+      }));
+      select.value = entries.some(([key]) => key === value) ? value : '';
+    };
+    this.typeFilter!.setAttribute('aria-label', this.plugin.t('allTypes'));
+    this.semanticFilter!.setAttribute('aria-label', this.plugin.t('allSemantics'));
+    options(this.typeFilter!, [['', this.plugin.t('allTypes')], ['prose', this.plugin.t('prose')], ['inline-code', this.plugin.t('inlineCode')], ['code', this.plugin.t('code')]]);
+    options(this.semanticFilter!, [['', this.plugin.t('allSemantics')], ...this.plugin.settings.presets.map(preset => [preset.id, this.plugin.presetLabel(preset)] as [string, string])]);
+    const results = this.results!; results.empty();
     const view = this.note;
-    if (!view?.file) { this.contentEl.createEl('p', { text: this.plugin.t('panelEmpty') }); return; }
+    if (!view?.file || !this.app.workspace.getLeavesOfType('markdown').includes(view.leaf) || this.app.vault.getFileByPath(view.file.path) !== view.file) { results.createEl('p', { text: this.plugin.t('panelEmpty') }); return; }
     const text = view.editor.getValue();
-    const items = collectItems(text);
-    this.contentEl.createEl('p', { text: this.plugin.t(items.length === 1 ? 'summaryOne' : 'summary', { note: view.file.basename, count: items.length }), cls: 'hb-summary' });
-    if (!items.length) this.contentEl.createEl('p', { text: this.plugin.t('noHighlights', { preset: this.plugin.presetLabel(this.plugin.getPreset('important')) }) });
+    const all = collectItems(text), query = this.search.value.trim().toLocaleLowerCase();
+    const items = all.filter(item => (!query || `${item.quote}\n${item.label}\n${item.language ?? ''}`.toLocaleLowerCase().includes(query)) &&
+      (!this.typeFilter!.value || (this.typeFilter!.value === 'code' ? item.kind.startsWith('code-') : item.kind === this.typeFilter!.value)) &&
+      (!this.semanticFilter!.value || item.semantic === this.semanticFilter!.value));
+    results.createEl('p', { text: this.plugin.t(items.length === 1 ? 'summaryOne' : 'summary', { note: view.file.basename, count: items.length }), cls: 'hb-summary' });
+    if (!items.length) results.createEl('p', { text: all.length ? this.plugin.t('noMatches') : this.plugin.t('noHighlights', { preset: this.plugin.presetLabel(this.plugin.getPreset('important')) }) });
     for (const item of items) this.card(view, item);
   }
   private card(view: MarkdownView, item: HighlightItem): void {
-    const card = this.contentEl.createDiv({ cls: `hb-card hb-${item.color}` });
+    const card = this.results!.createDiv({ cls: `hb-card hb-${item.color}` });
     if (item.semantic) card.dataset.hbSemantic = item.semantic;
     const jump = card.createEl('button', { text: item.quote || this.plugin.t('blankLine'), cls: item.kind === 'prose' ? 'hb-quote' : 'hb-quote hb-code-quote' });
     const label = item.markId ? item.label : this.plugin.colorLabel(item.color);
     const info = item.kind === 'prose' ? this.plugin.t('prose') : item.kind === 'inline-code' ? this.plugin.t('inlineInfo', { line: item.line! }) : this.plugin.t('codeInfo', { language: item.language || this.plugin.t('code'), line: item.line! });
     card.createEl('small', { text: `${label} · ${info}${item.status === 'resolved' ? '' : ` · ${this.plugin.t('pending')}`}` });
-    this.registerDomEvent(jump, 'click', () => {
+    jump.addEventListener('click', () => {
       if (item.status !== 'resolved') { new Notice(this.plugin.t('contentChanged')); return; }
       void this.app.workspace.revealLeaf(view.leaf);
       const from = view.editor.offsetToPos(item.from), to = view.editor.offsetToPos(item.to);
@@ -248,10 +279,19 @@ class HighlightsView extends ItemView {
     if (item.kind === 'code-line' || item.kind === 'code-range') {
       const rebind = card.createEl('button', { text: this.plugin.t('rebind'), cls: 'hb-rebind' });
       rebind.title = this.plugin.t('rebindHint');
-      this.registerDomEvent(rebind, 'click', () => this.plugin.rebind(view.editor, item));
+      rebind.addEventListener('click', () => this.plugin.rebind(view.editor, item));
+    }
+    if (item.status === 'resolved') {
+      const semantic = card.createEl('select', { cls: 'hb-change-semantic' });
+      semantic.setAttribute('aria-label', this.plugin.t('changeSemantic'));
+      semantic.createEl('option', { value: '', text: this.plugin.t('changeSemantic') });
+      for (const preset of this.plugin.settings.presets) semantic.createEl('option', { value: preset.id, text: this.plugin.presetLabel(preset) });
+      semantic.addEventListener('change', () => { if (semantic.value) this.plugin.updateItem(view.editor, item, this.plugin.presetForAction(semantic.value)); });
+      const remove = card.createEl('button', { text: this.plugin.t('removeItem'), cls: 'hb-remove-item' });
+      remove.addEventListener('click', () => this.plugin.updateItem(view.editor, item, null));
     }
     const copy = card.createEl('button', { text: this.plugin.t('copyExcerpt'), cls: 'hb-copy-excerpt' });
-    this.registerDomEvent(copy, 'click', () => {
+    copy.addEventListener('click', () => {
       const quote = item.kind === 'prose' ? `> ${item.quote}` : item.kind === 'inline-code' ? inlineExcerpt(item.quote) : `\`\`\`${item.language}\n${item.quote}\n\`\`\``;
       void navigator.clipboard.writeText(`${quote}\n\n${this.plugin.t('sourceLine', { path: view.file!.path, label })}`);
     });

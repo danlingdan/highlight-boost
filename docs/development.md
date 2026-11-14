@@ -26,6 +26,10 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 
 侧栏显示标题链及可展开的前后一行代码上下文。卡片摘录优先使用已有块 ID 链接，再使用所在标题；链接通过宿主 `generateMarkdownLink` 生成。摘录代码围栏按实际内容选择长度，正文逐行引用，行内代码使用可往返的反引号长度。阅读状态跳转进入 Live Preview，Source 与 Live Preview 原状态保持；跳转后重新核对文件和条目身份。
 
+工作台独立于插件入口实现于 `src/workbench.ts`。`HighlightIndex` 按路径保存源文与条目，使用读取版本处理异步变更；公开 `ready` 等待当前队列完成，`rebuild` 从源笔记重建。源适配器优先读取打开的 Markdown 编辑器，其余使用 Vault 读取。创建、修改、删除及目录改名由插件事件接入。查询和集合关联是可独立测试的纯模块。
+
+配置增加 `collections` 与 `excerptTemplate`，沿用 schemaVersion 2；集合引用和导出标记见 [集合说明](formats/collections.md)。工作台范围及控件状态通过 ItemView 状态保存，命令入口重置查询条件，下拉框切换保留条件。源索引排除 frontmatter 中带 `highlight-boost-export: true` 的生成笔记。
+
 “语法着色”可选择宿主或内置 Shiki，保存后重新启用 HB 生效。内置模块的主题、展示配置和样式来自 Shiki Highlighter 0.8.0 源码，宿主注册与编辑器生命周期在本项目实现，特别致谢见 [来源声明](../THIRD_PARTY_NOTICES.md)。
 
 “界面语言”支持跟随 Obsidian、中文和 English，即时更新已打开的侧栏、颜色选择器、元数据按钮及内置代码组件。自动模式识别中文，其余语言使用英文。配置 schemaVersion 2 增加 `language: auto | zh | en`；预设可带 `customName: true`，记录用户明确编辑过的名称，包括与默认中文同名的自定义名称。内置默认名称随界面翻译，自定义名称和已有标注快照保持原文；新标注保存操作时显示的名称。恢复预设默认值保留界面语言与语法提供者。
@@ -36,7 +40,8 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 - `pnpm typecheck`：类型检查。
 - `pnpm test`：文档解析、纯编辑计划、锚定和 DOM 渲染断言。
 - `pnpm build`：生成宿主加载的 CommonJS 插件。
-- `pnpm test:host`：构建并依次运行十六个独立 Electron 进程，验证基础操作、多选区与组合事件、语言对照、布局、设置、重启恢复、内置语法、行内代码、正文语义、中英文界面、选区侧栏和阶段 D 统一场景。
+- `pnpm test:host`：构建并依次运行十八个独立 Electron 进程，覆盖已有标注闭环，以及全库检索、集合、改名、生成摘录和独立进程恢复。
+- `pnpm test:phase-e`：运行全库工作台及新进程集合恢复专项，归档中英文深浅主题画面。
 - `pnpm test:phase-d`：运行同一笔记的正文 / 行内 / C / Python / ASM 三视图闭环及独立进程恢复，归档阅读与 Live Preview 截图。
 - `pnpm test:selection`：运行选区面板、键盘操作、侧栏筛选和单条修改专项，归档深浅主题截图。
 - `pnpm test:i18n`：运行界面语言切换及独立进程恢复验收。

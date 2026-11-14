@@ -18,6 +18,8 @@ interface HighlightCollection {
 
 `excerptTemplate` 保存最近选择的模板，值为 `markdown`、`plain`、`quote` 或 `code`。恢复默认语义预设保留集合和模板选项。
 
+阶段 F 的集合引用增加可选 `note`，保留加入时的说明快照。源条目可定位时显示当前批注，缺失时显示快照。
+
 索引缓存保存在内存，从 Markdown 源文及打开的编辑器缓冲区构建。每个路径有独立读取版本；读失败保留上一快照，重建从源文件重试。配置和缓存分开管理，重建索引不改变集合 ID 或笔记内容。
 
 生成摘录笔记使用以下 frontmatter：

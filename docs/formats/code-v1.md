@@ -61,3 +61,5 @@ mov ax, bx
 解析结果为每一逻辑行保存原文范围；UTF-16 偏移通过这些范围往返映射。对应固定样例见 `tests/core.test.ts`、`tests/persistence.test.ts` 和 `tests/mixed-selection.test.ts`。
 
 正文和行内代码格式分别见 [正文 v1](prose-v1.md)、[行内 v1](inline-v1.md)。三类标注的冻结说明见 [格式索引](README.md)。
+
+阶段 F 为每个 `CodeMark` 增加可选字符串 `note`，改色及重新绑定保留说明，见 [批注格式](annotations.md)。

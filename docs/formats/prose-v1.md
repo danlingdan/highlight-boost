@@ -38,3 +38,5 @@ Source 显示完整注释。Live Preview 将编辑器中的注释收起为“正
 侧栏读取持久语义 ID 和名称快照，点击后选中正文内容本身。统一条目接口的 `semantic` 提供语义 ID，`markId` 提供持久标注 ID；纯原生正文高亮继续使用颜色名称。
 
 验证见 [正文持久语义记录](../verification/prose-semantic.md)。
+
+阶段 F 增加可选 `noteRef`，指向标准 Markdown 脚注定义，见 [批注格式](annotations.md)。原有无批注记录继续使用上述字段。

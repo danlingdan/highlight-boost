@@ -27,12 +27,14 @@
   const prefix = '# Performance\n\nneedle and ==second==\n\n', paragraph = 'A paragraph with plain text and **formatting**.\n\n';
   const medium = prefix + paragraph.repeat(Math.ceil((200 * 1024 - prefix.length) / paragraph.length)).slice(0, 200 * 1024 - prefix.length);
   editor.setValue(medium); await plugin.index.ready; await plugin.openPanel(); await settled();
+  if (window.__hbPerformanceProfile) await window.require('electron').ipcRenderer.invoke('hb-performance-profile', 'start');
   await measure('edit-to-sidebar-200KiB', 5, async i => {
     const from = editor.getValue().indexOf('needle'); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 6));
     const color = i % 2 ? 'blue' : 'yellow'; plugin.applyColor(editor, color);
     if (!await until(() => [...document.querySelectorAll(`.hb-card.hb-${color} .hb-quote`)].some(node => node.textContent === 'needle'))) throw new Error('Sidebar update missing');
     await settled();
   });
+  if (window.__hbPerformanceProfile) await window.require('electron').ipcRenderer.invoke('hb-performance-profile', 'stop');
   assert('performance-medium-source', editor.getValue().includes('needle') && editor.getValue().length >= 200 * 1024);
   const code = '```js\n' + Array.from({ length: 500 }, (_, i) => `const value${i} = ${i};`).join('\n') + '\n```';
   editor.setValue(code); await plugin.index.ready;

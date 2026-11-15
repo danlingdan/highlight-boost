@@ -28,7 +28,8 @@
     "test:parameters": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=parameters",
     "test:migration": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=migration && node scripts/test-host.mjs --mode=migration-restart",
     "bench:core": "pnpm build && node scripts/benchmark-core.mjs",
-    "bench:host": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=performance"
+    "bench:host": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=performance",
+    "prepare:runtime": "node scripts/prepare-runtime.mjs"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",
@@ -38,7 +39,7 @@
     "@electron/remote": "2.1.3",
     "@types/mdast": "4.0.4",
     "@types/node": "26.6.6",
-    "electron": "38.8.6",
+    "electron": "43.8.9",
     "esbuild": "0.28.2",
     "esbuild-plugins-node-modules-polyfill": "1.8.2",
     "eslint": "10.14.0",

@@ -14,8 +14,8 @@ net.Server.prototype.listen = function (...args) {
 const root = path.resolve(__dirname, '..');
 const profile = path.join(root, '.test-host-profile');
 const vault = path.join(root, '.test-vault');
-const resources = process.env.OBSIDIAN_RESOURCES || 'C:\\Program Files\\Obsidian\\resources';
-const source = path.join(resources, 'obsidian.asar');
+const runtime = require('./obsidian-runtime.cjs')(root);
+const source = runtime.source;
 const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
 scenarios.settings = ['settings.scenario.js', 'host-settings-results.json'];
 scenarios.embedded = ['embedded-syntax.scenario.js', 'host-embedded-results.json'];
@@ -41,17 +41,40 @@ scenarios['inline-restart'] = ['inline-restart.scenario.js', 'host-inline-restar
 scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-results.json'];
 scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
+const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration'];
+if (captureModes.includes(mode)) {
+  app.disableHardwareAcceleration();
+  const BrowserWindow = electron.BrowserWindow;
+  const offscreenElectron = Object.create(electron);
+  Object.defineProperty(offscreenElectron, 'BrowserWindow', { value: class extends BrowserWindow {
+    constructor(options) { super({ ...options, show: false, webPreferences: { ...options?.webPreferences, offscreen: true } }); }
+  } });
+  const Module = require('node:module'), load = Module._load;
+  Module._load = function (request, ...arguments_) {
+    if (request === 'electron' || request === 'electron/main') return offscreenElectron;
+    return load.call(this, request, ...arguments_);
+  };
+}
+if (mode === 'performance' && process.env.HB_PERF_PROFILE === '1') electron.ipcMain.handle('hb-performance-profile', async (event, action) => {
+  const debuggerClient = event.sender.debugger;
+  if (action === 'start') { await debuggerClient.sendCommand('Profiler.enable'); await debuggerClient.sendCommand('Profiler.start'); }
+  else if (action === 'stop') {
+    const { profile } = await debuggerClient.sendCommand('Profiler.stop');
+    fs.mkdirSync(path.join(root, '.bench-cache'), { recursive: true });
+    fs.writeFileSync(path.join(root, '.bench-cache/sidebar.cpuprofile'), JSON.stringify(profile));
+  }
+});
 if (mode === 'selection' || mode === 'phase-d' || mode === 'phase-e' || mode === 'notes' || mode === 'display' || mode === 'parameters' || mode === 'migration' || mode === 'performance') electron.ipcMain.handle('hb-selection-capture', async (event, name) => {
   if (!['selection-dark-zh', 'selection-light-en', 'phase-d-live', 'phase-d-reading', 'phase-e-collection', 'phase-e-light', 'notes-reading', 'notes-live', 'display-native', 'display-builtin', 'parameters', 'migration-preview'].includes(name)) throw new Error('Unknown screenshot');
-  await event.sender.capturePage({}, { stayHidden: true, stayAwake: true });
-  await new Promise(resolve => setTimeout(resolve, 500));
-  const screenshot = await event.sender.capturePage({}, { stayHidden: true, stayAwake: true });
+  const { data } = await event.sender.debugger.sendCommand('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
   const directory = path.join(root, 'docs', 'verification', 'images');
   fs.mkdirSync(directory, { recursive: true });
-  fs.writeFileSync(path.join(directory, `${name}.png`), screenshot.toPNG());
+  fs.writeFileSync(path.join(directory, `${name}.png`), Buffer.from(data, 'base64'));
 });
 const [scenarioName, resultName] = scenarios[mode];
 const version = require(path.join(source, 'package.json')).version;
+if (version !== runtime.appVersion) throw new Error(`Expected Obsidian ${runtime.appVersion}, found ${version}`);
+if (process.versions.electron !== runtime.electronVersion) throw new Error(`Expected Electron ${runtime.electronVersion}`);
 fs.mkdirSync(profile, { recursive: true });
 fs.writeFileSync(path.join(profile, 'obsidian.json'), JSON.stringify({
   vaults: { 'abcd1234abcd1234': { path: vault, ts: Date.now(), open: true } },
@@ -101,6 +124,7 @@ app.on('browser-window-created', (_event, window) => {
       }
       const script = fs.readFileSync(path.join(root, 'tests', scenarioName), 'utf8');
       await contents.executeJavaScript(`window.__hbHostMode = ${JSON.stringify(mode)}`);
+      await contents.executeJavaScript(`window.__hbPerformanceProfile = ${process.env.HB_PERF_PROFILE === '1'}`);
       const outcome = await contents.executeJavaScript(script);
       results.checks.push(...outcome);
       const matrix = await contents.executeJavaScript('window.__hbLanguageMatrix ?? null');

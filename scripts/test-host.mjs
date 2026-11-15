@@ -1,13 +1,9 @@
 import { spawn } from 'node:child_process';
 import { createRequire } from 'node:module';
 import { readFileSync, existsSync, unlinkSync } from 'node:fs';
-import { join } from 'node:path';
 const require = createRequire(import.meta.url);
 const executable = require('electron');
-const resources = process.env.OBSIDIAN_RESOURCES || 'C:\\Program Files\\Obsidian\\resources';
-if (!existsSync(join(resources, 'obsidian.asar'))) {
-  throw new Error('Set OBSIDIAN_RESOURCES to the installed Obsidian resources directory.');
-}
+require('./obsidian-runtime.cjs')(process.cwd());
 const environment = { ...process.env };
 delete environment.ELECTRON_RUN_AS_NODE;
 const single = process.argv.find(argument => argument.startsWith('--mode='))?.slice(7);

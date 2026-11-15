@@ -1,0 +1,56 @@
+name: Release
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 已推送的版本标签，例如 1.0.1
+        required: true
+        type: string
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    env:
+      RELEASE_VERSION: ${{ inputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.version }}
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: node scripts/verify-release.mjs
+      - uses: actions/attest@v4
+        with:
+          subject-path: |
+            main.js
+            manifest.json
+            styles.css
+      - name: Create draft
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: >-
+          gh release create "$RELEASE_VERSION" --verify-tag --draft
+          --title "Highlight Boost $RELEASE_VERSION"
+          --notes-file "docs/releases/$RELEASE_VERSION.md"
+          main.js manifest.json styles.css
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-${{ inputs.version }}
+          include-hidden-files: true
+          path: |
+            main.js
+            manifest.json
+            styles.css
+            .local/release-proof.json

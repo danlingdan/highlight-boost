@@ -192,7 +192,7 @@ export function parseDocument(text: string): ParsedDocument {
       for (let p = from - 1; p >= 0 && text[p] === '\\'; p--) slashes++;
       if (slashes % 2) continue;
       const body = match[1]!;
-      const color = colors.find(key => emojis[key] && body.startsWith(emojis[key]!)) ?? 'default';
+      const color = colors.find(key => emojis[key] && body.startsWith(emojis[key])) ?? 'default';
       const content = { from: from + 2 + (emojis[color]?.length ?? 0), to: to - 2 };
       const highlight: ParsedDocument['highlights'][number] = { from, to, content, color, quote: text.slice(content.from, content.to) };
       const comment = text.slice(to).match(/^%%hbp:(.+?)%%/);

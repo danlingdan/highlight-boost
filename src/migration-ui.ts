@@ -94,11 +94,11 @@ export class MigrationModal extends Modal {
         const row = details.createDiv({ cls: 'hb-migration-entry' });
         if (entry.lines) {
           row.createEl('strong', { text: this.plugin.t('migrationFences') });
-          for (const line of entry.lines) { row.createEl('div', { text: `${this.plugin.t('migrationLine', { line: line.number })} · ${this.plugin.colorLabel(line.color)}` }); row.createEl('pre', { text: line.text }); }
+          for (const line of entry.lines) { row.createDiv({ text: `${this.plugin.t('migrationLine', { line: line.number })} · ${this.plugin.colorLabel(line.color)}` }); row.createEl('pre', { text: line.text }); }
           continue;
         }
-        row.createEl('strong', { text: entry.key }); row.createEl('div', { text: this.plugin.t('migrationBefore') }); row.createEl('pre', { text: entry.before });
-        row.createEl('div', { text: entry.after !== undefined ? this.plugin.t('migrationAfter') : this.plugin.t(entry.reason === 'color' ? 'migrationColor' : entry.reason === 'attributes' ? 'migrationAttributes' : entry.reason === 'parameter' ? 'migrationSkip' : 'migrationStructure') });
+        row.createEl('strong', { text: entry.key }); row.createDiv({ text: this.plugin.t('migrationBefore') }); row.createEl('pre', { text: entry.before });
+        row.createDiv({ text: entry.after !== undefined ? this.plugin.t('migrationAfter') : this.plugin.t(entry.reason === 'color' ? 'migrationColor' : entry.reason === 'attributes' ? 'migrationAttributes' : entry.reason === 'parameter' ? 'migrationSkip' : 'migrationStructure') });
         if (entry.after !== undefined) row.createEl('pre', { text: entry.after });
       }
     }

@@ -1,3 +1,4 @@
+import { detachedEl } from './dom';
 import { StateField } from '@codemirror/state';
 import { Decoration, EditorView, type DecorationSet } from '@codemirror/view';
 import { parseDocument } from './parsing';
@@ -50,8 +51,8 @@ function editorDecorations(text: string, settings: CodeDisplaySettings, parsed =
     for (const [index, line] of block.lines.entries()) {
       const start = text.lastIndexOf('\n', Math.max(0, line.from - 1)) + 1;
       ranges.push(Decoration.line({ attributes: { class: options.showLineNumbers ? 'hb-editor-code-line hb-numbered' : 'hb-editor-code-line',
-        ...(options.showLineNumbers ? { 'data-hb-number': String(options.startLine + index) } : {}), ...(diff[index] ? { 'data-hb-diff': diff[index]! } : {}),
-        ...(markers[index] ? { 'data-hb-param': markers[index]! } : {}),
+        ...(options.showLineNumbers ? { 'data-hb-number': String(options.startLine + index) } : {}), ...(diff[index] ? { 'data-hb-diff': diff[index] } : {}),
+        ...(markers[index] ? { 'data-hb-param': markers[index] } : {}),
         style: `--hb-number-font:var(${options.numberFont === 'interface' ? '--font-interface' : '--font-monospace'})` } }).range(start));
     }
   }
@@ -118,12 +119,12 @@ function renderNotes(code: HTMLElement, block: CodeBlock, locale: Locale): void 
   if (previous?.signature === signature && previous.element.parentElement === pre?.parentElement) return;
   previous?.element.remove(); noteRegions.delete(code);
   if (!notes.length || !pre?.parentElement) return;
-  const region = code.ownerDocument.createElement('div'); region.className = 'hb-code-notes';
+  const region = detachedEl(code.ownerDocument, 'div'); region.className = 'hb-code-notes';
   region.setAttribute('aria-label', translate(locale, 'annotation'));
   for (const mark of notes) {
-    const details = code.ownerDocument.createElement('details'); details.dataset.hbNoteId = mark.id;
-    const summary = code.ownerDocument.createElement('summary'); summary.textContent = `🗨 ${mark.label}`;
-    const content = code.ownerDocument.createElement('div'); content.className = 'hb-note-text'; content.textContent = mark.note!;
+    const details = detachedEl(code.ownerDocument, 'details'); details.dataset.hbNoteId = mark.id;
+    const summary = detachedEl(code.ownerDocument, 'summary'); summary.textContent = `🗨 ${mark.label}`;
+    const content = detachedEl(code.ownerDocument, 'div'); content.className = 'hb-note-text'; content.textContent = mark.note!;
     details.append(summary, content); region.append(details);
   }
   pre.after(region); noteRegions.set(code, { element: region, signature });
@@ -170,7 +171,7 @@ export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale =
   const lines = original.split('\n');
   for (let i = 0; i < lines.length; i++) {
     const content = lines[i]!;
-    const row = doc.createElement('span');
+    const row = detachedEl(doc, 'span');
     row.className = 'hb-code-row';
     row.dataset.hbLine = String(i + 1);
     const range = rangeFor(code, offset, offset + content.length);
@@ -217,7 +218,7 @@ function wrapMark(code: HTMLElement, from: number, to: number, mark: CodeMark, r
     if (a < b && (!requireRow || node.parentElement?.closest('.hb-code-row'))) {
       const range = code.ownerDocument.createRange();
       range.setStart(node, a); range.setEnd(node, b);
-      const wrapper = code.ownerDocument.createElement('span');
+      const wrapper = detachedEl(code.ownerDocument, 'span');
       wrapper.className = `hb-text hb-${mark.color}`;
       wrapper.title = annotationTitle(mark.label, mark.note);
       range.surroundContents(wrapper);

@@ -8,15 +8,19 @@ export const composingState = StateField.define<boolean>({
 });
 
 class CompositionLifecycle {
-  private timer?: ReturnType<typeof setTimeout>;
+  private timer?: number;
+  private timerWindow?: Window;
+  private cancel(): void { this.timerWindow?.clearTimeout(this.timer); this.timer = undefined; }
   begin(view: EditorView): void {
-    clearTimeout(this.timer);
+    this.cancel();
     view.dispatch({ effects: setComposing.of(true) });
   }
   end(view: EditorView): void {
-    this.timer = setTimeout(() => view.dispatch({ effects: setComposing.of(false) }), 0);
+    this.cancel();
+    const window = view.dom.ownerDocument.defaultView!; this.timerWindow = window;
+    this.timer = window.setTimeout(() => view.dispatch({ effects: setComposing.of(false) }), 0);
   }
-  destroy(): void { clearTimeout(this.timer); }
+  destroy(): void { this.cancel(); }
 }
 
 export const compositionEvents = ViewPlugin.fromClass(CompositionLifecycle, {

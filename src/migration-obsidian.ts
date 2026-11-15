@@ -1,5 +1,13 @@
 import { normalizePath, type Plugin, type MarkdownView } from 'obsidian';
-import { MigrationService, validMigrationRun } from './migration-service';
+import { MigrationService, validMigrationRun, type MigrationFile } from './migration-service';
+
+type SavedState = Pick<MigrationFile, 'path' | 'status' | 'error'>;
+function validSavedState(value: unknown): value is SavedState {
+  if (!value || typeof value !== 'object' || !('path' in value) || !('status' in value)) return false;
+  return typeof value.path === 'string' &&
+    (value.status === 'pending' || value.status === 'applied' || value.status === 'restored' || value.status === 'error') &&
+    (!('error' in value) || value.error === undefined || typeof value.error === 'string');
+}
 
 export function createMigrationService(plugin: Plugin, openView: (path: string) => MarkdownView | undefined): MigrationService {
   const vault = plugin.app.vault, adapter = vault.adapter;
@@ -32,9 +40,9 @@ export function createMigrationService(plugin: Plugin, openView: (path: string) 
         if (await adapter.exists(statePath)) {
           try {
             const state: unknown = JSON.parse(await adapter.read(statePath));
-            const files = (state as { files?: unknown })?.files;
-            if (Array.isArray(files) && files.length === run.files.length && files.every((file, index) => file?.path === run.files[index]!.path && ['pending', 'applied', 'restored', 'error'].includes(file.status) && (file.error === undefined || typeof file.error === 'string'))) {
-              run.files.forEach((file, index) => { file.status = files[index].status; if (files[index].error) file.error = files[index].error; else delete file.error; });
+            const files = state && typeof state === 'object' && 'files' in state ? state.files : undefined;
+            if (Array.isArray(files) && files.every(validSavedState) && files.length === run.files.length && files.every((file, index) => file.path === run.files[index]!.path)) {
+              run.files.forEach((file, index) => { const saved = files[index]!; file.status = saved.status; if (saved.error) file.error = saved.error; else delete file.error; });
             }
           } catch { /* 原始快照独立保存，状态写入中断后仍可逐文件恢复。 */ }
         }

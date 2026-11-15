@@ -5,13 +5,18 @@ export function liveCalloutHighlights(decorate: (element: HTMLElement, context: 
   return ViewPlugin.fromClass(class {
     private children = new Map<HTMLElement, { path: string; child: MarkdownRenderChild }>();
     private observer: MutationObserver;
-    private timer?: ReturnType<typeof setTimeout>;
+    private timer?: number;
+    private timerWindow?: Window;
     constructor(private view: EditorView) {
       this.observer = new MutationObserver(() => this.schedule());
       this.observer.observe(view.contentDOM, { childList: true, subtree: true }); this.schedule();
     }
     update(update: ViewUpdate): void { if (update.docChanged || update.viewportChanged) this.schedule(); }
-    private schedule(): void { clearTimeout(this.timer); this.timer = setTimeout(() => this.refresh(), 0); }
+    private schedule(): void {
+      this.timerWindow?.clearTimeout(this.timer);
+      const window = this.view.dom.ownerDocument.defaultView!; this.timerWindow = window;
+      this.timer = window.setTimeout(() => this.refresh(), 0);
+    }
     private refresh(): void {
       const path = this.view.state.field(editorInfoField, false)?.file?.path;
       const live = this.view.state.field(editorLivePreviewField, false);
@@ -34,6 +39,6 @@ export function liveCalloutHighlights(decorate: (element: HTMLElement, context: 
         const child = decorate(element, context); this.children.set(element, { path, child }); child.load();
       }
     }
-    destroy(): void { clearTimeout(this.timer); this.observer.disconnect(); for (const [element, { child }] of this.children) { child.unload(); delete element.dataset.hbLiveCallout; } this.children.clear(); }
+    destroy(): void { this.timerWindow?.clearTimeout(this.timer); this.observer.disconnect(); for (const [element, { child }] of this.children) { child.unload(); delete element.dataset.hbLiveCallout; } this.children.clear(); }
   });
 }

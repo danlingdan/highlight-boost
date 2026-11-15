@@ -1,3 +1,4 @@
+import { detachedEl } from './dom';
 import { ViewPlugin, type EditorView, type ViewUpdate } from '@codemirror/view';
 import { editorInfoField, type Editor } from 'obsidian';
 import { colors, type Color } from './domain';
@@ -66,10 +67,10 @@ export function selectionToolbar(plugin: HighlightBoost) {
           write: ({ coords, bounds, width, height, viewportWidth, viewportHeight }) => {
             if (this.disposed || this.dismissed || generation !== this.generation || this.element !== element) return;
             if (!coords || coords.bottom < bounds.top || coords.top > bounds.bottom) { element.remove(); this.element = undefined; return; }
-            element.style.left = `${Math.max(8, Math.min(coords.left, viewportWidth - width - 8))}px`;
+            const left = Math.max(8, Math.min(coords.left, viewportWidth - width - 8));
             const top = coords.bottom + 8 + height <= viewportHeight ? coords.bottom + 8 : coords.top - height - 8;
-            element.style.top = `${Math.max(8, Math.min(top, viewportHeight - height - 8))}px`;
-            element.style.opacity = '1';
+            element.setCssStyles({ left: `${left}px`, top: `${Math.max(8, Math.min(top, viewportHeight - height - 8))}px` });
+            element.addClass('hb-selection-positioned');
           },
         });
       });
@@ -90,10 +91,9 @@ export function selectionToolbar(plugin: HighlightBoost) {
       this.renderKey = renderKey;
       const activeAction = this.element?.contains(document.activeElement) ? (document.activeElement as HTMLElement).dataset.hbAction : undefined;
       this.element?.remove();
-      const element = document.createElement('div');
+      const element = detachedEl(document, 'div');
       this.element = element;
       element.className = 'hb-selection-toolbar';
-      element.style.left = '8px'; element.style.top = '8px'; element.style.opacity = '0';
       element.setAttribute('role', 'toolbar'); element.setAttribute('aria-label', plugin.t('selectionToolbar'));
       element.addEventListener('pointerdown', event => { if (event.button === 0) event.preventDefault(); });
       element.addEventListener('keydown', event => {
@@ -106,10 +106,10 @@ export function selectionToolbar(plugin: HighlightBoost) {
         if (event.key === 'End') next = buttons.length - 1;
         if (next !== undefined) { event.preventDefault(); buttons[next]?.focus(); }
       });
-      const label = document.createElement('div'); label.className = 'hb-selection-context';
+      const label = detachedEl(document, 'div'); label.className = 'hb-selection-context';
       label.textContent = plugin.t(context.count === 1 ? 'selectionContextOne' : 'selectionContext', { context: contextLabel, count: context.count }); element.append(label);
       const button = (id: string, text: string, run: () => void, color?: Color) => {
-        const button = document.createElement('button');
+        const button = detachedEl(document, 'button');
         button.textContent = text; button.dataset.hbAction = id; button.setAttribute('aria-label', text);
         if (color) button.className = `hb-${color}`;
         button.addEventListener('click', () => {
@@ -126,13 +126,13 @@ export function selectionToolbar(plugin: HighlightBoost) {
       if (editor) {
         for (const preset of plugin.settings.presets) button(`preset-${preset.id}`, plugin.presetLabel(preset), () => plugin.apply(editor, plugin.presetForAction(preset.id), this.mode), preset.color);
         if (plugin.settings.recentColors.length) {
-          const recent = document.createElement('span'); recent.textContent = plugin.t('recentColors'); element.append(recent);
+          const recent = detachedEl(document, 'span'); recent.textContent = plugin.t('recentColors'); element.append(recent);
           for (const color of plugin.settings.recentColors) button(`recent-${color}`, plugin.colorLabel(color), () => plugin.applyColor(editor, color, this.mode), color);
         }
         for (const color of colors) button(`color-${color}`, plugin.colorLabel(color), () => plugin.applyColor(editor, color, this.mode), color);
         button('remove', plugin.t('remove'), () => plugin.apply(editor, null));
       }
-      const close = document.createElement('button'); close.textContent = '×'; close.setAttribute('aria-label', plugin.t('close'));
+      const close = detachedEl(document, 'button'); close.textContent = '×'; close.setAttribute('aria-label', plugin.t('close'));
       close.dataset.hbAction = 'close'; close.addEventListener('click', () => this.close(true)); element.append(close);
       document.body.append(element);
       if (activeAction) [...element.querySelectorAll('button')].find(button => button.dataset.hbAction === activeAction)?.focus();

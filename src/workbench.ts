@@ -1,3 +1,4 @@
+import { detachedEl } from './dom';
 import { ItemView, MarkdownView, Modal, Notice, Setting, type WorkspaceLeaf, type ViewStateResult } from 'obsidian';
 import { collectItems } from './anchors';
 import { colors } from './domain';
@@ -97,7 +98,7 @@ export class HighlightsView extends ItemView {
       select.setAttribute('aria-label', t(title));
       const keyValue = JSON.stringify(entries);
       if (this.optionKeys.get(key) !== keyValue) { select.replaceChildren(...entries.map(([value, label]) => {
-        const option = select.ownerDocument.createElement('option'); option.value = value; option.textContent = label; return option;
+        const option = detachedEl(select.ownerDocument, 'option'); option.value = value; option.textContent = label; return option;
       })); this.optionKeys.set(key, keyValue); }
       select.value = entries.some(([key]) => key === value) ? value : entries[0]?.[0] ?? '';
     };
@@ -154,7 +155,7 @@ export class HighlightsView extends ItemView {
       let previous = navigation.querySelector<HTMLButtonElement>('[data-hb-page="previous"]');
       if (!previous) { previous = navigation.createEl('button'); previous.dataset.hbPage = 'previous'; previous.addEventListener('click', () => turn(this.page - 1, 'previous')); }
       previous.textContent = t('previousPage'); previous.disabled = this.page === 0;
-      const status = navigation.querySelector('span') ?? navigation.createEl('span');
+      const status = navigation.querySelector('span') ?? navigation.createSpan();
       status.textContent = t('pageStatus', { page: this.page + 1, pages: Math.ceil(this.hits.length / this.pageSize), from: this.page * this.pageSize + 1, to: Math.min((this.page + 1) * this.pageSize, this.hits.length), count: this.hits.length });
       status.setAttribute('role', 'status');
       let next = navigation.querySelector<HTMLButtonElement>('[data-hb-page="next"]');
@@ -196,7 +197,7 @@ export class HighlightsView extends ItemView {
     if (this.searchScope !== 'note') card.createEl('small', { text: hit.path, cls: 'hb-source-path' });
     if (item.note) {
       const note = card.createEl('details', { cls: 'hb-note' }); note.createEl('summary', { text: t('annotation') });
-      note.createEl('div', { text: item.note, cls: 'hb-note-text' });
+      note.createDiv({ text: item.note, cls: 'hb-note-text' });
     }
     if (context.headings.length) card.createEl('small', { text: context.headings.join(' › '), cls: 'hb-heading-context' });
     if (context.code !== undefined && context.code !== item.quote) {

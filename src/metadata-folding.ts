@@ -1,3 +1,4 @@
+import { detachedEl } from './dom';
 import { Facet, StateField, type EditorState } from '@codemirror/state';
 import { Decoration, EditorView, WidgetType, type DecorationSet } from '@codemirror/view';
 import { editorDocument } from './editor-document';
@@ -10,7 +11,7 @@ class MetadataWidget extends WidgetType {
   constructor(private from: number, private to: number, private count: number, private kind: 'block' | 'inline' | 'prose' | 'footnote', private locale: Locale, private note = false, private preview = '') { super(); }
   eq(other: MetadataWidget): boolean { return this.from === other.from && this.to === other.to && this.count === other.count && this.kind === other.kind && this.locale === other.locale && this.note === other.note && this.preview === other.preview; }
   toDOM(view: EditorView): HTMLElement {
-    const button = view.dom.ownerDocument.createElement('button');
+    const button = detachedEl(view.dom.ownerDocument, 'button');
     button.className = 'hb-metadata-chip';
     button.dataset.hbMetadata = this.kind;
     button.textContent = this.kind === 'footnote' ? `${translate(this.locale, 'footnote')} · ${this.preview.slice(0, 64)}` : translate(this.locale, this.kind === 'inline' ? 'inlineMark' : this.kind === 'prose' ? 'proseMark' : 'codeMarks', { count: this.count }) + (this.note ? ' · 🗨' : '');

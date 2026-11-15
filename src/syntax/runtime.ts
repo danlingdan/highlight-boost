@@ -1,3 +1,4 @@
+import { detachedEl } from '../dom';
 import { Component } from 'obsidian';
 import { translate, type Locale } from '../i18n';
 
@@ -50,7 +51,7 @@ export class SyntaxRuntime extends Component {
         if (disposed || !button.isConnected || button.parentElement?.querySelector('.feedback')) return;
         const live = button.parentElement?.querySelector('[aria-live]');
         if (!live) return;
-        const message = document.createElement('div'); message.className = 'feedback show'; message.textContent = button.dataset.copied ?? ''; live.append(message); feedback.add(message);
+        const message = detachedEl(document, 'div'); message.className = 'feedback show'; message.textContent = button.dataset.copied ?? ''; live.append(message); feedback.add(message);
         later(() => { message.remove(); feedback.delete(message); }, 2000);
       }).catch(error => { if (!disposed) console.error('HB 代码复制失败', error); });
     };

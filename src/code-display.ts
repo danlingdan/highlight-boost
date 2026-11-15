@@ -1,3 +1,4 @@
+import { detachedEl } from './dom';
 import type { CodeBlock } from './domain';
 import { codeOptions, diffAfter, diffKinds, type CodeDisplaySettings } from './code-options';
 import { translate, type Locale } from './i18n';
@@ -23,7 +24,7 @@ export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings:
   if (!active || !pre?.parentElement) { clearCodeDisplay(code); return; }
   let display = displays.get(code);
   if (!display) {
-    const doc = code.ownerDocument, wrapper = doc.createElement('div'), header = doc.createElement('div'), body = doc.createElement('div');
+    const doc = code.ownerDocument, wrapper = detachedEl(doc, 'div'), header = detachedEl(doc, 'div'), body = detachedEl(doc, 'div');
     wrapper.className = 'hb-code-display'; header.className = 'hb-code-header'; body.className = 'hb-code-body'; body.id = `hb-code-${crypto.randomUUID()}`;
     const target = code.closest<HTMLElement>('.expressive-code') ?? pre;
     const notes = target === pre && pre.nextElementSibling?.classList.contains('hb-code-notes') ? pre.nextElementSibling : undefined;
@@ -50,18 +51,18 @@ export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings:
   display.signature = signature; display.header.replaceChildren();
   const doc = code.ownerDocument;
   if (options.showTitle) {
-    const title = doc.createElement('span'); title.className = 'hb-code-title'; title.textContent = options.title || block.language || t('code'); display.header.append(title);
+    const title = detachedEl(doc, 'span'); title.className = 'hb-code-title'; title.textContent = options.title || block.language || t('code'); display.header.append(title);
   }
   if (block.metadata?.marks.length) {
-    const count = doc.createElement('span'); count.className = 'hb-code-mark-count'; count.textContent = `${translate(locale, 'codeMarks', { count: block.metadata.marks.length })} · ${[...new Set(block.metadata.marks.map(mark => mark.label))].join(' / ')}`; display.header.append(count);
+    const count = detachedEl(doc, 'span'); count.className = 'hb-code-mark-count'; count.textContent = `${translate(locale, 'codeMarks', { count: block.metadata.marks.length })} · ${[...new Set(block.metadata.marks.map(mark => mark.label))].join(' / ')}`; display.header.append(count);
   }
   const button = (action: string, text: string, run: (button: HTMLButtonElement) => void) => {
-    const button = doc.createElement('button'); button.dataset.hbDisplayAction = action; button.textContent = text; button.setAttribute('aria-label', text);
-    button.addEventListener('click', () => run(button)); display!.header.append(button); return button;
+    const button = detachedEl(doc, 'button'); button.dataset.hbDisplayAction = action; button.textContent = text; button.setAttribute('aria-label', text);
+    button.addEventListener('click', () => run(button)); display.header.append(button); return button;
   };
   if (options.collapsible) {
     const toggle = button('toggle', t(collapsed ? 'expandCode' : 'collapseCode'), () => {
-      sessions.set(key, !display!.body.hidden); display!.signature = '';
+      sessions.set(key, !display.body.hidden); display.signature = '';
       renderCodeDisplay(code, block, settings, locale, sessions, key);
     });
     toggle.setAttribute('aria-expanded', String(!collapsed)); toggle.setAttribute('aria-controls', display.body.id);

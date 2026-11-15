@@ -10,7 +10,9 @@ export function syntaxEditor(engine: SyntaxEngine) {
     private generation = 0;
     private destroyed = false;
     private composition = false;
-    private timer: ReturnType<typeof setTimeout> | undefined;
+    private timer: number | undefined;
+    private timerWindow?: Window;
+    private frameWindow?: Window;
     private frame: number | undefined;
     constructor(private view: EditorView) { this.schedule(); }
 
@@ -21,10 +23,11 @@ export function syntaxEditor(engine: SyntaxEngine) {
 
     schedule(delay = 0): void {
       this.generation++;
-      clearTimeout(this.timer);
-      if (this.frame !== undefined) cancelAnimationFrame(this.frame);
+      this.timerWindow?.clearTimeout(this.timer);
+      if (this.frame !== undefined) this.frameWindow?.cancelAnimationFrame(this.frame);
       if (this.destroyed || this.composition) return;
-      this.timer = setTimeout(() => {
+      const window = this.view.dom.ownerDocument.defaultView!; this.timerWindow = window;
+      this.timer = window.setTimeout(() => {
         if (this.view.composing || this.view.compositionStarted) this.schedule(30);
         else void this.build().catch(error => console.error('HB 语法着色失败', error));
       }, delay);
@@ -45,7 +48,9 @@ export function syntaxEditor(engine: SyntaxEngine) {
       }
       if (!current()) return;
       const decorations = Decoration.set(ranges, true);
-      this.frame = requestAnimationFrame(() => {
+      const window = this.view.dom.ownerDocument.defaultView!; this.frameWindow = window;
+      this.frame = window.requestAnimationFrame(() => {
+        this.frame = undefined;
         if (!current()) return;
         this.decorations = decorations;
         this.view.update([]);
@@ -55,8 +60,8 @@ export function syntaxEditor(engine: SyntaxEngine) {
     destroy(): void {
       this.destroyed = true;
       this.generation++;
-      clearTimeout(this.timer);
-      if (this.frame !== undefined) cancelAnimationFrame(this.frame);
+      this.timerWindow?.clearTimeout(this.timer);
+      if (this.frame !== undefined) this.frameWindow?.cancelAnimationFrame(this.frame);
     }
 
     startComposition(): void { this.composition = true; this.schedule(); }

@@ -1,0 +1,129 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "install-hash-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "install-hash-licenses/Expressive-Code-MIT.txt",
+      "passed": true
+    },
+    {
+      "name": "install-hash-licenses/Shiki-Highlighter-MIT.txt",
+      "passed": true
+    },
+    {
+      "name": "install-hash-licenses/Shiki-MIT.txt",
+      "passed": true
+    },
+    {
+      "name": "install-hash-main.js",
+      "passed": true
+    },
+    {
+      "name": "install-hash-manifest.json",
+      "passed": true
+    },
+    {
+      "name": "install-hash-styles.css",
+      "passed": true
+    },
+    {
+      "name": "install-hash-THIRD_PARTY_NOTICES.md",
+      "passed": true
+    },
+    {
+      "name": "install-version-matches-candidate",
+      "passed": true
+    },
+    {
+      "name": "install-clean-note",
+      "passed": true
+    },
+    {
+      "name": "install-default-provider",
+      "passed": true
+    },
+    {
+      "name": "install-command-alpha",
+      "passed": true
+    },
+    {
+      "name": "install-command-inline()",
+      "passed": true
+    },
+    {
+      "name": "install-command-value",
+      "passed": true
+    },
+    {
+      "name": "install-single-undo",
+      "passed": true
+    },
+    {
+      "name": "install-single-redo",
+      "passed": true
+    },
+    {
+      "name": "install-host-saved",
+      "passed": true
+    },
+    {
+      "name": "install-copy-pure-code",
+      "passed": true
+    },
+    {
+      "name": "install-source-persisted",
+      "passed": true
+    },
+    {
+      "name": "install-three-object-types",
+      "passed": true
+    },
+    {
+      "name": "install-sidebar-three-cards",
+      "passed": true
+    },
+    {
+      "name": "install-reading-code-mark",
+      "passed": true
+    },
+    {
+      "name": "install-reading-prose-inline",
+      "passed": true
+    },
+    {
+      "name": "install-reading-annotation",
+      "passed": true
+    },
+    {
+      "name": "install-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "candidate": {
+      "version": "0.1.0",
+      "minAppVersion": "1.15.1",
+      "sourceCommit": "989b2c71f0939b56dfaf1a26cd78ef30138a2968",
+      "files": {
+        "LICENSE": "8d213ee504a0ada4d7bbd25e7f2ec8eec3f0d53c2db0144e6b65c530253bb6e0",
+        "licenses/Expressive-Code-MIT.txt": "50040a05e0365723d1130f8a4fd0635aacd3f443df7a982f9fdd4f5eb064965b",
+        "licenses/Shiki-Highlighter-MIT.txt": "3fb1457aa472de410511dff4969e736641cf9c46f4b422ee450c9064aa55eea0",
+        "licenses/Shiki-MIT.txt": "e2ced3d47c22d6b0b06f6ae27b58fdadebf0b419f5fcb81fd683fa1b8c9a93d2",
+        "main.js": "24587cc5e79de111eba95e7f654a6cb605a576fe184ffdc67c59bab95e9fa6af",
+        "manifest.json": "eb3085e2f248ae35429944b08da1806c3e8027ff464f4b8ef6f812d8aa7f0f6a",
+        "styles.css": "cc60335a7bbbd1870f7fee4141a598e6b6bd67f349fe5f84f5bba8cec21d31c3",
+        "THIRD_PARTY_NOTICES.md": "3dc1cf335fddfa8460c64623e9732cb825f6e8996bf4b2aaed6b9c810974a071"
+      },
+      "archiveSha256": "495d94f8acba67fceab4436bd59b01b1d8b0f5fc8800c58bb6b4c2f664595c06",
+      "archive": "dist/highlight-boost-0.1.0-989b2c71/highlight-boost.zip",
+      "extractedPlugin": "dist/highlight-boost-0.1.0-989b2c71/unpacked/highlight-boost"
+    },
+    "restart": false,
+    "errors": []
+  }
+}

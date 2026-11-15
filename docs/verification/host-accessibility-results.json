@@ -7,6 +7,10 @@
       "passed": true
     },
     {
+      "name": "keyboard-toolbar-focused",
+      "passed": true
+    },
+    {
       "name": "keyboard-toolbar-end",
       "passed": true
     },
@@ -79,7 +83,15 @@
       "passed": true
     },
     {
+      "name": "a11y-dark-code-mark-ready",
+      "passed": true
+    },
+    {
       "name": "a11y-dark-code-underline-visible",
+      "passed": true
+    },
+    {
+      "name": "a11y-light-code-mark-ready",
       "passed": true
     },
     {
@@ -124,6 +136,7 @@
     }
   ],
   "errors": [],
+  "testVaultTrustAccepted": true,
   "observations": {
     "errors": [],
     "names": [
@@ -412,38 +425,6 @@
         "name": "辅助技术验收"
       },
       {
-        "role": "group",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "group",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "group",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "group",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "group",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "group",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "group",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "group",
-        "name": "辅助技术验收"
-      },
-      {
         "role": "generic",
         "name": "新标签页"
       },
@@ -510,38 +491,6 @@
       {
         "role": "generic",
         "name": "全部展开"
-      },
-      {
-        "role": "generic",
-        "name": ""
-      },
-      {
-        "role": "generic",
-        "name": ""
-      },
-      {
-        "role": "generic",
-        "name": ""
-      },
-      {
-        "role": "generic",
-        "name": ""
-      },
-      {
-        "role": "generic",
-        "name": ""
-      },
-      {
-        "role": "generic",
-        "name": ""
-      },
-      {
-        "role": "generic",
-        "name": ""
-      },
-      {
-        "role": "generic",
-        "name": ""
       },
       {
         "role": "generic",
@@ -630,38 +579,6 @@
       {
         "role": "group",
         "name": ""
-      },
-      {
-        "role": "StaticText",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "StaticText",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "StaticText",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "StaticText",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "StaticText",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "StaticText",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "StaticText",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "StaticText",
-        "name": "辅助技术验收"
       },
       {
         "role": "StaticText",
@@ -910,110 +827,6 @@
       {
         "role": "InlineTextBox",
         "name": "辅助技术验收"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "…"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "…"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "…"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "…"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "…"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "…"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "…"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "…"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅助技术验收"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "辅"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "…"
       },
       {
         "role": "image",
@@ -1302,10 +1115,6 @@
       {
         "role": "code",
         "name": ""
-      },
-      {
-        "role": "generic",
-        "name": "批注"
       },
       {
         "role": "generic",
@@ -1692,10 +1501,6 @@
         "name": ""
       },
       {
-        "role": "group",
-        "name": ""
-      },
-      {
         "role": "generic",
         "name": ""
       },
@@ -1744,10 +1549,6 @@
         "name": ""
       },
       {
-        "role": "DisclosureTriangle",
-        "name": "🗨 引用"
-      },
-      {
         "role": "generic",
         "name": ""
       },
@@ -1792,8 +1593,8 @@
         "name": "("
       },
       {
-        "role": "generic",
-        "name": ""
+        "role": "StaticText",
+        "name": "value"
       },
       {
         "role": "StaticText",
@@ -1801,11 +1602,7 @@
       },
       {
         "role": "StaticText",
-        "name": "测试"
-      },
-      {
-        "role": "StaticText",
-        "name": "🗨 引用"
+        "name": "ceshi"
       },
       {
         "role": "InlineTextBox",
@@ -1848,7 +1645,7 @@
         "name": "("
       },
       {
-        "role": "StaticText",
+        "role": "InlineTextBox",
         "name": "value"
       },
       {
@@ -1857,15 +1654,7 @@
       },
       {
         "role": "InlineTextBox",
-        "name": "测试"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "🗨 引用"
-      },
-      {
-        "role": "InlineTextBox",
-        "name": "value"
+        "name": "ceshi"
       }
     ],
     "contrast": [
@@ -1991,10 +1780,10 @@
     "resizeIterations": 24,
     "ime": "Chromium Input.imeSetComposition + Input.insertText",
     "pdf": {
-      "bytes": 116665,
+      "bytes": 117014,
       "header": "%PDF-",
       "rendering": {
-        "text": "辅助技术验收\n\n键盘重点 alpha，正文内容。\n\n行内 inline()测试。\n\nconst value = 1;\nconsole.log(value);测试\n🗨 引用\n代码批注：保留变量含义。\n第二行批注。\n\n输入：\n中文输入",
+        "text": "辅助技术验收\n\n键盘重点 alpha，正文内容。\n\n行内 inline()测试。\n\nconst value = 1;\nconsole.log(value);ceshi\n🗨 引用\n代码批注：保留变量含义。\n第二行批注。\n\n输入：\n中文输入",
         "codeMark": "value",
         "background": "color(srgb 0.0313726 0.427451 0.866667 / 0.18)",
         "decoration": "underline",

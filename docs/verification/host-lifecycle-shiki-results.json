@@ -108,28 +108,28 @@
     "samples": [
       {
         "heap": {
-          "backingStorageSize": 18295265,
-          "embedderHeapUsedSize": 3951736,
-          "totalSize": 20185088,
-          "usedSize": 18216280
+          "backingStorageSize": 18299055,
+          "embedderHeapUsedSize": 4662536,
+          "totalSize": 24899584,
+          "usedSize": 23156640
         },
         "dom": {
           "documents": 2,
-          "jsEventListeners": 824,
-          "nodes": 2420
+          "jsEventListeners": 859,
+          "nodes": 2520
         }
       },
       {
         "heap": {
-          "backingStorageSize": 18297328,
-          "embedderHeapUsedSize": 4106616,
-          "totalSize": 20709376,
-          "usedSize": 18640732
+          "backingStorageSize": 18923136,
+          "embedderHeapUsedSize": 4754672,
+          "totalSize": 25853952,
+          "usedSize": 23461540
         },
         "dom": {
           "documents": 2,
-          "jsEventListeners": 876,
-          "nodes": 2550
+          "jsEventListeners": 949,
+          "nodes": 2658
         },
         "retained": {
           "plugins": 0,
@@ -138,15 +138,15 @@
       },
       {
         "heap": {
-          "backingStorageSize": 18297343,
-          "embedderHeapUsedSize": 4175488,
-          "totalSize": 19922944,
-          "usedSize": 18822512
+          "backingStorageSize": 18923136,
+          "embedderHeapUsedSize": 4768416,
+          "totalSize": 25329664,
+          "usedSize": 23081180
         },
         "dom": {
           "documents": 2,
-          "jsEventListeners": 936,
-          "nodes": 2676
+          "jsEventListeners": 977,
+          "nodes": 2784
         },
         "retained": {
           "plugins": 0,
@@ -155,15 +155,15 @@
       },
       {
         "heap": {
-          "backingStorageSize": 18297343,
-          "embedderHeapUsedSize": 4241904,
-          "totalSize": 19398656,
-          "usedSize": 18942996
+          "backingStorageSize": 18923136,
+          "embedderHeapUsedSize": 4787688,
+          "totalSize": 25329664,
+          "usedSize": 23219712
         },
         "dom": {
           "documents": 2,
-          "jsEventListeners": 994,
-          "nodes": 2802
+          "jsEventListeners": 1035,
+          "nodes": 2910
         },
         "retained": {
           "plugins": 0,

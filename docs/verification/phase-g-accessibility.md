@@ -1,12 +1,12 @@
 # PDF、键盘、可访问性与组合输入
 
-2026-11-15，Windows，Obsidian 1.15.1，Electron 43.8.9。独立测试库运行 [30 项检查](host-accessibility-results.json)，页面错误为零。
+2026-11-15，Windows，Obsidian 1.15.1，Electron 43.8.9。独立测试库运行 [33 项检查](host-accessibility-results.json)，页面错误为零；三平台 CI 保存对应专项结果。
 
 | 专项 | 实际操作与结果 |
 | --- | --- |
 | 键盘 | CDP 原生按键执行 Home、End、方向键和 Escape；工具栏焦点移动，退出后恢复编辑器焦点 |
 | 辅助名称 | Chromium Accessibility 树包含重点原文和复制动作，所有可见按钮均有名称 |
-| 对比度 | 深浅主题各测七色代码标注、正文和行内代码，共 18 个样本；最低 4.7349:1 |
+| 对比度 | 默认主题深浅色各测七色代码标注、正文和行内代码，共 18 个样本；最低 4.7349:1 |
 | 中文组合输入 | Chromium `Input.imeSetComposition` / `Input.insertText`，覆盖正文、行内代码和代码块；提交字符准确，三条标注元数据保留 |
 | 组合期间交互 | 编辑器处于 composing 状态，浮动工具栏关闭，标注命令保持源文 |
 | 连续布局变化 | 24 次交替改变阅读容器宽度及中英文重渲染；源文一致，没有 ResizeObserver 循环错误 |

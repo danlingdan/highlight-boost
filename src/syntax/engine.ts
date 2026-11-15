@@ -1,4 +1,4 @@
-import { ExpressiveCodeEngine } from '@expressive-code/core';
+import { ExpressiveCodeBlock, ExpressiveCodeEngine } from '@expressive-code/core';
 import { toDom } from 'hast-util-to-dom';
 import { bundledLanguages, createHighlighter, type BundledLanguage, type Highlighter } from 'shiki';
 import { createCssVariableThemeBundle, createEcEngineConfig, EC_VIRTUAL_SETTINGS } from './upstream/Config';
@@ -43,7 +43,9 @@ export class SyntaxEngine {
 
   async render(code: string, language: string, meta: string, document: Document, locale: Locale = 'en'): Promise<Node> {
     this.attachRuntime?.(document);
-    const result = await this.ec.render({ code, language, meta, locale });
+    const block = new ExpressiveCodeBlock({ code: '', language, meta, locale });
+    block.insertLines(0, code.split(/\r?\n/));
+    const result = await this.ec.render(block);
     const element = toDom(result.renderedGroupAst, { document });
     if (element.nodeType === 1) {
       const root = element as HTMLElement;

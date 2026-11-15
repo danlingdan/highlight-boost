@@ -11,6 +11,12 @@ let css = '';
 beforeAll(async () => { css = await engine.initialize(); });
 afterAll(() => engine.dispose());
 
+it.each(['\n  const value = 1;  \n\n', '\t \n  \t', 'const value = 1;\t\n\n', ''])('内置渲染及复制保留首尾空行和行尾空白 %j', async code => {
+  const element = await engine.render(code, 'js', '', document) as HTMLElement;
+  expect(renderedCodeText(element.querySelector('code')!)).toBe(code);
+  expect(element.querySelector<HTMLButtonElement>('.copy button')!.dataset.code!.replaceAll('\x7f', '\n')).toBe(code);
+});
+
 it('内置代码复制与折叠提示按指定语言生成，复制内容保持原样', async () => {
   const code = 'const a = 1;\nconst b = 2;\nconsole.log(a + b);';
   const render = async (locale: 'zh' | 'en') => {

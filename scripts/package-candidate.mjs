@@ -19,8 +19,9 @@ await collect(plugin);
 const archive = join(directory, 'highlight-boost.zip'), unpacked = join(directory, 'unpacked');
 if (process.platform === 'win32') {
   const script = resolve('scripts/zip-candidate.ps1');
-  await execute('powershell', ['-NoProfile', '-File', script, '-SourcePath', plugin, '-ArchivePath', archive]);
-  await execute('powershell', ['-NoProfile', '-File', script, '-SourcePath', archive, '-ArchivePath', unpacked, '-Extract']);
+  const arguments_ = ['-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', script];
+  await execute('powershell', [...arguments_, '-SourcePath', plugin, '-ArchivePath', archive]);
+  await execute('powershell', [...arguments_, '-SourcePath', archive, '-ArchivePath', unpacked, '-Extract']);
 } else {
   await execute('zip', ['-r', '-q', archive, 'highlight-boost'], { cwd: directory });
   await execute('unzip', ['-o', '-q', archive, '-d', unpacked]);

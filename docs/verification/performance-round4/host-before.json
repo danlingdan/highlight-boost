@@ -1,0 +1,78 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "responsive-real-files",
+      "passed": true
+    },
+    {
+      "name": "responsive-search-during-rebuild",
+      "passed": true
+    },
+    {
+      "name": "responsive-final-results",
+      "passed": true
+    },
+    {
+      "name": "responsive-search-during-rebuild",
+      "passed": true
+    },
+    {
+      "name": "responsive-final-results",
+      "passed": true
+    },
+    {
+      "name": "responsive-search-during-rebuild",
+      "passed": true
+    },
+    {
+      "name": "responsive-final-results",
+      "passed": true
+    },
+    {
+      "name": "responsive-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "samples": [
+      {
+        "elapsedMs": 88197,
+        "longestGapMs": 256.1000000089407,
+        "notifications": 470,
+        "inputMs": 6.399999991059303,
+        "exact": true,
+        "focusRetained": false,
+        "cardRetained": false
+      },
+      {
+        "elapsedMs": 61777.90000000596,
+        "longestGapMs": 231.40000000596046,
+        "notifications": 341,
+        "inputMs": 13.599999994039536,
+        "exact": true,
+        "focusRetained": false,
+        "cardRetained": false
+      },
+      {
+        "elapsedMs": 65772.20000000298,
+        "longestGapMs": 267.90000000596046,
+        "notifications": 349,
+        "inputMs": 14.100000008940697,
+        "exact": true,
+        "focusRetained": false,
+        "cardRetained": false
+      }
+    ],
+    "errors": [],
+    "fixture": {
+      "notes": 1000,
+      "bytes": 10486000,
+      "visibleCards": 50
+    },
+    "method": "Fresh HighlightIndex over actual Vault.read, production refreshPanels callback, workbench open throughout, search and focus probe after 100 indexed notes; 10 ms timer; OS file cache retained.",
+    "buildSha256": "dd293e8c7c4005fa8e5e85e8bf0931d49fed1e82df675d9055216c125844d1ec"
+  }
+}

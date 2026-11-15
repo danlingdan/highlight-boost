@@ -1,3 +1,5 @@
 allowBuilds:
   esbuild: true
   electron: true
+minimumReleaseAgeExclude:
+  - eslint-plugin-obsidianmd@0.6.0

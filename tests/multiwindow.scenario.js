@@ -49,9 +49,10 @@
     assert(`${provider}-workbench-source-context`, panelLeaf.view.note === leaf.view);
     const codeCard = [...panelWindow.doc.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'value'); codeCard.querySelector('.hb-quote').click();
     assert(`${provider}-cross-window-jump`, await until(() => leaf.view.getMode() === 'source' && editor.getSelection() === 'value'), { mode: leaf.view.getMode(), selection: editor.getSelection() });
-    await panelWindow.win.navigator.clipboard.writeText('pending'); panelWindow.doc.querySelector('.hb-copy-excerpt').click();
+    const proseCard = [...panelWindow.doc.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'window prose');
+    await panelWindow.win.navigator.clipboard.writeText('pending'); proseCard.querySelector('.hb-copy-excerpt').click();
     let excerpt = ''; for(let i=0;i<30&&!excerpt;i++){await tick();const value=await panelWindow.win.navigator.clipboard.readText();if(value!=='pending')excerpt=value;}
-    assert(`${provider}-popup-copy-excerpt`, excerpt.includes('window prose'));
+    assert(`${provider}-popup-copy-excerpt`, excerpt.includes('window prose'), excerpt);
     workbenchWindow.close(); assert(`${provider}-workbench-window-closed`, await until(() => workbenchWindow.closed));
     popoutWindow.close(); assert(`${provider}-source-window-closed`, await until(() => popoutWindow.closed)); await tick();
     assert(`${provider}-closed-document-released`, ![...plugin.editorViews.values()].some(view => view.dom.ownerDocument === popoutDocument));

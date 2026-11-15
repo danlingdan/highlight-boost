@@ -1,23 +1,23 @@
 # 发布维护
 
-## 1.0.0 准备状态
+## 1.0.0 发布记录
 
-首发版本确定为 **1.0.0**，插件 ID 为 `highlight-boost`。社区目录由维护者于 2026-11-15 告知已提交，管理入口为[插件提交页](https://community.obsidian.md/account/plugins/highlight-boost)。审核状态以该账户页面为准。
+首发版本为 **1.0.0**，插件 ID 为 `highlight-boost`。维护者于 2026-11-16 确认直接发布，本次完成英文同步、构建与产物摘要核对，不追加测试。社区目录由维护者于 2026-11-15 告知已提交，管理入口为[插件提交页](https://community.obsidian.md/account/plugins/highlight-boost)。审核状态以该账户页面为准。
 
 | 项目 | 状态 |
 | --- | --- |
 | 版本声明 | package.json、manifest.json、versions.json 已同步为 1.0.0 |
-| 公开文档 | 中文 / English README、桌面操作、贡献说明及发布日志已成稿，等待维护者检查 |
+| 公开文档 | 维护者已审阅中文文档，English README 已同步 |
 | 阶段 G 功能验收 | 已归档，见[验收矩阵](../verification/phase-g-matrix.md) |
 | 本次工程检查 | lint、类型检查、33 文件 / 200 项测试及构建通过；集中路径后基础宿主 46 项、窗口 47 项与独立进程恢复 12 项通过，页面错误为零 |
 | 完整宿主 CI 复核 | 窗口专项间歇出现 ResizeObserver 通知，仍待定位；观察器追踪已记录原生工作区与 CodeMirror 目标，见下方运行记录 |
-| 1.0.0 下载与安装测试 | 由维护者执行，结果待记录 |
+| 1.0.0 下载与安装测试 | 由维护者执行，本次发布不追加安装测试 |
 | 社区目录 | 已提交，等待官方审核 |
-| tag 与 GitHub Release | 待公开文档检查后执行 |
+| tag 与 GitHub Release | `1.0.0`，2026-11-16，[发布入口](https://github.com/danlingdan/highlight-boost/releases/tag/1.0.0) |
 
-本机窗口检查已通过；[完整上下文诊断](https://github.com/danlingdan/highlight-boost/actions/runs/43723313269)在 macOS 捕获了布局通知，[独立窗口诊断](https://github.com/danlingdan/highlight-boost/actions/runs/43722824864)通过。两种运行结果分别保留。固定工具栏宽度的尝试没有消除通知，已恢复原有样式。正式发布前继续处理该专项。
+本机窗口检查已通过；[完整上下文诊断](https://github.com/danlingdan/highlight-boost/actions/runs/43723313269)在 macOS 捕获了布局通知，[独立窗口诊断](https://github.com/danlingdan/highlight-boost/actions/runs/43722824864)通过。两种运行结果分别保留。固定工具栏宽度的尝试没有消除通知，已恢复原有样式。布局通知列入后续维护，保留上述原始记录。
 
-## 交给维护者的安装检查
+## 历史候选与维护者安装检查
 
 本机候选：`dist/highlight-boost-1.0.0-e668b55d/highlight-boost.zip`，源码为 `e668b55dad56f055bc4109282a4e4a83a9b69b27`，ZIP SHA-256 为 `0008ae9489fa1b81c44df6c7d6dbbdaaef6088909e34ed07a14dc7492cfac22f`。该包已完成构建、解压与逐文件摘要核对。
 
@@ -51,4 +51,4 @@ README、用户手册和 Release 正文只写使用者需要的功能、操作�
 5. 使用与 manifest 完全一致的 tag，例如 `1.0.0`。创建 GitHub Release，上传 `main.js`、`manifest.json`、`styles.css`、安装 ZIP 和摘要清单，正文使用本版本日志。
 6. 更新 README 和 CHANGELOG 的“发布准备中”状态、实际日期、发布链接。社区目录沿用已有提交，记录后续审核结果。
 
-Obsidian 官方说明：[使用 GitHub Actions 发布插件](https://github.com/obsidianmd/obsidian-developer-docs/blob/main/en/Plugins/Releasing/Release%20your%20plugin%20with%20GitHub%20Actions.md)。当前项目先完成公开文档审阅，再执行正式发布。
+Obsidian 官方说明：[使用 GitHub Actions 发布插件](https://github.com/obsidianmd/obsidian-developer-docs/blob/main/en/Plugins/Releasing/Release%20your%20plugin%20with%20GitHub%20Actions.md)。发布正文使用对应版本日志，构建摘要随 Release 附件保存。

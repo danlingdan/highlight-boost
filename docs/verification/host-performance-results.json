@@ -24,64 +24,65 @@
     }
   ],
   "errors": [],
+  "testVaultTrustAccepted": false,
   "observations": {
     "metrics": {
       "native-enable": {
         "samplesMs": [
-          158.80000001192093,
-          133,
-          132.70000000298023
+          174.5,
+          147.20000000298023,
+          159.1000000089407
         ],
-        "p50Ms": 133,
-        "p95Ms": 158.80000001192093
+        "p50Ms": 159.1000000089407,
+        "p95Ms": 174.5
       },
       "shiki-enable": {
         "samplesMs": [
-          168.5,
-          243.40000000596046,
-          255.69999998807907
+          202.69999998807907,
+          202.8999999910593,
+          205.59999999403954
         ],
-        "p50Ms": 243.40000000596046,
-        "p95Ms": 255.69999998807907
+        "p50Ms": 202.8999999910593,
+        "p95Ms": 205.59999999403954
       },
       "edit-to-sidebar-200KiB": {
         "samplesMs": [
-          294,
-          217.6000000089407,
-          227.3999999910593,
-          214,
-          216.29999999701977
+          168.59999999403954,
+          148.5,
+          145.59999999403954,
+          145.5,
+          147.20000000298023
         ],
-        "p50Ms": 217.6000000089407,
-        "p95Ms": 294
+        "p50Ms": 147.20000000298023,
+        "p95Ms": 168.59999999403954
       },
       "render-500-code-lines": {
         "samplesMs": [
-          324.3999999910593,
-          29.100000008940697,
-          34,
-          34.099999994039536,
-          39.80000001192093,
-          38.5,
-          21.400000005960464
+          204.8999999910593,
+          18.200000002980232,
+          19.299999997019768,
+          18.900000005960464,
+          18.099999994039536,
+          20.100000008940697,
+          24.099999994039536
         ],
-        "p50Ms": 34.099999994039536,
-        "p95Ms": 324.3999999910593
+        "p50Ms": 19.299999997019768,
+        "p95Ms": 204.8999999910593
       },
       "selection-transaction-5000-lines": {
         "samplesMs": [
-          6.800000011920929,
-          10.099999994039536,
-          3.7999999970197678,
-          7.600000008940697,
-          6.799999997019768
+          8.399999991059303,
+          10.699999988079071,
+          4.100000008940697,
+          6.0999999940395355,
+          3.7000000029802322
         ],
-        "p50Ms": 6.800000011920929,
-        "p95Ms": 10.099999994039536
+        "p50Ms": 6.0999999940395355,
+        "p95Ms": 10.699999988079071
       }
     },
     "errors": [],
-    "buildSha256": "722a9207adbed7f11e587ed376ac122ebebb2120fe1eec19798135cbbd42ad5e",
+    "buildSha256": "24587cc5e79de111eba95e7f654a6cb605a576fe184ffdc67c59bab95e9fa6af",
     "timing": "DOM-ready with forced layout; no animation-frame wait",
     "fixtures": {
       "mediumBytes": 204800,
@@ -90,21 +91,21 @@
       "largeCodeBytes": 1037789
     },
     "rendererHeap": {
-      "total_heap_size": 143777792,
-      "total_heap_size_executable": 8126464,
-      "total_physical_size": 143777792,
-      "total_available_size": 4308039408,
-      "used_heap_size": 83369688,
+      "total_heap_size": 193486848,
+      "total_heap_size_executable": 9437184,
+      "total_physical_size": 193486848,
+      "total_available_size": 4300320532,
+      "used_heap_size": 90853428,
       "heap_size_limit": 4395630592,
       "malloced_memory": 544804,
-      "peak_malloced_memory": 10309736,
+      "peak_malloced_memory": 9056852,
       "does_zap_garbage": 0,
       "number_of_native_contexts": 3,
       "number_of_detached_contexts": 0,
-      "total_global_handles_size": 4287000,
-      "used_global_handles_size": 3382848,
-      "external_memory": 36017141
+      "total_global_handles_size": 314976,
+      "used_global_handles_size": 260864,
+      "external_memory": 34618515
     },
-    "indexNotes": 51
+    "indexNotes": 56
   }
 }

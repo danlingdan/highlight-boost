@@ -1,0 +1,321 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "native-scroll-source-exact",
+      "passed": true
+    },
+    {
+      "name": "shiki-initial-tokens-ready",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-reuses-document-tokens",
+      "passed": true
+    },
+    {
+      "name": "shiki-scroll-source-exact",
+      "passed": true
+    },
+    {
+      "name": "frames-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "metrics": {
+      "edit-to-sidebar-frame-200KiB": {
+        "samplesMs": [
+          187.90000000596046,
+          195.3999999910593,
+          160.70000000298023,
+          157.6000000089407,
+          200.59999999403954,
+          164.20000000298023,
+          149.5
+        ],
+        "p50Ms": 164.20000000298023,
+        "p95Ms": 200.59999999403954
+      },
+      "native-scroll-to-frame-5000-lines": {
+        "samplesMs": [
+          49.5,
+          34.79999999701977,
+          49.70000000298023,
+          51.70000000298023,
+          48.099999994039536,
+          49.599999994039536
+        ],
+        "p50Ms": 49.5,
+        "p95Ms": 51.70000000298023
+      },
+      "shiki-scroll-to-frame-5000-lines": {
+        "samplesMs": [
+          41.599999994039536,
+          48.5,
+          51.20000000298023,
+          48.900000005960464,
+          49.70000000298023,
+          50.5
+        ],
+        "p50Ms": 48.900000005960464,
+        "p95Ms": 51.20000000298023
+      }
+    },
+    "errors": [],
+    "buildSha256": "24587cc5e79de111eba95e7f654a6cb605a576fe184ffdc67c59bab95e9fa6af",
+    "rendering": "Electron offscreen software rendering; two animation frames followed by native capturePage",
+    "mediumBytes": 204800,
+    "largeCodeBytes": 1037790
+  }
+}

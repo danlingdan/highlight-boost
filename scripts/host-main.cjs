@@ -13,7 +13,7 @@ net.Server.prototype.listen = function (...args) {
 
 const root = path.resolve(__dirname, '..');
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
-const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', multiwindow: 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
+const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
 const profile = path.join(root, suite ? `.test-${suite}-profile` : '.test-host-profile');
 const vault = path.join(root, suite ? `.test-${suite}-vault` : '.test-vault');
 const runtime = require('./obsidian-runtime.cjs')(root);
@@ -41,6 +41,7 @@ scenarios['lifecycle-shiki'] = ['lifecycle.scenario.js', 'host-lifecycle-shiki-r
 scenarios.pagination = ['pagination.scenario.js', 'host-pagination-results.json'];
 scenarios.compatibility = ['compatibility.scenario.js', 'host-compatibility-results.json'];
 scenarios.multiwindow = ['multiwindow.scenario.js', 'host-multiwindow-results.json'];
+scenarios['multiwindow-restart'] = ['multiwindow-restart.scenario.js', 'host-multiwindow-restart-results.json'];
 scenarios.accessibility = ['accessibility.scenario.js', 'host-accessibility-results.json'];
 scenarios.frames = ['frames.scenario.js', 'host-frames-results.json'];
 scenarios.install = ['install.scenario.js', 'host-install-results.json'];
@@ -150,17 +151,19 @@ function finish(error) {
   app.exit(error ? 1 : 0);
 }
 
+const resizeTraceSource = `(() => {
+  if(window.__hbResizeTraceInstalled)return; window.__hbResizeTraceInstalled=true;
+  const NativeResizeObserver=window.ResizeObserver, calls=[]; let errors=0;
+  window.ResizeObserver=class extends NativeResizeObserver { constructor(callback) { const stack=new Error().stack; super((entries,observer)=>{ calls.push({stack,targets:entries.map(entry=>({class:entry.target.className,width:entry.contentRect.width,height:entry.contentRect.height}))}); if(calls.length>12)calls.shift(); callback(entries,observer); }); } };
+  window.addEventListener('error', event=>{ if(/ResizeObserver/.test(event.message)&&errors++<2)console.warn('HB resize trace: '+JSON.stringify(calls)); });
+})();`;
 app.on('browser-window-created', (_event, window) => {
   window.on('show', () => window.hide());
   window.setSize(1400, 1000);
   const contents = window.webContents;
   if (mode === 'multiwindow' && process.env.HB_RO_TRACE === '1') {
     contents.debugger.attach('1.3');
-    void contents.debugger.sendCommand('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
-      const NativeResizeObserver=window.ResizeObserver, calls=[]; let errors=0;
-      window.ResizeObserver=class extends NativeResizeObserver { constructor(callback) { const stack=new Error().stack; super((entries,observer)=>{ calls.push({stack,targets:entries.map(entry=>({class:entry.target.className,width:entry.contentRect.width,height:entry.contentRect.height}))}); if(calls.length>12)calls.shift(); callback(entries,observer); }); } };
-      window.addEventListener('error', event=>{ if(/ResizeObserver/.test(event.message)&&errors++<2)console.warn('HB resize trace: '+JSON.stringify(calls)); });
-    })();` });
+    void contents.debugger.sendCommand('Page.addScriptToEvaluateOnNewDocument', { source: resizeTraceSource });
   }
   if (mode === 'accessibility') {
     const print = contents.printToPDF.bind(contents);
@@ -176,8 +179,9 @@ app.on('browser-window-created', (_event, window) => {
     if (event.level === 'error' || event.level === 'warning') console.log(event.message);
   });
   contents.on('did-finish-load', async () => {
+    if (mode.startsWith('multiwindow') && process.env.HB_RO_TRACE === '1') await contents.executeJavaScript(resizeTraceSource);
     if (!contents.getURL().includes('index.html')) {
-      if (mode === 'multiwindow') {
+      if (mode.startsWith('multiwindow')) {
         if (!contents.debugger.isAttached()) contents.debugger.attach('1.3'); await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
         await contents.executeJavaScript('window.__hbPopoutReady = true');
       }

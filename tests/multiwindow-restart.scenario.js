@@ -1,0 +1,33 @@
+(async () => {
+  const checks = [], errors = []; window.__hbChecks = checks;
+  const assert = (name, value, details) => { if (!value) throw new Error(`${name}: ${JSON.stringify(details)}`); checks.push({ name, passed: true }); };
+  const tick = () => new Promise(resolve => setTimeout(resolve, 100));
+  const until = async predicate => { for (let i = 0; i < 80 && !predicate(); i++) await tick(); return predicate(); };
+  window.addEventListener('error', event => errors.push(event.message));
+  const saved = JSON.parse(await app.vault.adapter.read(`${app.vault.configDir}/hb-window-restore.json`));
+  const plugin = app.plugins.plugins['highlight-boost']; await plugin.index.ready;
+  const source = () => app.workspace.getLeavesOfType('markdown').find(leaf => leaf.view.file?.path === saved.path && leaf.view.containerEl.ownerDocument !== document);
+  assert('window-restart-source-restored', await until(() => source()?.view.editor.getValue() === saved.text));
+  const sourceLeaf = source(), editor = sourceLeaf.view.editor, sourceDoc = sourceLeaf.view.containerEl.ownerDocument;
+  assert('window-restart-shiki-provider', plugin.settings.syntaxProvider === 'shiki');
+  assert('window-restart-source-tokens', await until(() => sourceDoc.querySelector('.hb-syntax-token')));
+  assert('window-restart-style-restored', Boolean(sourceDoc.querySelector('style[data-hb-syntax]')));
+  const panel = () => app.workspace.getLeavesOfType('highlight-boost').find(leaf => leaf.view.containerEl.ownerDocument !== document);
+  assert('window-restart-workbench-restored', await until(() => Boolean(panel())));
+  const panelLeaf = panel(), panelDoc = panelLeaf.view.containerEl.ownerDocument;
+  assert('window-restart-two-distinct-windows', panelDoc !== sourceDoc);
+  sourceDoc.defaultView.addEventListener('error', event => errors.push(event.message)); panelDoc.defaultView.addEventListener('error', event => errors.push(event.message));
+  app.workspace.setActiveLeaf(sourceLeaf, { focus: true }); plugin.refreshPanels();
+  assert('window-restart-three-cards', await until(() => panelDoc.querySelectorAll('.hb-card').length === 3));
+  const quote = [...panelDoc.querySelectorAll('.hb-quote')].find(element => element.textContent === 'value'); quote.click();
+  assert('window-restart-jump', await until(() => editor.getSelection() === 'value'));
+  const panelWindow = panelDoc.defaultView, sourceWindow = sourceDoc.defaultView;
+  panelWindow.close(); sourceWindow.close();
+  assert('window-restart-closed', await until(() => panelWindow.closed && sourceWindow.closed));
+  assert('window-restart-documents-released', await until(() => !plugin.syntax.runtime.documents.has(sourceDoc) && ![...plugin.editorViews.values()].some(view => view.dom.ownerDocument === sourceDoc)));
+  assert('window-restart-source-preserved', await app.vault.read(app.vault.getFileByPath(saved.path)) === saved.text);
+  plugin.settings = saved.original; await plugin.saveSettings();
+  await app.workspace.requestSaveLayout.run();
+  assert('window-restart-no-page-errors', errors.length === 0, errors);
+  window.__hbObservations = { errors, restoredWindows: 2, sourcePath: saved.path }; return checks;
+})()

@@ -55,5 +55,18 @@
     assert(`${provider}-source-restored`, await until(() => reopened.view.editor.getValue() === marked), { actual: reopened.view.editor.getValue(), expected: marked, disk: await app.vault.read(file) }); reopened.detach(); duplicate.detach();
   }
   plugin.settings = original; await plugin.saveSettings(); await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost');
+  plugin = app.plugins.plugins['highlight-boost']; plugin.settings.syntaxProvider = 'shiki'; await plugin.saveSettings();
+  await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
+  const restoredLeaf = app.workspace.getLeaf('tab'); await restoredLeaf.openFile(file); app.workspace.setActiveLeaf(restoredLeaf, { focus: true });
+  await restoredLeaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
+  const restoredWindow = app.workspace.moveLeafToPopout(restoredLeaf, { width: 1000, height: 800 });
+  assert('restore-layout-source-window', await until(() => restoredWindow.doc?.body && restoredWindow.win.__hbPopoutReady));
+  await plugin.openPanel('note'); const restoredPanel = app.workspace.getLeavesOfType('highlight-boost')[0];
+  const restoredPanelWindow = app.workspace.moveLeafToPopout(restoredPanel, { width: 500, height: 800 });
+  assert('restore-layout-workbench-window', await until(() => restoredPanelWindow.doc?.querySelectorAll('.hb-card').length === 3));
+  app.workspace.setActiveLeaf(restoredLeaf, { focus: true });
+  await app.vault.adapter.write(`${app.vault.configDir}/hb-window-restore.json`, JSON.stringify({ path, text: await app.vault.read(file), original }));
+  await app.workspace.requestSaveLayout.run();
+  assert('restore-layout-saved', (await app.vault.adapter.read(`${app.vault.configDir}/workspace.json`)).includes(path));
   assert('multiwindow-no-page-errors', errors.length === 0, errors); window.__hbObservations = { errors, providers: ['native', 'shiki'] }; return checks;
 })()

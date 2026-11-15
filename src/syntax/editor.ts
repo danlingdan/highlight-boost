@@ -16,7 +16,7 @@ export function syntaxEditor(engine: SyntaxEngine) {
 
     update(update: ViewUpdate): void {
       this.decorations = this.decorations.map(update.changes);
-      if (update.docChanged || update.selectionSet || update.viewportChanged) this.schedule();
+      if (update.docChanged) this.schedule();
     }
 
     schedule(delay = 0): void {

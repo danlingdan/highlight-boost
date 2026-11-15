@@ -4,7 +4,8 @@ import { resolve } from 'node:path';
 const record = process.argv.includes('--record'), configFile = 'tests/compatibility-assets.json';
 const assets = JSON.parse(await readFile(configFile, 'utf8')), vault = resolve('.test-compat-vault');
 const digest = value => createHash('sha256').update(value).digest('hex');
-for (const asset of assets) {
+const selected = process.argv.includes('--core') ? assets.filter(asset => asset.name === 'Style Settings') : assets;
+for (const asset of selected) {
   const cache = resolve('.research-cache/compatibility', asset.repo, asset.tag); await mkdir(cache, { recursive: true });
   for (const [name, expected] of Object.entries(asset.files)) {
     let bytes; try { bytes = await readFile(resolve(cache, name)); } catch { /* 首次运行下载固定发布资产。 */ }

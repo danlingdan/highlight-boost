@@ -43,7 +43,7 @@ jobs:
         run: pnpm test:install && pnpm test:frames
       - if: runner.os == 'Linux'
         run: xvfb-run -a sh -c 'pnpm test:install && pnpm test:frames'
-      - run: node scripts/prepare-vault.mjs --suite=compat
+      - run: node scripts/prepare-vault.mjs --suite=compat && node scripts/prepare-compatibility.mjs --core
       - if: runner.os != 'Linux'
         run: node scripts/test-compatibility.mjs --case=default-native && node scripts/test-compatibility.mjs --case=default-internal
       - if: runner.os == 'Linux'

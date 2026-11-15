@@ -4,6 +4,7 @@ import { colors, type Color } from './domain';
 import { composingState } from './composition';
 import { selectionContext } from './selection-context';
 import type HighlightBoost from './main';
+import { editorDocument } from './editor-document';
 
 export function selectionToolbar(plugin: HighlightBoost) {
   return ViewPlugin.fromClass(class {
@@ -82,7 +83,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
         if (event.key === 'End') next = buttons.length - 1;
         if (next !== undefined) { event.preventDefault(); buttons[next]?.focus(); }
       });
-      const context = selectionContext(view.state.doc.toString(), view.state.selection.ranges);
+      const context = selectionContext(view.state.doc.toString(), view.state.selection.ranges, editorDocument(view.state).parsed);
       const contextLabel = context.kind === 'code' ? plugin.t('blockSelection', { block: context.block!, from: context.from!, to: context.to! }) : plugin.t(context.kind === 'mixed' ? 'mixedSelection' : context.kind === 'inline-code' ? 'inlineCode' : 'prose');
       const label = document.createElement('div'); label.className = 'hb-selection-context';
       label.textContent = plugin.t(context.count === 1 ? 'selectionContextOne' : 'selectionContext', { context: contextLabel, count: context.count }); element.append(label);

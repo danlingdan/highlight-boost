@@ -1,5 +1,6 @@
 import { collectItems } from './anchors';
 import type { HighlightItem } from './domain';
+import type { DocumentSnapshot } from './document-snapshot';
 
 export interface IndexedNote { path: string; text: string; items: HighlightItem[] }
 export interface IndexHit { path: string; text: string; item: HighlightItem; entryId?: string }
@@ -37,14 +38,14 @@ export class HighlightIndex {
   private version(path: string): number {
     const version = (this.versions.get(path) ?? 0) + 1; this.versions.set(path, version); return version;
   }
-  set(path: string, text: string): void {
+  set(path: string, text: string, snapshot?: DocumentSnapshot): void {
     if (this.closed) return;
-    this.version(path); this.publish(path, text); this.flush();
+    this.version(path); this.publish(path, text, snapshot); this.flush();
   }
-  private publish(path: string, text: string): void {
+  private publish(path: string, text: string, snapshot?: DocumentSnapshot): void {
     const error = this.errors.delete(path);
     if (isExportNote(text)) { if (this.notes.delete(path) || error) this.dirty = true; }
-    else if (this.notes.get(path)?.text !== text) { this.notes.set(path, { path, text, items: collectItems(text) }); this.dirty = true; }
+    else if (this.notes.get(path)?.text !== text) { this.notes.set(path, { path, text, items: snapshot?.text === text ? snapshot.items : collectItems(text) }); this.dirty = true; }
     else if (error) this.dirty = true;
   }
   private flush(): void {

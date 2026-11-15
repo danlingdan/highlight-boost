@@ -1,6 +1,6 @@
 import { Facet, StateField, type EditorState } from '@codemirror/state';
 import { Decoration, EditorView, WidgetType, type DecorationSet } from '@codemirror/view';
-import { parseDocument } from './parsing';
+import { editorDocument } from './editor-document';
 import { composingState } from './composition';
 import { translate, type Locale } from './i18n';
 
@@ -39,7 +39,7 @@ export function createMetadataFolding(livePreview: StateField<boolean>): StateFi
   function decorations(state: EditorState): DecorationSet {
     if (!state.field(livePreview, false)) return Decoration.none;
     const ranges = [];
-    const parsed = parseDocument(state.doc.toString());
+    const parsed = editorDocument(state).parsed;
     for (const inline of [...parsed.inlines, ...parsed.highlights]) {
       const base = inline.metadataSpan;
       const span = base && { from: base.from, to: 'footnoteSpan' in inline ? inline.footnoteSpan?.to ?? base.to : base.to };

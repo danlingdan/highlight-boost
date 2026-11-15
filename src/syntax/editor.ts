@@ -1,7 +1,7 @@
 import { Decoration, ViewPlugin, type DecorationSet, type EditorView, type ViewUpdate } from '@codemirror/view';
 import type { Range } from '@codemirror/state';
 import { sourceOffset } from '../anchors';
-import { parseDocument } from '../parsing';
+import { editorDocument } from '../editor-document';
 import type { SyntaxEngine } from './engine';
 
 export function syntaxEditor(engine: SyntaxEngine) {
@@ -34,7 +34,7 @@ export function syntaxEditor(engine: SyntaxEngine) {
       const generation = this.generation, state = this.view.state;
       const current = () => !this.destroyed && !this.composition && !this.view.composing && !this.view.compositionStarted && generation === this.generation && state.doc === this.view.state.doc;
       const ranges: Range<Decoration>[] = [];
-      for (const block of parseDocument(state.doc.toString()).blocks) {
+      for (const block of editorDocument(state).parsed.blocks) {
         for (const token of await engine.tokens(block.text, block.language)) {
           if (!current()) return;
           const from = sourceOffset(block, token.from), to = sourceOffset(block, token.to);

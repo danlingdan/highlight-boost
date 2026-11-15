@@ -122,7 +122,11 @@ export class HighlightsView extends ItemView {
       const key = this.value('sort') === 'semantic' ? label(hit) : this.searchScope === 'note' ? '' : hit.path;
       if (key && group !== key) { results.createEl('h5', { text: key, cls: 'hb-result-group' }); group = key; }
       let context = contexts.get(hit.text);
-      if (!context) { context = createExcerptContext(hit.text); contexts.set(hit.text, context); }
+      if (!context) {
+        const view = this.plugin.openView(hit.path), snapshot = view && this.plugin.documentFor(view.editor);
+        context = snapshot?.text === hit.text ? snapshot.context : createExcerptContext(hit.text);
+        contexts.set(hit.text, context);
+      }
       this.card(hit, context(hit.item));
     }
   }

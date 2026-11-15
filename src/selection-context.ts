@@ -9,8 +9,7 @@ export interface SelectionContext {
   to?: number;
 }
 
-export function selectionContext(text: string, selections: readonly Span[]): SelectionContext {
-  const parsed = parseDocument(text);
+export function selectionContext(text: string, selections: readonly Span[], parsed = parseDocument(text)): SelectionContext {
   const blocks = new Set<number>(), kinds = new Set<string>();
   const lines: number[] = [];
   for (const selection of selections) {

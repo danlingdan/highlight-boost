@@ -1,4 +1,5 @@
-import { editorLivePreviewField, getLanguage, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, setTooltip, SuggestModal, TFile, type Command, type Editor, type MarkdownPostProcessorContext } from 'obsidian';
+import { editorInfoField, editorLivePreviewField, getLanguage, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, setTooltip, SuggestModal, TFile, type Command, type Editor, type MarkdownPostProcessorContext } from 'obsidian';
+import { ViewPlugin, type EditorView } from '@codemirror/view';
 import { colorPreset, colors, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
 import { parseDocument, sourceLines } from './parsing';
@@ -24,6 +25,8 @@ import { liveCalloutHighlights } from './live-callouts';
 import { createMigrationService } from './migration-obsidian';
 import type { MigrationService } from './migration-service';
 import { MigrationModal } from './migration-ui';
+import { DocumentSnapshot } from './document-snapshot';
+import { clearEditorDocuments, editorDocument } from './editor-document';
 
 const VIEW = 'highlight-boost';
 
@@ -39,6 +42,7 @@ export default class HighlightBoost extends Plugin {
   private settingTab?: HighlightSettings;
   private colorPickers = new Set<ColorPicker>();
   private readingChildren = new Set<ReadingHighlights>();
+  private editorViews = new Map<Editor, EditorView>();
   toolbars = new Set<{ refresh(): void; open(): void; matches(editor: Editor): boolean; destroy(): void }>();
   syntax?: SyntaxService;
   index!: HighlightIndex;
@@ -66,6 +70,17 @@ export default class HighlightBoost extends Plugin {
     }
     this.uiExtensions.push(metadataLocale.of(this.locale), codeDisplayFacet.of(this.settings.codeDisplay), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField), selectionToolbar(this), unfoldSelectedCode);
     this.registerEditorExtension(this.uiExtensions);
+    this.registerEditorExtension(ViewPlugin.define(view => {
+      let editor = view.state.field(editorInfoField).editor;
+      if (editor) this.editorViews.set(editor, view);
+      return {
+        update: update => {
+          const next = update.state.field(editorInfoField).editor;
+          if (next !== editor) { if (editor && this.editorViews.get(editor) === view) this.editorViews.delete(editor); editor = next; if (editor) this.editorViews.set(editor, view); }
+        },
+        destroy: () => { if (editor && this.editorViews.get(editor) === view) this.editorViews.delete(editor); },
+      };
+    }));
     this.registerEditorExtension(liveCalloutHighlights((element, context) => this.createReadingChild(element, context)));
     this.registerView(VIEW, leaf => new HighlightsView(leaf, this));
     this.settingTab = new HighlightSettings(this);
@@ -100,7 +115,7 @@ export default class HighlightBoost extends Plugin {
       menu.addItem(item => item.setTitle(this.t('remove')).setIcon('eraser').onClick(() => this.apply(editor, null)));
     }));
     this.registerEvent(this.app.workspace.on('editor-change', (editor, info) => {
-      if (info.file?.extension === 'md') this.index.set(info.file.path, editor.getValue());
+      if (info.file?.extension === 'md') { const snapshot = this.documentFor(editor); this.index.set(info.file.path, snapshot.text, snapshot); }
       this.refreshPanels();
       for (const child of this.readingChildren) if (child.context.sourcePath === info.file?.path) child.refresh();
     }));
@@ -151,6 +166,11 @@ export default class HighlightBoost extends Plugin {
     return child;
   }
   defaultPreset(): Preset { return this.presetForAction(this.settings.defaultPreset); }
+  documentFor(editor: Editor): DocumentSnapshot {
+    const text = editor.getValue(), view = this.editorViews.get(editor);
+    if (view) { const snapshot = editorDocument(view.state); if (snapshot.text === text) return snapshot; }
+    return new DocumentSnapshot(text);
+  }
 
   saveSettings(): Promise<void> {
     this.settings = normalizeSettings(this.settings);
@@ -189,7 +209,8 @@ export default class HighlightBoost extends Plugin {
         const a = editor.posToOffset(selection.anchor), b = editor.posToOffset(selection.head);
         return { from: Math.min(a, b), to: Math.max(a, b) };
       });
-      const plan = planHighlight(editor.getValue(), selections, preset, mode);
+      const snapshot = this.documentFor(editor);
+      const plan = planHighlight(snapshot.text, selections, preset, mode, snapshot.parsed);
       this.commitPlan(editor, plan);
       return plan.changes.length > 0;
     } catch (error) { new Notice(errorMessage(error, this.locale)); return false; }
@@ -331,6 +352,7 @@ export default class HighlightBoost extends Plugin {
   }
 
   onunload(): void {
+    this.editorViews.clear(); clearEditorDocuments();
     this.index.dispose();
     for (const toolbar of this.toolbars) toolbar.destroy();
     for (const picker of this.colorPickers) picker.close();

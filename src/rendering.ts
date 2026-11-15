@@ -8,6 +8,7 @@ import { translate, type Locale } from './i18n';
 import { codeDisplayFacet, codeOptions, diffKinds, type CodeDisplaySettings } from './code-options';
 import { clearCodeDisplay } from './code-display';
 import { parameterLines } from './fence-params';
+import { editorDocument } from './editor-document';
 
 const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string }>();
 const noteRegions = new WeakMap<HTMLElement, { element: HTMLElement; signature: string }>();
@@ -35,9 +36,8 @@ export function clearRenderedCode(code: HTMLElement): void {
   delete code.dataset.hbRendered;
 }
 
-function editorDecorations(text: string, settings: CodeDisplaySettings): DecorationSet {
+function editorDecorations(text: string, settings: CodeDisplaySettings, parsed = parseDocument(text)): DecorationSet {
   const ranges = [];
-  const parsed = parseDocument(text);
   for (const block of parsed.blocks) {
     const options = codeOptions(block, settings), diff = block.language === 'diff' && options.diff ? diffKinds(block.text) : [];
     const markers = parameterLines(block);
@@ -75,10 +75,10 @@ function editorDecorations(text: string, settings: CodeDisplaySettings): Decorat
 }
 
 export const highlightExtension = StateField.define<DecorationSet>({
-  create: state => editorDecorations(state.doc.toString(), state.facet(codeDisplayFacet)),
+  create: state => editorDecorations(state.doc.toString(), state.facet(codeDisplayFacet), editorDocument(state).parsed),
   update: (value, transaction) => transaction.state.field(composingState, false) ? value.map(transaction.changes) :
     transaction.docChanged || transaction.startState.field(composingState, false) !== transaction.state.field(composingState, false) || transaction.startState.facet(codeDisplayFacet) !== transaction.state.facet(codeDisplayFacet)
-      ? editorDecorations(transaction.state.doc.toString(), transaction.state.facet(codeDisplayFacet)) : value,
+      ? editorDecorations(transaction.state.doc.toString(), transaction.state.facet(codeDisplayFacet), editorDocument(transaction.state).parsed) : value,
   provide: field => EditorView.decorations.from(field),
 });
 

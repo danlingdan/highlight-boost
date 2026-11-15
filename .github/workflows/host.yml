@@ -35,6 +35,12 @@ jobs:
         run: pnpm test:multiwindow && pnpm test:accessibility
       - if: runner.os == 'Linux'
         run: xvfb-run -a sh -c 'pnpm test:multiwindow && pnpm test:accessibility'
+      - run: pnpm package:candidate
+      - run: node scripts/prepare-install.mjs --current
+      - if: runner.os != 'Linux'
+        run: pnpm test:install && pnpm test:frames
+      - if: runner.os == 'Linux'
+        run: xvfb-run -a sh -c 'pnpm test:install && pnpm test:frames'
       - if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -45,3 +51,5 @@ jobs:
             docs/verification/host-environment.json
             docs/verification/images/
             output/pdf/*.pdf
+            dist/**/candidate.json
+            dist/**/highlight-boost.zip

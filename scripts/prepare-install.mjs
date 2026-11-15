@@ -1,7 +1,13 @@
 import { resolve, join, sep } from 'node:path';
 import { cp, mkdir, readFile, writeFile, access } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
-const argument = process.argv.find(value => value.startsWith('--candidate='))?.slice(12);
+import { execFileSync } from 'node:child_process';
+let argument = process.argv.find(value => value.startsWith('--candidate='))?.slice(12);
+if (!argument && process.argv.includes('--current')) {
+  const version = JSON.parse(await readFile('manifest.json', 'utf8')).version;
+  const revision = execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim().slice(0, 8);
+  argument = `dist/highlight-boost-${version}-${revision}/candidate.json`;
+}
 if (!argument) throw new Error('Pass --candidate=dist/.../candidate.json');
 const candidate = JSON.parse(await readFile(argument, 'utf8')), source = resolve(candidate.extractedPlugin), dist = resolve('dist');
 if (!source.startsWith(dist + sep)) throw new Error('Candidate must be extracted inside project dist');

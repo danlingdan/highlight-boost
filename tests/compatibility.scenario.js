@@ -67,6 +67,8 @@
         preview.scrollTop = 0; preview.dispatchEvent(new Event('scroll'));
         assert(`${prefix}-annotation`, await until(() => [...preview.querySelectorAll('.hb-code-notes .hb-note-text')].some(node => node.textContent === 'Compatibility note: memcpy')), { sourceNote: marked.includes('"note":"Compatibility note: memcpy"'), notes: [...preview.querySelectorAll('.hb-note-text')].map(node => node.textContent) });
         const pre = [...preview.querySelectorAll('pre')].find(pre => pre.textContent.includes('memcpy'));
+        const markStyle = getComputedStyle(pre.querySelector('.hb-text'));
+        assert(`${prefix}-code-mark-style`, markStyle.textDecorationLine === 'underline' && markStyle.backgroundColor !== 'rgba(0, 0, 0, 0)', { decoration: markStyle.textDecorationLine, background: markStyle.backgroundColor });
         const bounds = pre.getBoundingClientRect();
         assert(`${prefix}-long-line-bounds`, bounds.width > 0 && bounds.width <= view.containerEl.clientWidth + 2, { width: bounds.width, viewWidth: view.containerEl.clientWidth });
         const wrapper = pre.closest('.hb-code-display'), toggle = wrapper.querySelector('[data-hb-display-action="toggle"]'), body = wrapper.querySelector('.hb-code-body');

@@ -2,6 +2,7 @@ import type { CodeBlock } from './domain';
 import { codeOptions, diffAfter, diffKinds, type CodeDisplaySettings } from './code-options';
 import { translate, type Locale } from './i18n';
 import { parameterLines } from './fence-params';
+import { structuredRows } from './code-rows';
 
 interface DisplayState { wrapper: HTMLElement; body: HTMLElement; header: HTMLElement; target: HTMLElement; pre: HTMLElement; signature: string }
 const displays = new WeakMap<HTMLElement, DisplayState>();
@@ -33,7 +34,8 @@ export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings:
   display.wrapper.classList.toggle('hb-show-numbers', options.showLineNumbers);
   pre.classList.toggle('hb-code-wrap', options.wrap);
   pre.style.setProperty('--hb-number-font', options.numberFont === 'interface' ? 'var(--font-interface)' : 'var(--font-monospace)');
-  const rows = [...code.querySelectorAll<HTMLElement>(':scope > .hb-code-row, .ec-line')].filter(row => !row.closest('summary'));
+  const structured = structuredRows(code);
+  const rows = structured.length ? structured.map(row => row.parentElement!) : [...code.querySelectorAll<HTMLElement>(':scope > .hb-code-row')];
   const kinds = isDiff && options.diff ? diffKinds(block.text) : [];
   rows.forEach((row, index) => {
     if (options.showLineNumbers && index < block.lines.length) row.dataset.hbNumber = String(options.startLine + index); else delete row.dataset.hbNumber;

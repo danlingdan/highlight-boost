@@ -9,27 +9,32 @@ import { codeDisplayFacet, codeOptions, diffKinds, type CodeDisplaySettings } fr
 import { clearCodeDisplay } from './code-display';
 import { parameterLines } from './fence-params';
 import { editorDocument } from './editor-document';
+import { structuredRows, rowText } from './code-rows';
 
-const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string }>();
+const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string; rows: HTMLElement[] }>();
+const rowTitles = new WeakMap<HTMLElement, { original: string | null; applied: string }>();
 const noteRegions = new WeakMap<HTMLElement, { element: HTMLElement; signature: string }>();
 
-function expressiveRows(code: HTMLElement): HTMLElement[] { return [...code.querySelectorAll<HTMLElement>('.ec-line > .code')].filter(row => !row.closest('summary')); }
-function expressiveRowText(row: HTMLElement): string { return row.textContent === '\n' ? '' : row.textContent ?? ''; }
 export function renderedCodeText(code: HTMLElement): string {
-  const rows = expressiveRows(code);
-  return rows.length ? rows.map(expressiveRowText).join('\n') : code.textContent ?? '';
+  const rows = structuredRows(code);
+  return rows.length ? rows.map(rowText).join('\n') : code.textContent ?? '';
 }
 
 export function clearRenderedCode(code: HTMLElement): void {
   clearCodeDisplay(code);
   noteRegions.get(code)?.element.remove(); noteRegions.delete(code);
   const previous = rendered.get(code);
-  if (previous && code.querySelector('.hb-code-row, .hb-text, .ec-line.hb-line')) {
-    if (previous.original.map(node => node.textContent ?? '').join('') === code.textContent) {
+  if (previous && code.querySelector('.hb-code-row, .hb-text, .hb-line')) {
+    if (!previous.rows.length && previous.original.map(node => node.textContent ?? '').join('') === code.textContent) {
       code.replaceChildren(...previous.original.map(node => node.cloneNode(true)));
     } else {
       for (const element of code.querySelectorAll('.hb-text, .hb-code-row')) element.replaceWith(...element.childNodes);
-      for (const row of code.querySelectorAll('.ec-line.hb-line')) row.classList.remove('hb-line', 'hb-default', 'hb-red', 'hb-orange', 'hb-yellow', 'hb-green', 'hb-blue', 'hb-purple');
+      for (const row of code.querySelectorAll<HTMLElement>('.hb-line')) {
+        row.classList.remove('hb-line', 'hb-default', 'hb-red', 'hb-orange', 'hb-yellow', 'hb-green', 'hb-blue', 'hb-purple');
+        const title = rowTitles.get(row);
+        if (title && row.title === title.applied) { if (title.original === null) row.removeAttribute('title'); else row.title = title.original; }
+        rowTitles.delete(row);
+      }
     }
   }
   rendered.delete(code);
@@ -127,14 +132,14 @@ function renderNotes(code: HTMLElement, block: CodeBlock, locale: Locale): void 
 export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale = 'zh', rowsRequired = false): void {
   const signature = JSON.stringify({ text: block.text, marks: block.metadata?.marks ?? [], rowsRequired });
   const previous = rendered.get(code);
+  const rows = structuredRows(code);
   if (!block.metadata?.marks.length && !rowsRequired) { if (previous) clearRenderedCode(code); return; }
-  if (previous?.signature === signature && code.querySelector('.hb-code-row, .hb-text, .ec-line')) { renderNotes(code, block, locale); return; }
+  if (previous?.signature === signature && previous.rows.length === rows.length && previous.rows.every((row, index) => row === rows[index]) && (code.querySelector('.hb-code-row, .hb-text, .hb-line') || rows.length && !block.metadata?.marks.length)) { renderNotes(code, block, locale); return; }
   clearRenderedCode(code);
   const original = renderedCodeText(code);
   if (original !== block.text && original !== `${block.text}\n`) return;
-  rendered.set(code, { original: [...code.childNodes].map(node => node.cloneNode(true)), signature });
+  rendered.set(code, { original: rows.length ? [] : [...code.childNodes].map(node => node.cloneNode(true)), signature, rows });
   renderNotes(code, block, locale);
-  const rows = expressiveRows(code);
   if (rows.length) {
     code.dataset.hbRendered = '1';
     for (const mark of block.metadata?.marks ?? []) {
@@ -142,11 +147,13 @@ export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale =
       if (resolved.status !== 'resolved') continue;
       let offset = 0;
       for (const row of rows) {
-        const end = offset + expressiveRowText(row).length;
+        const end = offset + rowText(row).length;
         if (mark.kind === 'lines') {
           if (resolved.span.from === resolved.span.to ? offset === resolved.span.from : offset < resolved.span.to && resolved.span.from <= end) {
             row.parentElement!.classList.add('hb-line', `hb-${mark.color}`);
-            row.parentElement!.title = mark.note ? `${mark.label}\n${mark.note}` : mark.label;
+            const parent = row.parentElement!, title = mark.note ? `${mark.label}\n${mark.note}` : mark.label;
+            const previousTitle = rowTitles.get(parent);
+            rowTitles.set(parent, { original: previousTitle ? previousTitle.original : parent.getAttribute('title'), applied: title }); parent.title = title;
           }
         } else {
           const a = Math.max(0, resolved.span.from - offset), b = Math.min(end - offset, resolved.span.to - offset);

@@ -11,6 +11,7 @@ pluginFramesTexts.addLocale('zh', { terminalWindowFallbackTitle: '终端窗口',
 pluginCollapsibleSectionsTexts.addLocale('zh', { collapsedLines: '已折叠 {lineCount} 行' });
 
 export class SyntaxEngine {
+  constructor(private attachRuntime?: (document: Document) => void) {}
   private shiki!: Highlighter;
   private ec!: ExpressiveCodeEngine;
   private restore = (value: string) => value;
@@ -41,10 +42,12 @@ export class SyntaxEngine {
   }
 
   async render(code: string, language: string, meta: string, document: Document, locale: Locale = 'en'): Promise<Node> {
+    this.attachRuntime?.(document);
     const result = await this.ec.render({ code, language, meta, locale });
     const element = toDom(result.renderedGroupAst, { document });
     if (element.nodeType === 1) {
       const root = element as HTMLElement;
+      root.dataset.hbSyntaxRoot = '';
       for (const styled of [root, ...root.querySelectorAll<HTMLElement>('[style]')]) {
         const style = styled.getAttribute('style');
         if (style) styled.setAttribute('style', this.restore(style));

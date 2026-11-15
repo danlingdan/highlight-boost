@@ -2,7 +2,7 @@ import { Component, MarkdownRenderChild, type MarkdownPostProcessorContext, type
 import { SyntaxEngine } from './engine';
 import { syntaxEditor } from './editor';
 import baseStyles from './upstream/styles.css';
-import 'hb:ec-runtime';
+import { SyntaxRuntime } from './runtime';
 import type { Locale } from '../i18n';
 
 class SyntaxBlock extends MarkdownRenderChild {
@@ -25,13 +25,16 @@ class SyntaxBlock extends MarkdownRenderChild {
 }
 
 export class SyntaxService extends Component {
-  readonly engine = new SyntaxEngine();
+  readonly runtime = this.addChild(new SyntaxRuntime(() => this.getLocale()));
+  readonly engine = new SyntaxEngine(document => this.runtime.attach(document));
   readonly editorExtension = syntaxEditor(this.engine);
   private blocks = new Set<SyntaxBlock>();
   constructor(private plugin: Plugin, private decorate: (element: HTMLElement, context: MarkdownPostProcessorContext) => MarkdownRenderChild, private getLocale: () => Locale) { super(); }
   async refresh(): Promise<void> { await Promise.all([...this.blocks].map(block => block.render())); }
   onunload(): void { for (const block of this.blocks) block.unload(); }
   async initialize(): Promise<void> {
+    this.runtime.attach(document);
+    this.registerEvent(this.plugin.app.workspace.on('window-close', (_workspaceWindow, window) => this.runtime.detach(window.document)));
     const css = await this.engine.initialize();
     const style = document.createElement('style');
     style.dataset.hbSyntax = '';

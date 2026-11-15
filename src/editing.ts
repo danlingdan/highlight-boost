@@ -119,8 +119,7 @@ export function planCodeRebind(text: string, reference: Pick<HighlightItem, 'blo
   return { changes: [{ ...block.metadataSpan, insert }], selections: [{ from: span.from + delta, to: span.to + delta }] };
 }
 
-export function planHighlight(text: string, selections: Span[], preset: Preset | null, mode: 'lines' | 'text' = 'text'): EditPlan {
-  const parsed = parseDocument(text);
+export function planHighlight(text: string, selections: Span[], preset: Preset | null, mode: 'lines' | 'text' = 'text', parsed = parseDocument(text)): EditPlan {
   const changes: Change[] = [];
   const prose: Span[] = [];
   const codeSelections = new Map<CodeBlock, Span[]>();

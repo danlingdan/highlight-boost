@@ -1,8 +1,11 @@
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import { gfmFromMarkdown } from 'mdast-util-gfm';
 import { gfm } from 'micromark-extension-gfm';
-import type { Nodes } from 'mdast';
+import type { Nodes, Root } from 'mdast';
 import { colors, emojis, type CodeBlock, type CodeMetadata, type InlineMetadata, type ProseMetadata, type ParsedDocument, type SourceLine, type Span } from './domain';
+
+const trees = new WeakMap<ParsedDocument, Root>();
+export function parsedTree(document: ParsedDocument): Root | undefined { return trees.get(document); }
 
 function mergedSpans(spans: Span[]): Span[] {
   const result: Span[] = [];
@@ -74,6 +77,7 @@ export function parseDocument(text: string): ParsedDocument {
   const tree = fromMarkdown(text, { extensions: [gfm()], mdastExtensions: [gfmFromMarkdown()] });
   const lines = sourceLines(text);
   const result: ParsedDocument = { blocks: [], highlights: [], excluded: [], prose: [], inlines: [], footnotes: [], footnoteReferences: [] };
+  trees.set(result, tree);
   if (/^---\r?\n/.test(text)) {
     const end = /\r?\n(?:---|\.\.\.)\s*(?:\r?\n|$)/g;
     end.lastIndex = text.indexOf('\n') + 1;

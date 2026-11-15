@@ -1,7 +1,7 @@
 import { fromMarkdown } from 'mdast-util-from-markdown';
 import type { Nodes } from 'mdast';
 import { applyChanges } from './editing';
-import { parseDocument } from './parsing';
+import { parseDocument, parsedTree } from './parsing';
 import { inlineExcerpt } from './inline-rendering';
 import type { HighlightItem } from './domain';
 import { translate, type Locale } from './i18n';
@@ -23,8 +23,10 @@ function plainText(node: Nodes): string {
 
 export function excerptContext(text: string, item: HighlightItem): ExcerptContext { return createExcerptContext(text)(item); }
 
-export function createExcerptContext(text: string): (item: HighlightItem) => ExcerptContext {
-  const parsed = parseDocument(text), tree = fromMarkdown(text);
+export function createExcerptContext(text: string, parsed = parseDocument(text)): (item: HighlightItem) => ExcerptContext {
+  const shared = parsedTree(parsed);
+  const hasTable = (node: Nodes): boolean => node.type === 'table' || 'children' in node && node.children.some(hasTable);
+  const tree = shared && !hasTable(shared) ? shared : fromMarkdown(text);
   return item => {
   const stack: { depth: number; title: string }[] = [];
   const position = item.blockFrom ?? item.from;

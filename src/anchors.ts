@@ -45,8 +45,7 @@ export function resolveMark(block: CodeBlock, mark: CodeMark): { span: Span; sta
   return { span: { from: mark.from, to: mark.to }, status: matches.length ? 'ambiguous' : 'missing' };
 }
 
-export function collectItems(text: string): HighlightItem[] {
-  const parsed = parseDocument(text);
+export function collectItems(text: string, parsed = parseDocument(text)): HighlightItem[] {
   const items: HighlightItem[] = parsed.highlights.map(highlight => ({
     ...highlight, ...highlight.content, id: highlight.metadata ? `prose:${highlight.metadata.id}:${highlight.from}` : `prose:${highlight.from}`, kind: 'prose',
     label: highlight.metadata?.label ?? colorLabels[highlight.color], semantic: highlight.metadata?.semantic, markId: highlight.metadata?.id, status: 'resolved',

@@ -6,3 +6,5 @@
 - 功能开发期间验证正确性；性能测试与优化在计划功能完成后统一开展。
 - 宿主自动化优先使用 Electron JavaScript、Obsidian CLI 或 CDP，通过项目测试库验证。
 - Git 提交按逻辑拆分，提交信息使用中文，格式为 `类型(范围): 描述`，例如 `feat(解析): 支持正文与代码块结构解析`。
+- 每次 Release 单独维护 `docs/releases/<版本>.md`，按实际变更说明触发场景、行为和使用影响；功能、修复和性能结论链接到实现或验证依据。GitHub Release 使用该文件正文，逐条审阅后发布，发布日志规则见 `docs/releases/README.md`。
+- 本地测试库、宿主配置、调研缓存与分析中间文件统一放在 `.local/`，路径由 `scripts/paths.cjs` 管理；候选包放在 `dist/`。

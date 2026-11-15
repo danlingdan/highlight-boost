@@ -1,0 +1,28 @@
+name: 问题反馈 / Bug report
+description: 提供复现步骤与运行环境 / Report a reproducible problem
+title: "[问题] "
+body:
+  - type: textarea
+    id: environment
+    attributes:
+      label: 运行环境 / Environment
+      description: 插件版本、Obsidian 桌面版本、操作系统、主题、相关插件、宿主或内置 Shiki
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 复现步骤与样例 / Steps and sample
+      description: 写出视图类型与操作步骤，附最小 Markdown 样例。分享前替换个人内容。
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期与实际结果 / Expected and actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: 截图与补充 / Screenshots and details

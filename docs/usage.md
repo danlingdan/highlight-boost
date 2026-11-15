@@ -1,22 +1,19 @@
 # 桌面操作说明
 
-## 导入与迁移
+## 安装与启用
 
-命令面板执行“Highlight Boost：导入与迁移”，选择当前笔记、目录或全库。生成预览，调整颜色映射，勾选文件后应用。Highlightr 与 Hilo 转为原生颜色；围栏行强调可选转为 HB 标注。历史记录中点击“恢复此文件”逐文件还原，重启后仍可操作。完整示例见 [迁移说明](formats/migration.md)。
+首发版本为 **1.0.0**，当前文档待维护者检查。正式发布后，从 [GitHub Releases](https://github.com/danlingdan/highlight-boost/releases) 下载同一版本的 `main.js`、`manifest.json` 和 `styles.css`，放入笔记库的 `.obsidian/plugins/highlight-boost/`。也可将安装 ZIP 中的 `highlight-boost/` 文件夹解压到 `.obsidian/plugins/`。
 
-## 代码展示
+在“设置 → 第三方插件”中启用 Highlight Boost。社区目录已提交，收录后可直接搜索安装。当前基线为 Obsidian 1.15.1，支持 Windows、macOS 和 Linux；版本支持跟随最新桌面稳定版。
 
-原 Code Styler / Codeblock Customizer 的 `file:"demo.js" ln:20 fold hl:1,3`，以及 Hugo、Expressive Code 的通用参数可直接显示。完整映射见 [第三方围栏参数](formats/fence-parameters.md)。
+## 第一次使用
 
-设置 → Highlight Boost → 代码展示，可调整标题、逻辑行号、起始编号、字体、长行换行和整块折叠。阅读视图和内置 Shiki 的 Live Preview 使用统一标题栏；编辑器原文显示行号与 diff 背景，使用原生命令折叠。点击侧栏条目会展开目标。
+1. 打开笔记，选中一段正文，在浮动面板点击“重点”。
+2. 在代码块中选中函数名或参数，再点击“疑问”；要标记所在行，将面板切换为“整行”。
+3. 命令面板执行“Highlight Boost：打开当前笔记重点”，点击卡片回到原文，展开“批注”记录说明。
+4. 需要跨笔记查找时，打开“高亮工作台”，选择目录或全库范围，筛选后生成摘录笔记。
 
-diff 标题栏提供“复制原始 diff”和“复制变更片段”。后者输出新增行与上下文，移除删除行和补丁头。整块折叠时仍可复制。围栏覆盖参数及样例见 [代码展示与 diff](formats/code-display.md)。
-
-## 加载当前构建
-
-构建后，将 `main.js`、`manifest.json` 和 `styles.css` 放入测试笔记库的 `.obsidian/plugins/highlight-boost/`，在第三方插件中启用 Highlight Boost。项目内可运行 `pnpm prepare:vault` 准备隔离测试库。
-
-当前源码版本为 0.1.0，已公开于 GitHub；可安装 Release 与社区上架按阶段 H 发布。
+颜色表达视觉强调，语义表达重点、疑问、引用或行动。四种预设的名称和颜色均可调整；直接改色保留已有语义。
 
 ## 标注正文和行内代码
 
@@ -75,6 +72,18 @@ Live Preview 将 HB 脚注引用及定义收为可展开摘要，Source 显示�
 选择保留格式、纯文本、引用块或代码围栏模板，点击“生成摘录笔记”，将当前过滤结果写入 `Highlight Boost/`。摘录保留来源信息，点击链接可回到对应源笔记的块或标题。
 
 生成笔记带导出标记，不会再次进入源索引。它保存生成时的快照；再次生成会创建新笔记。模板选择和集合保存在插件配置中。
+
+## 导入与迁移
+
+命令面板执行“Highlight Boost：导入与迁移”，选择当前笔记、目录或全库。生成预览，调整颜色映射，勾选文件后应用。Highlightr 与 Hilo 转为原生颜色；围栏行强调可选转为 HB 标注。历史记录中点击“恢复此文件”逐文件还原，重启后仍可操作。完整示例见 [迁移说明](formats/migration.md)。
+
+## 代码展示
+
+原 Code Styler / Codeblock Customizer 的 `file:"demo.js" ln:20 fold hl:1,3`，以及 Hugo、Expressive Code 的通用参数可直接显示。完整映射见 [第三方围栏参数](formats/fence-parameters.md)。
+
+设置 → Highlight Boost → 代码展示，可调整标题、逻辑行号、起始编号、字体、长行换行和整块折叠。阅读视图和内置 Shiki 的 Live Preview 使用统一标题栏；编辑器原文显示行号与 diff 背景，使用原生命令折叠。点击侧栏条目会展开目标。
+
+diff 标题栏提供“复制原始 diff”和“复制变更片段”。后者输出新增行与上下文，移除删除行和补丁头。整块折叠时仍可复制。围栏覆盖参数及样例见 [代码展示与 diff](formats/code-display.md)。
 
 ## 视图和设置
 

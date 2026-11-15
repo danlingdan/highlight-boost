@@ -1,0 +1,18 @@
+name: 功能建议 / Feature request
+description: 说明场景与希望完成的操作 / Describe a workflow to improve
+title: "[建议] "
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 使用场景 / Use case
+      description: 你在什么笔记或代码阅读流程中遇到了什么问题？
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: 希望的行为 / Proposed behavior
+      description: 说明操作前后和期望输出；示例有助于讨论。
+    validations:
+      required: true

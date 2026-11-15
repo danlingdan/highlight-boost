@@ -31,6 +31,10 @@ jobs:
         run: pnpm test:host
       - if: runner.os == 'Linux'
         run: xvfb-run -a pnpm test:host
+      - if: runner.os != 'Linux'
+        run: pnpm test:multiwindow && pnpm test:accessibility
+      - if: runner.os == 'Linux'
+        run: xvfb-run -a sh -c 'pnpm test:multiwindow && pnpm test:accessibility'
       - if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -40,3 +44,4 @@ jobs:
             docs/verification/host-results.json
             docs/verification/host-environment.json
             docs/verification/images/
+            output/pdf/*.pdf

@@ -13,7 +13,7 @@ net.Server.prototype.listen = function (...args) {
 
 const root = path.resolve(__dirname, '..');
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
-const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat' }[process.env.HB_HOST_MODE];
+const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', multiwindow: 'multiwindow' }[process.env.HB_HOST_MODE];
 const profile = path.join(root, suite ? `.test-${suite}-profile` : '.test-host-profile');
 const vault = path.join(root, suite ? `.test-${suite}-vault` : '.test-vault');
 const runtime = require('./obsidian-runtime.cjs')(root);
@@ -41,6 +41,7 @@ scenarios['lifecycle-shiki'] = ['lifecycle.scenario.js', 'host-lifecycle-shiki-r
 scenarios.pagination = ['pagination.scenario.js', 'host-pagination-results.json'];
 scenarios.compatibility = ['compatibility.scenario.js', 'host-compatibility-results.json'];
 scenarios.multiwindow = ['multiwindow.scenario.js', 'host-multiwindow-results.json'];
+scenarios.accessibility = ['accessibility.scenario.js', 'host-accessibility-results.json'];
 scenarios.migration = ['migration.scenario.js', 'host-migration-results.json'];
 scenarios['migration-restart'] = ['migration-restart.scenario.js', 'host-migration-restart-results.json'];
 scenarios.parameters = ['fence-params.scenario.js', 'host-parameters-results.json'];
@@ -52,6 +53,20 @@ scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-re
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
 const lifecycle = mode === 'lifecycle' || mode === 'lifecycle-shiki';
 const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination', 'compatibility'];
+let pdfRendering;
+if (mode === 'accessibility') electron.ipcMain.handle('hb-accessibility', async (event, method, parameters) => {
+  const pdfPath = path.join(root, 'output', 'pdf', 'highlight-boost-export.pdf');
+  if (method === 'pdf-prepare') {
+    fs.mkdirSync(path.dirname(pdfPath), { recursive: true }); if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
+    electron.dialog.showSaveDialog = async () => ({ canceled: false, filePath: pdfPath });
+    electron.dialog.showSaveDialogSync = () => pdfPath;
+    electron.shell.openPath = async () => '';
+    return pdfPath;
+  }
+  if (method === 'pdf-status') return fs.existsSync(pdfPath) ? { bytes: fs.statSync(pdfPath).size, header: fs.readFileSync(pdfPath).subarray(0, 5).toString(), rendering: pdfRendering } : null;
+  if (!['Accessibility.getFullAXTree', 'Input.dispatchKeyEvent', 'Input.insertText', 'Input.imeSetComposition'].includes(method)) throw new Error('Unknown accessibility command');
+  return event.sender.debugger.sendCommand(method, parameters ?? {});
+});
 if (!['performance', 'scale', 'responsive'].includes(mode)) {
   app.disableHardwareAcceleration();
   const BrowserWindow = electron.BrowserWindow;
@@ -126,6 +141,15 @@ app.on('browser-window-created', (_event, window) => {
   window.on('show', () => window.hide());
   window.setSize(1400, 1000);
   const contents = window.webContents;
+  if (mode === 'accessibility') {
+    const print = contents.printToPDF.bind(contents);
+    contents.printToPDF = async options => {
+      if (!contents.debugger.isAttached()) contents.debugger.attach('1.3');
+      await contents.debugger.sendCommand('Emulation.setEmulatedMedia', { media: 'print' });
+      pdfRendering = await contents.executeJavaScript(`(() => { const root=document.querySelector('.print'), mark=root.querySelector('pre .hb-text'), note=root.querySelector('.hb-note-text'), style=getComputedStyle(mark); return { text:root.innerText, codeMark:mark.textContent, background:style.backgroundColor, decoration:style.textDecorationLine, noteVisible:note.getBoundingClientRect().height>0, note:note.innerText }; })()`);
+      return print(options);
+    };
+  }
   contents.setBackgroundThrottling(false);
   contents.on('console-message', (event) => {
     if (event.level === 'error' || event.level === 'warning') console.log(event.message);
@@ -146,7 +170,7 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || lifecycle) {
+      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || mode === 'accessibility' || lifecycle) {
         contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }

@@ -12,10 +12,10 @@
     plugin.settings.syntaxProvider = provider; plugin.settings.language = 'zh'; await plugin.saveSettings();
     await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
     for (const existing of app.workspace.getLeavesOfType('markdown')) if (existing.view.file?.path === path) existing.detach();
+    await app.vault.modify(file, source);
     const duplicate = app.workspace.getLeaf('tab'); await duplicate.openFile(file);
     const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
     await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
-    leaf.view.editor.setValue(source); await app.vault.modify(file, source);
     const popout = app.workspace.moveLeafToPopout(leaf, { width: 1000, height: 800 });
     assert(`${provider}-actual-popout`, await until(() => popout.doc?.body && leaf.view.containerEl.ownerDocument === popout.doc));
     assert(`${provider}-popout-focus-emulated`, await until(() => popout.win.__hbPopoutReady));
@@ -29,7 +29,8 @@
     assert(`${provider}-popout-mark-prose`, plugin.apply(editor, plugin.presetForAction('important')));
     select('inline_window'); assert(`${provider}-popout-mark-inline`, plugin.apply(editor, plugin.presetForAction('question')));
     select('value'); assert(`${provider}-popout-mark-code`, plugin.apply(editor, plugin.presetForAction('reference')));
-    const marked = editor.getValue(); await app.vault.modify(file, marked); await plugin.index.ready;
+    const marked = editor.getValue(); await leaf.view.save(); await plugin.index.ready;
+    assert(`${provider}-host-saved-source`, await app.vault.read(file) === marked);
     assert(`${provider}-duplicate-synchronized`, await until(() => duplicate.view.editor.getValue() === marked));
     assert(`${provider}-popout-index`, plugin.index.notes.get(path).text === marked && plugin.index.notes.get(path).items.length === 3);
     if (provider === 'shiki') assert('shiki-popout-source-tokens', await until(() => Boolean(leaf.view.containerEl.querySelector('.hb-syntax-token'))));

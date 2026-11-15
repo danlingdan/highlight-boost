@@ -13,6 +13,11 @@ coverage/
 .test-responsive-profile/
 .test-compat-vault/
 .test-compat-profile/
+.test-accessibility-vault/
+.test-accessibility-profile/
+.test-multiwindow-vault/
+.test-multiwindow-profile/
+output/pdf/
 main.js
 main.js.map
 .env

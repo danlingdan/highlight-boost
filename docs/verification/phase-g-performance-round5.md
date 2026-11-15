@@ -8,11 +8,11 @@
 
 | 指标 | 第二轮 p50 / p95 | 本轮 p50 / p95 |
 | --- | --- | --- |
-| 200 KiB 标注至侧栏 DOM | 218 / 294 ms | 147.2 / 168.6 ms |
-| 500 行代码阅读更新 | 34 / 324 ms | 19.3 / 204.9 ms |
-| 五千行代码选区事务 | 6.8 / 10.1 ms | 6.1 / 10.7 ms |
+| 200 KiB 标注至侧栏 DOM | 218 / 294 ms | 189.6 / 244.1 ms |
+| 500 行代码阅读更新 | 34 / 324 ms | 23.9 / 247.6 ms |
+| 五千行代码选区事务 | 6.8 / 10.1 ms | 4.4 / 9.0 ms |
 
-250 ms 的侧栏 DOM p95 目标达到。500 行更新保留 204.9 ms 的首次样本。本轮测试库 56 篇笔记，原生启用至索引就绪 p50 / p95 为 159.1 / 174.5 ms，内置 Shiki 为 202.9 / 205.6 ms。第二轮启用样本使用 51 篇笔记，启动数据按各自库规模记录。
+250 ms 的侧栏 DOM p95 目标达到。500 行更新保留 247.6 ms 的首次样本。最终测试库 57 篇笔记，原生启用至索引就绪 p50 / p95 为 173.0 / 181.1 ms，内置 Shiki 为 222.9 / 228.7 ms。第二轮启用样本使用 51 篇笔记，启动数据按各自库规模记录。布局修复前的复测另存为 [host-pre-layout-fix.json](performance-round5/host-pre-layout-fix.json)。
 
 ## 实际绘制与滚动
 
@@ -33,3 +33,5 @@ Shiki 原先在每次选区和视口变化时重新处理全部代码。现在�
 重跑：`pnpm build` → `node scripts/prepare-vault.mjs --suite=frames` → `node scripts/test-host.mjs --mode=frames`。`HB_FRAME_BASELINE=1` 用于旧实现对照，记录分词次数。
 
 资源回收和万篇索引结果继续见[第三轮](phase-g-performance-round3.md)与[第四轮](phase-g-performance-round4.md)。
+
+最终布局修复构建另有 70 项绘制复核：侧栏帧 p50 / p95 为 158.1 / 198.0 ms，原生五千行滚动为 43.0 / 49.7 ms，Shiki 为 42.3 / 63.1 ms。全部样本保留于 [frames-validation.json](performance-round5/frames-validation.json)，构建 SHA-256 与最终候选包一致。

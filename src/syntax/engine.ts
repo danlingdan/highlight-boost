@@ -20,14 +20,13 @@ export class SyntaxEngine {
   get languages(): string[] { return Object.keys(bundledLanguages); }
   supports(language: string): boolean { return Object.hasOwn(bundledLanguages, language.toLowerCase()); }
 
-  async initialize(): Promise<string> {
+  async initialize(): Promise<void> {
     const mapped = createCssVariableThemeBundle(OBSIDIAN_THEME);
     this.restore = mapped.restoreCssVariables;
     this.shiki = await createHighlighter({ themes: [mapped.theme], langs: [] });
     this.ec = new ExpressiveCodeEngine(createEcEngineConfig({
       theme: mapped.theme, customLanguages: [], settings: EC_VIRTUAL_SETTINGS, usingObsidianTheme: true,
     }));
-    return this.restore(`${await this.ec.getBaseStyles()}\n${await this.ec.getThemeStyles()}`);
   }
 
   async tokens(code: string, language: string) {

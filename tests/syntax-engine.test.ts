@@ -5,10 +5,11 @@ import { renderCode, renderedCodeText } from '../src/rendering';
 import { applyChanges, planHighlight } from '../src/editing';
 import { parseDocument } from '../src/parsing';
 import { presets } from '../src/domain';
+import { syntaxStyles } from '../src/syntax/styles';
 
 const engine = new SyntaxEngine();
 let css = '';
-beforeAll(async () => { css = await engine.initialize(); });
+beforeAll(async () => { await engine.initialize(); css = await syntaxStyles(); });
 afterAll(() => engine.dispose());
 
 it.each(['\n  const value = 1;  \n\n', '\t \n  \t', 'const value = 1;\t\n\n', ''])('内置渲染及复制保留首尾空行和行尾空白 %j', async code => {

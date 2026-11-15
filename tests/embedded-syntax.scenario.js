@@ -109,7 +109,7 @@
   plugin.settings = original;
   await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost');
-  assert('builtin-style-cleanup', !document.querySelector('style[data-hb-syntax]'));
+  assert('builtin-style-cleanup', !document.querySelector('.hb-syntax-editor'));
   await app.plugins.enablePlugin('highlight-boost');
   assert('native-provider-restored', !app.plugins.plugins['highlight-boost'].syntax);
   return checks;

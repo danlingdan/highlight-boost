@@ -11,3 +11,5 @@ main.js.map
 *.log
 .DS_Store
 Thumbs.db
+
+/styles.css

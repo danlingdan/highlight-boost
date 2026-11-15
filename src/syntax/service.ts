@@ -1,9 +1,9 @@
 import { Component, MarkdownRenderChild, type MarkdownPostProcessorContext, type Plugin } from 'obsidian';
 import { SyntaxEngine } from './engine';
 import { syntaxEditor } from './editor';
-import baseStyles from './upstream/styles.css';
 import { SyntaxRuntime } from './runtime';
 import type { Locale } from '../i18n';
+import { EditorView } from '@codemirror/view';
 
 class SyntaxBlock extends MarkdownRenderChild {
   private generation = 0;
@@ -35,13 +35,9 @@ export class SyntaxService extends Component {
   async initialize(): Promise<void> {
     this.runtime.attach(document);
     this.registerEvent(this.plugin.app.workspace.on('window-close', (_workspaceWindow, window) => this.runtime.detach(window.document)));
-    const css = await this.engine.initialize();
-    const style = document.createElement('style');
-    style.dataset.hbSyntax = '';
-    style.textContent = `${baseStyles}\n${css}`;
-    document.head.append(style);
-    this.register(() => { style.remove(); this.engine.dispose(); });
-    this.plugin.registerEditorExtension(this.editorExtension);
+    await this.engine.initialize();
+    this.register(() => this.engine.dispose());
+    this.plugin.registerEditorExtension([this.editorExtension, EditorView.editorAttributes.of({ class: 'hb-syntax-editor' })]);
     for (const language of this.engine.languages.filter(language => /^[a-z0-9][a-z0-9-]*$/.test(language) && language !== 'mermaid')) {
       this.plugin.registerMarkdownCodeBlockProcessor(language, (source, element, context) => {
         if (element.closest('.mod-frontmatter')) return;

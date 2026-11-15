@@ -1,4 +1,4 @@
-body {
+.hb-syntax-render, .hb-syntax-editor {
 	--shiki-code-background: var(--code-background);
 	--shiki-code-normal: var(--text-muted);
 	--shiki-code-comment: var(--text-faint);
@@ -38,7 +38,7 @@ body {
 	--shiki-active-tab-border-color: var(--shiki-highlight-neutral);
 }
 
-.edit-block-button {
+.hb-syntax-render .edit-block-button {
 	pointer-events: all;
 
 	& > svg {
@@ -47,17 +47,17 @@ body {
 }
 
 /* Disable ligatures in code blocks, as they can cause incorrect highlighting */
-div.expressive-code {
+div.expressive-code.hb-syntax-render {
 	font-variant-ligatures: no-contextual;
 
 	& > figure > pre {
 		/* Fix for shimmering focus */
-		margin: 0 !important;
+		margin: 0;
 	}
 
 	& > figure.frame {
 		&.has-title > figcaption.header::before {
-			pointer-events: all !important;
+			pointer-events: all;
 		}
 
 		& > figcaption.header {
@@ -72,22 +72,22 @@ div.expressive-code {
 }
 
 .markdown-preview-view {
-	div.expressive-code {
+	div.expressive-code.hb-syntax-render {
 		margin-block: var(--shiki-code-block-spacing);
 	}
 }
 
 /* Hide the frontmatter code block in reading view again */
-div.markdown-preview-view > div > div.mod-header + div > div.block-language-yaml.shiki-hide-in-reading-mode {
+div.markdown-preview-view > div > div.mod-header + div > div.block-language-yaml.shiki-hide-in-reading-mode.hb-syntax-render {
 	display: none;
 }
 
-span.shiki-bold {
+.hb-syntax-render span.shiki-bold {
 	font-weight: var(--bold-weight, 600);
 }
-span.shiki-italic {
+.hb-syntax-render span.shiki-italic {
 	font-style: italic;
 }
-span.shiki-ul {
-	text-decoration: underline;
+.hb-syntax-render span.shiki-ul {
+	text-decoration-line: underline;
 }

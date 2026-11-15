@@ -46,7 +46,7 @@
     phase = `${provider}-reading`; await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
     const preview = leaf.view.containerEl.querySelector('.markdown-preview-view');
     assert(`${provider}-popout-reading`, await until(() => Boolean(preview.querySelector('pre .hb-text')) && Boolean(preview.querySelector('code.hb-inline'))));
-    if (provider === 'shiki') assert('shiki-popout-style', Boolean(popout.doc.querySelector('style[data-hb-syntax]')));
+    if (provider === 'shiki') assert('shiki-popout-style', Boolean(popout.win.getComputedStyle(preview.querySelector('.hb-syntax-render')).getPropertyValue('--shiki-code-background').trim()));
     assert(`${provider}-popout-source-kept`, editor.getValue() === marked);
     phase = `${provider}-workbench`; await plugin.openPanel('note'); const panelLeaf = app.workspace.getLeavesOfType('highlight-boost')[0];
     const panelWindow = app.workspace.moveLeafToPopout(panelLeaf, { width: 500, height: 800 });

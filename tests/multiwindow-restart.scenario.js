@@ -11,7 +11,7 @@
   const sourceLeaf = source(), editor = sourceLeaf.view.editor, sourceDoc = sourceLeaf.view.containerEl.ownerDocument;
   assert('window-restart-shiki-provider', plugin.settings.syntaxProvider === 'shiki');
   assert('window-restart-source-tokens', await until(() => sourceDoc.querySelector('.hb-syntax-token')));
-  assert('window-restart-style-restored', Boolean(sourceDoc.querySelector('style[data-hb-syntax]')));
+  assert('window-restart-style-restored', Boolean(sourceDoc.querySelector('.hb-syntax-editor')));
   const panel = () => app.workspace.getLeavesOfType('highlight-boost').find(leaf => leaf.view.containerEl.ownerDocument !== document);
   assert('window-restart-workbench-restored', await until(() => Boolean(panel())));
   const panelLeaf = panel(), panelDoc = panelLeaf.view.containerEl.ownerDocument;

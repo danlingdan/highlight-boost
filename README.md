@@ -13,6 +13,8 @@
 
 当前开发与验收面向桌面端。正式版发布前不承诺移动端支持；正式版之后再根据需求评估。性能测试与优化在计划功能完成后统一开展。
 
+版本支持以最新 Obsidian 桌面稳定版为基线，当前为 **1.15.1**。每次发布同步核验版本声明和实际运行包，直接采用当前 API。旧版不在支持与验收范围内。
+
 ## 特别感谢
 
 特别感谢 **Moritz Jung（mProjectsCode）与 Shiki Highlighter 贡献者**，其主题、展示配置和样式源码已合入本项目；感谢 **Pine Wu、Anthony Fu 与 Shiki 贡献者**以及 **Tibor Schiemann（hippotastic）与 Expressive Code 贡献者**。内置语法模块由 HB 统一维护，来源和 MIT 版权声明见 [第三方致谢](THIRD_PARTY_NOTICES.md)。
@@ -59,4 +61,4 @@ pnpm prepare:vault
 
 [桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [性能与验收进展](docs/verification/phase-g-performance.md) · [v1 格式](docs/formats/README.md)
 
-阶段 A—F 已完成，阶段 G 已建立第一轮性能基线并优化解析、侧栏复用和索引调度。180 项逻辑/DOM/引擎测试、500 组解析差分与 638 项宿主功能检查通过。桌面兼容矩阵和剩余性能路径继续推进，当前提供源码及内部构建。
+阶段 A—F 已完成，阶段 G 已完成两轮性能优化。共享编辑器文档后，200 KiB 笔记标注至侧栏更新的中位耗时由 1749 ms 降到 218 ms，见[第二轮记录](docs/verification/phase-g-performance-round2.md)。188 项逻辑/DOM/引擎测试及 500 组解析差分通过，最新稳定版宿主回归见[验收矩阵](docs/verification/phase-g-matrix.md)。桌面兼容矩阵和剩余性能路径继续推进，当前提供源码及内部构建。

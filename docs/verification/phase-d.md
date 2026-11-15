@@ -30,7 +30,7 @@
 
 宿主共十六个独立进程、405 项检查：既有 351 项，本轮统一场景 43 项，独立进程恢复 11 项。运行入口为 `pnpm test:phase-d`，完整回归为 `pnpm test:host`。结果分别见 [统一场景](host-phase-d-results.json) 和 [重启场景](host-phase-d-restart-results.json)。
 
-Windows 当前宿主的功能证据在本轮归档。最低支持版本、其他桌面平台、第三方主题、多窗口和系统输入法矩阵继续在阶段 G 验收。既有语言场景的控制台 `Uncaught illegal access` 仍记录在 [中英文验证](i18n.md)；新增统一场景的页面错误收集为空。
+Windows 当前宿主的功能证据在本轮归档。后续在最新稳定版完成其他桌面平台、第三方主题、多窗口和系统输入法矩阵。既有语言场景的控制台 `Uncaught illegal access` 仍记录在 [中英文验证](i18n.md)；新增统一场景的页面错误收集为空。
 
 ## 画面与格式
 

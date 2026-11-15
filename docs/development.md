@@ -7,6 +7,7 @@
 ```sh
 pnpm install --frozen-lockfile
 pnpm check
+pnpm prepare:runtime
 pnpm prepare:vault
 ```
 
@@ -63,20 +64,24 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 
 ## 隔离宿主
 
-`test:host` 使用本机已安装的 Obsidian 运行包；Windows 默认资源路径为 `C:\Program Files\Obsidian\resources`，可通过 `OBSIDIAN_RESOURCES` 指定其他安装目录。
+`test:host` 使用项目缓存中的最新稳定版运行包；`OBSIDIAN_RESOURCES` 可指定同版本的安装资源目录，启动时核对实际版本。
 
 测试启动器：
 
 1. 将 Obsidian 用户目录设为项目内 `.test-host-profile`。
 2. 只登记项目内 `.test-vault`，加载当前构建的插件和合成样例。
-3. 在独立 Electron 38.8.6 中加载本机 `obsidian.asar`，复用真实解析、编辑与阅读渲染代码。
+3. 在独立 Electron 43.8.9 中加载 Obsidian 1.15.1 的 `obsidian.asar`，复用真实解析、编辑与阅读渲染代码。
 4. 为测试 CLI 管道添加独立后缀，避免和日常应用争用同名管道。
 5. 经路径校验后执行宿主断言，每个进程将结果写入 `docs/verification/host-*-results.json` 后退出。
 6. 重启场景读取基础场景保存的测试库与设置，写入 `host-restart-results.json`；随后内置场景切换语法提供者，完成后还原设置。
 
 测试启动器保留既有系统协议注册，测试配置与输出均位于项目目录。
 
-本机 Obsidian 程序包由安装位置读取，仓库包含测试启动器和自有代码。宿主测试记录 Obsidian 包版本与测试 Electron 版本；各桌面系统、最低支持版本和完整安装器环境在后续兼容阶段验证。
+需要截图的场景通过测试进程中的 Electron 模块代理创建离屏窗口，使用软件渲染和 CDP `Page.captureScreenshot`。性能场景保持普通隐藏窗口与原计时环境。离屏方式解决 Electron 43 隐藏窗口截图的 `UnknownVizError` 及黑屏问题。
+
+宿主测试通过 `pnpm prepare:runtime` 将官方最新稳定版运行包下载到项目缓存并校验 SHA256，版本固定在 `tests/runtime.json`。当前为 Obsidian 1.15.1 / Electron 43.8.9；SDK 的 npm 最新版本独立核验，当前仍为 1.14.4。测试启动器核对实际运行包与目标版本，各桌面系统及完整安装器环境按最新稳定版验收。
+
+[官方提交要求](https://docs.obsidian.md/community-directory/submission-requirements-for-plugins)允许将 `minAppVersion` 设为最新稳定版。项目每次发布核查[官方更新记录](https://obsidian.md/changelog/)，同步 `manifest.json`、`versions.json` 和 `tests/runtime.json`，然后在对应宿主完成验收。历史发布映射按[官方版本说明](https://docs.obsidian.md/Reference/Versions)保留。
 
 测试库与配置目录由 Git 忽略。`prepare:vault` 会重置项目样例和测试库插件清单，用于每次从相同输入运行测试。
 
@@ -91,6 +96,8 @@ Shiki 测试首次从其官方 Release 下载产物到 `.research-cache`，核�
 阶段 G 的 `bench:core` 和 `bench:host` 分别运行 Node 核心和实际宿主性能样例；原始数组、样例大小及计时定义见 [性能记录](verification/phase-g-performance.md)。`verify-parsing.mjs --base=<revision>` 编译指定版本解析器，与当前版本运行固定种子的差分样例。`report-performance.mjs` 核对前后样例及环境后生成对照表。
 
 索引在时间片之间使用 MessageChannel 让出线程，合并批量进度通知，最后发布完整状态。未变内容复用原条目，编辑仍通过版本号优先于旧读取。侧栏单次刷新按源文共享摘录解析；这些缓存与复用均随操作或索引生命周期更新。
+
+编辑器按不可变的 CodeMirror 文档对象共享 `DocumentSnapshot`，装饰、元数据、选区面板、着色、标注计划、索引和摘录复用同一结构。内容变更产生新快照，移动选区和重配置继续复用；WeakMap 随文档对象回收，卸载时清空。普通笔记的摘录直接使用共享 AST，表格保留既有块 ID 解析规则。
 
 Obsidian 与 CodeMirror 模块由宿主提供，构建时保留 external。Markdown 结构解析依赖打包进入 main.js。
 

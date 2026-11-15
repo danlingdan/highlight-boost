@@ -15,19 +15,23 @@ export class HighlightsView extends ItemView {
   private results?: HTMLElement;
   private status?: HTMLElement;
   private hits: IndexHit[] = [];
+  private page = 0;
+  private queryKey = '';
+  private readonly pageSize = 50;
   constructor(leaf: WorkspaceLeaf, private plugin: HighlightBoost) { super(leaf); }
   getViewType(): string { return 'highlight-boost'; }
   getDisplayText(): string { return this.plugin.t(this.searchScope === 'note' ? 'panelTitle' : 'workbench'); }
   getIcon(): string { return 'highlighter'; }
-  getState(): Record<string, unknown> { return { ...Object.fromEntries([...this.controls].map(([key, control]) => [key, control.value])), scope: this.searchScope }; }
+  getState(): Record<string, unknown> { return { ...Object.fromEntries([...this.controls].map(([key, control]) => [key, control.value])), scope: this.searchScope, page: this.page }; }
   async setState(state: unknown, result: ViewStateResult): Promise<void> {
     const saved = state && typeof state === 'object' ? state as Record<string, unknown> : {};
     if (['note', 'folder', 'vault', 'collection'].includes(String(saved.scope))) this.searchScope = saved.scope as SearchScope;
     this.refresh();
     for (const [key, control] of this.controls) if (typeof saved[key] === 'string') control.value = saved[key];
-    this.refresh(); await super.setState(state, result);
+    this.refresh(typeof saved.page === 'number' && Number.isSafeInteger(saved.page) && saved.page >= 0 ? saved.page : 0); await super.setState(state, result);
   }
   async setScope(scope: SearchScope, reset = false): Promise<void> {
+    if (this.searchScope !== scope || reset) this.page = 0;
     this.searchScope = scope;
     if (reset) for (const key of ['search', 'type-filter', 'semantic-filter', 'color-filter', 'language-filter', 'path-filter']) {
       const control = this.controls.get(key); if (control) control.value = '';
@@ -70,7 +74,7 @@ export class HighlightsView extends ItemView {
     this.status = this.contentEl.createEl('p', { cls: 'hb-index-status' });
     this.results = this.contentEl.createDiv({ cls: 'hb-results' });
   }
-  refresh(): void {
+  refresh(restorePage?: number): void {
     const active = this.app.workspace.getActiveViewOfType(MarkdownView);
     if (active) this.note = active;
     if (!this.results) this.initialize();
@@ -102,7 +106,7 @@ export class HighlightsView extends ItemView {
     const results = this.results!; results.empty();
     const view = this.note;
     const file = view?.file && this.app.workspace.getLeavesOfType('markdown').includes(view.leaf) ? view.file : undefined;
-    if ((this.searchScope === 'note' || this.searchScope === 'folder') && (!file || this.app.vault.getFileByPath(file.path) !== file)) { this.hits = []; results.createEl('p', { text: t('panelEmpty') }); return; }
+    if ((this.searchScope === 'note' || this.searchScope === 'folder') && (!file || this.app.vault.getFileByPath(file.path) !== file)) { this.hits = []; this.page = 0; this.queryKey = ''; results.createEl('p', { text: t('panelEmpty') }); return; }
     const collection = this.plugin.settings.collections.find(collection => collection.id === this.value('collection'));
     let all = this.searchScope === 'collection' ? collection?.entries.map(entry => resolveEntry(this.plugin.index.notes.get(entry.path), entry)) ?? [] : this.plugin.index.all();
     if (this.searchScope !== 'collection') for (const leaf of this.app.workspace.getLeavesOfType('markdown')) if (leaf.view instanceof MarkdownView && leaf.view.file?.extension === 'md') {
@@ -112,13 +116,31 @@ export class HighlightsView extends ItemView {
     }
     const label = (hit: IndexHit) => hit.item.markId ? hit.item.label : this.plugin.colorLabel(hit.item.color);
     const query = { scope: this.searchScope, note: file?.path, search: this.value('search'), type: this.value('type-filter'), semantic: this.value('semantic-filter'), color: this.value('color-filter'), language: this.value('language-filter'), path: this.value('path-filter'), sort: this.value('sort') };
+    const queryKey = JSON.stringify(query);
+    if (queryKey !== this.queryKey) this.page = 0;
+    this.queryKey = queryKey;
     this.hits = queryHighlights(all, query, label);
+    this.page = Math.max(0, Math.min(restorePage ?? this.page, Math.ceil(this.hits.length / this.pageSize) - 1));
     const name = this.searchScope === 'note' ? file!.basename : this.searchScope === 'folder' ? file!.parent?.path || '/' : this.searchScope === 'collection' ? collection?.name || t('collectionScope') : t('vaultScope');
     results.createEl('p', { text: t(this.hits.length === 1 ? 'summaryOne' : 'summary', { note: name, count: this.hits.length }), cls: 'hb-summary' });
     if (!this.hits.length) results.createEl('p', { text: this.searchScope === 'collection' && !collection ? t('noCollection') : all.length ? t('noMatches') : t('noHighlights', { preset: this.plugin.presetLabel(this.plugin.getPreset('important')) }) });
+    if (this.hits.length > this.pageSize) {
+      const navigation = results.createEl('nav', { cls: 'hb-pagination' }); navigation.setAttribute('aria-label', t('resultPages'));
+      const turn = (page: number, direction: string) => {
+        this.refresh(page); this.contentEl.scrollTop = 0;
+        const buttons = [...this.results!.querySelectorAll<HTMLButtonElement>('.hb-pagination button')];
+        (buttons.find(button => button.dataset.hbPage === direction && !button.disabled) ?? buttons.find(button => !button.disabled))?.focus();
+      };
+      const previous = navigation.createEl('button', { text: t('previousPage') }); previous.dataset.hbPage = 'previous'; previous.disabled = this.page === 0;
+      previous.addEventListener('click', () => turn(this.page - 1, 'previous'));
+      const status = navigation.createEl('span', { text: t('pageStatus', { page: this.page + 1, pages: Math.ceil(this.hits.length / this.pageSize), from: this.page * this.pageSize + 1, to: Math.min((this.page + 1) * this.pageSize, this.hits.length), count: this.hits.length }) });
+      status.setAttribute('role', 'status');
+      const next = navigation.createEl('button', { text: t('nextPage') }); next.dataset.hbPage = 'next'; next.disabled = (this.page + 1) * this.pageSize >= this.hits.length;
+      next.addEventListener('click', () => turn(this.page + 1, 'next'));
+    }
     let group = '';
     const contexts = new Map<string, ReturnType<typeof createExcerptContext>>();
-    for (const hit of this.hits) {
+    for (const hit of this.hits.slice(this.page * this.pageSize, (this.page + 1) * this.pageSize)) {
       const key = this.value('sort') === 'semantic' ? label(hit) : this.searchScope === 'note' ? '' : hit.path;
       if (key && group !== key) { results.createEl('h5', { text: key, cls: 'hb-result-group' }); group = key; }
       let context = contexts.get(hit.text);

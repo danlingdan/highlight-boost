@@ -1,0 +1,161 @@
+{
+  "durationMs": 9388.981,
+  "parseInclusiveMs": 6174.708000000008,
+  "parseCallers": [
+    {
+      "name": "createExcerptContext ← refresh ← refreshPanels ← commitPlan ← apply ← applyColor",
+      "ms": 963.7730000000003
+    },
+    {
+      "name": "createExcerptContext ← refresh ← refreshPanels ← (anonymous) ← flush ← set",
+      "ms": 906.5179999999995
+    },
+    {
+      "name": "editorDecorations ← update ← update ← (anonymous) ← dy ← o",
+      "ms": 886.8129999999999
+    },
+    {
+      "name": "createExcerptContext ← refresh ← refreshPanels ← (anonymous) ← tryTrigger ← trigger",
+      "ms": 885.7840000000006
+    },
+    {
+      "name": "createExcerptContext ← refresh ← refreshPanels ← saveSettings ← applyColor ← (anonymous)",
+      "ms": 875.015
+    },
+    {
+      "name": "collectItems ← publish ← set ← (anonymous) ← tryTrigger ← trigger",
+      "ms": 824.8430000000005
+    },
+    {
+      "name": "planHighlight ← apply ← applyColor ← (anonymous) ← measure ← (root)",
+      "ms": 656.3639999999994
+    },
+    {
+      "name": "planHighlight ← apply ← applyColor ← (anonymous) ← measure ← (anonymous)",
+      "ms": 175.59799999999996
+    }
+  ],
+  "selfTop": [
+    {
+      "name": "(garbage collector)",
+      "ms": 818.4659999999997
+    },
+    {
+      "name": "go",
+      "ms": 582.0370000000003
+    },
+    {
+      "name": "subtokenize",
+      "ms": 560.3020000000004
+    },
+    {
+      "name": "consume",
+      "ms": 551.0769999999997
+    },
+    {
+      "name": "(program)",
+      "ms": 503.2489999999999
+    },
+    {
+      "name": "start",
+      "ms": 499.35899999999964
+    },
+    {
+      "name": "factory2",
+      "ms": 396.21400000000017
+    },
+    {
+      "name": "splice",
+      "ms": 388.1670000000001
+    },
+    {
+      "name": "compile2",
+      "ms": 387.91100000000006
+    },
+    {
+      "name": "subcontent",
+      "ms": 345.56200000000007
+    },
+    {
+      "name": "set ppid",
+      "ms": 315.3540000000002
+    },
+    {
+      "name": "check",
+      "ms": 261.22499999999997
+    },
+    {
+      "name": "visit2",
+      "ms": 258.6969999999999
+    },
+    {
+      "name": "main2",
+      "ms": 226.01499999999996
+    },
+    {
+      "name": "enter",
+      "ms": 191.75400000000002
+    },
+    {
+      "name": "atBreak",
+      "ms": 174.99899999999988
+    },
+    {
+      "name": "sliceChunks",
+      "ms": 154.67399999999992
+    },
+    {
+      "name": "visitParents",
+      "ms": 146.518
+    },
+    {
+      "name": "restore",
+      "ms": 130.08800000000002
+    },
+    {
+      "name": "resolveAllAttention",
+      "ms": 127.81899999999999
+    },
+    {
+      "name": "store",
+      "ms": 111.39199999999995
+    },
+    {
+      "name": "fromMarkdown",
+      "ms": 97.19700000000003
+    },
+    {
+      "name": "exit5",
+      "ms": 89.69699999999996
+    },
+    {
+      "name": "handler",
+      "ms": 89.44000000000003
+    },
+    {
+      "name": "hook",
+      "ms": 78.277
+    },
+    {
+      "name": "slice",
+      "ms": 76.22000000000001
+    },
+    {
+      "name": "data",
+      "ms": 71.27900000000001
+    },
+    {
+      "name": "setCursor",
+      "ms": 69.98799999999999
+    },
+    {
+      "name": "chunkedPush",
+      "ms": 63.026999999999994
+    },
+    {
+      "name": "writeToChild",
+      "ms": 62.50400000000001
+    }
+  ],
+  "method": "CDP CPU samples, inclusive parse stacks; sampled time is not invocation count"
+}

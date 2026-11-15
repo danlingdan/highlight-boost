@@ -1,0 +1,110 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "performance-medium-source",
+      "passed": true
+    },
+    {
+      "name": "performance-code-500-rows",
+      "passed": true
+    },
+    {
+      "name": "performance-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "performance-large-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "performance-settings-restored",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "metrics": {
+      "native-enable": {
+        "samplesMs": [
+          158.80000001192093,
+          133,
+          132.70000000298023
+        ],
+        "p50Ms": 133,
+        "p95Ms": 158.80000001192093
+      },
+      "shiki-enable": {
+        "samplesMs": [
+          168.5,
+          243.40000000596046,
+          255.69999998807907
+        ],
+        "p50Ms": 243.40000000596046,
+        "p95Ms": 255.69999998807907
+      },
+      "edit-to-sidebar-200KiB": {
+        "samplesMs": [
+          294,
+          217.6000000089407,
+          227.3999999910593,
+          214,
+          216.29999999701977
+        ],
+        "p50Ms": 217.6000000089407,
+        "p95Ms": 294
+      },
+      "render-500-code-lines": {
+        "samplesMs": [
+          324.3999999910593,
+          29.100000008940697,
+          34,
+          34.099999994039536,
+          39.80000001192093,
+          38.5,
+          21.400000005960464
+        ],
+        "p50Ms": 34.099999994039536,
+        "p95Ms": 324.3999999910593
+      },
+      "selection-transaction-5000-lines": {
+        "samplesMs": [
+          6.800000011920929,
+          10.099999994039536,
+          3.7999999970197678,
+          7.600000008940697,
+          6.799999997019768
+        ],
+        "p50Ms": 6.800000011920929,
+        "p95Ms": 10.099999994039536
+      }
+    },
+    "errors": [],
+    "buildSha256": "722a9207adbed7f11e587ed376ac122ebebb2120fe1eec19798135cbbd42ad5e",
+    "timing": "DOM-ready with forced layout; no animation-frame wait",
+    "fixtures": {
+      "mediumBytes": 204800,
+      "codeLines": 500,
+      "largeCodeLines": 5000,
+      "largeCodeBytes": 1037789
+    },
+    "rendererHeap": {
+      "total_heap_size": 143777792,
+      "total_heap_size_executable": 8126464,
+      "total_physical_size": 143777792,
+      "total_available_size": 4308039408,
+      "used_heap_size": 83369688,
+      "heap_size_limit": 4395630592,
+      "malloced_memory": 544804,
+      "peak_malloced_memory": 10309736,
+      "does_zap_garbage": 0,
+      "number_of_native_contexts": 3,
+      "number_of_detached_contexts": 0,
+      "total_global_handles_size": 4287000,
+      "used_global_handles_size": 3382848,
+      "external_memory": 36017141
+    },
+    "indexNotes": 51
+  }
+}

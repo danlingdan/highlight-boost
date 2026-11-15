@@ -1,0 +1,7 @@
+{
+  "base": "e97fe47946ca71999e0438957e4fc1999f680193",
+  "seed": 20261115,
+  "cases": 500,
+  "passed": true,
+  "fields": "all ParsedDocument fields including UTF-16 source spans"
+}

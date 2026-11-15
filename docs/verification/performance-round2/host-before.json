@@ -1,0 +1,110 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "performance-medium-source",
+      "passed": true
+    },
+    {
+      "name": "performance-code-500-rows",
+      "passed": true
+    },
+    {
+      "name": "performance-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "performance-large-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "performance-settings-restored",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "metrics": {
+      "native-enable": {
+        "samplesMs": [
+          136.8999999910593,
+          121.59999999403954,
+          123.20000000298023
+        ],
+        "p50Ms": 123.20000000298023,
+        "p95Ms": 136.8999999910593
+      },
+      "shiki-enable": {
+        "samplesMs": [
+          163.09999999403954,
+          177.59999999403954,
+          188.8999999910593
+        ],
+        "p50Ms": 177.59999999403954,
+        "p95Ms": 188.8999999910593
+      },
+      "edit-to-sidebar-200KiB": {
+        "samplesMs": [
+          1916,
+          1721.0999999940395,
+          1685.9000000059605,
+          1749.0999999940395,
+          1945.6000000089407
+        ],
+        "p50Ms": 1749.0999999940395,
+        "p95Ms": 1945.6000000089407
+      },
+      "render-500-code-lines": {
+        "samplesMs": [
+          283.19999998807907,
+          24.700000002980232,
+          23.900000005960464,
+          28,
+          33.599999994039536,
+          25.200000002980232,
+          29.700000002980232
+        ],
+        "p50Ms": 28,
+        "p95Ms": 283.19999998807907
+      },
+      "selection-transaction-5000-lines": {
+        "samplesMs": [
+          11.700000002980232,
+          13.200000002980232,
+          5.699999988079071,
+          11.5,
+          7.4000000059604645
+        ],
+        "p50Ms": 11.5,
+        "p95Ms": 13.200000002980232
+      }
+    },
+    "errors": [],
+    "buildSha256": "991d80e5a8235a27acef6454c3a647ff48fed5daf0623f6064bcc4889ee74b4c",
+    "timing": "DOM-ready with forced layout; no animation-frame wait",
+    "fixtures": {
+      "mediumBytes": 204800,
+      "codeLines": 500,
+      "largeCodeLines": 5000,
+      "largeCodeBytes": 1037789
+    },
+    "rendererHeap": {
+      "total_heap_size": 160309248,
+      "total_heap_size_executable": 7340032,
+      "total_physical_size": 160309248,
+      "total_available_size": 4309345676,
+      "used_heap_size": 81032640,
+      "heap_size_limit": 4395630592,
+      "malloced_memory": 544804,
+      "peak_malloced_memory": 9241328,
+      "does_zap_garbage": 0,
+      "number_of_native_contexts": 3,
+      "number_of_detached_contexts": 0,
+      "total_global_handles_size": 3203256,
+      "used_global_handles_size": 2493760,
+      "external_memory": 37049715
+    },
+    "indexNotes": 51
+  }
+}

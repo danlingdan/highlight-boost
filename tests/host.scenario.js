@@ -39,7 +39,9 @@
   const colorsScroller = view.containerEl.querySelector('.markdown-preview-view');
   colorsScroller.scrollTop = colorsScroller.scrollHeight;
   colorsScroller.dispatchEvent(new Event('scroll'));
-  for (let i = 0; i < 40 && !Array.from(view.containerEl.querySelectorAll('mark')).some(mark=>mark.textContent.includes('样例purple')); i++) await tick();
+  for (let i = 0; i < 40 && !Array.from(view.containerEl.querySelectorAll('mark')).some(mark=>mark.textContent.includes('样例purple')); i++) {
+    colorsScroller.getBoundingClientRect(); colorsScroller.scrollTop = colorsScroller.scrollHeight; colorsScroller.dispatchEvent(new Event('scroll')); await tick();
+  }
   const renderedColors = Array.from(view.containerEl.querySelectorAll('mark'));
   for (const [color] of colorCases) {
     const rendered = renderedColors.find(mark=>mark.textContent.includes(`样例${color}`));

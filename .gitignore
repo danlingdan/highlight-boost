@@ -17,6 +17,8 @@ coverage/
 .test-accessibility-profile/
 .test-multiwindow-vault/
 .test-multiwindow-profile/
+.test-frames-vault/
+.test-frames-profile/
 output/pdf/
 main.js
 main.js.map

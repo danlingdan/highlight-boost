@@ -16,7 +16,7 @@
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: false } });
   const editor = leaf.view.editor;
   const select = word => { const from = editor.getValue().lastIndexOf(word); editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); editor.scrollIntoView({ from: editor.offsetToPos(from), to: editor.offsetToPos(from + word.length) }, true); };
-  select('alpha'); assert('keyboard-toolbar-visible', await until(() => document.querySelector('.hb-selection-toolbar')));
+  assert('keyboard-toolbar-visible', await until(() => { select('alpha'); return document.querySelector('.hb-selection-toolbar'); }));
   const toolbar = () => document.querySelector('.hb-selection-toolbar'); toolbar().querySelector('button').focus();
   await key('End', 'End', 35); assert('keyboard-toolbar-end', document.activeElement.dataset.hbAction === 'close');
   await key('Home', 'Home', 36); assert('keyboard-toolbar-home', document.activeElement === toolbar().querySelector('button'));

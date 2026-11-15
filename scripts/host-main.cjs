@@ -13,7 +13,7 @@ net.Server.prototype.listen = function (...args) {
 
 const root = path.resolve(__dirname, '..');
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
-const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', multiwindow: 'multiwindow' }[process.env.HB_HOST_MODE];
+const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', multiwindow: 'multiwindow', frames: 'frames' }[process.env.HB_HOST_MODE];
 const profile = path.join(root, suite ? `.test-${suite}-profile` : '.test-host-profile');
 const vault = path.join(root, suite ? `.test-${suite}-vault` : '.test-vault');
 const runtime = require('./obsidian-runtime.cjs')(root);
@@ -42,6 +42,7 @@ scenarios.pagination = ['pagination.scenario.js', 'host-pagination-results.json'
 scenarios.compatibility = ['compatibility.scenario.js', 'host-compatibility-results.json'];
 scenarios.multiwindow = ['multiwindow.scenario.js', 'host-multiwindow-results.json'];
 scenarios.accessibility = ['accessibility.scenario.js', 'host-accessibility-results.json'];
+scenarios.frames = ['frames.scenario.js', 'host-frames-results.json'];
 scenarios.migration = ['migration.scenario.js', 'host-migration-results.json'];
 scenarios['migration-restart'] = ['migration-restart.scenario.js', 'host-migration-restart-results.json'];
 scenarios.parameters = ['fence-params.scenario.js', 'host-parameters-results.json'];
@@ -54,6 +55,16 @@ const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 
 const lifecycle = mode === 'lifecycle' || mode === 'lifecycle-shiki';
 const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination', 'compatibility'];
 let pdfRendering;
+if (mode === 'frames') electron.ipcMain.handle('hb-frame-capture', async (event, name, rectangle) => {
+  if (!['frame-sidebar', 'frame-scroll'].includes(name)) throw new Error('Unknown frame');
+  if (![rectangle.x, rectangle.y, rectangle.width, rectangle.height].every(Number.isFinite) || rectangle.width <= 0 || rectangle.height <= 0 || rectangle.width * rectangle.height > 1400000) throw new Error('Invalid frame rectangle');
+  let bitmap;
+  try { bitmap = await event.sender.capturePage(rectangle); }
+  catch (error) { throw new Error(`${error.message}: ${JSON.stringify(rectangle)}`); }
+  const png = bitmap.toPNG(), directory = path.join(root, 'docs/verification/images'); fs.mkdirSync(directory, { recursive: true });
+  fs.writeFileSync(path.join(directory, `${name}.png`), png);
+  return { empty: bitmap.isEmpty(), bytes: png.length, size: bitmap.getSize(), sha256: require('node:crypto').createHash('sha256').update(png).digest('hex') };
+});
 if (mode === 'accessibility') electron.ipcMain.handle('hb-accessibility', async (event, method, parameters) => {
   const pdfPath = path.join(root, 'output', 'pdf', 'highlight-boost-export.pdf');
   if (method === 'pdf-prepare') {
@@ -141,6 +152,14 @@ app.on('browser-window-created', (_event, window) => {
   window.on('show', () => window.hide());
   window.setSize(1400, 1000);
   const contents = window.webContents;
+  if (mode === 'multiwindow' && process.env.HB_RO_TRACE === '1') {
+    contents.debugger.attach('1.3');
+    void contents.debugger.sendCommand('Page.addScriptToEvaluateOnNewDocument', { source: `(() => {
+      const NativeResizeObserver=window.ResizeObserver, calls=[]; let errors=0;
+      window.ResizeObserver=class extends NativeResizeObserver { constructor(callback) { const stack=new Error().stack; super((entries,observer)=>{ calls.push({stack,targets:entries.map(entry=>({class:entry.target.className,width:entry.contentRect.width,height:entry.contentRect.height}))}); if(calls.length>12)calls.shift(); callback(entries,observer); }); } };
+      window.addEventListener('error', event=>{ if(/ResizeObserver/.test(event.message)&&errors++<2)console.warn('HB resize trace: '+JSON.stringify(calls)); });
+    })();` });
+  }
   if (mode === 'accessibility') {
     const print = contents.printToPDF.bind(contents);
     contents.printToPDF = async options => {
@@ -157,7 +176,7 @@ app.on('browser-window-created', (_event, window) => {
   contents.on('did-finish-load', async () => {
     if (!contents.getURL().includes('index.html')) {
       if (mode === 'multiwindow') {
-        contents.debugger.attach('1.3'); await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
+        if (!contents.debugger.isAttached()) contents.debugger.attach('1.3'); await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
         await contents.executeJavaScript('window.__hbPopoutReady = true');
       }
       return;
@@ -170,14 +189,15 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || mode === 'accessibility' || lifecycle) {
-        contents.debugger.attach('1.3');
+      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || mode === 'accessibility' || mode === 'frames' || lifecycle) {
+        if (!contents.debugger.isAttached()) contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }
       const script = fs.readFileSync(path.join(root, 'tests', scenarioName), 'utf8');
       if (process.env.HB_TRACE === '1') await contents.executeJavaScript(`Object.defineProperty(window, '__hbChecks', { configurable: true, set(checks) { this.__hbTraceChecks = checks; const push = checks.push; Object.defineProperty(checks, 'push', { configurable: true, value(...items) { for (const item of items) console.warn('HB check: ' + item.name); return push.apply(this, items); } }); }, get() { return this.__hbTraceChecks; } }); void 0;`);
       await contents.executeJavaScript(`window.__hbHostMode = ${JSON.stringify(mode)}`);
       await contents.executeJavaScript(`window.__hbPerformanceProfile = ${process.env.HB_PERF_PROFILE === '1'}`);
+      await contents.executeJavaScript(`window.__hbFrameBaseline = ${process.env.HB_FRAME_BASELINE === '1'}`);
       await contents.executeJavaScript(`window.__hbMemoryProfile = ${process.env.HB_MEMORY_PROFILE === '1'}`);
       await contents.executeJavaScript(`window.__hbCompatibilityCase = ${JSON.stringify(process.env.HB_COMPAT_CASE ?? 'default-native')}`);
       const outcome = await contents.executeJavaScript(script);

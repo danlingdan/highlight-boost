@@ -68,10 +68,12 @@
   editor.redo(); assert('mixed-continuous-redo', editor.getValue() === continuous);
   editor.undo();
 
+  await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: true } });
   at = editor.getValue().indexOf('表格字段');
   select([[at, at + 4]]);
   app.commands.executeCommandById('highlight-boost:apply-important');
-  assert('table-structure-preserved', visibleSource(editor.getValue()).includes('| ==🟡表格字段== | **强调** |'));
+  assert('table-structure-preserved', visibleSource(editor.getValue()).includes('| ==🟡表格字段== | **强调** |'), { selected: editor.getSelection(), source: editor.getValue().slice(-900), activeEditor: app.workspace.activeEditor?.editor?.constructor.name });
+  await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: false } });
 
   const beforeInput = editor.getValue();
   at = beforeInput.lastIndexOf('const message = "') + 'const message = "'.length;

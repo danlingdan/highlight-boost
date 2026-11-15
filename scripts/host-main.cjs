@@ -220,6 +220,7 @@ app.on('browser-window-created', (_event, window) => {
       const script = fs.readFileSync(path.join(root, 'tests', scenarioName), 'utf8');
       if (process.env.HB_TRACE === '1') await contents.executeJavaScript(`Object.defineProperty(window, '__hbChecks', { configurable: true, set(checks) { this.__hbTraceChecks = checks; const push = checks.push; Object.defineProperty(checks, 'push', { configurable: true, value(...items) { for (const item of items) console.warn('HB check: ' + item.name); return push.apply(this, items); } }); }, get() { return this.__hbTraceChecks; } }); void 0;`);
       await contents.executeJavaScript(`window.__hbHostMode = ${JSON.stringify(mode)}`);
+      await contents.executeJavaScript(`window.__hbProjectRoot = ${JSON.stringify(root)}`);
       await contents.executeJavaScript(`window.__hbPerformanceProfile = ${process.env.HB_PERF_PROFILE === '1'}`);
       await contents.executeJavaScript(`window.__hbFrameBaseline = ${process.env.HB_FRAME_BASELINE === '1'}`);
       await contents.executeJavaScript(`window.__hbMemoryProfile = ${process.env.HB_MEMORY_PROFILE === '1'}`);

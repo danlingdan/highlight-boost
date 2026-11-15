@@ -4,7 +4,7 @@
   const assert = (name, value, details) => { if (!value) throw new Error(`${name}: ${JSON.stringify(details)}`); checks.push({ name, passed: true }); };
   const tick = () => new Promise(resolve => setTimeout(resolve, 100));
   const until = async predicate => { for (let i = 0; i < 60 && !predicate(); i++) await tick(); return predicate(); };
-  const fs = window.require('fs'), nodePath = window.require('path'), root = nodePath.dirname(app.vault.adapter.basePath);
+  const fs = window.require('fs'), nodePath = window.require('path'), root = window.__hbProjectRoot;
   const cases = JSON.parse(fs.readFileSync(nodePath.join(root, 'tests/compatibility-cases.json'), 'utf8'));
   const test = cases.find(test => test.id === window.__hbCompatibilityCase);
   const observations = { case: test, cells: [], errors }; window.__hbObservations = observations;

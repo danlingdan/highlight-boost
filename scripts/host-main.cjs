@@ -36,6 +36,7 @@ scenarios.performance = ['performance.scenario.js', 'host-performance-results.js
 scenarios.scale = ['scale.scenario.js', 'host-scale-results.json'];
 scenarios.responsive = ['responsive.scenario.js', 'host-responsive-results.json'];
 scenarios.lifecycle = ['lifecycle.scenario.js', 'host-lifecycle-results.json'];
+scenarios['lifecycle-shiki'] = ['lifecycle.scenario.js', 'host-lifecycle-shiki-results.json'];
 scenarios.pagination = ['pagination.scenario.js', 'host-pagination-results.json'];
 scenarios.migration = ['migration.scenario.js', 'host-migration-results.json'];
 scenarios['migration-restart'] = ['migration-restart.scenario.js', 'host-migration-restart-results.json'];
@@ -46,6 +47,7 @@ scenarios['inline-restart'] = ['inline-restart.scenario.js', 'host-inline-restar
 scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-results.json'];
 scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
+const lifecycle = mode === 'lifecycle' || mode === 'lifecycle-shiki';
 const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination'];
 if (captureModes.includes(mode)) {
   app.disableHardwareAcceleration();
@@ -69,9 +71,17 @@ if (mode === 'performance' && process.env.HB_PERF_PROFILE === '1') electron.ipcM
     fs.writeFileSync(path.join(root, '.bench-cache/sidebar.cpuprofile'), JSON.stringify(profile));
   }
 });
-if (mode === 'lifecycle') electron.ipcMain.handle('hb-collect-garbage', async event => {
+if (lifecycle) electron.ipcMain.handle('hb-collect-garbage', async event => {
   await event.sender.debugger.sendCommand('HeapProfiler.collectGarbage');
   return { heap: await event.sender.debugger.sendCommand('Runtime.getHeapUsage'), dom: await event.sender.debugger.sendCommand('Memory.getDOMCounters') };
+});
+if (lifecycle && process.env.HB_MEMORY_PROFILE === '1') electron.ipcMain.handle('hb-memory-snapshot', async event => {
+  const directory = path.join(root, '.bench-cache'); fs.mkdirSync(directory, { recursive: true });
+  const output = path.join(directory, 'lifecycle.heapsnapshot'); fs.writeFileSync(output, '');
+  const chunk = (_event, method, parameters) => { if (method === 'HeapProfiler.addHeapSnapshotChunk') fs.appendFileSync(output, parameters.chunk); };
+  event.sender.debugger.on('message', chunk);
+  try { await event.sender.debugger.sendCommand('HeapProfiler.takeHeapSnapshot', { reportProgress: false }); }
+  finally { event.sender.debugger.removeListener('message', chunk); }
 });
 if (captureModes.includes(mode) || mode === 'performance') electron.ipcMain.handle('hb-selection-capture', async (event, name) => {
   if (!['selection-dark-zh', 'selection-light-en', 'phase-d-live', 'phase-d-reading', 'phase-e-collection', 'phase-e-light', 'notes-reading', 'notes-live', 'display-native', 'display-builtin', 'parameters', 'migration-preview', 'workbench-pagination'].includes(name)) throw new Error('Unknown screenshot');
@@ -127,13 +137,15 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'lifecycle') {
+      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || lifecycle) {
         contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }
       const script = fs.readFileSync(path.join(root, 'tests', scenarioName), 'utf8');
+      if (process.env.HB_TRACE === '1') await contents.executeJavaScript(`Object.defineProperty(window, '__hbChecks', { configurable: true, set(checks) { this.__hbTraceChecks = checks; const push = checks.push; checks.push = function (...items) { for (const item of items) console.warn('HB check: ' + item.name); return push.apply(this, items); }; }, get() { return this.__hbTraceChecks; } });`);
       await contents.executeJavaScript(`window.__hbHostMode = ${JSON.stringify(mode)}`);
       await contents.executeJavaScript(`window.__hbPerformanceProfile = ${process.env.HB_PERF_PROFILE === '1'}`);
+      await contents.executeJavaScript(`window.__hbMemoryProfile = ${process.env.HB_MEMORY_PROFILE === '1'}`);
       const outcome = await contents.executeJavaScript(script);
       results.checks.push(...outcome);
       const matrix = await contents.executeJavaScript('window.__hbLanguageMatrix ?? null');

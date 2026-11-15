@@ -13,6 +13,8 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
+    env:
+      HB_TRACE: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

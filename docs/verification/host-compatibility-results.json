@@ -7,7 +7,7 @@
       "passed": true
     },
     {
-      "name": "compat-plugin-shiki-highlighter-loaded",
+      "name": "compat-plugin-highlightextractor-loaded",
       "passed": true
     },
     {
@@ -375,6 +375,26 @@
       "passed": true
     },
     {
+      "name": "compat-extractor-copy-command",
+      "passed": true
+    },
+    {
+      "name": "compat-extractor-prose-content",
+      "passed": true
+    },
+    {
+      "name": "compat-extractor-dynamic-block",
+      "passed": true
+    },
+    {
+      "name": "compat-extractor-dynamic-metadata-hidden",
+      "passed": true
+    },
+    {
+      "name": "compat-extractor-source-exact",
+      "passed": true
+    },
+    {
       "name": "compat-no-page-errors",
       "passed": true
     }
@@ -383,11 +403,11 @@
   "testVaultTrustAccepted": false,
   "observations": {
     "case": {
-      "id": "external-shiki",
+      "id": "extractor",
       "theme": "",
-      "provider": "native",
+      "provider": "shiki",
       "plugins": [
-        "shiki-highlighter"
+        "highlightextractor"
       ]
     },
     "cells": [
@@ -466,7 +486,7 @@
     ],
     "errors": [],
     "dependencies": {
-      "shiki-highlighter": "0.8.0"
+      "highlightextractor": "1.1.4"
     }
   }
 }

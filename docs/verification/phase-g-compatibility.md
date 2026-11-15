@@ -4,7 +4,7 @@
 
 ## 主题与插件
 
-九组配置共 108 个视图单元、871 项检查通过，页面错误为零。每组覆盖中文 / 英文 × 深色 / 浅色 × Source / Live Preview / 阅读视图。检查正文、行内代码、C / Python / ASM 标注、标注计算样式、批注、长行、折叠、纯代码复制及原文一致性。
+十组配置共 120 个视图单元、970 项检查通过，页面错误为零。每组覆盖中文 / 英文 × 深色 / 浅色 × Source / Live Preview / 阅读视图。检查正文、行内代码、C / Python / ASM 标注、标注计算样式、批注、长行、折叠、纯代码复制及原文一致性。
 
 | 配置 | 检查数 | 原始结果 |
 | --- | ---: | --- |
@@ -17,6 +17,7 @@
 | Minimal + Style Settings + Code Styler | 99 | [JSON](compatibility/code-styler.json) |
 | AnuPpuccin + Style Settings + Codeblock Customizer | 99 | [JSON](compatibility/customizer.json) |
 | 默认主题 + 外部 Shiki 0.8.0 | 94 | [JSON](compatibility/external-shiki.json) |
+| 默认主题 + 内置 Shiki + Highlight-Extractor | 99 | [JSON](compatibility/extractor.json) |
 
 主题加载检查直接核对实际 CSS；Style Settings 修改真实主题变量并核对计算样式变化。Code Styler 与 Customizer 的逻辑行、行号节点和原有事件被保留。三个主题各保存中英文深浅色截图，共六张，已逐张检查字符、布局、标注与批注。
 
@@ -24,12 +25,14 @@
 
 内置引擎另外验证首尾空行、行尾空白、制表符和空代码块，渲染文本与复制内容保持原样。外部 Shiki 使用其发布版本；共存矩阵检查共同样例，首尾空白测试归属内置引擎专项。
 
-重跑：`pnpm build` → `node scripts/prepare-compatibility.mjs` → `node scripts/test-compatibility.mjs`。
+Highlight-Extractor 固定为 [1.1.4](https://github.com/kfirgumay2005-hash/Highlight-Extractor/releases/tag/1.1.4)，实际验证其高亮复制命令与动态 `highlights-extractor` 代码块；摘录包含正文内容，元数据隐藏，源文保持一致。
+
+重跑：`pnpm test:compatibility`。
 
 ## 多窗口
 
-[40 项实际 Popout 检查](host-multiwindow-results.json)通过。原生与内置 Shiki 各创建正文窗口和工作台窗口，检查三种对象的标注、阅读渲染、Shiki 样式与 token、跨窗口跳转、关闭、重新打开与数据恢复。
+[47 项实际 Popout 检查](host-multiwindow-results.json)和[12 项宿主重启检查](host-multiwindow-restart-results.json)通过。原生与内置 Shiki 各创建正文窗口和工作台窗口，检查三种对象的标注、阅读渲染、Shiki 样式与 token、跨窗口跳转、关闭、重新打开与数据恢复。
 
-同一文件同时保留主窗口副本，工作台操作优先使用对应来源视图。关闭弹出窗口后检查编辑器映射和 Shiki 文档运行时已释放。
+同一文件同时保留主窗口副本，工作台操作优先使用对应来源视图。关闭弹出窗口后检查编辑器映射和 Shiki 文档运行时已释放。另将两个弹出窗口写入真实 workspace 布局，结束宿主进程后重新启动，检查笔记与工作台窗口自动恢复、着色与样式、跳转和关闭清理。
 
-重跑：`pnpm build` → `pnpm prepare:vault` → `node scripts/test-host.mjs --mode=multiwindow`。
+重跑：`pnpm test:multiwindow`。

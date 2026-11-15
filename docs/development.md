@@ -45,7 +45,9 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 - `pnpm typecheck`：类型检查。
 - `pnpm test`：文档解析、纯编辑计划、锚定和 DOM 渲染断言。
 - `pnpm build`：生成宿主加载的 CommonJS 插件。
-- `pnpm test:host`：构建并依次运行二十六个独立 Electron 进程，覆盖已有标注闭环、工作台、批注、代码展示、diff、围栏参数、导入迁移、分页和独立进程恢复。
+- `pnpm test:host`：构建并依次运行二十八个独立 Electron 进程，覆盖已有标注闭环、工作台、批注、代码展示、diff、围栏参数、导入迁移、分页、双语法回收和独立进程恢复。
+- `pnpm bench:responsive`：使用独立千篇库，接入实际工作台通知，测量重建、搜索、定时器间隔与焦点保留。
+- `pnpm test:lifecycle`：在原生与内置 Shiki 模式各运行三次启停，回收后核对旧实例、视图和缓存释放。
 - `pnpm test:pagination`：验证分页顺序、筛选、页码恢复、键盘焦点、中英文文案、结果减少和完整导出。
 - `pnpm bench:scale`：在独立 `.test-scale-vault` 生成一万份约 100 MiB 实际笔记，测量磁盘读取索引、交互响应和大量结果展示。
 - `pnpm test:migration`：通过真实窗口验证预览、颜色映射、文件选择、应用计数和逐文件恢复，并在新进程恢复原文。
@@ -79,7 +81,7 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 
 测试启动器保留既有系统协议注册，测试配置与输出均位于项目目录。
 
-需要截图的场景通过测试进程中的 Electron 模块代理创建离屏窗口，使用软件渲染和 CDP `Page.captureScreenshot`。性能场景保持普通隐藏窗口与原计时环境。离屏方式解决 Electron 43 隐藏窗口截图的 `UnknownVizError` 及黑屏问题。
+正确性场景通过测试进程中的 Electron 模块代理创建离屏窗口，使用软件渲染和 CDP `Page.captureScreenshot`，持续执行布局和绘制。性能场景保持普通隐藏窗口与原计时环境。离屏方式解决 Electron 43 隐藏窗口截图及虚拟滚动的绘制时序问题。菜单场景通过公开 `Menu.setUseNativeMenu(false)` 验证菜单项与操作。
 
 宿主测试通过 `pnpm prepare:runtime` 将官方最新稳定版运行包下载到项目缓存并校验 SHA256，版本固定在 `tests/runtime.json`。当前为 Obsidian 1.15.1 / Electron 43.8.9；SDK 的 npm 最新版本独立核验，当前仍为 1.14.4。测试启动器核对实际运行包与目标版本，各桌面系统及完整安装器环境按最新稳定版验收。
 
@@ -109,4 +111,4 @@ Obsidian 与 CodeMirror 模块由宿主提供，构建时保留 external。Markd
 
 GitHub Actions 在 Windows、macOS、Linux 的 Node 24 上运行 `pnpm check`，分别上传构建产物。宿主测试使用实际 Obsidian 运行包单独执行；Node 矩阵和宿主兼容矩阵分别记录。
 
-内置展示交互脚本在构建时合入 JavaScript，主题 CSS 随模块加载。第三方 MIT 声明写入 `main.js`，构建产物同时包含 `THIRD_PARTY_NOTICES.md` 与 `licenses/`。
+内置展示交互由 `SyntaxRuntime` 按文档管理，只处理 HB 生成的代码容器；复制、观察器和定时器随组件释放。主题 CSS 随内置语法组件加载。第三方 MIT 声明写入 `main.js`，构建产物同时包含 `THIRD_PARTY_NOTICES.md` 与 `licenses/`。

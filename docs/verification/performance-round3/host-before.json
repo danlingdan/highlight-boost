@@ -1,0 +1,150 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "scale-real-files",
+      "passed": true
+    },
+    {
+      "name": "scale-cold-index-complete",
+      "passed": true
+    },
+    {
+      "name": "scale-cold-index-complete",
+      "passed": true
+    },
+    {
+      "name": "scale-cold-index-complete",
+      "passed": true
+    },
+    {
+      "name": "scale-warm-items-reused",
+      "passed": true
+    },
+    {
+      "name": "scale-incremental-current",
+      "passed": true
+    },
+    {
+      "name": "scale-incremental-current",
+      "passed": true
+    },
+    {
+      "name": "scale-incremental-current",
+      "passed": true
+    },
+    {
+      "name": "scale-query-total",
+      "passed": true
+    },
+    {
+      "name": "scale-filter-exact",
+      "passed": true
+    },
+    {
+      "name": "scale-filter-exact",
+      "passed": true
+    },
+    {
+      "name": "scale-filter-exact",
+      "passed": true
+    },
+    {
+      "name": "scale-no-page-errors",
+      "passed": true
+    },
+    {
+      "name": "scale-unload-clears-index",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "metrics": {
+      "disk-cold-index-10000": {
+        "samplesMs": [
+          39081.90000000596,
+          36299,
+          35754
+        ],
+        "p50Ms": 36299,
+        "p95Ms": 39081.90000000596
+      },
+      "disk-warm-rebuild-10000": {
+        "samplesMs": [
+          1803.9000000059605,
+          1759,
+          1690.2999999970198
+        ],
+        "p50Ms": 1759,
+        "p95Ms": 1803.9000000059605
+      },
+      "disk-incremental-one-note": {
+        "samplesMs": [
+          24.299999997019768,
+          18.400000005960464,
+          18.900000005960464
+        ],
+        "p50Ms": 18.900000005960464,
+        "p95Ms": 24.299999997019768
+      },
+      "render-1000-results": {
+        "samplesMs": [
+          3823.4000000059605,
+          3775.5,
+          3739.0999999940395
+        ],
+        "p50Ms": 3775.5,
+        "p95Ms": 3823.4000000059605
+      },
+      "filter-1000-results": {
+        "samplesMs": [
+          32.29999999701977,
+          18.200000002980232,
+          22
+        ],
+        "p50Ms": 22,
+        "p95Ms": 32.29999999701977
+      }
+    },
+    "errors": [],
+    "fixture": {
+      "count": 10000,
+      "bytesPerNote": 10486,
+      "totalBytes": 104860000
+    },
+    "coldIndex": {
+      "longestTimerGapMs": [
+        51,
+        48.70000000298023,
+        16
+      ],
+      "changeNotifications": [
+        374,
+        348,
+        343
+      ],
+      "diskReadCalls": [
+        10000,
+        10000,
+        10000
+      ],
+      "usedHeapBytes": [
+        688369380,
+        607197460,
+        1241814328
+      ]
+    },
+    "displayedCards": 1000,
+    "method": "Fresh HighlightIndex over real Vault.read for cold samples; unchanged index for warm samples. OS file cache retained. UI timings include forced layout, without animation-frame wait.",
+    "environment": {
+      "platform": "win32",
+      "release": "10.0.26300",
+      "cpu": "Intel(R) Core(TM) i9-14900HX",
+      "ramBytes": 16774549504,
+      "heapLimitBytes": 4395630592
+    },
+    "buildSha256": "722a9207adbed7f11e587ed376ac122ebebb2120fe1eec19798135cbbd42ad5e"
+  }
+}

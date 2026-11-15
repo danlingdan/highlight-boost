@@ -1,0 +1,164 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "scale-real-files",
+      "passed": true
+    },
+    {
+      "name": "scale-cold-index-complete",
+      "passed": true
+    },
+    {
+      "name": "scale-cold-index-complete",
+      "passed": true
+    },
+    {
+      "name": "scale-cold-index-complete",
+      "passed": true
+    },
+    {
+      "name": "scale-warm-items-reused",
+      "passed": true
+    },
+    {
+      "name": "scale-incremental-current",
+      "passed": true
+    },
+    {
+      "name": "scale-incremental-current",
+      "passed": true
+    },
+    {
+      "name": "scale-incremental-current",
+      "passed": true
+    },
+    {
+      "name": "scale-query-total",
+      "passed": true
+    },
+    {
+      "name": "scale-filter-exact",
+      "passed": true
+    },
+    {
+      "name": "scale-filter-exact",
+      "passed": true
+    },
+    {
+      "name": "scale-filter-exact",
+      "passed": true
+    },
+    {
+      "name": "scale-full-query-bounded-dom",
+      "passed": true
+    },
+    {
+      "name": "scale-no-page-errors",
+      "passed": true
+    },
+    {
+      "name": "scale-unload-clears-index",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "metrics": {
+      "disk-cold-index-10000": {
+        "samplesMs": [
+          35932.70000000298,
+          34675.70000000298,
+          34561.5
+        ],
+        "p50Ms": 34675.70000000298,
+        "p95Ms": 35932.70000000298
+      },
+      "disk-warm-rebuild-10000": {
+        "samplesMs": [
+          1504.9000000059605,
+          1490.2000000029802,
+          1479.2999999970198
+        ],
+        "p50Ms": 1490.2000000029802,
+        "p95Ms": 1504.9000000059605
+      },
+      "disk-incremental-one-note": {
+        "samplesMs": [
+          18.700000002980232,
+          20.200000002980232,
+          23.399999991059303
+        ],
+        "p50Ms": 20.200000002980232,
+        "p95Ms": 23.399999991059303
+      },
+      "render-1000-results": {
+        "samplesMs": [
+          187.5,
+          188.79999999701977,
+          184.70000000298023
+        ],
+        "p50Ms": 187.5,
+        "p95Ms": 188.79999999701977
+      },
+      "filter-1000-results": {
+        "samplesMs": [
+          19.299999997019768,
+          16.099999994039536,
+          20.700000002980232
+        ],
+        "p50Ms": 19.299999997019768,
+        "p95Ms": 20.700000002980232
+      },
+      "render-10000-results": {
+        "samplesMs": [
+          193.5,
+          194.8999999910593,
+          196.1000000089407
+        ],
+        "p50Ms": 194.8999999910593,
+        "p95Ms": 196.1000000089407
+      }
+    },
+    "errors": [],
+    "fixture": {
+      "count": 10000,
+      "bytesPerNote": 10486,
+      "totalBytes": 104860000
+    },
+    "coldIndex": {
+      "longestTimerGapMs": [
+        30.299999997019768,
+        26.099999994039536,
+        19.200000002980232
+      ],
+      "changeNotifications": [
+        344,
+        336,
+        335
+      ],
+      "diskReadCalls": [
+        10000,
+        10000,
+        10000
+      ],
+      "usedHeapBytes": [
+        762034756,
+        804896160,
+        749706584
+      ]
+    },
+    "displayedCards": 50,
+    "method": "Fresh HighlightIndex over real Vault.read for cold samples; unchanged index for warm samples. OS file cache retained. UI timings include forced layout, without animation-frame wait.",
+    "environment": {
+      "platform": "win32",
+      "release": "10.0.26300",
+      "cpu": "Intel(R) Core(TM) i9-14900HX",
+      "ramBytes": 16774549504,
+      "heapLimitBytes": 4395630592
+    },
+    "fullDisplayedCards": 50,
+    "buildSha256": "dd293e8c7c4005fa8e5e85e8bf0931d49fed1e82df675d9055216c125844d1ec"
+  }
+}

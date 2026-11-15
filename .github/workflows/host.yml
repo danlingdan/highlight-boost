@@ -52,12 +52,13 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: host-${{ matrix.os }}
+          include-hidden-files: true
           path: |
             docs/verification/host-*-results.json
             docs/verification/host-results.json
             docs/verification/host-environment.json
             docs/verification/images/
             docs/verification/compatibility/default-*.json
-            output/pdf/*.pdf
+            .local/exports/pdf/*.pdf
             dist/**/candidate.json
             dist/**/highlight-boost.zip

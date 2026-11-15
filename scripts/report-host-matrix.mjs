@@ -1,9 +1,10 @@
+import paths from './paths.cjs';
 import { readFile, readdir, mkdir, writeFile } from 'node:fs/promises';
 import { resolve, join } from 'node:path';
 import { createHash } from 'node:crypto';
 const run = process.argv.find(value => value.startsWith('--run='))?.slice(6);
 if (!/^\d+$/.test(run ?? '')) throw new Error('Pass --run=<GitHub run ID>');
-const root = resolve('.research-cache/ci', run), output = resolve('docs/verification/platforms');
+const root = resolve(paths.research, 'ci', run), output = resolve('docs/verification/platforms');
 const runtime = JSON.parse(await readFile('tests/runtime.json', 'utf8'));
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 await mkdir(output, { recursive: true });

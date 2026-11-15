@@ -1,3 +1,4 @@
+const paths = require('./paths.cjs');
 const { app, protocol } = require('electron');
 const electron = require('electron');
 const fs = require('node:fs');
@@ -14,8 +15,8 @@ net.Server.prototype.listen = function (...args) {
 const root = path.resolve(__dirname, '..');
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
 const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
-const profile = path.join(root, suite ? `.test-${suite}-profile` : '.test-host-profile');
-const vault = path.join(root, suite ? `.test-${suite}-vault` : '.test-vault');
+const profile = paths.profile(suite);
+const vault = paths.vault(suite);
 const runtime = require('./obsidian-runtime.cjs')(root);
 const source = runtime.source;
 const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
@@ -75,7 +76,7 @@ if (mode === 'frames') electron.ipcMain.handle('hb-frame-capture', async (event,
   return { empty: bitmap.isEmpty(), bytes: png.length, size: bitmap.getSize(), sha256: require('node:crypto').createHash('sha256').update(png).digest('hex') };
 });
 if (mode === 'accessibility') electron.ipcMain.handle('hb-accessibility', async (event, method, parameters) => {
-  const pdfPath = path.join(root, 'output', 'pdf', 'highlight-boost-export.pdf');
+  const pdfPath = path.join(paths.pdf, 'highlight-boost-export.pdf');
   if (method === 'pdf-prepare') {
     fs.mkdirSync(path.dirname(pdfPath), { recursive: true }); if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
     electron.dialog.showSaveDialog = async () => ({ canceled: false, filePath: pdfPath });
@@ -105,8 +106,8 @@ if (mode === 'performance' && process.env.HB_PERF_PROFILE === '1') electron.ipcM
   if (action === 'start') { await debuggerClient.sendCommand('Profiler.enable'); await debuggerClient.sendCommand('Profiler.start'); }
   else if (action === 'stop') {
     const { profile } = await debuggerClient.sendCommand('Profiler.stop');
-    fs.mkdirSync(path.join(root, '.bench-cache'), { recursive: true });
-    fs.writeFileSync(path.join(root, '.bench-cache/sidebar.cpuprofile'), JSON.stringify(profile));
+    fs.mkdirSync(paths.bench, { recursive: true });
+    fs.writeFileSync(path.join(paths.bench, 'sidebar.cpuprofile'), JSON.stringify(profile));
   }
 });
 if (lifecycle) electron.ipcMain.handle('hb-collect-garbage', async event => {
@@ -114,7 +115,7 @@ if (lifecycle) electron.ipcMain.handle('hb-collect-garbage', async event => {
   return { heap: await event.sender.debugger.sendCommand('Runtime.getHeapUsage'), dom: await event.sender.debugger.sendCommand('Memory.getDOMCounters') };
 });
 if (lifecycle && process.env.HB_MEMORY_PROFILE === '1') electron.ipcMain.handle('hb-memory-snapshot', async event => {
-  const directory = path.join(root, '.bench-cache'); fs.mkdirSync(directory, { recursive: true });
+  const directory = paths.bench; fs.mkdirSync(directory, { recursive: true });
   const output = path.join(directory, 'lifecycle.heapsnapshot'); fs.writeFileSync(output, '');
   const chunk = (_event, method, parameters) => { if (method === 'HeapProfiler.addHeapSnapshotChunk') fs.appendFileSync(output, parameters.chunk); };
   event.sender.debugger.on('message', chunk);

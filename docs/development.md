@@ -1,5 +1,7 @@
 # 开发与接口测试
 
+目录分工见[项目目录](structure.md)，脚本入口见[脚本导航](../scripts/README.md)。本地测试状态集中在 `.local/`，正式版本说明见[发布维护](releases/README.md)。
+
 ## 本地开发
 
 使用 Node.js 24 与 pnpm 11.25.0。依赖版本记录在 package.json 和 pnpm-lock.yaml。
@@ -11,7 +13,7 @@ pnpm prepare:runtime
 pnpm prepare:vault
 ```
 
-`pnpm dev` 监听源码并生成 `main.js`。重新构建后运行 `pnpm prepare:vault` 将产物复制到项目内 `.test-vault/.obsidian/plugins/highlight-boost/`。
+`pnpm dev` 监听源码并生成 `main.js`。重新构建后运行 `pnpm prepare:vault` 将产物复制到项目内 `.local/vaults/default/.obsidian/plugins/highlight-boost/`。
 
 功能命令包含“标记为重点/疑问/引用/行动”“代码行：重点/疑问/引用/行动”“高亮颜色：默认色/红色/橙色/黄色/绿色/蓝色/紫色”“选择高亮颜色”“移除所选标注”“复制当前代码块”和“打开当前笔记重点”。编辑器右键菜单提供同类操作。
 
@@ -49,7 +51,7 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 - `pnpm bench:responsive`：使用独立千篇库，接入实际工作台通知，测量重建、搜索、定时器间隔与焦点保留。
 - `pnpm test:lifecycle`：在原生与内置 Shiki 模式各运行三次启停，回收后核对旧实例、视图和缓存释放。
 - `pnpm test:pagination`：验证分页顺序、筛选、页码恢复、键盘焦点、中英文文案、结果减少和完整导出。
-- `pnpm bench:scale`：在独立 `.test-scale-vault` 生成一万份约 100 MiB 实际笔记，测量磁盘读取索引、交互响应和大量结果展示。
+- `pnpm bench:scale`：在独立 `.local/vaults/scale` 生成一万份约 100 MiB 实际笔记，测量磁盘读取索引、交互响应和大量结果展示。
 - `pnpm test:migration`：通过真实窗口验证预览、颜色映射、文件选择、应用计数和逐文件恢复，并在新进程恢复原文。
 - `pnpm test:parameters`：验证四类围栏参数、嵌套 callout、人工标注叠加、纯代码复制及卸载清理。
 - `pnpm test:display`：运行代码展示与重启专项，验证设置控件、折叠跳转、逻辑行号、换行、两种 diff 复制及渲染清理。
@@ -72,8 +74,8 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 
 测试启动器：
 
-1. 将 Obsidian 用户目录设为项目内 `.test-host-profile`。
-2. 只登记项目内 `.test-vault`，加载当前构建的插件和合成样例。
+1. 将 Obsidian 用户目录设为项目内 `.local/profiles/default`。
+2. 只登记项目内 `.local/vaults/default`，加载当前构建的插件和合成样例。
 3. 在独立 Electron 43.8.9 中加载 Obsidian 1.15.1 的 `obsidian.asar`，复用真实解析、编辑与阅读渲染代码。
 4. 为测试 CLI 管道添加独立后缀，避免和日常应用争用同名管道。
 5. 经路径校验后执行宿主断言，每个进程将结果写入 `docs/verification/host-*-results.json` 后退出。
@@ -89,9 +91,9 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 
 测试库与配置目录由 Git 忽略。`prepare:vault` 会重置项目样例和测试库插件清单，用于每次从相同输入运行测试。
 
-基础宿主场景初始化测试插件的默认预设，设置场景验证改名、改色、连续写入、迁移、界面输入及恢复默认，并还原进入场景前的配置。组合测试使用模拟 DOM 组合事件与编辑器事务；系统输入法在阶段 G 验证。
+基础宿主场景初始化测试插件的默认预设，设置场景验证改名、改色、连续写入、迁移、界面输入及恢复默认，并还原进入场景前的配置。组合测试使用模拟 DOM 组合事件与编辑器事务；阶段 G 专项通过 Chromium CDP 验证组合输入链路，见 [辅助技术记录](verification/phase-g-accessibility.md)。
 
-Shiki 测试首次从其官方 Release 下载产物到 `.research-cache`，核对脚本内固定 SHA256 后复制到测试库；之后复用缓存。第三方产物由 Git 忽略。运行原生场景前，`prepare:vault` 将启用清单重置为 HB。语言矩阵保存于对应结果 JSON，详细解释见 [第三轮记录](verification/phase-a-iteration-3.md)。
+Shiki 测试首次从其官方 Release 下载产物到 `.local/cache/research`，核对脚本内固定 SHA256 后复制到测试库；之后复用缓存。第三方产物由 Git 忽略。运行原生场景前，`prepare:vault` 将启用清单重置为 HB。语言矩阵保存于对应结果 JSON，详细解释见 [第三轮记录](verification/phase-a-iteration-3.md)。
 
 内置场景仅启用 HB，通过 CDP 焦点模拟激活隐藏宿主中的编辑状态，检查冷打开组件、原生编辑按钮、纯代码复制和 HB 标记。上游版本对照是诊断记录，Live Preview 的组件和颜色差异保存在 observations 中；修复验收使用内置场景。详见 [第四轮记录](verification/phase-a-iteration-4.md)。
 

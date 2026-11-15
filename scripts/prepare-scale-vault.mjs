@@ -1,8 +1,9 @@
+import paths from './paths.cjs';
 import { mkdir, copyFile, writeFile, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const responsive = process.argv.includes('--responsive');
-const root = resolve(responsive ? '.test-responsive-vault' : '.test-scale-vault'), plugin = resolve(root, '.obsidian/plugins/highlight-boost');
+const root = paths.vault(responsive ? 'responsive' : 'scale'), plugin = resolve(root, '.obsidian/plugins/highlight-boost');
 await mkdir(plugin, { recursive: true });
 for (const file of ['main.js', 'manifest.json', 'styles.css']) await copyFile(file, resolve(plugin, file));
 await writeFile(resolve(root, '.obsidian/community-plugins.json'), '[]');

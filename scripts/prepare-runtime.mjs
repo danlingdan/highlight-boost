@@ -1,3 +1,4 @@
+import paths from './paths.cjs';
 import { readFile, writeFile, mkdir } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
 import { gunzipSync } from 'node:zlib';
@@ -5,7 +6,7 @@ import { resolve } from 'node:path';
 const config = JSON.parse(await readFile('tests/runtime.json', 'utf8'));
 const manifest = JSON.parse(await readFile('manifest.json', 'utf8'));
 if (manifest.minAppVersion !== config.appVersion) throw new Error('Manifest and test runtime versions differ.');
-const directory = resolve('.research-cache', `obsidian-${config.appVersion}`), compressed = resolve(directory, 'obsidian.asar.gz');
+const directory = resolve(paths.research, `obsidian-${config.appVersion}`), compressed = resolve(directory, 'obsidian.asar.gz');
 await mkdir(resolve(directory, 'resources'), { recursive: true });
 let bytes;
 try { bytes = await readFile(compressed); } catch { /* 首次运行下载官方资产。 */ }

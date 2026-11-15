@@ -1,5 +1,6 @@
+import paths from './paths.cjs';
 import { readFileSync, writeFileSync } from 'node:fs';
-const snapshot = JSON.parse(readFileSync('.bench-cache/lifecycle.heapsnapshot', 'utf8'));
+const snapshot = JSON.parse(readFileSync(`${paths.bench}/lifecycle.heapsnapshot`, 'utf8'));
 const { nodes, edges, strings } = snapshot, fields = snapshot.snapshot.meta.node_fields, edgeFields = snapshot.snapshot.meta.edge_fields;
 const stride = fields.length, edgeStride = edgeFields.length, count = nodes.length / stride;
 const nameAt = fields.indexOf('name'), typeAt = fields.indexOf('type'), edgeCountAt = fields.indexOf('edge_count');
@@ -29,5 +30,5 @@ for (let i = 0; i < count; i++) {
   }
   targets.push({ name, reachable: parent[i] >= 0, path: path.reverse() });
 }
-writeFileSync('.bench-cache/memory-retainers.json', JSON.stringify({ nodes: count, targets }, null, 2));
+writeFileSync(`${paths.bench}/memory-retainers.json`, JSON.stringify({ nodes: count, targets }, null, 2));
 console.log(JSON.stringify(targets, null, 2));

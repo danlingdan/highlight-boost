@@ -1,6 +1,7 @@
+import paths from './paths.cjs';
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
-const profilePath = process.argv.find(value => value.startsWith('--profile='))?.slice(10) ?? '.bench-cache/sidebar.cpuprofile';
+const profilePath = process.argv.find(value => value.startsWith('--profile='))?.slice(10) ?? `${paths.bench}/sidebar.cpuprofile`;
 const output = process.argv.find(value => value.startsWith('--output='))?.slice(9) ?? 'docs/verification/performance-round2/profile.json';
 const profile = JSON.parse(readFileSync(profilePath, 'utf8'));
 const nodes = new Map(profile.nodes.map(node => [node.id, node])), parents = new Map();

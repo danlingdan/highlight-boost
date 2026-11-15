@@ -1,3 +1,4 @@
+import paths from './paths.cjs';
 import { build } from 'esbuild';
 import { execFileSync } from 'node:child_process';
 import { mkdirSync, writeFileSync } from 'node:fs';
@@ -6,12 +7,12 @@ import { pathToFileURL } from 'node:url';
 import assert from 'node:assert/strict';
 const base = process.argv.find(argument => argument.startsWith('--base='))?.slice(7);
 if (!base) throw new Error('Pass --base=<revision> to compare parser behavior.');
-mkdirSync('.bench-cache', { recursive: true });
+mkdirSync(paths.bench, { recursive: true });
 const original = execFileSync('git', ['show', `${base}:src/parsing.ts`], { encoding: 'utf8' });
-await build({ stdin: { contents: original, resolveDir: resolve('src'), loader: 'ts' }, outfile: '.bench-cache/parser-before.mjs', bundle: true, platform: 'node', format: 'esm' });
-await build({ entryPoints: ['src/parsing.ts'], outfile: '.bench-cache/parser-after.mjs', bundle: true, platform: 'node', format: 'esm' });
-const before = (await import(pathToFileURL(resolve('.bench-cache/parser-before.mjs')))).parseDocument;
-const after = (await import(pathToFileURL(resolve('.bench-cache/parser-after.mjs')))).parseDocument;
+await build({ stdin: { contents: original, resolveDir: resolve('src'), loader: 'ts' }, outfile: `${paths.bench}/parser-before.mjs`, bundle: true, platform: 'node', format: 'esm' });
+await build({ entryPoints: ['src/parsing.ts'], outfile: `${paths.bench}/parser-after.mjs`, bundle: true, platform: 'node', format: 'esm' });
+const before = (await import(pathToFileURL(resolve(`${paths.bench}/parser-before.mjs`)))).parseDocument;
+const after = (await import(pathToFileURL(resolve(`${paths.bench}/parser-after.mjs`)))).parseDocument;
 const parts = ['==one==', 'plain **bold** [[link]]', '`code ==literal==`', '%% ==hidden== `inside` %%', '> [!note] 标题\n> ==中文 😀==', '| A | B |\n| --- | --- |\n| ==cell== | `inline` |', '```js\n==literal==\n%% comment\n```', '    ==indented==', '<span>html</span> ==text==', '![alt](image.png)', '# ==heading==', '- item\n  - ==nested==', '[^hb-note]: ==footnote==', '~~~~text\n```literal\n~~~~'];
 let state = 20261115;
 for (let i = 0; i < 500; i++) {

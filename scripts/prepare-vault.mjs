@@ -1,9 +1,10 @@
+import paths from './paths.cjs';
 import { mkdir, copyFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
 const suite = process.argv.find(value => value.startsWith('--suite='))?.slice(8);
 if (suite && !['accessibility', 'multiwindow', 'frames', 'compat', 'install'].includes(suite)) throw new Error('Unknown test vault suite');
-const vault = resolve(suite ? `.test-${suite}-vault` : '.test-vault');
+const vault = paths.vault(suite);
 const plugin = resolve(vault, '.obsidian/plugins/highlight-boost');
 await mkdir(plugin, { recursive: true });
 for (const file of ['main.js', 'manifest.json', 'styles.css']) await copyFile(file, resolve(plugin, file));

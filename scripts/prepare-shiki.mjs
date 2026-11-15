@@ -1,3 +1,4 @@
+import paths from './paths.cjs';
 import { createHash } from 'node:crypto';
 import { readFile, writeFile, mkdir, copyFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -17,8 +18,8 @@ const releases = {
 };
 const files = releases[version];
 if (!files) throw new Error(`Unsupported test release: ${version}`);
-const cache = resolve(`.research-cache/shiki-${version}`);
-const target = resolve('.test-vault/.obsidian/plugins/shiki-highlighter');
+const cache = resolve(paths.research, `shiki-${version}`);
+const target = resolve(paths.vault(), '.obsidian/plugins/shiki-highlighter');
 await mkdir(cache, { recursive: true });
 await mkdir(target, { recursive: true });
 for (const [name, expected] of Object.entries(files)) {

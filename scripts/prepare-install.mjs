@@ -1,3 +1,4 @@
+import paths from './paths.cjs';
 import { resolve, join, sep } from 'node:path';
 import { cp, mkdir, readFile, writeFile, access } from 'node:fs/promises';
 import { createHash } from 'node:crypto';
@@ -11,7 +12,7 @@ if (!argument && process.argv.includes('--current')) {
 if (!argument) throw new Error('Pass --candidate=dist/.../candidate.json');
 const candidate = JSON.parse(await readFile(argument, 'utf8')), source = resolve(candidate.extractedPlugin), dist = resolve('dist');
 if (!source.startsWith(dist + sep)) throw new Error('Candidate must be extracted inside project dist');
-const vault = resolve('.test-install-vault'), config = join(vault, '.obsidian'), plugin = join(config, 'plugins/highlight-boost');
+const vault = paths.vault('install'), config = join(vault, '.obsidian'), plugin = join(config, 'plugins/highlight-boost');
 try { await access(config); throw new Error('Use a fresh install vault'); } catch (error) { if (error.code !== 'ENOENT') throw error; }
 for (const [file, expected] of Object.entries(candidate.files)) {
   const actual = createHash('sha256').update(await readFile(join(source, file))).digest('hex');

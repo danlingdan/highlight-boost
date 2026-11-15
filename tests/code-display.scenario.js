@@ -36,8 +36,10 @@
   assert('display-source-line-numbers', await until(() => [...view.containerEl.querySelectorAll('.hb-editor-code-line[data-hb-number]')].some(line => line.dataset.hbNumber === '9' && line.textContent.includes('target'))));
   assert('display-source-diff-backgrounds', view.containerEl.querySelector('[data-hb-diff="insert"]')?.textContent.includes('+newCall'));
   const fold = Object.keys(app.commands.commands).find(id => /fold-all$/.test(id) && !/unfold-all$/.test(id));
+  const foldedAt = position => editor.cm.viewport.from <= position && position < editor.cm.viewport.to && !editor.cm.visibleRanges.some(range => range.from <= position && position < range.to);
+  editor.focus();
   assert('display-native-fold-command', Boolean(fold)); app.commands.executeCommandById(fold); await tick();
-  assert('display-native-folded-placeholder', Boolean(view.containerEl.querySelector('.cm-foldPlaceholder')));
+  assert('display-native-folded-range', await until(() => { if (foldedAt(editor.getValue().lastIndexOf('target()'))) return true; app.commands.executeCommandById(fold); return false; }));
   await plugin.openPanel();
   [...document.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'target()').querySelector('.hb-quote').click();
   assert('display-native-folded-jump-expands', await until(() => editor.getSelection() === 'target()' && [...view.containerEl.querySelectorAll('.cm-line')].some(node => node.textContent.includes('target()'))), { selection: editor.getSelection(), placeholders: [...view.containerEl.querySelectorAll('.cm-foldPlaceholder')].map(node => node.textContent) });

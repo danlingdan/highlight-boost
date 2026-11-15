@@ -1,0 +1,477 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "compat-theme-css-loaded",
+      "passed": true
+    },
+    {
+      "name": "compat-plugin-obsidian-style-settings-loaded",
+      "passed": true
+    },
+    {
+      "name": "compat-mark-prose target",
+      "passed": true
+    },
+    {
+      "name": "compat-mark-inline_target",
+      "passed": true
+    },
+    {
+      "name": "compat-mark-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-mark-print",
+      "passed": true
+    },
+    {
+      "name": "compat-mark-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-five-object-results",
+      "passed": true
+    },
+    {
+      "name": "compat-style-settings-theme-parsed",
+      "passed": true
+    },
+    {
+      "name": "compat-style-settings-variable-available",
+      "passed": true
+    },
+    {
+      "name": "compat-style-settings-variable-applied",
+      "passed": true
+    },
+    {
+      "name": "compat-style-settings-variable-restored",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-source-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-source-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-source-print",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-source-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-source-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-live-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-live-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-live-print",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-live-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-live-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-prose",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-print",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-annotation",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-long-line-bounds",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-fold",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-unfold",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-dark-reading-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-source-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-source-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-source-print",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-source-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-source-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-live-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-live-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-live-print",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-live-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-live-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-prose",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-print",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-annotation",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-long-line-bounds",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-fold",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-unfold",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-source-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-source-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-source-print",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-source-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-source-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-live-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-live-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-live-print",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-live-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-live-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-prose",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-print",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-annotation",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-long-line-bounds",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-fold",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-unfold",
+      "passed": true
+    },
+    {
+      "name": "compat-en-dark-reading-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-source-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-source-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-source-print",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-source-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-source-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-live-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-live-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-live-print",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-live-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-live-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-prose",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-inline",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-memcpy",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-print",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-MOV AX",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-annotation",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-long-line-bounds",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-fold",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-unfold",
+      "passed": true
+    },
+    {
+      "name": "compat-en-light-reading-source-exact",
+      "passed": true
+    },
+    {
+      "name": "compat-copy-pure-code",
+      "passed": true
+    },
+    {
+      "name": "compat-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "case": {
+      "id": "anuppuccin-internal",
+      "theme": "AnuPpuccin",
+      "provider": "shiki",
+      "plugins": [
+        "obsidian-style-settings"
+      ]
+    },
+    "cells": [
+      {
+        "language": "zh",
+        "appearance": "dark",
+        "mode": "source",
+        "passed": true
+      },
+      {
+        "language": "zh",
+        "appearance": "dark",
+        "mode": "live",
+        "passed": true
+      },
+      {
+        "language": "zh",
+        "appearance": "dark",
+        "mode": "reading",
+        "passed": true
+      },
+      {
+        "language": "zh",
+        "appearance": "light",
+        "mode": "source",
+        "passed": true
+      },
+      {
+        "language": "zh",
+        "appearance": "light",
+        "mode": "live",
+        "passed": true
+      },
+      {
+        "language": "zh",
+        "appearance": "light",
+        "mode": "reading",
+        "passed": true
+      },
+      {
+        "language": "en",
+        "appearance": "dark",
+        "mode": "source",
+        "passed": true
+      },
+      {
+        "language": "en",
+        "appearance": "dark",
+        "mode": "live",
+        "passed": true
+      },
+      {
+        "language": "en",
+        "appearance": "dark",
+        "mode": "reading",
+        "passed": true
+      },
+      {
+        "language": "en",
+        "appearance": "light",
+        "mode": "source",
+        "passed": true
+      },
+      {
+        "language": "en",
+        "appearance": "light",
+        "mode": "live",
+        "passed": true
+      },
+      {
+        "language": "en",
+        "appearance": "light",
+        "mode": "reading",
+        "passed": true
+      }
+    ],
+    "errors": [],
+    "dependencies": {
+      "obsidian-style-settings": "1.0.9"
+    },
+    "styleSetting": {
+      "section": "anuppuccin-theme-settings",
+      "id": "callout-radius",
+      "before": "4px",
+      "after": "5px"
+    }
+  }
+}

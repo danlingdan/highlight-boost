@@ -1,0 +1,2006 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "keyboard-toolbar-visible",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-end",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-home",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-arrow",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-escape-restores-editor",
+      "passed": true
+    },
+    {
+      "name": "ime-composition-active",
+      "passed": true
+    },
+    {
+      "name": "ime-no-floating-toolbar",
+      "passed": true
+    },
+    {
+      "name": "ime-mark-command-deferred",
+      "passed": true
+    },
+    {
+      "name": "ime-chinese-committed",
+      "passed": true
+    },
+    {
+      "name": "ime-inline-composition-active",
+      "passed": true
+    },
+    {
+      "name": "ime-inline-committed-exact",
+      "passed": true
+    },
+    {
+      "name": "ime-inline-metadata-preserved",
+      "passed": true
+    },
+    {
+      "name": "ime-code-composition-active",
+      "passed": true
+    },
+    {
+      "name": "ime-code-committed-exact",
+      "passed": true
+    },
+    {
+      "name": "ime-code-metadata-preserved",
+      "passed": true
+    },
+    {
+      "name": "a11y-reading-ready",
+      "passed": true
+    },
+    {
+      "name": "a11y-copy-button-named",
+      "passed": true
+    },
+    {
+      "name": "a11y-highlight-text-exposed",
+      "passed": true
+    },
+    {
+      "name": "a11y-all-buttons-named",
+      "passed": true
+    },
+    {
+      "name": "a11y-dark-code-underline-visible",
+      "passed": true
+    },
+    {
+      "name": "a11y-light-code-underline-visible",
+      "passed": true
+    },
+    {
+      "name": "contrast-all-marked-text-4_5",
+      "passed": true
+    },
+    {
+      "name": "resize-24-rerenders-source-exact",
+      "passed": true
+    },
+    {
+      "name": "resize-no-observer-loop-errors",
+      "passed": true
+    },
+    {
+      "name": "pdf-export-dialog",
+      "passed": true
+    },
+    {
+      "name": "pdf-actual-export",
+      "passed": true
+    },
+    {
+      "name": "pdf-code-mark-style",
+      "passed": true
+    },
+    {
+      "name": "pdf-full-code-annotation",
+      "passed": true
+    },
+    {
+      "name": "pdf-metadata-hidden",
+      "passed": true
+    },
+    {
+      "name": "a11y-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "observations": {
+    "errors": [],
+    "names": [
+      {
+        "role": "RootWebArea",
+        "name": "辅助技术验收 - .test-accessibility-vault - Obsidian 1.15.1"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "打开快速切换"
+      },
+      {
+        "role": "generic",
+        "name": "查看关系图谱"
+      },
+      {
+        "role": "generic",
+        "name": "新建白板"
+      },
+      {
+        "role": "generic",
+        "name": "打开/创建今天的日记"
+      },
+      {
+        "role": "generic",
+        "name": "插入模板"
+      },
+      {
+        "role": "generic",
+        "name": "打开命令面板"
+      },
+      {
+        "role": "generic",
+        "name": "新建数据库"
+      },
+      {
+        "role": "generic",
+        "name": "当前笔记重点"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "最小化"
+      },
+      {
+        "role": "generic",
+        "name": "最大化"
+      },
+      {
+        "role": "generic",
+        "name": "关闭"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "separator",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "separator",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "阅读视图"
+      },
+      {
+        "role": "StaticText",
+        "name": "106 个词"
+      },
+      {
+        "role": "StaticText",
+        "name": "638 个字符"
+      },
+      {
+        "role": "generic",
+        "name": "Uninitialized"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "0 条反向链接"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "106 个词"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "638 个字符"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "请选择文本，或将光标放入已有高亮。"
+      },
+      {
+        "role": "StaticText",
+        "name": ".test-accessibility-vault"
+      },
+      {
+        "role": "group",
+        "name": "文件列表"
+      },
+      {
+        "role": "group",
+        "name": "搜索"
+      },
+      {
+        "role": "group",
+        "name": "书签"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "generic",
+        "name": "新标签页"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "0 条反向链接"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "请选择文本，或将光标放入已有高亮。"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": ".test-accessibility-vault"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "新建笔记"
+      },
+      {
+        "role": "generic",
+        "name": "新建文件夹"
+      },
+      {
+        "role": "generic",
+        "name": "排序"
+      },
+      {
+        "role": "generic",
+        "name": "自动显示当前文件"
+      },
+      {
+        "role": "generic",
+        "name": "全部展开"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "关闭"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": "反向链接"
+      },
+      {
+        "role": "group",
+        "name": "出链"
+      },
+      {
+        "role": "group",
+        "name": "标签"
+      },
+      {
+        "role": "group",
+        "name": "添加笔记属性"
+      },
+      {
+        "role": "group",
+        "name": "大纲"
+      },
+      {
+        "role": "group",
+        "name": "当前笔记重点"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "返回"
+      },
+      {
+        "role": "button",
+        "name": "前进"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "该标签页处于阅读视图中 点击此处切换至编辑视图 Ctrl+单击以在新标签页中打开"
+      },
+      {
+        "role": "button",
+        "name": "更多选项"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "heading",
+        "name": "当前笔记重点"
+      },
+      {
+        "role": "combobox",
+        "name": "检索范围"
+      },
+      {
+        "role": "searchbox",
+        "name": "搜索当前笔记重点"
+      },
+      {
+        "role": "combobox",
+        "name": "全部类型"
+      },
+      {
+        "role": "combobox",
+        "name": "全部语义"
+      },
+      {
+        "role": "combobox",
+        "name": "全部颜色"
+      },
+      {
+        "role": "combobox",
+        "name": "全部语言"
+      },
+      {
+        "role": "textbox",
+        "name": "路径包含"
+      },
+      {
+        "role": "combobox",
+        "name": "排序"
+      },
+      {
+        "role": "combobox",
+        "name": "摘录模板"
+      },
+      {
+        "role": "button",
+        "name": "重建索引"
+      },
+      {
+        "role": "button",
+        "name": "新建集合"
+      },
+      {
+        "role": "button",
+        "name": "删除集合"
+      },
+      {
+        "role": "button",
+        "name": "生成摘录笔记"
+      },
+      {
+        "role": "paragraph",
+        "name": ""
+      },
+      {
+        "role": "paragraph",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "alpha"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "编辑批注"
+      },
+      {
+        "role": "combobox",
+        "name": "更改语义"
+      },
+      {
+        "role": "button",
+        "name": "移除此条标注"
+      },
+      {
+        "role": "combobox",
+        "name": "加入集合"
+      },
+      {
+        "role": "button",
+        "name": "复制摘录"
+      },
+      {
+        "role": "button",
+        "name": "inline()测试"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "编辑批注"
+      },
+      {
+        "role": "combobox",
+        "name": "更改语义"
+      },
+      {
+        "role": "button",
+        "name": "移除此条标注"
+      },
+      {
+        "role": "combobox",
+        "name": "加入集合"
+      },
+      {
+        "role": "button",
+        "name": "复制摘录"
+      },
+      {
+        "role": "button",
+        "name": "value"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "绑定到当前选区"
+      },
+      {
+        "role": "button",
+        "name": "编辑批注"
+      },
+      {
+        "role": "combobox",
+        "name": "更改语义"
+      },
+      {
+        "role": "button",
+        "name": "移除此条标注"
+      },
+      {
+        "role": "combobox",
+        "name": "加入集合"
+      },
+      {
+        "role": "button",
+        "name": "复制摘录"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "…"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "…"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "…"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "…"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "…"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "…"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "…"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "…"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "…"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "heading",
+        "name": "​ 辅助技术验收"
+      },
+      {
+        "role": "paragraph",
+        "name": ""
+      },
+      {
+        "role": "paragraph",
+        "name": ""
+      },
+      {
+        "role": "figure",
+        "name": ""
+      },
+      {
+        "role": "paragraph",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "当前笔记重点"
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "重建索引"
+      },
+      {
+        "role": "StaticText",
+        "name": "新建集合"
+      },
+      {
+        "role": "StaticText",
+        "name": "删除集合"
+      },
+      {
+        "role": "StaticText",
+        "name": "生成摘录笔记"
+      },
+      {
+        "role": "StaticText",
+        "name": "已索引 2 篇笔记"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收 · 3 条"
+      },
+      {
+        "role": "StaticText",
+        "name": "alpha"
+      },
+      {
+        "role": "StaticText",
+        "name": "重点 · 正文"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "编辑批注"
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "移除此条标注"
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "复制摘录"
+      },
+      {
+        "role": "StaticText",
+        "name": "inline()测试"
+      },
+      {
+        "role": "StaticText",
+        "name": "疑问 · 行内代码 · 第 5 行"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "编辑批注"
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "移除此条标注"
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "复制摘录"
+      },
+      {
+        "role": "StaticText",
+        "name": "value"
+      },
+      {
+        "role": "StaticText",
+        "name": "引用 · js · 第 2 行"
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "批注"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "代码上下文 · 第 1—2 行"
+      },
+      {
+        "role": "StaticText",
+        "name": "绑定到当前选区"
+      },
+      {
+        "role": "StaticText",
+        "name": "编辑批注"
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "移除此条标注"
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "复制摘录"
+      },
+      {
+        "role": "StaticText",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "StaticText",
+        "name": "原型验证"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "键盘重点 "
+      },
+      {
+        "role": "mark",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "，正文内容。"
+      },
+      {
+        "role": "StaticText",
+        "name": "行内 "
+      },
+      {
+        "role": "code",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "。"
+      },
+      {
+        "role": "code",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "批注"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "输入："
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "StaticText",
+        "name": "中文输入"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "当前笔记重点"
+      },
+      {
+        "role": "option",
+        "name": "当前笔记"
+      },
+      {
+        "role": "option",
+        "name": "当前目录"
+      },
+      {
+        "role": "option",
+        "name": "全库"
+      },
+      {
+        "role": "option",
+        "name": "集合"
+      },
+      {
+        "role": "option",
+        "name": "全部类型"
+      },
+      {
+        "role": "option",
+        "name": "正文"
+      },
+      {
+        "role": "option",
+        "name": "行内代码"
+      },
+      {
+        "role": "option",
+        "name": "代码"
+      },
+      {
+        "role": "option",
+        "name": "全部语义"
+      },
+      {
+        "role": "option",
+        "name": "重点"
+      },
+      {
+        "role": "option",
+        "name": "疑问"
+      },
+      {
+        "role": "option",
+        "name": "引用"
+      },
+      {
+        "role": "option",
+        "name": "行动"
+      },
+      {
+        "role": "option",
+        "name": "全部颜色"
+      },
+      {
+        "role": "option",
+        "name": "默认色"
+      },
+      {
+        "role": "option",
+        "name": "红色"
+      },
+      {
+        "role": "option",
+        "name": "橙色"
+      },
+      {
+        "role": "option",
+        "name": "黄色"
+      },
+      {
+        "role": "option",
+        "name": "绿色"
+      },
+      {
+        "role": "option",
+        "name": "蓝色"
+      },
+      {
+        "role": "option",
+        "name": "紫色"
+      },
+      {
+        "role": "option",
+        "name": "全部语言"
+      },
+      {
+        "role": "option",
+        "name": "js"
+      },
+      {
+        "role": "option",
+        "name": "原文顺序"
+      },
+      {
+        "role": "option",
+        "name": "语义顺序"
+      },
+      {
+        "role": "option",
+        "name": "保留格式"
+      },
+      {
+        "role": "option",
+        "name": "纯文本"
+      },
+      {
+        "role": "option",
+        "name": "引用块"
+      },
+      {
+        "role": "option",
+        "name": "代码围栏"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "重建索引"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "新建集合"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "删除集合"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "生成摘录笔记"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "已索引 2 篇笔记"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收 · 3 条"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "alpha"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "重点 · 正文"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "编辑批注"
+      },
+      {
+        "role": "option",
+        "name": "更改语义"
+      },
+      {
+        "role": "option",
+        "name": "重点"
+      },
+      {
+        "role": "option",
+        "name": "疑问"
+      },
+      {
+        "role": "option",
+        "name": "引用"
+      },
+      {
+        "role": "option",
+        "name": "行动"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "移除此条标注"
+      },
+      {
+        "role": "option",
+        "name": "加入集合"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "复制摘录"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "inline()测试"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "疑问 · 行内代码 · 第 5 行"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "编辑批注"
+      },
+      {
+        "role": "option",
+        "name": "更改语义"
+      },
+      {
+        "role": "option",
+        "name": "重点"
+      },
+      {
+        "role": "option",
+        "name": "疑问"
+      },
+      {
+        "role": "option",
+        "name": "引用"
+      },
+      {
+        "role": "option",
+        "name": "行动"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "移除此条标注"
+      },
+      {
+        "role": "option",
+        "name": "加入集合"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "复制摘录"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "value"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "引用 · js · 第 2 行"
+      },
+      {
+        "role": "StaticText",
+        "name": "批注"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "代码上下文 · 第 1—2 行"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "绑定到当前选区"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "编辑批注"
+      },
+      {
+        "role": "option",
+        "name": "更改语义"
+      },
+      {
+        "role": "option",
+        "name": "重点"
+      },
+      {
+        "role": "option",
+        "name": "疑问"
+      },
+      {
+        "role": "option",
+        "name": "引用"
+      },
+      {
+        "role": "option",
+        "name": "行动"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "移除此条标注"
+      },
+      {
+        "role": "option",
+        "name": "加入集合"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "复制摘录"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "原型验证"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "键盘重点 "
+      },
+      {
+        "role": "StaticText",
+        "name": "alpha"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "，正文内容。"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "行内 "
+      },
+      {
+        "role": "StaticText",
+        "name": "inline()测试"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "。"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "复制到剪贴板"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "输入："
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "\n"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "中文输入"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "批注"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "代码上下文 · 第 1—2 行"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "alpha"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "inline()测试"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "🗨 引用"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "const"
+      },
+      {
+        "role": "StaticText",
+        "name": " value "
+      },
+      {
+        "role": "StaticText",
+        "name": "="
+      },
+      {
+        "role": "StaticText",
+        "name": " "
+      },
+      {
+        "role": "StaticText",
+        "name": "1"
+      },
+      {
+        "role": "StaticText",
+        "name": ";"
+      },
+      {
+        "role": "StaticText",
+        "name": "console"
+      },
+      {
+        "role": "StaticText",
+        "name": "."
+      },
+      {
+        "role": "StaticText",
+        "name": "log"
+      },
+      {
+        "role": "StaticText",
+        "name": "("
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": ");"
+      },
+      {
+        "role": "StaticText",
+        "name": "测试"
+      },
+      {
+        "role": "StaticText",
+        "name": "🗨 引用"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "const"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": " value "
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "="
+      },
+      {
+        "role": "InlineTextBox",
+        "name": " "
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "1"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": ";"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "console"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "."
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "log"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "("
+      },
+      {
+        "role": "StaticText",
+        "name": "value"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": ");"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "测试"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "🗨 引用"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "value"
+      }
+    ],
+    "contrast": [
+      {
+        "appearance": "dark",
+        "target": "code-default",
+        "ratio": 7.49596548576569,
+        "foreground": "rgb(179, 179, 179)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-dark"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-red",
+        "ratio": 6.129935841334334,
+        "foreground": "rgb(179, 179, 179)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-dark"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-orange",
+        "ratio": 5.454617634015425,
+        "foreground": "rgb(179, 179, 179)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-dark"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-yellow",
+        "ratio": 4.734851876315245,
+        "foreground": "rgb(179, 179, 179)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-dark"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-green",
+        "ratio": 5.302064072107134,
+        "foreground": "rgb(179, 179, 179)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-dark"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-blue",
+        "ratio": 6.2422713560150775,
+        "foreground": "rgb(179, 179, 179)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-dark"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-purple",
+        "ratio": 5.715684882737781,
+        "foreground": "rgb(179, 179, 179)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-dark"
+      },
+      {
+        "appearance": "dark",
+        "target": "prose",
+        "ratio": 5.3885478979224475
+      },
+      {
+        "appearance": "dark",
+        "target": "inline",
+        "ratio": 11.242798919556584
+      },
+      {
+        "appearance": "light",
+        "target": "code-default",
+        "ratio": 6.406530849084771,
+        "foreground": "rgb(92, 92, 92)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-light"
+      },
+      {
+        "appearance": "light",
+        "target": "code-red",
+        "ratio": 4.962916005119132,
+        "foreground": "rgb(92, 92, 92)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-light"
+      },
+      {
+        "appearance": "light",
+        "target": "code-orange",
+        "ratio": 5.334052607164219,
+        "foreground": "rgb(92, 92, 92)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-light"
+      },
+      {
+        "appearance": "light",
+        "target": "code-yellow",
+        "ratio": 5.6559295411676,
+        "foreground": "rgb(92, 92, 92)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-light"
+      },
+      {
+        "appearance": "light",
+        "target": "code-green",
+        "ratio": 5.3740726288273715,
+        "foreground": "rgb(92, 92, 92)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-light"
+      },
+      {
+        "appearance": "light",
+        "target": "code-blue",
+        "ratio": 5.003391834492592,
+        "foreground": "rgb(92, 92, 92)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-light"
+      },
+      {
+        "appearance": "light",
+        "target": "code-purple",
+        "ratio": 5.049868586353565,
+        "foreground": "rgb(92, 92, 92)",
+        "theme": "mod-windows is-frameless is-hidden-frameless obsidian-app styled-scrollbars show-inline-title is-floating-nav auto-full-screen show-ribbon show-view-header theme-light"
+      },
+      {
+        "appearance": "light",
+        "target": "prose",
+        "ratio": 12.788719983713651
+      },
+      {
+        "appearance": "light",
+        "target": "inline",
+        "ratio": 15.242876560928476
+      }
+    ],
+    "resizeIterations": 24,
+    "ime": "Chromium Input.imeSetComposition + Input.insertText",
+    "pdf": {
+      "bytes": 116665,
+      "header": "%PDF-",
+      "rendering": {
+        "text": "辅助技术验收\n\n键盘重点 alpha，正文内容。\n\n行内 inline()测试。\n\nconst value = 1;\nconsole.log(value);测试\n🗨 引用\n代码批注：保留变量含义。\n第二行批注。\n\n输入：\n中文输入",
+        "codeMark": "value",
+        "background": "color(srgb 0.0313726 0.427451 0.866667 / 0.18)",
+        "decoration": "underline",
+        "noteVisible": true,
+        "note": "代码批注：保留变量含义。\n第二行批注。"
+      }
+    }
+  }
+}

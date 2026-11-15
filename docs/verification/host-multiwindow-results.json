@@ -27,6 +27,10 @@
       "passed": true
     },
     {
+      "name": "native-host-saved-source",
+      "passed": true
+    },
+    {
       "name": "native-duplicate-synchronized",
       "passed": true
     },
@@ -92,6 +96,10 @@
     },
     {
       "name": "shiki-popout-mark-code",
+      "passed": true
+    },
+    {
+      "name": "shiki-host-saved-source",
       "passed": true
     },
     {

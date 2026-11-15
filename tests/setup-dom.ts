@@ -1,4 +1,5 @@
 if (typeof Node !== 'undefined') {
+  globalThis.createFragment = () => document.createDocumentFragment();
   Object.defineProperty(Node.prototype, 'createEl', {
     configurable: true,
     value(this: Node, tag: keyof HTMLElementTagNameMap) {

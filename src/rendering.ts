@@ -166,7 +166,7 @@ export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale =
     return;
   }
   const doc = code.ownerDocument;
-  const output = doc.createDocumentFragment();
+  const output = doc.adoptNode(createFragment());
   let offset = 0;
   const lines = original.split('\n');
   for (let i = 0; i < lines.length; i++) {

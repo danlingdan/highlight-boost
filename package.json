@@ -29,7 +29,9 @@
     "test:migration": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=migration && node scripts/test-host.mjs --mode=migration-restart",
     "bench:core": "pnpm build && node scripts/benchmark-core.mjs",
     "bench:host": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=performance",
-    "prepare:runtime": "node scripts/prepare-runtime.mjs"
+    "prepare:runtime": "node scripts/prepare-runtime.mjs",
+    "bench:scale": "pnpm build && node scripts/prepare-scale-vault.mjs && node scripts/test-host.mjs --mode=scale",
+    "test:pagination": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=pagination"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",

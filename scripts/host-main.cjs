@@ -12,8 +12,9 @@ net.Server.prototype.listen = function (...args) {
 };
 
 const root = path.resolve(__dirname, '..');
-const profile = path.join(root, '.test-host-profile');
-const vault = path.join(root, '.test-vault');
+const scale = process.env.HB_HOST_MODE === 'scale';
+const profile = path.join(root, scale ? '.test-scale-profile' : '.test-host-profile');
+const vault = path.join(root, scale ? '.test-scale-vault' : '.test-vault');
 const runtime = require('./obsidian-runtime.cjs')(root);
 const source = runtime.source;
 const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
@@ -32,6 +33,8 @@ scenarios['notes-restart'] = ['notes-restart.scenario.js', 'host-notes-restart-r
 scenarios.display = ['code-display.scenario.js', 'host-display-results.json'];
 scenarios['display-restart'] = ['code-display-restart.scenario.js', 'host-display-restart-results.json'];
 scenarios.performance = ['performance.scenario.js', 'host-performance-results.json'];
+scenarios.scale = ['scale.scenario.js', 'host-scale-results.json'];
+scenarios.pagination = ['pagination.scenario.js', 'host-pagination-results.json'];
 scenarios.migration = ['migration.scenario.js', 'host-migration-results.json'];
 scenarios['migration-restart'] = ['migration-restart.scenario.js', 'host-migration-restart-results.json'];
 scenarios.parameters = ['fence-params.scenario.js', 'host-parameters-results.json'];
@@ -41,7 +44,7 @@ scenarios['inline-restart'] = ['inline-restart.scenario.js', 'host-inline-restar
 scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-results.json'];
 scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
-const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration'];
+const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination'];
 if (captureModes.includes(mode)) {
   app.disableHardwareAcceleration();
   const BrowserWindow = electron.BrowserWindow;
@@ -64,8 +67,8 @@ if (mode === 'performance' && process.env.HB_PERF_PROFILE === '1') electron.ipcM
     fs.writeFileSync(path.join(root, '.bench-cache/sidebar.cpuprofile'), JSON.stringify(profile));
   }
 });
-if (mode === 'selection' || mode === 'phase-d' || mode === 'phase-e' || mode === 'notes' || mode === 'display' || mode === 'parameters' || mode === 'migration' || mode === 'performance') electron.ipcMain.handle('hb-selection-capture', async (event, name) => {
-  if (!['selection-dark-zh', 'selection-light-en', 'phase-d-live', 'phase-d-reading', 'phase-e-collection', 'phase-e-light', 'notes-reading', 'notes-live', 'display-native', 'display-builtin', 'parameters', 'migration-preview'].includes(name)) throw new Error('Unknown screenshot');
+if (captureModes.includes(mode) || mode === 'performance') electron.ipcMain.handle('hb-selection-capture', async (event, name) => {
+  if (!['selection-dark-zh', 'selection-light-en', 'phase-d-live', 'phase-d-reading', 'phase-e-collection', 'phase-e-light', 'notes-reading', 'notes-live', 'display-native', 'display-builtin', 'parameters', 'migration-preview', 'workbench-pagination'].includes(name)) throw new Error('Unknown screenshot');
   const { data } = await event.sender.debugger.sendCommand('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
   const directory = path.join(root, 'docs', 'verification', 'images');
   fs.mkdirSync(directory, { recursive: true });
@@ -111,14 +114,14 @@ app.on('browser-window-created', (_event, window) => {
   contents.on('did-finish-load', async () => {
     if (!contents.getURL().includes('index.html')) return;
     try {
-      const deadline = Date.now() + 30000;
+      const deadline = Date.now() + (scale ? 180000 : 30000);
       while (!await contents.executeJavaScript('Boolean(window.app?.workspace?.layoutReady) && !document.body.classList.contains("in-progress")')) {
         if (Date.now() > deadline) throw new Error('Test vault did not finish loading');
         await new Promise(resolve => setTimeout(resolve, 100));
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || mode === 'selection' || mode === 'phase-d' || mode === 'phase-e' || mode === 'notes' || mode === 'display' || mode === 'parameters' || mode === 'migration' || mode === 'performance') {
+      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance') {
         contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }
@@ -138,5 +141,5 @@ app.on('browser-window-created', (_event, window) => {
     }
   });
 });
-setTimeout(() => finish(new Error('Host test timed out')), mode === 'performance' ? 300000 : 60000);
+setTimeout(() => finish(new Error('Host test timed out')), mode === 'performance' || scale ? 300000 : 60000);
 require(path.join(source, 'main.js'))(source, new EventEmitter());

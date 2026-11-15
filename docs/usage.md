@@ -2,7 +2,7 @@
 
 ## 安装与启用
 
-首发版本为 **1.0.0**，当前文档待维护者检查。正式发布后，从 [GitHub Releases](https://github.com/danlingdan/highlight-boost/releases) 下载同一版本的 `main.js`、`manifest.json` 和 `styles.css`，放入笔记库的 `.obsidian/plugins/highlight-boost/`。也可将安装 ZIP 中的 `highlight-boost/` 文件夹解压到 `.obsidian/plugins/`。
+从 [GitHub Releases](https://github.com/danlingdan/highlight-boost/releases) 下载同一版本的 `main.js`、`manifest.json` 和 `styles.css`，放入笔记库的 `.obsidian/plugins/highlight-boost/`。也可将安装 ZIP 中的 `highlight-boost/` 文件夹解压到 `.obsidian/plugins/`。
 
 在“设置 → 第三方插件”中启用 Highlight Boost。社区目录已提交，收录后可直接搜索安装。当前基线为 Obsidian 1.15.1，支持 Windows、macOS 和 Linux；版本支持跟随最新桌面稳定版。
 
@@ -35,7 +35,7 @@
 
 打开“当前笔记重点”，按原文、名称或代码语言搜索，并组合类型、语义筛选。卡片显示标题链；代码卡片可展开相邻行上下文。
 
-点击卡片摘录定位到准确源范围。Source 保持 Source；Live Preview 保持 Live Preview；从阅读视图点击后进入 Live Preview，并选中相应正文或代码。跳转本身不修改笔记。
+点击卡片摘录定位到准确源范围。源码模式 保持 源码模式；实时预览 保持 实时预览；从阅读视图点击后进入 实时预览，并选中相应正文或代码。跳转本身不修改笔记。
 
 代码被改写而暂时无法定位时，卡片保留原摘录。在原代码块中选中新位置，再点击“绑定到当前选区”恢复锚点。
 
@@ -59,7 +59,7 @@
 
 正文使用标准脚注，行内代码和代码块使用关联批注。改色、改语义和重新绑定会保留说明；局部拆分的正文片段共用原脚注。移除正文高亮仍保留标准脚注；移除代码标注同时移除该条记录及其批注。
 
-Live Preview 将 HB 脚注引用及定义收为可展开摘要，Source 显示完整源文。阅读视图显示正文脚注，代码组件下方可展开说明。代码复制继续只输出代码。批注文本可检索，也会进入集合快照和摘录笔记。
+实时预览 将 HB 脚注引用及定义收为可展开摘要，源码模式 显示完整源文。阅读视图显示正文脚注，代码组件下方可展开说明。代码复制继续只输出代码。批注文本可检索，也会进入集合快照和摘录笔记。
 
 ## 保存集合
 
@@ -81,13 +81,13 @@ Live Preview 将 HB 脚注引用及定义收为可展开摘要，Source 显示�
 
 原 Code Styler / Codeblock Customizer 的 `file:"demo.js" ln:20 fold hl:1,3`，以及 Hugo、Expressive Code 的通用参数可直接显示。完整映射见 [第三方围栏参数](formats/fence-parameters.md)。
 
-设置 → Highlight Boost → 代码展示，可调整标题、逻辑行号、起始编号、字体、长行换行和整块折叠。阅读视图和内置 Shiki 的 Live Preview 使用统一标题栏；编辑器原文显示行号与 diff 背景，使用原生命令折叠。点击侧栏条目会展开目标。
+设置 → Highlight Boost → 代码展示，可调整标题、逻辑行号、起始编号、字体、长行换行和整块折叠。阅读视图和内置 Shiki 的 实时预览 使用统一标题栏；编辑器原文显示行号与 diff 背景，使用原生命令折叠。点击侧栏条目会展开目标。
 
 diff 标题栏提供“复制原始 diff”和“复制变更片段”。后者输出新增行与上下文，移除删除行和补丁头。整块折叠时仍可复制。围栏覆盖参数及样例见 [代码展示与 diff](formats/code-display.md)。
 
 ## 视图和设置
 
-Source 显示完整标注注释；Live Preview 将其收为可展开按钮；阅读视图隐藏注释并显示重点。点击或使用 Enter/空格可展开元数据按钮。
+源码模式 显示完整标注注释；实时预览 将其收为可展开按钮；阅读视图隐藏注释并显示重点。点击或使用 Enter/空格可展开元数据按钮。
 
 界面语言支持跟随 Obsidian、中文和 English，即时生效。自定义预设和已有名称快照保持原文。四种语义可改名、改色，并可指定默认语义；恢复默认预设保留界面语言、语法提供者和面板选项。
 

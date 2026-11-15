@@ -1,4 +1,5 @@
 import type { InlineCode } from './domain';
+import { annotationTitle } from './domain';
 import { parseDocument } from './parsing';
 import type { ReadingSection } from './reading-mapping';
 
@@ -49,7 +50,7 @@ export function renderInlineCode(code: HTMLElement, inline: InlineCode): void {
   if (!inline.metadata) return;
   titles.set(code, code.getAttribute('title'));
   code.classList.add('hb-inline', `hb-${inline.metadata.color}`);
-  code.title = inline.metadata.note ? `${inline.metadata.label}\n${inline.metadata.note}` : inline.metadata.label;
+  code.title = annotationTitle(inline.metadata.label, inline.metadata.note);
 }
 
 export function inlineExcerpt(value: string): string {

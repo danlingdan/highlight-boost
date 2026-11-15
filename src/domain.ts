@@ -1,5 +1,6 @@
 export const colors = ['default', 'red', 'orange', 'yellow', 'green', 'blue', 'purple'] as const;
 export type Color = typeof colors[number];
+export function annotationTitle(label: string, note?: string): string { return (note?.trim() ? `${label} · ${note}` : label).replace(/\s+/g, ' ').trim(); }
 export const colorLabels: Record<Color, string> = {
   default: '默认色', red: '红色', orange: '橙色', yellow: '黄色', green: '绿色', blue: '蓝色', purple: '紫色',
 };

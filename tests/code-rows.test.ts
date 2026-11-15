@@ -41,3 +41,14 @@ it.each(['code-styler', 'codeblock-customizer'])('%s 重建行后重新标注并
   expect(code.querySelector('.hb-text')!.textContent).toBe('stop');
   expect(code.firstElementChild!.classList.contains('hb-line')).toBe(true);
 });
+it.each(['code-styler', 'codeblock-customizer'])('%s 序列化后的提示保持单行，完整批注保留原文', owner => {
+  const root = document.createElement('div'), pre = root.appendChild(document.createElement('pre')), code = pre.appendChild(document.createElement('code'));
+  code.innerHTML = html.replaceAll('code-styler-', `${owner}-`); const model = block(), note = 'line 1\nline 2 "quoted"';
+  for (const mark of model.metadata!.marks) mark.note = note;
+  renderCode(code, model); const serialized = code.innerHTML;
+  expect(serialized.split('\n')).toHaveLength(1);
+  expect(root.querySelector('.hb-note-text')!.textContent).toBe(note);
+  code.innerHTML = serialized; renderCode(code, model);
+  expect(renderedCodeText(code)).toBe('run();\n\nstop();');
+  expect(model.metadata!.marks.every(mark => mark.note === note)).toBe(true);
+});

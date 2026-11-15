@@ -2,7 +2,7 @@ import { StateField } from '@codemirror/state';
 import { Decoration, EditorView, type DecorationSet } from '@codemirror/view';
 import { parseDocument } from './parsing';
 import { resolveMark, sourceOffset } from './anchors';
-import type { CodeBlock, CodeMark } from './domain';
+import { annotationTitle, type CodeBlock, type CodeMark } from './domain';
 import { composingState } from './composition';
 import { translate, type Locale } from './i18n';
 import { codeDisplayFacet, codeOptions, diffKinds, type CodeDisplaySettings } from './code-options';
@@ -56,7 +56,7 @@ function editorDecorations(text: string, settings: CodeDisplaySettings, parsed =
     }
   }
   for (const inline of parsed.inlines) if (inline.metadata && inline.content.from < inline.content.to) {
-    ranges.push(Decoration.mark({ class: `hb-inline hb-${inline.metadata.color}`, attributes: { title: inline.metadata.note ? `${inline.metadata.label}\n${inline.metadata.note}` : inline.metadata.label } }).range(inline.content.from, inline.content.to));
+    ranges.push(Decoration.mark({ class: `hb-inline hb-${inline.metadata.color}`, attributes: { title: annotationTitle(inline.metadata.label, inline.metadata.note) } }).range(inline.content.from, inline.content.to));
   }
   for (const block of parsed.blocks) for (const mark of block.metadata?.marks ?? []) {
     const resolved = resolveMark(block, mark);
@@ -67,12 +67,12 @@ function editorDecorations(text: string, settings: CodeDisplaySettings, parsed =
       for (const line of block.lines) {
         if (from === to ? line.from !== from : line.to < from || line.from >= to) continue;
         const start = text.lastIndexOf('\n', Math.max(0, line.from - 1)) + 1;
-        ranges.push(Decoration.line({ attributes: { class: `hb-line hb-${mark.color}`, 'data-hb-label': mark.label, title: mark.note ? `${mark.label}\n${mark.note}` : mark.label } }).range(start));
+        ranges.push(Decoration.line({ attributes: { class: `hb-line hb-${mark.color}`, 'data-hb-label': annotationTitle(mark.label), title: annotationTitle(mark.label, mark.note) } }).range(start));
       }
     } else if (from < to) {
       for (const line of block.lines) {
         const a = Math.max(from, line.from), b = Math.min(to, line.to);
-        if (a < b) ranges.push(Decoration.mark({ class: `hb-text hb-${mark.color}`, attributes: { title: mark.note ? `${mark.label}\n${mark.note}` : mark.label } }).range(a, b));
+        if (a < b) ranges.push(Decoration.mark({ class: `hb-text hb-${mark.color}`, attributes: { title: annotationTitle(mark.label, mark.note) } }).range(a, b));
       }
     }
   }
@@ -151,7 +151,7 @@ export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale =
         if (mark.kind === 'lines') {
           if (resolved.span.from === resolved.span.to ? offset === resolved.span.from : offset < resolved.span.to && resolved.span.from <= end) {
             row.parentElement!.classList.add('hb-line', `hb-${mark.color}`);
-            const parent = row.parentElement!, title = mark.note ? `${mark.label}\n${mark.note}` : mark.label;
+            const parent = row.parentElement!, title = annotationTitle(mark.label, mark.note);
             const previousTitle = rowTitles.get(parent);
             rowTitles.set(parent, { original: previousTitle ? previousTitle.original : parent.getAttribute('title'), applied: title }); parent.title = title;
           }
@@ -201,7 +201,7 @@ export function renderCode(code: HTMLElement, block: CodeBlock, locale: Locale =
         const end = position + (row.textContent?.length ?? 0);
         if (resolved.span.from === resolved.span.to ? position === resolved.span.from : position < resolved.span.to && resolved.span.from <= end) {
           row.classList.add('hb-line', `hb-${mark.color}`);
-          row.title = mark.note ? `${mark.label}\n${mark.note}` : mark.label;
+          row.title = annotationTitle(mark.label, mark.note);
         }
         position = end + 1;
       }
@@ -219,7 +219,7 @@ function wrapMark(code: HTMLElement, from: number, to: number, mark: CodeMark, r
       range.setStart(node, a); range.setEnd(node, b);
       const wrapper = code.ownerDocument.createElement('span');
       wrapper.className = `hb-text hb-${mark.color}`;
-      wrapper.title = mark.note ? `${mark.label}\n${mark.note}` : mark.label;
+      wrapper.title = annotationTitle(mark.label, mark.note);
       range.surroundContents(wrapper);
     }
     offset = end;

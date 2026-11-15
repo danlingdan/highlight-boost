@@ -18,6 +18,15 @@ export class HighlightsView extends ItemView {
   private page = 0;
   private queryKey = '';
   private readonly pageSize = 50;
+  private summary?: HTMLElement;
+  private cards?: HTMLElement;
+  private pagination?: HTMLElement;
+  private optionKeys = new Map<string, string>();
+  private rendered: { hit: IndexHit; view?: MarkdownView; file: MarkdownView['file'] | undefined }[] = [];
+  private renderKey = '';
+  private renderedNote?: MarkdownView;
+  private closed = false;
+  private excerptContexts = new Map<string, ReturnType<typeof createExcerptContext>>();
   constructor(leaf: WorkspaceLeaf, private plugin: HighlightBoost) { super(leaf); }
   getViewType(): string { return 'highlight-boost'; }
   getDisplayText(): string { return this.plugin.t(this.searchScope === 'note' ? 'panelTitle' : 'workbench'); }
@@ -39,7 +48,7 @@ export class HighlightsView extends ItemView {
     await this.leaf.setViewState({ type: this.getViewType(), state: this.getState() });
     this.refresh();
   }
-  async onOpen(): Promise<void> { this.refresh(); }
+  async onOpen(): Promise<void> { this.closed = false; this.refresh(); }
   private value(key: string): string { return this.controls.get(key)?.value ?? ''; }
   private initialize(): void {
     this.contentEl.empty(); this.contentEl.addClass('hb-panel'); this.contentEl.createEl('h4');
@@ -73,8 +82,11 @@ export class HighlightsView extends ItemView {
     }
     this.status = this.contentEl.createEl('p', { cls: 'hb-index-status' });
     this.results = this.contentEl.createDiv({ cls: 'hb-results' });
+    this.summary = this.results.createEl('p', { cls: 'hb-summary' });
+    this.cards = this.results.createDiv({ cls: 'hb-result-cards' });
   }
   refresh(restorePage?: number): void {
+    if (this.closed) return;
     const active = this.app.workspace.getActiveViewOfType(MarkdownView);
     if (active) this.note = active;
     if (!this.results) this.initialize();
@@ -82,9 +94,12 @@ export class HighlightsView extends ItemView {
     this.contentEl.querySelector('h4')!.textContent = this.getDisplayText();
     const options = (key: string, title: Message, entries: [string, string][]) => {
       const select = this.controls.get(key) as HTMLSelectElement, value = select.value;
-      select.setAttribute('aria-label', t(title)); select.replaceChildren(...entries.map(([value, label]) => {
+      select.setAttribute('aria-label', t(title));
+      const keyValue = JSON.stringify(entries);
+      if (this.optionKeys.get(key) !== keyValue) { select.replaceChildren(...entries.map(([value, label]) => {
         const option = select.ownerDocument.createElement('option'); option.value = value; option.textContent = label; return option;
-      })); select.value = entries.some(([key]) => key === value) ? value : entries[0]?.[0] ?? '';
+      })); this.optionKeys.set(key, keyValue); }
+      select.value = entries.some(([key]) => key === value) ? value : entries[0]?.[0] ?? '';
     };
     options('scope', 'scope', [['note', t('noteScope')], ['folder', t('folderScope')], ['vault', t('vaultScope')], ['collection', t('collectionScope')]]);
     this.controls.get('scope')!.value = this.searchScope;
@@ -103,10 +118,14 @@ export class HighlightsView extends ItemView {
     for (const button of this.contentEl.querySelectorAll<HTMLButtonElement>('[data-hb-label]')) button.textContent = t(button.dataset.hbLabel as Message);
     this.contentEl.querySelector<HTMLButtonElement>('[data-hb-workbench-action="delete-collection"]')!.hidden = this.searchScope !== 'collection' || !this.value('collection');
     this.status!.textContent = t('indexedNotes', { count: this.plugin.index.notes.size }) + (this.plugin.index.errors.size ? ` · ${t('indexErrors', { count: this.plugin.index.errors.size })}` : '');
-    const results = this.results!; results.empty();
+    const results = this.results!;
     const view = this.note;
     const file = view?.file && this.app.workspace.getLeavesOfType('markdown').includes(view.leaf) ? view.file : undefined;
-    if ((this.searchScope === 'note' || this.searchScope === 'folder') && (!file || this.app.vault.getFileByPath(file.path) !== file)) { this.hits = []; this.page = 0; this.queryKey = ''; results.createEl('p', { text: t('panelEmpty') }); return; }
+    if ((this.searchScope === 'note' || this.searchScope === 'folder') && (!file || this.app.vault.getFileByPath(file.path) !== file)) {
+      this.hits = []; this.rendered = []; this.renderKey = ''; this.renderedNote = undefined;
+      this.page = 0; this.queryKey = ''; this.summary!.textContent = t('panelEmpty');
+      this.cards!.empty(); this.pagination?.remove(); this.pagination = undefined; return;
+    }
     const collection = this.plugin.settings.collections.find(collection => collection.id === this.value('collection'));
     let all = this.searchScope === 'collection' ? collection?.entries.map(entry => resolveEntry(this.plugin.index.notes.get(entry.path), entry)) ?? [] : this.plugin.index.all();
     if (this.searchScope !== 'collection') for (const leaf of this.app.workspace.getLeavesOfType('markdown')) if (leaf.view instanceof MarkdownView && leaf.view.file?.extension === 'md') {
@@ -116,45 +135,59 @@ export class HighlightsView extends ItemView {
     }
     const label = (hit: IndexHit) => hit.item.markId ? hit.item.label : this.plugin.colorLabel(hit.item.color);
     const query = { scope: this.searchScope, note: file?.path, search: this.value('search'), type: this.value('type-filter'), semantic: this.value('semantic-filter'), color: this.value('color-filter'), language: this.value('language-filter'), path: this.value('path-filter'), sort: this.value('sort') };
-    const queryKey = JSON.stringify(query);
+    const queryKey = JSON.stringify({ ...query, collection: this.value('collection') });
     if (queryKey !== this.queryKey) this.page = 0;
     this.queryKey = queryKey;
     this.hits = queryHighlights(all, query, label);
     this.page = Math.max(0, Math.min(restorePage ?? this.page, Math.ceil(this.hits.length / this.pageSize) - 1));
     const name = this.searchScope === 'note' ? file!.basename : this.searchScope === 'folder' ? file!.parent?.path || '/' : this.searchScope === 'collection' ? collection?.name || t('collectionScope') : t('vaultScope');
-    results.createEl('p', { text: t(this.hits.length === 1 ? 'summaryOne' : 'summary', { note: name, count: this.hits.length }), cls: 'hb-summary' });
-    if (!this.hits.length) results.createEl('p', { text: this.searchScope === 'collection' && !collection ? t('noCollection') : all.length ? t('noMatches') : t('noHighlights', { preset: this.plugin.presetLabel(this.plugin.getPreset('important')) }) });
+    this.summary!.textContent = t(this.hits.length === 1 ? 'summaryOne' : 'summary', { note: name, count: this.hits.length });
     if (this.hits.length > this.pageSize) {
-      const navigation = results.createEl('nav', { cls: 'hb-pagination' }); navigation.setAttribute('aria-label', t('resultPages'));
+      const navigation = this.pagination ??= results.createEl('nav', { cls: 'hb-pagination' });
+      if (navigation.nextSibling !== this.cards) results.insertBefore(navigation, this.cards!);
+      navigation.setAttribute('aria-label', t('resultPages'));
       const turn = (page: number, direction: string) => {
         this.refresh(page); this.contentEl.scrollTop = 0;
         const buttons = [...this.results!.querySelectorAll<HTMLButtonElement>('.hb-pagination button')];
         (buttons.find(button => button.dataset.hbPage === direction && !button.disabled) ?? buttons.find(button => !button.disabled))?.focus();
       };
-      const previous = navigation.createEl('button', { text: t('previousPage') }); previous.dataset.hbPage = 'previous'; previous.disabled = this.page === 0;
-      previous.addEventListener('click', () => turn(this.page - 1, 'previous'));
-      const status = navigation.createEl('span', { text: t('pageStatus', { page: this.page + 1, pages: Math.ceil(this.hits.length / this.pageSize), from: this.page * this.pageSize + 1, to: Math.min((this.page + 1) * this.pageSize, this.hits.length), count: this.hits.length }) });
+      let previous = navigation.querySelector<HTMLButtonElement>('[data-hb-page="previous"]');
+      if (!previous) { previous = navigation.createEl('button'); previous.dataset.hbPage = 'previous'; previous.addEventListener('click', () => turn(this.page - 1, 'previous')); }
+      previous.textContent = t('previousPage'); previous.disabled = this.page === 0;
+      const status = navigation.querySelector('span') ?? navigation.createEl('span');
+      status.textContent = t('pageStatus', { page: this.page + 1, pages: Math.ceil(this.hits.length / this.pageSize), from: this.page * this.pageSize + 1, to: Math.min((this.page + 1) * this.pageSize, this.hits.length), count: this.hits.length });
       status.setAttribute('role', 'status');
-      const next = navigation.createEl('button', { text: t('nextPage') }); next.dataset.hbPage = 'next'; next.disabled = (this.page + 1) * this.pageSize >= this.hits.length;
-      next.addEventListener('click', () => turn(this.page + 1, 'next'));
-    }
+      let next = navigation.querySelector<HTMLButtonElement>('[data-hb-page="next"]');
+      if (!next) { next = navigation.createEl('button'); next.dataset.hbPage = 'next'; next.addEventListener('click', () => turn(this.page + 1, 'next')); }
+      next.textContent = t('nextPage'); next.disabled = (this.page + 1) * this.pageSize >= this.hits.length;
+    } else { this.pagination?.remove(); this.pagination = undefined; }
+    const visible = this.hits.slice(this.page * this.pageSize, (this.page + 1) * this.pageSize).map(hit => {
+      const view = this.plugin.openView(hit.path); return { hit, view, file: view?.file };
+    });
+    const renderKey = JSON.stringify([queryKey, this.page, this.plugin.locale, this.plugin.settings.presets, this.plugin.settings.collections.map(({ id, name }) => [id, name])]);
+    if (visible.length && renderKey === this.renderKey && this.renderedNote === this.note && visible.length === this.rendered.length && visible.every(({ hit, view, file }, index) => {
+      const before = this.rendered[index]!; return hit.path === before.hit.path && hit.text === before.hit.text && hit.item === before.hit.item && hit.entryId === before.hit.entryId && view === before.view && file === before.file;
+    })) return;
+    this.renderKey = renderKey; this.rendered = visible; this.renderedNote = this.note;
+    this.cards!.empty();
+    if (!this.hits.length) this.cards!.createEl('p', { text: this.searchScope === 'collection' && !collection ? t('noCollection') : all.length ? t('noMatches') : t('noHighlights', { preset: this.plugin.presetLabel(this.plugin.getPreset('important')) }) });
     let group = '';
-    const contexts = new Map<string, ReturnType<typeof createExcerptContext>>();
-    for (const hit of this.hits.slice(this.page * this.pageSize, (this.page + 1) * this.pageSize)) {
+    for (const { hit } of visible) {
       const key = this.value('sort') === 'semantic' ? label(hit) : this.searchScope === 'note' ? '' : hit.path;
-      if (key && group !== key) { results.createEl('h5', { text: key, cls: 'hb-result-group' }); group = key; }
-      let context = contexts.get(hit.text);
+      if (key && group !== key) { this.cards!.createEl('h5', { text: key, cls: 'hb-result-group' }); group = key; }
+      let context = this.excerptContexts.get(hit.text);
       if (!context) {
         const view = this.plugin.openView(hit.path), snapshot = view && this.plugin.documentFor(view.editor);
         context = snapshot?.text === hit.text ? snapshot.context : createExcerptContext(hit.text);
-        contexts.set(hit.text, context);
       }
+      this.excerptContexts.delete(hit.text); this.excerptContexts.set(hit.text, context);
+      while (this.excerptContexts.size > this.pageSize) this.excerptContexts.delete(this.excerptContexts.keys().next().value!);
       this.card(hit, context(hit.item));
     }
   }
   private card(hit: IndexHit, context: ExcerptContext): void {
     const { item } = hit, t = this.plugin.t.bind(this.plugin);
-    const card = this.results!.createDiv({ cls: `hb-card hb-${item.color}` }); card.dataset.hbPath = hit.path;
+    const card = this.cards!.createDiv({ cls: `hb-card hb-${item.color}` }); card.dataset.hbPath = hit.path;
     if (item.semantic) card.dataset.hbSemantic = item.semantic;
     const jump = card.createEl('button', { text: item.quote || t('blankLine'), cls: item.kind === 'prose' ? 'hb-quote' : 'hb-quote hb-code-quote' });
     const label = item.markId ? item.label : this.plugin.colorLabel(item.color);
@@ -197,6 +230,12 @@ export class HighlightsView extends ItemView {
       if (collection) { collection.entries = collection.entries.filter(entry => entry.id !== hit.entryId); void this.plugin.saveSettings(); }
     });
     card.createEl('button', { text: t('copyExcerpt'), cls: 'hb-copy-excerpt' }).addEventListener('click', () => { void navigator.clipboard.writeText(this.plugin.excerpt(hit)); });
+  }
+  async onClose(): Promise<void> {
+    this.closed = true;
+    this.hits = []; this.rendered = []; this.note = undefined; this.renderedNote = undefined;
+    this.renderKey = ''; this.queryKey = ''; this.controls.clear(); this.optionKeys.clear(); this.excerptContexts.clear();
+    this.contentEl.empty(); this.results = undefined; this.summary = undefined; this.cards = undefined; this.pagination = undefined;
   }
 }
 

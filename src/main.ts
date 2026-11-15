@@ -352,6 +352,7 @@ export default class HighlightBoost extends Plugin {
   }
 
   onunload(): void {
+    this.app.workspace.detachLeavesOfType(VIEW);
     this.editorViews.clear(); clearEditorDocuments();
     this.index.dispose();
     for (const toolbar of this.toolbars) toolbar.destroy();

@@ -2,7 +2,7 @@
 
 面向 Obsidian 的高亮强化插件：统一管理正文、行内代码与代码块中的重点，让标记、理解、检索和摘录形成连贯流程。
 
-项目当前已进入开发，提供桌面技术原型 `0.1.0`。调研与首次实现日期：2026-11-14。
+项目提供桌面候选构建 `0.1.0`。调研与首次实现日期：2026-11-14。
 
 ## 产品方向
 
@@ -25,7 +25,7 @@
 
 从 [实施阶段](docs/plan/06-实施阶段.md) 开始开发；每个阶段列出依赖、交付物和验收条件。
 
-## 当前原型
+## 当前功能
 
 已实现正文局部改色、原生六色及默认色、行内代码整段标注、代码块整行与精确文本标注，以及跨三类对象的连续选区。提供当前笔记侧栏、来源跳转和基础摘录，支持 callout/列表代码、标注重新绑定、独立撤销和 Live Preview 元数据折叠。四种语义可改名改色。
 
@@ -59,8 +59,8 @@ pnpm check
 pnpm prepare:vault
 ```
 
-构建生成 `main.js`。将它与 `manifest.json`、`styles.css` 放入测试库的插件目录，即可加载原型。`prepare:vault` 在项目内创建 `.test-vault` 并复制原型及样例。
+构建生成 `main.js`。将它与 `manifest.json`、`styles.css` 放入测试库的插件目录，即可加载插件。`prepare:vault` 在项目内创建 `.test-vault` 并复制构建及样例。
 
-[桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [性能与验收进展](docs/verification/phase-g-performance.md) · [v1 格式](docs/formats/README.md)
+[桌面操作说明](docs/usage.md) · [开发与接口测试](docs/development.md) · [桌面验收矩阵](docs/verification/phase-g-matrix.md) · [v1 格式](docs/formats/README.md)
 
-阶段 A—F 已完成，阶段 G 已完成三轮性能优化。共享文档后，200 KiB 标注至侧栏更新中位耗时由 1749 ms 降到 218 ms；分页后，千条查询刷新由 3776 ms 降到 188 ms，万条查询约 195 ms，见[第三轮记录](docs/verification/phase-g-performance-round3.md)。188 项逻辑/DOM/引擎测试、500 组解析差分、663 项宿主功能检查及 15 项大库检查通过。桌面兼容矩阵和剩余性能路径继续推进，当前提供源码及内部构建。
+阶段 A—G 已完成。最终三平台实际 Obsidian 验收各通过 36 个场景、1112 项检查；扩展主题与插件矩阵通过 120 个单元、970 项检查。200 项逻辑 / DOM / 引擎测试和 500 组解析差分通过。五轮统一性能优化后，200 KiB 标注至侧栏 DOM 的 p95 为 244 ms，Shiki 五千行滚动中位耗时由 1188 ms 降至 49 ms。候选包已通过全新安装、重启和摘要核对，见[阶段 G 完成清单](docs/plan/10-阶段G收尾清单.md)。正式 tag、Release 和社区上架进入阶段 H。

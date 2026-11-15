@@ -6,8 +6,6 @@ An Obsidian desktop plugin for highlighting and annotating prose, inline code an
 
 Supports Windows, macOS and Linux. Targets the latest stable Obsidian desktop version, currently **1.15.1**.
 
-![Prose and code highlights with the sidebar](docs/verification/images/compat-default-dark-zh.png)
-
 ## Features
 
 - **Prose and code highlights**: Native prose colors, whole inline-code highlights, and line or exact-range highlights inside code blocks. Apply changes across multiple selections in one undo step.
@@ -19,7 +17,9 @@ Supports Windows, macOS and Linux. Targets the latest stable Obsidian desktop ve
 
 ## Installation
 
-Highlight Boost has been submitted to the community directory. Once listed, search for **Highlight Boost** in **Settings → Community plugins**.
+Community installation (recommended):
+
+Search for **Highlight Boost** in **Settings → Community plugins**.
 
 For manual installation:
 

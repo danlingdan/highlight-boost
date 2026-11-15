@@ -4,7 +4,7 @@
 
 从 [GitHub Releases](https://github.com/danlingdan/highlight-boost/releases) 下载同一版本的 `main.js`、`manifest.json` 和 `styles.css`，放入笔记库的 `.obsidian/plugins/highlight-boost/`。也可将安装 ZIP 中的 `highlight-boost/` 文件夹解压到 `.obsidian/plugins/`。
 
-在“设置 → 第三方插件”中启用 Highlight Boost。社区目录已提交，收录后可直接搜索安装。当前基线为 Obsidian 1.15.1，支持 Windows、macOS 和 Linux；版本支持跟随最新桌面稳定版。
+在“设置 → 第三方插件”中启用 Highlight Boost。
 
 ## 第一次使用
 

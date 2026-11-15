@@ -11,6 +11,8 @@ coverage/
 .test-scale-profile/
 .test-responsive-vault/
 .test-responsive-profile/
+.test-compat-vault/
+.test-compat-profile/
 main.js
 main.js.map
 .env

@@ -13,8 +13,9 @@ net.Server.prototype.listen = function (...args) {
 
 const root = path.resolve(__dirname, '..');
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
-const profile = path.join(root, process.env.HB_HOST_MODE === 'responsive' ? '.test-responsive-profile' : scale ? '.test-scale-profile' : '.test-host-profile');
-const vault = path.join(root, process.env.HB_HOST_MODE === 'responsive' ? '.test-responsive-vault' : scale ? '.test-scale-vault' : '.test-vault');
+const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat' }[process.env.HB_HOST_MODE];
+const profile = path.join(root, suite ? `.test-${suite}-profile` : '.test-host-profile');
+const vault = path.join(root, suite ? `.test-${suite}-vault` : '.test-vault');
 const runtime = require('./obsidian-runtime.cjs')(root);
 const source = runtime.source;
 const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
@@ -38,6 +39,7 @@ scenarios.responsive = ['responsive.scenario.js', 'host-responsive-results.json'
 scenarios.lifecycle = ['lifecycle.scenario.js', 'host-lifecycle-results.json'];
 scenarios['lifecycle-shiki'] = ['lifecycle.scenario.js', 'host-lifecycle-shiki-results.json'];
 scenarios.pagination = ['pagination.scenario.js', 'host-pagination-results.json'];
+scenarios.compatibility = ['compatibility.scenario.js', 'host-compatibility-results.json'];
 scenarios.migration = ['migration.scenario.js', 'host-migration-results.json'];
 scenarios['migration-restart'] = ['migration-restart.scenario.js', 'host-migration-restart-results.json'];
 scenarios.parameters = ['fence-params.scenario.js', 'host-parameters-results.json'];
@@ -48,8 +50,8 @@ scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-re
 scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
 const lifecycle = mode === 'lifecycle' || mode === 'lifecycle-shiki';
-const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination'];
-if (captureModes.includes(mode)) {
+const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination', 'compatibility'];
+if (!['performance', 'scale', 'responsive'].includes(mode)) {
   app.disableHardwareAcceleration();
   const BrowserWindow = electron.BrowserWindow;
   const offscreenElectron = Object.create(electron);

@@ -1,0 +1,72 @@
+[
+  {
+    "kind": "theme",
+    "name": "Minimal",
+    "repo": "kepano/obsidian-minimal",
+    "tag": "9.1.4",
+    "files": {
+      "manifest.json": "67a4ff8e848607644a3092bb5b016c934dba0672a3411143e314348ac6d4f7e7",
+      "theme.css": "b63ef8a162529a06a945b51a4dacf73333b1d273660be26c86def455584996a8"
+    },
+    "version": "9.1.4"
+  },
+  {
+    "kind": "theme",
+    "name": "AnuPpuccin",
+    "repo": "AnubisNekhet/AnuPpuccin",
+    "tag": "v1.5.0",
+    "files": {
+      "manifest.json": "5bcaf964520de9aaa128a66873951498913e6c254f162698cdafcb2bb732a5ba",
+      "theme.css": "4e83db2824ba38e423c970d11c84c3e44b6b8babf38bab983640d330d58bb9dc"
+    },
+    "version": "1.5.0"
+  },
+  {
+    "kind": "plugin",
+    "name": "Style Settings",
+    "repo": "community-archive/obsidian-style-settings",
+    "tag": "1.0.9",
+    "files": {
+      "manifest.json": "9cffdc20cf2aa1354820e0050b694b0f9b576446e3d5d44a36ae8b0187e5bfb8",
+      "main.js": "1828abaacdab4c5578b705a625c585b30512f8efad4c7cfc5a18e70cc3557468",
+      "styles.css": "ee7937d2be50653a89ccb30ae5f0572b23507d5b7f1328d005271a363075bfd8"
+    },
+    "version": "1.0.9"
+  },
+  {
+    "kind": "plugin",
+    "name": "Code Styler",
+    "repo": "mayurankv/Obsidian-Code-Styler",
+    "tag": "1.1.7",
+    "files": {
+      "manifest.json": "58dcf9f9311888de2780073a938bc80552000f452e7e260e5ed2d022e2b89f8c",
+      "main.js": "7864e690a4201a720070de59fbce45ecaccbc3a38fdb9bda30c3f10d3d3dccff",
+      "styles.css": "2f6576ce067dcf4994bc1d2afa21f1f689139a97970208a38c4ec9d9a8d149de"
+    },
+    "version": "1.1.7"
+  },
+  {
+    "kind": "plugin",
+    "name": "Codeblock Customizer",
+    "repo": "mugiwara85/CodeblockCustomizer",
+    "tag": "1.4.7",
+    "files": {
+      "manifest.json": "638ee1c7f23daa4a900f98a982b729fda04b7e2efe55775c575f48ac70ca9527",
+      "main.js": "f0a437a1b43d120874924f2acd7cb35b313adc7a7d710ff0f189930c948e7c1b",
+      "styles.css": "3943c32b0ac7c10af476e6c36461df59a9de9788d057c6f149a72c216061b339"
+    },
+    "version": "1.4.7"
+  },
+  {
+    "kind": "plugin",
+    "name": "Shiki Highlighter",
+    "repo": "mProjectsCode/obsidian-shiki-plugin",
+    "tag": "0.8.0",
+    "version": "0.8.0",
+    "files": {
+      "main.js": "17172f4324e50c92c3becc67360a8a1a65c85e10b0d13ccf424b2cc043d266b2",
+      "manifest.json": "516768fdf03357154274df492879610cbf27987b9c3cdfadec5744f35736adba",
+      "styles.css": "0df4526fc7d7440c9fb021cd948db1813fb9dc61df1cb75a7de2cc1a79b7a85c"
+    }
+  }
+]

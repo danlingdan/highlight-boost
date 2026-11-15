@@ -24,3 +24,12 @@
 生命周期检查覆盖三次启停及旧插件、工作台实例回收；新增卸载前后叶节点身份与父容器相同的断言。设置检查核对宿主注册的搜索定义；多窗口检查核对静态样式、着色、复制、关闭与布局恢复。
 
 截图见 [原生代码展示](images/display-native.png)、[内置代码展示](images/display-builtin.png)、[围栏参数](images/parameters.png)。官方分支复核、CI 构建与正式发布结果在执行后追加。
+
+
+## 官方分支预审
+
+第一次预审 `623c5e0` 已完成，四类阻塞错误清零。后续将文档片段创建改用宿主辅助方法，设置渲染回调明确返回 void，英文文档设为仓库首页，完整中文说明保留在 `README.zh-CN.md`。
+
+另在最新目标宿主运行默认原生 / 内置、外部 Shiki、Code Styler、Codeblock Customizer 五组样式共存检查，共 479 项通过，页面错误为零。原始结果为本目录的 `default-native.json`、`default-internal.json`、`external-shiki.json`、`code-styler.json`、`customizer.json`。静态语法样式增加作用域后，标注使用更高优先级的选择器，保留背景、下划线、批注和行号。
+
+CSS 审核仍使用 Obsidian 1.11.4 的兼容基线；本项目目标为 1.15.1，已核对该版本的标注计算样式。全库 Markdown 枚举与剪贴板写入是对应功能的实现，使用范围已在中英文文档说明。

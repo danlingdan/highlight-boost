@@ -13,7 +13,7 @@ net.Server.prototype.listen = function (...args) {
 
 const root = path.resolve(__dirname, '..');
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
-const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', multiwindow: 'multiwindow', frames: 'frames' }[process.env.HB_HOST_MODE];
+const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', multiwindow: 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
 const profile = path.join(root, suite ? `.test-${suite}-profile` : '.test-host-profile');
 const vault = path.join(root, suite ? `.test-${suite}-vault` : '.test-vault');
 const runtime = require('./obsidian-runtime.cjs')(root);
@@ -43,6 +43,8 @@ scenarios.compatibility = ['compatibility.scenario.js', 'host-compatibility-resu
 scenarios.multiwindow = ['multiwindow.scenario.js', 'host-multiwindow-results.json'];
 scenarios.accessibility = ['accessibility.scenario.js', 'host-accessibility-results.json'];
 scenarios.frames = ['frames.scenario.js', 'host-frames-results.json'];
+scenarios.install = ['install.scenario.js', 'host-install-results.json'];
+scenarios['install-restart'] = ['install.scenario.js', 'host-install-restart-results.json'];
 scenarios.migration = ['migration.scenario.js', 'host-migration-results.json'];
 scenarios['migration-restart'] = ['migration-restart.scenario.js', 'host-migration-restart-results.json'];
 scenarios.parameters = ['fence-params.scenario.js', 'host-parameters-results.json'];
@@ -189,7 +191,7 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || mode === 'accessibility' || mode === 'frames' || lifecycle) {
+      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || mode === 'accessibility' || mode === 'frames' || mode.startsWith('install') || lifecycle) {
         if (!contents.debugger.isAttached()) contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }

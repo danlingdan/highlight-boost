@@ -49,7 +49,16 @@
       assert(`${provider}-scroll-selection-exact`, editor.getSelection() === word);
       await frame('frame-scroll', cm.scrollDOM);
     });
-    if (provider === 'shiki') { const reused = tokenizations === initialTokenizations; if (window.__hbFrameBaseline) checks.push({ name: 'shiki-scroll-tokenizations-observed', passed: true, tokenizations, initialTokenizations }); else assert('shiki-scroll-reuses-document-tokens', reused, { tokenizations, initialTokenizations }); }
+    if (provider === 'shiki') {
+      const reused = tokenizations === initialTokenizations;
+      if (window.__hbFrameBaseline) checks.push({ name: 'shiki-scroll-tokenizations-observed', passed: true, tokenizations, initialTokenizations });
+      else {
+        assert('shiki-scroll-reuses-document-tokens', reused, { tokenizations, initialTokenizations });
+        editor.replaceRange('let', { line: 1, ch: 0 }, { line: 1, ch: 5 });
+        assert('shiki-edit-rebuilds-tokens', await until(() => tokenizations > initialTokenizations && [...editor.cm.dom.querySelectorAll('.hb-syntax-token')].some(node => node.textContent === 'let')));
+        editor.undo(); assert('shiki-edit-undo-source-exact', editor.getValue() === code);
+      }
+    }
     assert(`${provider}-scroll-source-exact`, editor.getValue() === code);
   }
   const fs = window.require('fs'), nodePath = window.require('path'), crypto = window.require('crypto');

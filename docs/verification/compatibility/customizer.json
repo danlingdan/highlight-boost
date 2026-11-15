@@ -119,6 +119,10 @@
       "passed": true
     },
     {
+      "name": "compat-zh-dark-reading-code-mark-style",
+      "passed": true
+    },
+    {
       "name": "compat-zh-dark-reading-long-line-bounds",
       "passed": true
     },
@@ -196,6 +200,10 @@
     },
     {
       "name": "compat-zh-light-reading-annotation",
+      "passed": true
+    },
+    {
+      "name": "compat-zh-light-reading-code-mark-style",
       "passed": true
     },
     {
@@ -279,6 +287,10 @@
       "passed": true
     },
     {
+      "name": "compat-en-dark-reading-code-mark-style",
+      "passed": true
+    },
+    {
       "name": "compat-en-dark-reading-long-line-bounds",
       "passed": true
     },
@@ -359,6 +371,10 @@
       "passed": true
     },
     {
+      "name": "compat-en-light-reading-code-mark-style",
+      "passed": true
+    },
+    {
       "name": "compat-en-light-reading-long-line-bounds",
       "passed": true
     },
@@ -384,6 +400,7 @@
     }
   ],
   "errors": [],
+  "testVaultTrustAccepted": false,
   "observations": {
     "case": {
       "id": "customizer",

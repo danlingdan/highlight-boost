@@ -1,6 +1,6 @@
 {
-  "obsidian": "1.15.0",
-  "electron": "38.8.6",
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
   "checks": [
     {
       "name": "performance-medium-source",
@@ -28,60 +28,60 @@
     "metrics": {
       "native-enable": {
         "samplesMs": [
-          233.80000000074506,
-          218,
-          239.80000000074506
+          158.80000001192093,
+          133,
+          132.70000000298023
         ],
-        "p50Ms": 233.80000000074506,
-        "p95Ms": 239.80000000074506
+        "p50Ms": 133,
+        "p95Ms": 158.80000001192093
       },
       "shiki-enable": {
         "samplesMs": [
-          339.6000000014901,
-          334.3999999985099,
-          290.0999999977648
+          168.5,
+          243.40000000596046,
+          255.69999998807907
         ],
-        "p50Ms": 334.3999999985099,
-        "p95Ms": 339.6000000014901
+        "p50Ms": 243.40000000596046,
+        "p95Ms": 255.69999998807907
       },
       "edit-to-sidebar-200KiB": {
         "samplesMs": [
-          2239.5,
-          2375.89999999851,
-          2222.10000000149,
-          2318.39999999851,
-          1998.699999999255
+          294,
+          217.6000000089407,
+          227.3999999910593,
+          214,
+          216.29999999701977
         ],
-        "p50Ms": 2239.5,
-        "p95Ms": 2375.89999999851
+        "p50Ms": 217.6000000089407,
+        "p95Ms": 294
       },
       "render-500-code-lines": {
         "samplesMs": [
-          19.600000001490116,
-          365,
-          14.599999997764826,
-          14,
-          16.300000000745058,
-          15.699999999254942,
-          13.900000002235174
+          324.3999999910593,
+          29.100000008940697,
+          34,
+          34.099999994039536,
+          39.80000001192093,
+          38.5,
+          21.400000005960464
         ],
-        "p50Ms": 15.699999999254942,
-        "p95Ms": 365
+        "p50Ms": 34.099999994039536,
+        "p95Ms": 324.3999999910593
       },
       "selection-transaction-5000-lines": {
         "samplesMs": [
-          17.399999998509884,
-          17,
-          12.600000001490116,
-          9.199999999254942,
-          9
+          6.800000011920929,
+          10.099999994039536,
+          3.7999999970197678,
+          7.600000008940697,
+          6.799999997019768
         ],
-        "p50Ms": 12.600000001490116,
-        "p95Ms": 17.399999998509884
+        "p50Ms": 6.800000011920929,
+        "p95Ms": 10.099999994039536
       }
     },
     "errors": [],
-    "buildSha256": "991d80e5a8235a27acef6454c3a647ff48fed5daf0623f6064bcc4889ee74b4c",
+    "buildSha256": "722a9207adbed7f11e587ed376ac122ebebb2120fe1eec19798135cbbd42ad5e",
     "timing": "DOM-ready with forced layout; no animation-frame wait",
     "fixtures": {
       "mediumBytes": 204800,
@@ -90,20 +90,20 @@
       "largeCodeBytes": 1037789
     },
     "rendererHeap": {
-      "total_heap_size": 128593920,
-      "total_heap_size_executable": 7077888,
-      "total_physical_size": 128593920,
-      "total_available_size": 4213140080,
-      "used_heap_size": 76279060,
-      "heap_size_limit": 4294705152,
-      "malloced_memory": 555040,
-      "peak_malloced_memory": 7975624,
+      "total_heap_size": 143777792,
+      "total_heap_size_executable": 8126464,
+      "total_physical_size": 143777792,
+      "total_available_size": 4308039408,
+      "used_heap_size": 83369688,
+      "heap_size_limit": 4395630592,
+      "malloced_memory": 544804,
+      "peak_malloced_memory": 10309736,
       "does_zap_garbage": 0,
       "number_of_native_contexts": 3,
       "number_of_detached_contexts": 0,
-      "total_global_handles_size": 3193032,
-      "used_global_handles_size": 2659136,
-      "external_memory": 119613347
+      "total_global_handles_size": 4287000,
+      "used_global_handles_size": 3382848,
+      "external_memory": 36017141
     },
     "indexNotes": 51
   }

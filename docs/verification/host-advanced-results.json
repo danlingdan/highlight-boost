@@ -1,6 +1,6 @@
 {
-  "obsidian": "1.15.0",
-  "electron": "38.8.6",
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
   "checks": [
     {
       "name": "advanced-plugin-load",

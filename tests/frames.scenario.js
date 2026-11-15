@@ -21,6 +21,7 @@
   const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   const editor = leaf.view.editor; await plugin.openPanel('note');
+  assert('frame-sidebar-inside-viewport', await until(() => { const card=document.querySelector('.hb-card'); if(!card)return false; const bounds=card.getBoundingClientRect(); return bounds.width>0&&bounds.left>=0&&bounds.right<=innerWidth&&bounds.bottom<=innerHeight; }));
   const measure = async (name, count, action) => { const samplesMs = []; for (let i = 0; i < count; i++) { const start = performance.now(); await action(i); samplesMs.push(performance.now() - start); } const sorted = [...samplesMs].sort((a, b) => a - b); metrics[name] = { samplesMs, p50Ms: sorted[Math.ceil(count * .5) - 1], p95Ms: sorted[Math.ceil(count * .95) - 1] }; };
   await measure('edit-to-sidebar-frame-200KiB', 7, async i => {
     const from = editor.getValue().indexOf('needle'); editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 6));
@@ -63,7 +64,7 @@
   }
   const fs = window.require('fs'), nodePath = window.require('path'), crypto = window.require('crypto');
   const buildSha256 = crypto.createHash('sha256').update(fs.readFileSync(nodePath.join(app.vault.adapter.basePath, plugin.manifest.dir, 'main.js'))).digest('hex');
-  window.__hbObservations = { metrics, errors, buildSha256, rendering: 'Electron offscreen software rendering; two animation frames followed by native capturePage', mediumBytes: new TextEncoder().encode(source).length, largeCodeBytes: new TextEncoder().encode(code).length };
+  window.__hbObservations = { metrics, errors, buildSha256, viewport: { width: innerWidth, height: innerHeight }, rendering: 'Electron offscreen software rendering; two animation frames followed by native capturePage', mediumBytes: new TextEncoder().encode(source).length, largeCodeBytes: new TextEncoder().encode(code).length };
   plugin.settings = original; await plugin.saveSettings();
   assert('frames-no-page-errors', errors.length === 0, errors);
   return checks;

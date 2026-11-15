@@ -1,12 +1,18 @@
 name: Desktop host
 on:
   workflow_dispatch:
+    inputs:
+      window_diagnostics:
+        description: 仅运行 macOS 窗口观察器诊断
+        type: boolean
+        default: false
   push:
     paths: ['src/**', 'tests/**', 'scripts/**', 'styles.css', 'manifest.json', 'package.json', 'pnpm-lock.yaml', '.github/workflows/host.yml']
 permissions:
   contents: read
 jobs:
   host:
+    if: ${{ !inputs.window_diagnostics }}
     strategy:
       fail-fast: false
       matrix:
@@ -62,3 +68,27 @@ jobs:
             .local/exports/pdf/*.pdf
             dist/**/candidate.json
             dist/**/highlight-boost.zip
+  window-diagnostics:
+    if: ${{ inputs.window_diagnostics }}
+    runs-on: macos-latest
+    timeout-minutes: 10
+    env:
+      HB_TRACE: '1'
+      HB_RO_TRACE: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm prepare:runtime
+      - run: pnpm test:multiwindow
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: window-diagnostics
+          path: docs/verification/host-multiwindow*-results.json

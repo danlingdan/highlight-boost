@@ -21,6 +21,11 @@
   turn('next'); assert('pagination-second-page', cards().length === 50 && first() === 'item-050');
   assert('pagination-focus-after-turn', document.activeElement?.dataset.hbPage === 'next');
   workbench.refresh(); assert('pagination-refresh-keeps-page', first() === 'item-050');
+  const retainedCard = cards()[0], retainedNext = panel().querySelector('[data-hb-page="next"]'), retainedOption = panel().querySelector('.hb-sort option');
+  retainedNext.focus(); workbench.refresh();
+  assert('pagination-unchanged-card-retained', cards()[0] === retainedCard);
+  assert('pagination-progress-retains-focus', document.activeElement === retainedNext && panel().querySelector('[data-hb-page="next"]') === retainedNext);
+  assert('pagination-unchanged-options-retained', panel().querySelector('.hb-sort option') === retainedOption);
   const state = workbench.getState(); assert('pagination-state-saves-page', state.page === 1);
   await workbench.leaf.setViewState({ type: 'highlight-boost', state });
   assert('pagination-state-restores-page', first() === 'item-050');
@@ -45,6 +50,12 @@
   const exportText = exported && await app.vault.read(exported);
   assert('pagination-export-first-last', exportText?.includes('item-000') && exportText.includes('item-122'));
   plugin.exportHits = exportHits;
+  const entries = plugin.index.notes.get(path).items.map(item => ({ id: crypto.randomUUID(), path, kind: item.kind, from: item.from, quote: item.quote, prefix: '', suffix: '', color: item.color, label: item.label }));
+  plugin.settings.collections.push({ id: 'pagination-full', name: 'Full pages', entries }, { id: 'pagination-part', name: 'Partial pages', entries: entries.slice(60).map(entry => ({ ...entry, id: crypto.randomUUID() })) });
+  await plugin.saveSettings(); set('collection', 'pagination-full'); await workbench.setScope('collection'); turn('next');
+  assert('pagination-collection-second-page', workbench.getState().page === 1);
+  set('collection', 'pagination-part');
+  assert('pagination-collection-change-resets-page', workbench.getState().page === 0 && first() === 'item-060');
   await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
   await workbench.setScope('note'); turn('next'); turn('next');
   leaf.view.editor.setValue('# Short\n\n==only-one=='); await plugin.index.ready; workbench.refresh();

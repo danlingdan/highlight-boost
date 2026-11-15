@@ -1,13 +1,14 @@
 import { mkdir, copyFile, writeFile, rm } from 'node:fs/promises';
 import { resolve } from 'node:path';
 
-const root = resolve('.test-scale-vault'), plugin = resolve(root, '.obsidian/plugins/highlight-boost');
+const responsive = process.argv.includes('--responsive');
+const root = resolve(responsive ? '.test-responsive-vault' : '.test-scale-vault'), plugin = resolve(root, '.obsidian/plugins/highlight-boost');
 await mkdir(plugin, { recursive: true });
 for (const file of ['main.js', 'manifest.json', 'styles.css']) await copyFile(file, resolve(plugin, file));
 await writeFile(resolve(root, '.obsidian/community-plugins.json'), '[]');
 await writeFile(resolve(root, '.obsidian/app.json'), JSON.stringify({ livePreview: true }));
 await rm(resolve(root, '.obsidian/workspace.json'), { force: true });
-const count = 10000, bytesPerNote = 10486;
+const count = responsive ? 1000 : 10000, bytesPerNote = 10486;
 for (let batch = 0; batch < count; batch += 100) {
   const directory = resolve(root, `notes/${String(batch / 100).padStart(3, '0')}`);
   await mkdir(directory, { recursive: true });

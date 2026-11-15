@@ -31,7 +31,9 @@
     "bench:host": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=performance",
     "prepare:runtime": "node scripts/prepare-runtime.mjs",
     "bench:scale": "pnpm build && node scripts/prepare-scale-vault.mjs && node scripts/test-host.mjs --mode=scale",
-    "test:pagination": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=pagination"
+    "test:pagination": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=pagination",
+    "bench:responsive": "pnpm build && node scripts/prepare-scale-vault.mjs --responsive && node scripts/test-host.mjs --mode=responsive",
+    "test:lifecycle": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=lifecycle"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",

@@ -9,6 +9,8 @@ coverage/
 .test-host-profile/
 .test-scale-vault/
 .test-scale-profile/
+.test-responsive-vault/
+.test-responsive-profile/
 main.js
 main.js.map
 .env

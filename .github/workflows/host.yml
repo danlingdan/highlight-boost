@@ -1,0 +1,40 @@
+name: Desktop host
+on:
+  workflow_dispatch:
+  push:
+    paths: ['src/**', 'tests/**', 'scripts/**', 'styles.css', 'manifest.json', 'package.json', 'pnpm-lock.yaml', '.github/workflows/host.yml']
+permissions:
+  contents: read
+jobs:
+  host:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11.25.0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm prepare:runtime
+      - run: node scripts/prepare-host-ci.mjs
+      - if: runner.os != 'Linux'
+        run: pnpm test:host
+      - if: runner.os == 'Linux'
+        run: xvfb-run -a pnpm test:host
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: host-${{ matrix.os }}
+          path: |
+            docs/verification/host-*-results.json
+            docs/verification/host-results.json
+            docs/verification/host-environment.json
+            docs/verification/images/

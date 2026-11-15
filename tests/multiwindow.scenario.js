@@ -33,6 +33,8 @@
     assert(`${provider}-host-saved-source`, await app.vault.read(file) === marked);
     assert(`${provider}-duplicate-synchronized`, await until(() => duplicate.view.editor.getValue() === marked));
     assert(`${provider}-popout-index`, plugin.index.notes.get(path).text === marked && plugin.index.notes.get(path).items.length === 3);
+    await popoutWindow.navigator.clipboard.writeText('pending'); await plugin.copyCode(editor);
+    assert(`${provider}-popup-copy-command`, await popoutWindow.navigator.clipboard.readText() === 'const value = 1;\nconsole.log(value);');
     if (provider === 'shiki') assert('shiki-popout-source-tokens', await until(() => Boolean(leaf.view.containerEl.querySelector('.hb-syntax-token'))));
     await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
     const preview = leaf.view.containerEl.querySelector('.markdown-preview-view');
@@ -47,6 +49,9 @@
     assert(`${provider}-workbench-source-context`, panelLeaf.view.note === leaf.view);
     const codeCard = [...panelWindow.doc.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'value'); codeCard.querySelector('.hb-quote').click();
     assert(`${provider}-cross-window-jump`, await until(() => leaf.view.getMode() === 'source' && editor.getSelection() === 'value'), { mode: leaf.view.getMode(), selection: editor.getSelection() });
+    await panelWindow.win.navigator.clipboard.writeText('pending'); panelWindow.doc.querySelector('.hb-copy-excerpt').click();
+    let excerpt = ''; for(let i=0;i<30&&!excerpt;i++){await tick();const value=await panelWindow.win.navigator.clipboard.readText();if(value!=='pending')excerpt=value;}
+    assert(`${provider}-popup-copy-excerpt`, excerpt.includes('window prose'));
     workbenchWindow.close(); assert(`${provider}-workbench-window-closed`, await until(() => workbenchWindow.closed));
     popoutWindow.close(); assert(`${provider}-source-window-closed`, await until(() => popoutWindow.closed)); await tick();
     assert(`${provider}-closed-document-released`, ![...plugin.editorViews.values()].some(view => view.dom.ownerDocument === popoutDocument));

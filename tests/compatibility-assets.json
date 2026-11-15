@@ -68,5 +68,17 @@
       "manifest.json": "516768fdf03357154274df492879610cbf27987b9c3cdfadec5744f35736adba",
       "styles.css": "0df4526fc7d7440c9fb021cd948db1813fb9dc61df1cb75a7de2cc1a79b7a85c"
     }
+  },
+  {
+    "kind": "plugin",
+    "name": "Highlight-Extractor",
+    "repo": "kfirgumay2005-hash/Highlight-Extractor",
+    "tag": "1.1.4",
+    "version": "1.1.4",
+    "files": {
+      "main.js": "3b2c0b13b9ff3f303547eb1d183eef1e7cbfecdcff7a4f50b7616cae8aaefd11",
+      "manifest.json": "8cf2d2dd5d3cb373bf434bbb4ea7e2766729d7219a7bb2ce51be166158d1c901",
+      "styles.css": "8764243cae0351ebdbb76e770c4feffcb1956ff42420d4ec159212dc7a8535ed"
+    }
   }
 ]

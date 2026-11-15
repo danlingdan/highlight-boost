@@ -89,6 +89,20 @@
   await navigator.clipboard.writeText('pending'); app.commands.executeCommandById('highlight-boost:copy-code');
   let copied = ''; for (let i = 0; i < 40 && copied === ''; i++) { await tick(); const current = await navigator.clipboard.readText(); if (current !== 'pending') copied = current; }
   assert('compat-copy-pure-code', copied === expectedCopy, copied);
+  if (test.id === 'extractor') {
+    await navigator.clipboard.writeText('pending');
+    assert('compat-extractor-copy-command', app.commands.executeCommandById('highlightextractor:copy-highlights-active-file-clipboard'));
+    let extracted = '';
+    for (let i = 0; i < 40 && !extracted; i++) { await tick(); const current = await navigator.clipboard.readText(); if (current !== 'pending') extracted = current; }
+    assert('compat-extractor-prose-content', extracted.includes('prose target') && !extracted.includes('%%hbp:'), extracted);
+    const dynamicPath = '摘录插件动态视图.md', dynamicText = '# Extractor\n\n```highlights-extractor\ntimeframe: all\nmode: highlight\n```\n';
+    const previous = app.vault.getFileByPath(dynamicPath), dynamicFile = previous ? (await app.vault.modify(previous, dynamicText), previous) : await app.vault.create(dynamicPath, dynamicText);
+    const dynamicLeaf = app.workspace.getLeaf('tab'); await dynamicLeaf.openFile(dynamicFile);
+    await dynamicLeaf.setViewState({ type: 'markdown', state: { file: dynamicPath, mode: 'preview' } });
+    assert('compat-extractor-dynamic-block', await until(() => dynamicLeaf.view.containerEl.querySelector('.markdown-preview-view')?.textContent.includes('prose target')));
+    assert('compat-extractor-dynamic-metadata-hidden', !dynamicLeaf.view.containerEl.querySelector('.markdown-preview-view').innerText.includes('%%hb'));
+    assert('compat-extractor-source-exact', editor.getValue() === marked && await app.vault.read(dynamicFile) === dynamicText);
+  }
   assert('compat-no-page-errors', errors.length === 0, errors);
   return checks;
 })()

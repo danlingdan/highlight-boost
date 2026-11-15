@@ -7,5 +7,6 @@
   { "id": "anuppuccin-internal", "theme": "AnuPpuccin", "provider": "shiki", "plugins": ["obsidian-style-settings"] },
   { "id": "code-styler", "theme": "Minimal", "provider": "native", "plugins": ["obsidian-style-settings", "code-styler"] },
   { "id": "customizer", "theme": "AnuPpuccin", "provider": "native", "plugins": ["obsidian-style-settings", "codeblock-customizer"] },
-  { "id": "external-shiki", "theme": "", "provider": "native", "plugins": ["shiki-highlighter"] }
+  { "id": "external-shiki", "theme": "", "provider": "native", "plugins": ["shiki-highlighter"] },
+  { "id": "extractor", "theme": "", "provider": "shiki", "plugins": ["highlightextractor"] }
 ]

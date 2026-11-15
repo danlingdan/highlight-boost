@@ -59,7 +59,7 @@
   assert('toolbar-remove-keeps-other-code-mark', code()[0].marks.length === 1 && code()[0].marks[0].semantic === 'action');
   assert('toolbar-code-source-exact', editor.getValue().match(/```js\n([\s\S]*?)\n```/)[1] === codeBefore);
   select('beta');
-  await until(() => toolbar());
+  assert('toolbar-prose-context-ready', await until(() => toolbar()?.querySelector('.hb-selection-context')?.textContent.includes('正文') && !toolbar().querySelector('[data-hb-action="mode-text"]')));
   toolbar().querySelector('button').focus();
   toolbar().dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true, cancelable: true }));
   assert('toolbar-arrow-navigation', document.activeElement?.dataset.hbAction === 'preset-question');

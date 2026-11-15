@@ -42,6 +42,7 @@ scenarios.pagination = ['pagination.scenario.js', 'host-pagination-results.json'
 scenarios.compatibility = ['compatibility.scenario.js', 'host-compatibility-results.json'];
 scenarios.multiwindow = ['multiwindow.scenario.js', 'host-multiwindow-results.json'];
 scenarios['multiwindow-restart'] = ['multiwindow-restart.scenario.js', 'host-multiwindow-restart-results.json'];
+scenarios['multiwindow-baseline'] = ['multiwindow-baseline.scenario.js', 'host-multiwindow-baseline-results.json'];
 scenarios.accessibility = ['accessibility.scenario.js', 'host-accessibility-results.json'];
 scenarios.frames = ['frames.scenario.js', 'host-frames-results.json'];
 scenarios.install = ['install.scenario.js', 'host-install-results.json'];

@@ -2,7 +2,7 @@
 
 ## 安装与启用
 
-从 [GitHub Releases](https://github.com/danlingdan/highlight-boost/releases) 下载同一版本的 `main.js`、`manifest.json` 和 `styles.css`，放入笔记库的 `.obsidian/plugins/highlight-boost/`。也可将安装 ZIP 中的 `highlight-boost/` 文件夹解压到 `.obsidian/plugins/`。
+从 [GitHub Releases](https://github.com/danlingdan/highlight-boost/releases) 下载同一版本的 `main.js`、`manifest.json` 和 `styles.css`，放入笔记库的 `.obsidian/plugins/highlight-boost/`。
 
 在“设置 → 第三方插件”中启用 Highlight Boost。
 

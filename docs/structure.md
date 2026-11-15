@@ -29,6 +29,7 @@
   exports/pdf/  实际宿主 PDF 导出
 dist/           按版本与源码提交划分的候选包
 main.js         Obsidian 加载的构建入口，生成文件
+styles.css      构建生成的插件样式，源文件在 src/styles.css
 ```
 
 路径集中定义在 `scripts/paths.cjs`，测试库准备和宿主启动共用同一配置。`node_modules/` 存放本地依赖。对外提交的是源码、配置与已归档证据；临时日志和本地测试状态留在 `.local/`。

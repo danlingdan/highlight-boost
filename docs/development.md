@@ -13,7 +13,7 @@ pnpm prepare:runtime
 pnpm prepare:vault
 ```
 
-`pnpm dev` 监听源码并生成 `main.js`。重新构建后运行 `pnpm prepare:vault` 将产物复制到项目内 `.local/vaults/default/.obsidian/plugins/highlight-boost/`。
+`pnpm dev` 监听源码并生成 `main.js`。`styles.css` 由构建生成，样式源文件为 `src/styles.css`，并合入限定到 HB 组件的语法样式。重新构建后运行 `pnpm prepare:vault` 将产物复制到项目内 `.local/vaults/default/.obsidian/plugins/highlight-boost/`。
 
 功能命令包含“标记为重点/疑问/引用/行动”“代码行：重点/疑问/引用/行动”“高亮颜色：默认色/红色/橙色/黄色/绿色/蓝色/紫色”“选择高亮颜色”“移除所选标注”“复制当前代码块”和“打开当前笔记重点”。编辑器右键菜单提供同类操作。
 
@@ -113,4 +113,11 @@ Obsidian 与 CodeMirror 模块由宿主提供，构建时保留 external。Markd
 
 GitHub Actions 在 Windows、macOS、Linux 的 Node 24 上运行 `pnpm check`，分别上传构建产物。宿主测试使用实际 Obsidian 运行包单独执行；Node 矩阵和宿主兼容矩阵分别记录。
 
-内置展示交互由 `SyntaxRuntime` 按文档管理，只处理 HB 生成的代码容器；复制、观察器和定时器随组件释放。主题 CSS 随内置语法组件加载。第三方 MIT 声明写入 `main.js`，构建产物同时包含 `THIRD_PARTY_NOTICES.md` 与 `licenses/`。
+内置展示交互由 `SyntaxRuntime` 按文档管理，只处理 HB 生成的代码容器；复制、观察器和定时器随组件释放。语法 CSS 随插件样式加载，并限定到内置语法组件。第三方 MIT 声明写入 `main.js`，构建产物同时包含 `THIRD_PARTY_NOTICES.md` 与 `licenses/`。
+
+
+## 版本构建
+
+`pnpm build` 使用锁文件中的依赖生成 `main.js` 与 `styles.css`。Shiki 语法与主题 JSON 在构建时去重压缩，运行时按首次使用解压；语言与主题清单保持不变。压缩器固定为纯 JavaScript 实现，并规范化许可文本换行，保证各平台产物一致。
+
+正式发布通过 `Release` 工作流执行：先推送与 manifest 相同的版本标签，再运行 `gh workflow run release.yml -f version=<版本>`。CI 从该标签构建，核对版本、源码提交与文件大小，生成来源证明及草稿。Release 附件仅包含三个插件文件；摘要记录在 CI 产物中。

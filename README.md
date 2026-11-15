@@ -2,6 +2,8 @@
 
 用于 Obsidian 桌面端的标注插件，支持正文、行内代码与代码块高亮、批注、跨笔记检索和摘录导出。
 
+Highlight Boost is an Obsidian desktop plugin for highlighting prose, inline code and code blocks. Add annotations, search highlights across notes, and export excerpts with links to their sources.
+
 [English](README.en.md) · [使用说明](docs/usage.md) · [更新日志](CHANGELOG.md)
 
 支持 Windows、macOS 和 Linux，面向最新 Obsidian 桌面稳定版，当前为 **1.15.1**。
@@ -22,7 +24,7 @@
 
 手动安装：
 
-1. 从 [GitHub Releases](https://github.com/danlingdan/highlight-boost/releases) 下载同一版本的 `main.js`、`manifest.json` 和 `styles.css`，或解压安装 ZIP。
+1. 从 [GitHub Releases](https://github.com/danlingdan/highlight-boost/releases) 下载同一版本的 `main.js`、`manifest.json` 和 `styles.css`。
 2. 将这三个文件放入笔记库的 `.obsidian/plugins/highlight-boost/` 目录。
 3. 在“设置 → 第三方插件”中启用 **Highlight Boost**。
 
@@ -39,6 +41,8 @@
 正文颜色使用 Obsidian 原生高亮格式，正文批注使用 Markdown 脚注。语义、行内代码和代码块标注保存在笔记的 `%%…%%` 隐藏注释中；代码块标注位于围栏外，代码原文保持不变。预设与集合保存在插件配置中。
 
 详细格式见[格式说明](docs/formats/README.md)。
+
+全库检索枚举当前笔记库中的 Markdown 笔记，并在本机建立索引。复制操作将所选代码或摘录写入系统剪贴板；插件不读取剪贴板。内置语法数据随插件提供，着色时无需下载。
 
 ## 特别感谢
 

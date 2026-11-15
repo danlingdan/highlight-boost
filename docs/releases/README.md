@@ -1,5 +1,11 @@
 # 发布维护
 
+## 1.0.1 审核修复
+
+本版本处理 1.0.0 的官方自动审核。源码改动、对应警告和验证范围见 [1.0.1 验证记录](../verification/1.0.1/README.md)，用户发布说明见 [1.0.1](1.0.1.md)。
+
+正式附件由 `Release` 工作流从版本标签构建，附带 GitHub artifact attestation。Release 只上传 `main.js`、`manifest.json`、`styles.css`；构建摘要与来源信息保存在 CI 产物中。
+
 ## 1.0.0 发布记录
 
 首发版本为 **1.0.0**，插件 ID 为 `highlight-boost`。维护者于 2026-11-16 确认直接发布，本次完成英文同步、构建与产物摘要核对，不追加测试。社区目录由维护者于 2026-11-15 告知已提交，管理入口为[插件提交页](https://community.obsidian.md/account/plugins/highlight-boost)。审核状态以该账户页面为准。
@@ -48,7 +54,7 @@ README、用户手册和 Release 正文只写使用者需要的功能、操作�
 2. 完成版本日志和公开文档检查，运行 `pnpm check` 与适合改动范围的验证。
 3. 提交源码后运行 `pnpm package:candidate`，核对 `candidate.json` 中的提交、文件和 ZIP 摘要。
 4. 将候选包与 CI 构建入口交给维护者进行下载、全新安装与使用检查，按实际执行情况记录结果；本次由维护者执行。
-5. 使用与 manifest 完全一致的 tag，例如 `1.0.0`。创建 GitHub Release，上传 `main.js`、`manifest.json`、`styles.css`、安装 ZIP 和摘要清单，正文使用本版本日志。
+5. 推送与 manifest 完全一致的 tag，再运行 `Release` 工作流。CI 构建和生成来源证明，创建仅含三个插件文件的草稿，正文使用本版本日志。核对产物摘要后公开发布。
 6. 更新 README 和 CHANGELOG 的“发布准备中”状态、实际日期、发布链接。社区目录沿用已有提交，记录后续审核结果。
 
-Obsidian 官方说明：[使用 GitHub Actions 发布插件](https://github.com/obsidianmd/obsidian-developer-docs/blob/main/en/Plugins/Releasing/Release%20your%20plugin%20with%20GitHub%20Actions.md)。发布正文使用对应版本日志，构建摘要随 Release 附件保存。
+Obsidian 官方说明：[使用 GitHub Actions 发布插件](https://github.com/obsidianmd/obsidian-developer-docs/blob/main/en/Plugins/Releasing/Release%20your%20plugin%20with%20GitHub%20Actions.md)。发布正文使用对应版本日志，构建摘要保存在 CI 产物中。

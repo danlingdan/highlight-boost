@@ -23,7 +23,7 @@ Search for **Highlight Boost** in **Settings → Community plugins**.
 
 For manual installation:
 
-1. Download `main.js`, `manifest.json` and `styles.css` from the same [GitHub release](https://github.com/danlingdan/highlight-boost/releases), or extract the installation ZIP.
+1. Download `main.js`, `manifest.json` and `styles.css` from the same [GitHub release](https://github.com/danlingdan/highlight-boost/releases).
 2. Place these files in `<vault>/.obsidian/plugins/highlight-boost/`.
 3. Enable **Highlight Boost** in **Settings → Community plugins**.
 
@@ -40,6 +40,8 @@ See the [user guide](docs/usage.md) for keyboard navigation, pop-out windows, PD
 Prose colors use native Obsidian highlight markup, and prose annotations use Markdown footnotes. Semantic, inline-code and code-block metadata use Obsidian's hidden `%%…%%` comments. Code-block metadata sits outside the fence, leaving the code unchanged. Presets and collections are stored in plugin settings.
 
 See the [format reference](docs/formats/README.md) for details.
+
+Vault search enumerates Markdown notes in the current vault and indexes them locally. Copy actions write the selected code or excerpt to the system clipboard; the plugin does not read it. Syntax data is bundled with the plugin and works offline.
 
 ## Special thanks
 

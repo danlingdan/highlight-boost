@@ -224,10 +224,10 @@ export default class HighlightBoost extends Plugin {
     const plan = planNote(editor.getValue(), item, note, item.markId ? item.label : this.colorLabel(item.color));
     if (plan.changes.length) this.commitPlan(editor, plan);
   }
-  async editNoteHit(hit: IndexHit, note: string): Promise<void> {
+  async editNoteHit(hit: IndexHit, note: string, preferred?: MarkdownView): Promise<void> {
     const file = this.app.vault.getFileByPath(hit.path);
     if (!file) throw new Error(this.t('missingSource'));
-    let view = this.openView(hit.path);
+    let view = this.openView(hit.path, preferred);
     if (!view) { const leaf = this.app.workspace.getLeaf('tab'); await leaf.openFile(file); view = leaf.view as MarkdownView; }
     if (view.getMode() === 'preview') await view.leaf.setViewState({ type: 'markdown', state: { ...view.getState(), mode: 'source', source: false } });
     if (view.file !== file) throw new Error(this.t('staleMark'));
@@ -295,14 +295,15 @@ export default class HighlightBoost extends Plugin {
     await navigator.clipboard.writeText(diffAfter(block.text)); new Notice(this.t('copiedCode'));
   }
 
-  openView(path: string): MarkdownView | undefined {
+  openView(path: string, preferred?: MarkdownView): MarkdownView | undefined {
+    if (preferred?.file?.path === path && this.app.workspace.getLeavesOfType('markdown').includes(preferred.leaf)) return preferred;
     return this.app.workspace.getLeavesOfType('markdown').map(leaf => leaf.view).find((view): view is MarkdownView => view instanceof MarkdownView && view.file?.path === path);
   }
-  async editHit(hit: IndexHit, run: (view: MarkdownView) => void | Promise<void>): Promise<void> {
+  async editHit(hit: IndexHit, run: (view: MarkdownView) => void | Promise<void>, preferred?: MarkdownView): Promise<void> {
     try {
       const file = this.app.vault.getFileByPath(hit.path);
       if (!file) { new Notice(this.t('missingSource')); return; }
-      let view = this.openView(hit.path);
+      let view = this.openView(hit.path, preferred);
       if (!view) {
         const leaf = this.app.workspace.getLeaf('tab'); await leaf.openFile(file); view = leaf.view as MarkdownView;
       }

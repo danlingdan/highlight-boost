@@ -162,7 +162,7 @@ export class HighlightsView extends ItemView {
       next.textContent = t('nextPage'); next.disabled = (this.page + 1) * this.pageSize >= this.hits.length;
     } else { this.pagination?.remove(); this.pagination = undefined; }
     const visible = this.hits.slice(this.page * this.pageSize, (this.page + 1) * this.pageSize).map(hit => {
-      const view = this.plugin.openView(hit.path); return { hit, view, file: view?.file };
+      const view = this.plugin.openView(hit.path, this.note); return { hit, view, file: view?.file };
     });
     const renderKey = JSON.stringify([queryKey, this.page, this.plugin.locale, this.plugin.settings.presets, this.plugin.settings.collections.map(({ id, name }) => [id, name])]);
     if (visible.length && renderKey === this.renderKey && this.renderedNote === this.note && visible.length === this.rendered.length && visible.every(({ hit, view, file }, index) => {
@@ -177,7 +177,7 @@ export class HighlightsView extends ItemView {
       if (key && group !== key) { this.cards!.createEl('h5', { text: key, cls: 'hb-result-group' }); group = key; }
       let context = this.excerptContexts.get(hit.text);
       if (!context) {
-        const view = this.plugin.openView(hit.path), snapshot = view && this.plugin.documentFor(view.editor);
+        const view = this.plugin.openView(hit.path, this.note), snapshot = view && this.plugin.documentFor(view.editor);
         context = snapshot?.text === hit.text ? snapshot.context : createExcerptContext(hit.text);
       }
       this.excerptContexts.delete(hit.text); this.excerptContexts.set(hit.text, context);
@@ -202,10 +202,10 @@ export class HighlightsView extends ItemView {
     if (context.code !== undefined && context.code !== item.quote) {
       const details = card.createEl('details', { cls: 'hb-card-context' }); details.createEl('summary', { text: t('excerptCodeContext', { from: context.contextFrom!, to: context.contextTo! }) }); details.createEl('pre').createEl('code', { text: context.code });
     }
-    const sourceView = this.plugin.openView(hit.path), file = sourceView?.file;
+    const sourceView = this.plugin.openView(hit.path, this.note), file = sourceView?.file;
     const act = (run: (view: MarkdownView) => void | Promise<void>) => {
       if (sourceView && sourceView.file !== file) { new Notice(t('staleMark')); return; }
-      void this.plugin.editHit(hit, run);
+      void this.plugin.editHit(hit, run, sourceView);
     };
     jump.addEventListener('click', () => { if (item.status !== 'resolved') new Notice(t('contentChanged')); else act(view => this.plugin.jumpToItem(view, item)); });
     if ((item.kind === 'code-line' || item.kind === 'code-range') && sourceView && sourceView === this.note) {
@@ -214,7 +214,7 @@ export class HighlightsView extends ItemView {
     }
     if (item.status === 'resolved') {
       card.createEl('button', { text: t('editAnnotation'), cls: 'hb-edit-note' }).addEventListener('click', () => {
-        new AnnotationModal(this.plugin, item.note ?? '', note => this.plugin.editNoteHit(hit, note)).open();
+        new AnnotationModal(this.plugin, item.note ?? '', note => this.plugin.editNoteHit(hit, note, sourceView)).open();
       });
       const semantic = card.createEl('select', { cls: 'hb-change-semantic' }); semantic.setAttribute('aria-label', t('changeSemantic')); semantic.createEl('option', { value: '', text: t('changeSemantic') });
       for (const preset of this.plugin.settings.presets) semantic.createEl('option', { value: preset.id, text: this.plugin.presetLabel(preset) });

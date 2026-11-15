@@ -1,4 +1,4 @@
-import { editorInfoField, editorLivePreviewField, getLanguage, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, setTooltip, SuggestModal, TFile, type Command, type Editor, type MarkdownPostProcessorContext } from 'obsidian';
+import { editorInfoField, editorLivePreviewField, getLanguage, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, setTooltip, SuggestModal, TFile, type Command, type Editor, type MarkdownPostProcessorContext, type SettingDefinitionItem, type SettingDefinitionRender } from 'obsidian';
 import { ViewPlugin, type EditorView } from '@codemirror/view';
 import { colorPreset, colors, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
@@ -190,7 +190,7 @@ export default class HighlightBoost extends Plugin {
       this.app.workspace.updateOptions();
       if (this.ribbon) setTooltip(this.ribbon, this.t('panelTitle'));
       for (const picker of this.colorPickers) picker.refreshLocale();
-      this.settingTab?.display();
+      this.settingTab?.update();
       for (const leaf of this.app.workspace.getLeavesOfType(VIEW)) updates.push(leaf.setViewState(leaf.getViewState()));
       if (this.syntax) updates.push(this.syntax.refresh());
       for (const child of this.readingChildren) child.refresh();
@@ -353,7 +353,6 @@ export default class HighlightBoost extends Plugin {
   }
 
   onunload(): void {
-    this.app.workspace.detachLeavesOfType(VIEW);
     this.editorViews.clear(); clearEditorDocuments();
     this.index.dispose();
     for (const toolbar of this.toolbars) toolbar.destroy();
@@ -365,95 +364,90 @@ export default class HighlightBoost extends Plugin {
 
 class HighlightSettings extends PluginSettingTab {
   constructor(private plugin: HighlightBoost) { super(plugin.app, plugin); }
-  display(): void {
-    this.containerEl.empty();
+  getSettingDefinitions(): SettingDefinitionItem[] {
     const t = this.plugin.t.bind(this.plugin);
-    new Setting(this.containerEl).setName(t('language')).setDesc(t('languageHint')).addDropdown(dropdown => {
-      dropdown.selectEl.dataset.hbSetting = 'language';
-      dropdown.selectEl.setAttribute('aria-label', t('language'));
-      dropdown.addOption('auto', t('autoLanguage')).addOption('zh', '中文').addOption('en', 'English')
-        .setValue(this.plugin.settings.language).onChange(async value => {
-          this.plugin.settings.language = value as Language;
-          await this.plugin.saveSettings();
+    const setting = (name: string, render: (row: Setting) => void, desc?: string): SettingDefinitionRender => ({ name, desc, render: row => { render(row); } });
+    let defaults: HTMLSelectElement | undefined;
+    const general = [
+      setting(t('language'), row => row.addDropdown(dropdown => {
+        dropdown.selectEl.dataset.hbSetting = 'language'; dropdown.selectEl.setAttribute('aria-label', t('language'));
+        dropdown.addOption('auto', t('autoLanguage')).addOption('zh', '中文').addOption('en', 'English')
+          .setValue(this.plugin.settings.language).onChange(async value => {
+            this.plugin.settings.language = value as Language; await this.plugin.saveSettings();
+          });
+      }), t('languageHint')),
+      setting(t('syntax'), row => row.addDropdown(dropdown => {
+        dropdown.selectEl.dataset.hbSetting = 'syntax'; dropdown.selectEl.setAttribute('aria-label', t('syntax'));
+        dropdown.addOption('native', t('native')).addOption('shiki', t('builtinShiki'))
+          .setValue(this.plugin.settings.syntaxProvider).onChange(async value => {
+            this.plugin.settings.syntaxProvider = value as 'native' | 'shiki'; await this.plugin.saveSettings();
+          });
+      }), t('syntaxHint')),
+      setting(t('selectionToolbar'), row => row.addToggle(toggle => {
+        toggle.toggleEl.dataset.hbSetting = 'selectionToolbar';
+        toggle.setValue(this.plugin.settings.selectionToolbar).onChange(async value => {
+          this.plugin.settings.selectionToolbar = value; await this.plugin.saveSettings();
         });
-    });
-    new Setting(this.containerEl).setName(t('syntax')).setDesc(t('syntaxHint')).addDropdown(dropdown => {
-      dropdown.selectEl.dataset.hbSetting = 'syntax';
-      dropdown.selectEl.setAttribute('aria-label', t('syntax'));
-      dropdown.addOption('native', t('native')).addOption('shiki', t('builtinShiki'))
-      .setValue(this.plugin.settings.syntaxProvider).onChange(async value => {
-        this.plugin.settings.syntaxProvider = value as 'native' | 'shiki';
-        await this.plugin.saveSettings();
-      });
-    });
-    new Setting(this.containerEl).setName(t('selectionToolbar')).setDesc(t('selectionToolbarHint')).addToggle(toggle => {
-      toggle.toggleEl.dataset.hbSetting = 'selectionToolbar';
-      toggle.setValue(this.plugin.settings.selectionToolbar).onChange(async value => {
-        this.plugin.settings.selectionToolbar = value;
-        await this.plugin.saveSettings();
-      });
-    });
-    this.containerEl.createEl('h3', { text: t('codeDisplay') });
-    new Setting(this.containerEl).setName(t('migration')).setDesc(t('migrationHint')).addButton(button => button.setButtonText(t('migration')).onClick(() => new MigrationModal(this.plugin).open()));
-    this.containerEl.createEl('p', { text: t('codeDisplayHint') });
-    for (const [key, label] of [['showTitle', 'showCodeTitle'], ['showLineNumbers', 'showCodeNumbers'], ['collapsible', 'foldCode'], ['collapseByDefault', 'foldByDefault'], ['wrap', 'wrapCode'], ['diff', 'showDiff']] as const) {
-      new Setting(this.containerEl).setName(t(label)).addToggle(toggle => {
-        toggle.toggleEl.dataset.hbCodeSetting = key;
-        toggle.setValue(this.plugin.settings.codeDisplay[key]).onChange(async value => { this.plugin.settings.codeDisplay[key] = value; await this.plugin.saveSettings(); });
-      });
-    }
-    new Setting(this.containerEl).setName(t('startCodeLine')).addText(text => {
-      text.inputEl.type = 'number'; text.inputEl.min = '1'; text.inputEl.max = '1000000'; text.inputEl.step = '1'; text.inputEl.dataset.hbCodeSetting = 'startLine'; text.inputEl.setAttribute('aria-label', t('startCodeLine'));
-      text.setValue(String(this.plugin.settings.codeDisplay.startLine)).onChange(async value => { this.plugin.settings.codeDisplay.startLine = Number(value); await this.plugin.saveSettings(); });
-    });
-    new Setting(this.containerEl).setName(t('codeNumberFont')).addDropdown(dropdown => {
-      dropdown.selectEl.dataset.hbCodeSetting = 'numberFont'; dropdown.selectEl.setAttribute('aria-label', t('codeNumberFont'));
-      dropdown.addOption('monospace', t('monospaceFont')).addOption('interface', t('interfaceFont')).setValue(this.plugin.settings.codeDisplay.numberFont).onChange(async value => {
-        this.plugin.settings.codeDisplay.numberFont = value as 'monospace' | 'interface'; await this.plugin.saveSettings();
-      });
-    });
-    let defaults: HTMLSelectElement;
-    new Setting(this.containerEl).setName(t('defaultPreset')).setDesc(t('defaultPresetHint')).addDropdown(dropdown => {
-      defaults = dropdown.selectEl;
-      defaults.dataset.hbSetting = 'defaultPreset';
-      defaults.setAttribute('aria-label', t('defaultPreset'));
+      }), t('selectionToolbarHint')),
+    ];
+    const code: SettingDefinitionRender[] = [
+      setting(t('migration'), row => row.addButton(button => button.setButtonText(t('migration')).onClick(() => new MigrationModal(this.plugin).open())), t('migrationHint')),
+      ...([['showTitle', 'showCodeTitle'], ['showLineNumbers', 'showCodeNumbers'], ['collapsible', 'foldCode'], ['collapseByDefault', 'foldByDefault'], ['wrap', 'wrapCode'], ['diff', 'showDiff']] as const).map(([key, label]) =>
+        setting(t(label), row => row.addToggle(toggle => {
+          toggle.toggleEl.dataset.hbCodeSetting = key;
+          toggle.setValue(this.plugin.settings.codeDisplay[key]).onChange(async value => {
+            this.plugin.settings.codeDisplay[key] = value; await this.plugin.saveSettings();
+          });
+        }))),
+      setting(t('startCodeLine'), row => row.addText(text => {
+        text.inputEl.type = 'number'; text.inputEl.min = '1'; text.inputEl.max = '1000000'; text.inputEl.step = '1';
+        text.inputEl.dataset.hbCodeSetting = 'startLine'; text.inputEl.setAttribute('aria-label', t('startCodeLine'));
+        text.setValue(String(this.plugin.settings.codeDisplay.startLine)).onChange(async value => {
+          this.plugin.settings.codeDisplay.startLine = Number(value); await this.plugin.saveSettings();
+        });
+      })),
+      setting(t('codeNumberFont'), row => row.addDropdown(dropdown => {
+        dropdown.selectEl.dataset.hbCodeSetting = 'numberFont'; dropdown.selectEl.setAttribute('aria-label', t('codeNumberFont'));
+        dropdown.addOption('monospace', t('monospaceFont')).addOption('interface', t('interfaceFont'))
+          .setValue(this.plugin.settings.codeDisplay.numberFont).onChange(async value => {
+            this.plugin.settings.codeDisplay.numberFont = value as 'monospace' | 'interface'; await this.plugin.saveSettings();
+          });
+      })),
+    ];
+    const presetItems: SettingDefinitionRender[] = [setting(t('defaultPreset'), row => row.addDropdown(dropdown => {
+      defaults = dropdown.selectEl; defaults.dataset.hbSetting = 'defaultPreset'; defaults.setAttribute('aria-label', t('defaultPreset'));
       for (const preset of this.plugin.settings.presets) dropdown.addOption(preset.id, this.plugin.presetLabel(preset));
       dropdown.setValue(this.plugin.settings.defaultPreset).onChange(async value => {
-        this.plugin.settings.defaultPreset = value;
-        await this.plugin.saveSettings();
+        this.plugin.settings.defaultPreset = value; await this.plugin.saveSettings();
       });
-    });
-    this.containerEl.createEl('h3', { text: t('presets') });
-    this.containerEl.createEl('p', { text: t('presetsHint') });
+    }), t('defaultPresetHint'))];
     for (const preset of this.plugin.settings.presets) {
       const name = this.plugin.presetLabel(preset);
-      const row = new Setting(this.containerEl).setName(name);
-      row.addText(text => {
-        text.inputEl.dataset.hbPreset = preset.id;
-        text.inputEl.setAttribute('aria-label', t('presetName', { preset: name }));
-        text.setPlaceholder(name).setValue(name).onChange(async value => {
-          this.plugin.getPreset(preset.id).name = value;
-          this.plugin.getPreset(preset.id).customName = true;
-          await this.plugin.saveSettings();
-          row.nameEl.textContent = this.plugin.presetLabel(this.plugin.getPreset(preset.id));
-          for (const option of defaults.options) option.textContent = this.plugin.presetLabel(this.plugin.getPreset(option.value));
-        });
-      }).addDropdown(dropdown => {
-          dropdown.selectEl.dataset.hbPresetColor = preset.id;
-          dropdown.selectEl.setAttribute('aria-label', t('presetColor', { preset: name }));
+      const definition = setting(name, row => {
+        row.addText(text => {
+          text.inputEl.dataset.hbPreset = preset.id; text.inputEl.setAttribute('aria-label', t('presetName', { preset: name }));
+          text.setPlaceholder(name).setValue(name).onChange(async value => {
+            this.plugin.getPreset(preset.id).name = value; this.plugin.getPreset(preset.id).customName = true;
+            await this.plugin.saveSettings();
+            definition.name = this.plugin.presetLabel(this.plugin.getPreset(preset.id)); row.setName(definition.name);
+            for (const option of defaults?.options ?? []) option.textContent = this.plugin.presetLabel(this.plugin.getPreset(option.value));
+          });
+        }).addDropdown(dropdown => {
+          dropdown.selectEl.dataset.hbPresetColor = preset.id; dropdown.selectEl.setAttribute('aria-label', t('presetColor', { preset: name }));
           for (const color of colors) dropdown.addOption(color, this.plugin.colorLabel(color));
           dropdown.setValue(preset.color).onChange(async value => {
-            this.plugin.getPreset(preset.id).color = value as Color;
-            await this.plugin.saveSettings();
+            this.plugin.getPreset(preset.id).color = value as Color; await this.plugin.saveSettings();
           });
         });
+      }, t('presetsHint'));
+      presetItems.push(definition);
     }
-    new Setting(this.containerEl).setName(t('resetPresets')).addButton(button => button.setButtonText(t('reset')).onClick(async () => {
+    presetItems.push(setting(t('resetPresets'), row => row.addButton(button => button.setButtonText(t('reset')).onClick(async () => {
       this.plugin.settings = normalizeSettings({ ...this.plugin.settings, presets: undefined, defaultPreset: undefined });
-      await this.plugin.saveSettings();
-      this.display();
-    }));
-    this.containerEl.createEl('p', { text: t('shortcutsHint') });
+      await this.plugin.saveSettings(); this.update();
+    }))));
+    return [...general, { type: 'group', heading: t('codeDisplay'), items: code },
+      { type: 'group', heading: t('presets'), items: presetItems }, { name: t('shortcutsHint'), searchable: false }];
   }
 }
 

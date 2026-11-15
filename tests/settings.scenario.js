@@ -59,6 +59,8 @@
   app.setting.openTabById('highlight-boost');
   await new Promise(resolve => setTimeout(resolve, 150));
   const tab = app.setting.pluginTabs.find(tab => tab.id === 'highlight-boost');
+  const definitions = tab.settingItems.flatMap(item => item.items ?? [item]);
+  assert('settings-search-definitions', definitions.some(item => item.name === plugin.t('language')) && definitions.some(item => item.name === plugin.t('showCodeNumbers')) && definitions.every(item => typeof item.name === 'string'));
   const inputs = [...tab.containerEl.querySelectorAll('input')].filter(input => input.type === 'text');
   assert(`settings-controls-render (${inputs.length})`, inputs.length === 4);
   inputs[0].value = '界面修改';

@@ -19,12 +19,14 @@
   const cycle = async () => {
     await app.plugins.enablePlugin('highlight-boost');
     const plugin = app.plugins.plugins['highlight-boost']; await plugin.index.ready; await plugin.openPanel('note');
-    const view = app.workspace.getLeavesOfType('highlight-boost')[0].view;
+    const panelLeaf = app.workspace.getLeavesOfType('highlight-boost')[0], view = panelLeaf.view;
+    const parent = panelLeaf.parent;
     released.push({ plugin: new WeakRef(plugin), view: new WeakRef(view) });
     assert('lifecycle-view-loaded', view.contentEl.querySelectorAll('.hb-card').length === 50 && plugin.index.notes.size > 0 && view.excerptContexts.size <= 50);
     leaf.view.editor.focus(); leaf.view.editor.setSelection({ line: 2, ch: 2 }, { line: 2, ch: 8 }); await tick();
     await app.plugins.disablePlugin('highlight-boost'); app.workspace.updateOptions(); await tick();
-    assert('lifecycle-view-detached', app.workspace.getLeavesOfType('highlight-boost').length === 0 && !document.querySelector('.hb-pagination'));
+    assert('lifecycle-leaf-location-preserved', app.workspace.getLeafById(panelLeaf.id) === panelLeaf && panelLeaf.parent === parent);
+    assert('lifecycle-view-unloaded', panelLeaf.view !== view && !document.querySelector('.hb-pagination'));
     assert('lifecycle-index-released', plugin.index.notes.size === 0 && plugin.index.errors.size === 0);
     assert('lifecycle-render-references-released', view.hits.length === 0 && view.rendered.length === 0 && view.excerptContexts.size === 0 && view.contentEl.childElementCount === 0);
     view.refresh(); assert('lifecycle-closed-refresh-stays-empty', view.contentEl.childElementCount === 0 && view.hits.length === 0);

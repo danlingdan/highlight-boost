@@ -59,6 +59,11 @@ const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 
 const lifecycle = mode === 'lifecycle' || mode === 'lifecycle-shiki';
 const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination', 'compatibility'];
 let pdfRendering;
+if (mode.startsWith('multiwindow')) electron.ipcMain.handle('hb-window-clipboard', (_event, action, text) => {
+  if (action === 'read') return electron.clipboard.readText();
+  if (action === 'write' && typeof text === 'string') { electron.clipboard.writeText(text); return; }
+  throw new Error('Unknown clipboard action');
+});
 if (mode === 'frames') electron.ipcMain.handle('hb-frame-capture', async (event, name, rectangle) => {
   if (!['frame-sidebar', 'frame-scroll'].includes(name)) throw new Error('Unknown frame');
   if (![rectangle.x, rectangle.y, rectangle.width, rectangle.height].every(Number.isFinite) || rectangle.width <= 0 || rectangle.height <= 0 || rectangle.width * rectangle.height > 1400000) throw new Error('Invalid frame rectangle');

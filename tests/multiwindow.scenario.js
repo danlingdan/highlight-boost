@@ -2,6 +2,7 @@
   const checks = [], errors = []; window.__hbChecks = checks;
   const assert = (name, value, details) => { if (!value) throw new Error(`${name}: ${JSON.stringify(details)}`); checks.push({ name, passed: true }); };
   const tick = () => new Promise(resolve => setTimeout(resolve, 100));
+  const clipboard = (action, text) => window.require('electron').ipcRenderer.invoke('hb-window-clipboard', action, text);
   const until = async predicate => { for (let i = 0; i < 80 && !predicate(); i++) await tick(); return predicate(); };
   let phase = 'load'; const phases = {};
   const recordError = event => { errors.push(event.message); phases[phase]=(phases[phase]??0)+1; };
@@ -36,10 +37,10 @@
     assert(`${provider}-host-saved-source`, await app.vault.read(file) === marked);
     assert(`${provider}-duplicate-synchronized`, await until(() => duplicate.view.editor.getValue() === marked));
     assert(`${provider}-popout-index`, plugin.index.notes.get(path).text === marked && plugin.index.notes.get(path).items.length === 3);
-    phase = `${provider}-copy`; await popoutWindow.navigator.clipboard.writeText('pending'); select('value');
+    phase = `${provider}-copy`; await clipboard('write', 'pending'); select('value');
     const copyContext = { selection: editor.getSelection(), cursor: editor.getCursor(), offset: editor.posToOffset(editor.getCursor()), currentEditor: editor === leaf.view.editor, blocks: plugin.documentFor(editor).parsed.blocks.map(block => ({ from: block.from, to: block.to })) };
     await plugin.copyCode(editor);
-    let copied = ''; for(let i=0;i<30&&!copied;i++){await tick();const value=await popoutWindow.navigator.clipboard.readText();if(value!=='pending')copied=value;}
+    let copied = ''; for(let i=0;i<30&&!copied;i++){await tick();const value=await clipboard('read');if(value!=='pending')copied=value;}
     assert(`${provider}-popup-copy-command`, copied === 'const value = 1;\nconsole.log(value);', { copied, copyContext });
     if (provider === 'shiki') assert('shiki-popout-source-tokens', await until(() => Boolean(leaf.view.containerEl.querySelector('.hb-syntax-token'))));
     phase = `${provider}-reading`; await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
@@ -56,8 +57,8 @@
     phase = `${provider}-jump`; const codeCard = [...panelWindow.doc.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'value'); codeCard.querySelector('.hb-quote').click();
     assert(`${provider}-cross-window-jump`, await until(() => leaf.view.getMode() === 'source' && editor.getSelection() === 'value'), { mode: leaf.view.getMode(), selection: editor.getSelection() });
     phase = `${provider}-excerpt`; const proseCard = [...panelWindow.doc.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'window prose');
-    await panelWindow.win.navigator.clipboard.writeText('pending'); proseCard.querySelector('.hb-copy-excerpt').click();
-    let excerpt = ''; for(let i=0;i<30&&!excerpt;i++){await tick();const value=await panelWindow.win.navigator.clipboard.readText();if(value!=='pending')excerpt=value;}
+    await clipboard('write', 'pending'); proseCard.querySelector('.hb-copy-excerpt').click();
+    let excerpt = ''; for(let i=0;i<30&&!excerpt;i++){await tick();const value=await clipboard('read');if(value!=='pending')excerpt=value;}
     assert(`${provider}-popup-copy-excerpt`, excerpt.includes('window prose'), excerpt);
     phase = `${provider}-close`; workbenchWindow.close(); assert(`${provider}-workbench-window-closed`, await until(() => workbenchWindow.closed));
     popoutWindow.close(); assert(`${provider}-source-window-closed`, await until(() => popoutWindow.closed)); await tick();

@@ -28,6 +28,7 @@
   assert('window-restart-source-preserved', await app.vault.read(app.vault.getFileByPath(saved.path)) === saved.text);
   plugin.settings = saved.original; await plugin.saveSettings();
   await app.workspace.requestSaveLayout.run();
+  await new Promise(resolve => setTimeout(resolve, 1000));
   assert('window-restart-no-page-errors', errors.length === 0, errors);
   window.__hbObservations = { errors, restoredWindows: 2, sourcePath: saved.path }; return checks;
 })()

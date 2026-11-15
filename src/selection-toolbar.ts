@@ -17,6 +17,8 @@ export function selectionToolbar(plugin: HighlightBoost) {
     private takeFocus = false;
     private manual = false;
     private renderKey = '';
+    private frame?: number;
+    private frameWindow?: Window;
     private readonly reposition = () => this.refresh();
     private readonly outside = (event: Event) => {
       if (this.element && !event.composedPath().includes(this.element)) this.close(false);
@@ -39,31 +41,42 @@ export function selectionToolbar(plugin: HighlightBoost) {
     matches(editor: Editor): boolean { return this.view.state.field(editorInfoField, false)?.editor === editor; }
     open(): void { this.dismissed = false; this.manual = true; this.takeFocus = true; this.refresh(true); }
     close(focus: boolean): void {
+      this.cancelFrame();
       this.generation++; this.element?.remove(); this.element = undefined; this.dismissed = true; this.manual = false;
       if (focus) this.view.focus();
     }
     refresh(force = false): void {
       const view = this.view;
-      const generation = ++this.generation;
+      this.generation++;
       if (this.disposed) return;
       if (view.state.readOnly || (!force && ((!plugin.settings.selectionToolbar && !this.manual) || this.dismissed || (!view.hasFocus && !this.element?.contains(view.dom.ownerDocument.activeElement)))) || view.composing || view.state.field(composingState, false) || (!force && !this.manual && view.state.selection.ranges.every(range => range.empty))) {
-        this.element?.remove(); this.element = undefined; return;
+        this.cancelFrame(); this.element?.remove(); this.element = undefined; return;
       }
-      view.requestMeasure({
-        key: this,
-        read: () => view.coordsAtPos(view.state.selection.main.head),
-        write: coords => {
-          if (this.disposed || this.dismissed || generation !== this.generation) return;
-          const bounds = view.scrollDOM.getBoundingClientRect();
-          if (!coords || coords.bottom < bounds.top || coords.top > bounds.bottom) { this.element?.remove(); this.element = undefined; return; }
-          this.render();
-          const element = this.element!;
-          const win = view.dom.ownerDocument.defaultView!;
-          element.style.left = `${Math.max(8, Math.min(coords.left, win.innerWidth - element.offsetWidth - 8))}px`;
-          const top = coords.bottom + 8 + element.offsetHeight <= win.innerHeight ? coords.bottom + 8 : coords.top - element.offsetHeight - 8;
-          element.style.top = `${Math.max(8, Math.min(top, win.innerHeight - element.offsetHeight - 8))}px`;
-        },
+      const win = view.dom.ownerDocument.defaultView!;
+      if (this.frame !== undefined && this.frameWindow === win) return;
+      this.cancelFrame(); this.frameWindow = win;
+      this.frame = win.requestAnimationFrame(() => {
+        this.frame = undefined; this.frameWindow = undefined;
+        if (this.disposed || this.dismissed) return;
+        this.render();
+        const element = this.element!, generation = this.generation;
+        view.requestMeasure({
+          key: this,
+          read: () => ({ coords: view.coordsAtPos(view.state.selection.main.head), bounds: view.scrollDOM.getBoundingClientRect(), width: element.offsetWidth, height: element.offsetHeight, viewportWidth: win.innerWidth, viewportHeight: win.innerHeight }),
+          write: ({ coords, bounds, width, height, viewportWidth, viewportHeight }) => {
+            if (this.disposed || this.dismissed || generation !== this.generation || this.element !== element) return;
+            if (!coords || coords.bottom < bounds.top || coords.top > bounds.bottom) { element.remove(); this.element = undefined; return; }
+            element.style.left = `${Math.max(8, Math.min(coords.left, viewportWidth - width - 8))}px`;
+            const top = coords.bottom + 8 + height <= viewportHeight ? coords.bottom + 8 : coords.top - height - 8;
+            element.style.top = `${Math.max(8, Math.min(top, viewportHeight - height - 8))}px`;
+            element.style.opacity = '1';
+          },
+        });
       });
+    }
+    private cancelFrame(): void {
+      if (this.frame !== undefined) this.frameWindow?.cancelAnimationFrame(this.frame);
+      this.frame = undefined; this.frameWindow = undefined;
     }
     private render(): void {
       const view = this.view, document = view.dom.ownerDocument;
@@ -80,6 +93,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
       const element = document.createElement('div');
       this.element = element;
       element.className = 'hb-selection-toolbar';
+      element.style.left = '8px'; element.style.top = '8px'; element.style.opacity = '0';
       element.setAttribute('role', 'toolbar'); element.setAttribute('aria-label', plugin.t('selectionToolbar'));
       element.addEventListener('pointerdown', event => { if (event.button === 0) event.preventDefault(); });
       element.addEventListener('keydown', event => {
@@ -126,6 +140,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
       this.takeFocus = false;
     }
     destroy(): void {
+      this.cancelFrame();
       this.disposed = true; this.element?.remove();
       this.view.dom.ownerDocument.removeEventListener('pointerdown', this.outside, true);
       this.view.dom.ownerDocument.removeEventListener('keydown', this.escape, true);

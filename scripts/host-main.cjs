@@ -191,6 +191,17 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
+      results.testVaultTrustAccepted = await contents.executeJavaScript(`(async () => {
+        let accepted=false;
+        for(let i=0;i<10;i++) {
+          const modal=[...document.querySelectorAll('.modal')].find(element=>/Browse vault in Restricted Mode|受限模式|安全模式/.test(element.textContent));
+          const button=modal?.querySelector('button:not(.mod-cancel)');
+          if(button&&!accepted) { accepted=true; button.click(); }
+          await new Promise(resolve=>setTimeout(resolve,100));
+        }
+        if(accepted) for(let i=0;i<200&&!app.commands.commands['highlight-boost:open-highlights'];i++) await new Promise(resolve=>setTimeout(resolve,50));
+        return accepted;
+      })()`);
       if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || mode === 'accessibility' || mode === 'frames' || mode.startsWith('install') || lifecycle) {
         if (!contents.debugger.isAttached()) contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });

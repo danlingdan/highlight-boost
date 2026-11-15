@@ -19,7 +19,14 @@
   const select = word => { const from = editor.getValue().lastIndexOf(word); editor.focus(); editor.setCursor(editor.offsetToPos(from)); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); editor.scrollIntoView({ from: editor.offsetToPos(from), to: editor.offsetToPos(from + word.length) }, true); };
   let toolbarVisible = false; for (let i = 0; i < 60 && !toolbarVisible; i++) { select('alpha'); await tick(); toolbarVisible = Boolean(document.querySelector('.hb-selection-toolbar')); }
   assert('keyboard-toolbar-visible', toolbarVisible, { enabled: plugin.settings.selectionToolbar, focus: editor.hasFocus(), cmFocus: editor.cm.hasFocus, connected: editor.cm.dom.isConnected, documentFocus: document.hasFocus(), selection: editor.getSelection(), toolbars: [...plugin.toolbars].map(toolbar => ({ matches: toolbar.matches(editor), dismissed: toolbar.dismissed, disposed: toolbar.disposed, generation: toolbar.generation, composing: toolbar.view?.composing, coords: toolbar.view?.coordsAtPos(toolbar.view.state.selection.main.head), focus: toolbar.view?.hasFocus, connected: toolbar.view?.dom.isConnected, owner: toolbar.view?.dom.ownerDocument === document })), bounds: editor.cm.scrollDOM.getBoundingClientRect().toJSON(), active: document.activeElement?.outerHTML.slice(0, 300) });
-  const toolbar = () => document.querySelector('.hb-selection-toolbar'); await tick(); toolbar().querySelector('button').focus(); await tick();
+  const toolbar = () => document.querySelector('.hb-selection-toolbar');
+  let toolbarFocused = false;
+  for (let i = 0; i < 30 && !toolbarFocused; i++) {
+    if (!toolbar()) { select('alpha'); await tick(); }
+    toolbar()?.querySelector('button')?.focus(); await tick();
+    toolbarFocused = Boolean(toolbar()?.contains(document.activeElement));
+  }
+  assert('keyboard-toolbar-focused', toolbarFocused);
   await key('End', 'End', 35); assert('keyboard-toolbar-end', document.activeElement.dataset.hbAction === 'close', { active: document.activeElement?.outerHTML.slice(0, 300), toolbar: Boolean(toolbar()) });
   await key('Home', 'Home', 36); assert('keyboard-toolbar-home', document.activeElement === toolbar().querySelector('button'));
   await key('ArrowRight', 'ArrowRight', 39); assert('keyboard-toolbar-arrow', document.activeElement === toolbar().querySelectorAll('button')[1]);

@@ -27,6 +27,10 @@
     toolbarFocused = Boolean(toolbar()?.contains(document.activeElement));
   }
   assert('keyboard-toolbar-focused', toolbarFocused);
+  const existingToolbar = toolbar(), existingButton = document.activeElement;
+  for (const control of plugin.toolbars) if (control.matches(editor)) control.refresh();
+  await tick();
+  assert('keyboard-geometry-keeps-controls-focus', toolbar() === existingToolbar && document.activeElement === existingButton);
   await key('End', 'End', 35); assert('keyboard-toolbar-end', document.activeElement.dataset.hbAction === 'close', { active: document.activeElement?.outerHTML.slice(0, 300), toolbar: Boolean(toolbar()) });
   await key('Home', 'Home', 36); assert('keyboard-toolbar-home', document.activeElement === toolbar().querySelector('button'));
   await key('ArrowRight', 'ArrowRight', 39); assert('keyboard-toolbar-arrow', document.activeElement === toolbar().querySelectorAll('button')[1]);

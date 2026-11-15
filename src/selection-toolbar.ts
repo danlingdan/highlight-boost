@@ -16,6 +16,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
     private generation = 0;
     private takeFocus = false;
     private manual = false;
+    private renderKey = '';
     private readonly reposition = () => this.refresh();
     private readonly outside = (event: Event) => {
       if (this.element && !event.composedPath().includes(this.element)) this.close(false);
@@ -66,6 +67,14 @@ export function selectionToolbar(plugin: HighlightBoost) {
     }
     private render(): void {
       const view = this.view, document = view.dom.ownerDocument;
+      const context = selectionContext(view.state.doc.toString(), view.state.selection.ranges, editorDocument(view.state).parsed);
+      const contextLabel = context.kind === 'code' ? plugin.t('blockSelection', { block: context.block!, from: context.from!, to: context.to! }) : plugin.t(context.kind === 'mixed' ? 'mixedSelection' : context.kind === 'inline-code' ? 'inlineCode' : 'prose');
+      const renderKey = JSON.stringify({ context, contextLabel, mode: this.mode, locale: plugin.locale, presets: plugin.settings.presets, recentColors: plugin.settings.recentColors });
+      if (this.element?.isConnected && this.element.ownerDocument === document && renderKey === this.renderKey) {
+        if (this.takeFocus) this.element.querySelector('button')?.focus();
+        this.takeFocus = false; return;
+      }
+      this.renderKey = renderKey;
       const activeAction = this.element?.contains(document.activeElement) ? (document.activeElement as HTMLElement).dataset.hbAction : undefined;
       this.element?.remove();
       const element = document.createElement('div');
@@ -83,8 +92,6 @@ export function selectionToolbar(plugin: HighlightBoost) {
         if (event.key === 'End') next = buttons.length - 1;
         if (next !== undefined) { event.preventDefault(); buttons[next]?.focus(); }
       });
-      const context = selectionContext(view.state.doc.toString(), view.state.selection.ranges, editorDocument(view.state).parsed);
-      const contextLabel = context.kind === 'code' ? plugin.t('blockSelection', { block: context.block!, from: context.from!, to: context.to! }) : plugin.t(context.kind === 'mixed' ? 'mixedSelection' : context.kind === 'inline-code' ? 'inlineCode' : 'prose');
       const label = document.createElement('div'); label.className = 'hb-selection-context';
       label.textContent = plugin.t(context.count === 1 ? 'selectionContextOne' : 'selectionContext', { context: contextLabel, count: context.count }); element.append(label);
       const button = (id: string, text: string, run: () => void, color?: Color) => {

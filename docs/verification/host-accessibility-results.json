@@ -11,6 +11,10 @@
       "passed": true
     },
     {
+      "name": "keyboard-geometry-keeps-controls-focus",
+      "passed": true
+    },
+    {
       "name": "keyboard-toolbar-end",
       "passed": true
     },
@@ -136,7 +140,7 @@
     }
   ],
   "errors": [],
-  "testVaultTrustAccepted": true,
+  "testVaultTrustAccepted": false,
   "observations": {
     "errors": [],
     "names": [

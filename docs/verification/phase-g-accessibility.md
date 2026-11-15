@@ -1,6 +1,6 @@
 # PDF、键盘、可访问性与组合输入
 
-2026-11-15，Windows，Obsidian 1.15.1，Electron 43.8.9。独立测试库运行 [33 项检查](host-accessibility-results.json)，页面错误为零；三平台 CI 保存对应专项结果。
+2026-11-15，Windows，Obsidian 1.15.1，Electron 43.8.9。独立测试库运行 [34 项检查](host-accessibility-results.json)，页面错误为零；三平台 CI 保存对应专项结果。
 
 | 专项 | 实际操作与结果 |
 | --- | --- |

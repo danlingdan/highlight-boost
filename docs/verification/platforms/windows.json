@@ -1,0 +1,366 @@
+{
+  "run": "43718754693",
+  "url": "https://github.com/danlingdan/highlight-boost/actions/runs/43718754693",
+  "sourceCommit": "dc9941b4fffad2146eb0aa500c8fb859e8e292a0",
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "environment": {
+    "platform": "win32",
+    "release": "10.0.26100",
+    "cpu": "AMD EPYC 7763 64-Core Processor                ",
+    "ramBytes": 17174360064,
+    "node": "v24.22.2",
+    "revision": "dc9941b4fffad2146eb0aa500c8fb859e8e292a0"
+  },
+  "scenarioCount": 36,
+  "checks": 1112,
+  "errors": [],
+  "scenarios": [
+    {
+      "file": "compatibility/default-internal.json",
+      "sha256": "95498cf75017e858171b20672a8aa09979fbe1532535468fb357ff1e1328d37e",
+      "checks": 94,
+      "cells": [
+        {
+          "language": "zh",
+          "appearance": "dark",
+          "mode": "source",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "dark",
+          "mode": "live",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "dark",
+          "mode": "reading",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "light",
+          "mode": "source",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "light",
+          "mode": "live",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "light",
+          "mode": "reading",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "dark",
+          "mode": "source",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "dark",
+          "mode": "live",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "dark",
+          "mode": "reading",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "light",
+          "mode": "source",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "light",
+          "mode": "live",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "light",
+          "mode": "reading",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "file": "compatibility/default-native.json",
+      "sha256": "576ab98b556f09ae264715996ff9d08e0d36d14b617bdb19a4de6514a2cc4667",
+      "checks": 93,
+      "cells": [
+        {
+          "language": "zh",
+          "appearance": "dark",
+          "mode": "source",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "dark",
+          "mode": "live",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "dark",
+          "mode": "reading",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "light",
+          "mode": "source",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "light",
+          "mode": "live",
+          "passed": true
+        },
+        {
+          "language": "zh",
+          "appearance": "light",
+          "mode": "reading",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "dark",
+          "mode": "source",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "dark",
+          "mode": "live",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "dark",
+          "mode": "reading",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "light",
+          "mode": "source",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "light",
+          "mode": "live",
+          "passed": true
+        },
+        {
+          "language": "en",
+          "appearance": "light",
+          "mode": "reading",
+          "passed": true
+        }
+      ]
+    },
+    {
+      "file": "host-accessibility-results.json",
+      "sha256": "adaf67f64e3d6e813e26922d16dee8c6874158460cf4eb5f9611f8e038522f6a",
+      "checks": 34
+    },
+    {
+      "file": "host-advanced-results.json",
+      "sha256": "12f3c8d527f21f50f15ddb3777bf271b2a947736c88a84d32e7b4e5d77bcae0e",
+      "checks": 24
+    },
+    {
+      "file": "host-display-restart-results.json",
+      "sha256": "76d5f33be73ea538bc994a2123f781f8f7a13fce6b6fceaebb3164020f19b52d",
+      "checks": 8
+    },
+    {
+      "file": "host-display-results.json",
+      "sha256": "e0fd582aa337236e3aa6f6917d4b92de0f0faa7d2d820353d44a163e281377ac",
+      "checks": 40
+    },
+    {
+      "file": "host-embedded-results.json",
+      "sha256": "0d37c2c36124a7397526a5f356732293e72b8e40efb39e3cc1da2c1e99e94345",
+      "checks": 50
+    },
+    {
+      "file": "host-frames-results.json",
+      "sha256": "c680591cb5a750b3480f11bcdb49fd2c5d316a254cec1039dae91f95ff50f42f",
+      "checks": 70
+    },
+    {
+      "file": "host-i18n-restart-results.json",
+      "sha256": "a98225d3d2aa98e3e6fa99845191f9da15d682d60174d1d0ca435488bbebbc55",
+      "checks": 10
+    },
+    {
+      "file": "host-i18n-results.json",
+      "sha256": "018f739619818d9d0815e7e6e48051b01f1b607b960362c375f5ab7dca31fc50",
+      "checks": 35
+    },
+    {
+      "file": "host-inline-restart-results.json",
+      "sha256": "4ca21cff9934d9ad47d8bb5c8aba112a4a0eaf5a71cdaafebda82731dfc355d9",
+      "checks": 6
+    },
+    {
+      "file": "host-inline-results.json",
+      "sha256": "1ed7bf94870e77f4d5779d37dad2bc4b5eed633f78d56b7bdddf9e9a131f25b6",
+      "checks": 31
+    },
+    {
+      "file": "host-install-restart-results.json",
+      "sha256": "df49ef8801f2ba04ba1a3266c47d9b1e446e857ec45842e237b0bbe0348d9f12",
+      "checks": 18
+    },
+    {
+      "file": "host-install-results.json",
+      "sha256": "51b745ae4a5507fcf657894cbf5287d0ab1139f88ded96721ad4709d956a3dc4",
+      "checks": 25
+    },
+    {
+      "file": "host-languages-results.json",
+      "sha256": "f7dcbda2f7ebfcf7924300dc697526891197806d1c5debc114ac3064717e6593",
+      "checks": 31
+    },
+    {
+      "file": "host-layout-results.json",
+      "sha256": "c4cb1f9c065eec90f465aabbf4b3e89ec73e95fb03060ff343f120d626715500",
+      "checks": 7
+    },
+    {
+      "file": "host-lifecycle-results.json",
+      "sha256": "e0db7d935a21e3b624b2561a7c8173abbeabc538050c7874b542d2c77330befd",
+      "checks": 25
+    },
+    {
+      "file": "host-lifecycle-shiki-results.json",
+      "sha256": "4bda41be6823ffb94cd3eb1b722e5acd4a2503da0e8a1f3daa9ed26d5b508f78",
+      "checks": 25
+    },
+    {
+      "file": "host-migration-restart-results.json",
+      "sha256": "909d5364ffd4b91e344c1cd0a9e093266c703d7184cc6665b25a2fe74d8d6c6e",
+      "checks": 9
+    },
+    {
+      "file": "host-migration-results.json",
+      "sha256": "3e82d00a6c097546004c3b142e023351ff64ba8f51aa1e159a9f2282e0f6e911",
+      "checks": 30
+    },
+    {
+      "file": "host-multiwindow-restart-results.json",
+      "sha256": "0d2e73479e223f42bf0f63f65332969a48b00f7e8ea74b41bb4493486fcaaae0",
+      "checks": 12
+    },
+    {
+      "file": "host-multiwindow-results.json",
+      "sha256": "964f079484672e588cc74cb94cbc5089704c4870b2e28e655b9b1350185df7f1",
+      "checks": 47
+    },
+    {
+      "file": "host-notes-restart-results.json",
+      "sha256": "601ed6791fb50bfc31a1132cc6115fdcfdcaa53eb9a5ab22cdf06a2c1bcf8513",
+      "checks": 9
+    },
+    {
+      "file": "host-notes-results.json",
+      "sha256": "f9342dcddff8a2c8c612663fdccd637c4351cef67c5b71fedecf2dab1d3542d6",
+      "checks": 47
+    },
+    {
+      "file": "host-pagination-results.json",
+      "sha256": "0ad29d866de4dce14ec56180c347d9551b11e924910b8dc61a5222e2bc81eb02",
+      "checks": 30
+    },
+    {
+      "file": "host-parameters-results.json",
+      "sha256": "1e8db7ef6083b2faebaca6345d387a08324b86a35a49fabb3cff63e38b472ff0",
+      "checks": 36
+    },
+    {
+      "file": "host-phase-d-restart-results.json",
+      "sha256": "06826689a3aec8b337dea99d5aec2b8bc66acb09cdb76e12f9c27a14c3a5c527",
+      "checks": 11
+    },
+    {
+      "file": "host-phase-d-results.json",
+      "sha256": "a3e28e3320abace40570a4cb7be2024e0297bbc267798341e3cbaba24c20a0df",
+      "checks": 43
+    },
+    {
+      "file": "host-phase-e-restart-results.json",
+      "sha256": "95bf7178eebb354ad8a4e9409a05fbdaa2a5c765943e600b55e17a7e4f5ce4de",
+      "checks": 10
+    },
+    {
+      "file": "host-phase-e-results.json",
+      "sha256": "d49049a070574ce3ea05ab4dcd2c52d77c469345d2f011bd024a5ac458eeef7e",
+      "checks": 41
+    },
+    {
+      "file": "host-prose-restart-results.json",
+      "sha256": "11cd0c1d380bbec791dc1737a35df37805e99c834feb4850c2ca22c8eccd9075",
+      "checks": 6
+    },
+    {
+      "file": "host-prose-results.json",
+      "sha256": "3108e9e98a6f4ec853a113afdca3311f3e584ebe656c5ee58dcea38a792adbfa",
+      "checks": 27
+    },
+    {
+      "file": "host-restart-results.json",
+      "sha256": "f2bc86e17c8c83ea5f3f9a099428acb9454db63dde0f21763812569e5100b684",
+      "checks": 9
+    },
+    {
+      "file": "host-results.json",
+      "sha256": "02747f49aa2da8a135f6804d0d719d993e26c32986e1fa5fdfe7947774133f3d",
+      "checks": 46
+    },
+    {
+      "file": "host-selection-results.json",
+      "sha256": "3f3398cba8e9d438e231350c2f83a5146510af4b5a53c3005ed788c2fb579535",
+      "checks": 58
+    },
+    {
+      "file": "host-settings-results.json",
+      "sha256": "1e5c9d5b4c887555dba3dfbed7b7fd05c40fbb4425a37533e3880466008527ba",
+      "checks": 15
+    }
+  ],
+  "candidate": {
+    "version": "0.1.0",
+    "minAppVersion": "1.15.1",
+    "sourceCommit": "dc9941b4fffad2146eb0aa500c8fb859e8e292a0",
+    "files": {
+      "LICENSE": "7fda7b20bcb287c1e6c669a8c507c46287920f7211cfd64373cfbce97ed8202d",
+      "licenses/Expressive-Code-MIT.txt": "6f7819c01d385dd627bc92d069823f9c7921eda6a11897df86116c7dfefcd59f",
+      "licenses/Shiki-Highlighter-MIT.txt": "3fb1457aa472de410511dff4969e736641cf9c46f4b422ee450c9064aa55eea0",
+      "licenses/Shiki-MIT.txt": "dee9ba158e159d48f49487dbcf36e49b33c2a6454a9351aaafb1b0a68b3a8b54",
+      "main.js": "7810fb4423af1b32ce67746cf4d993b4d94626544a473e580fa2b61c84fc8974",
+      "manifest.json": "eb3085e2f248ae35429944b08da1806c3e8027ff464f4b8ef6f812d8aa7f0f6a",
+      "styles.css": "cc60335a7bbbd1870f7fee4141a598e6b6bd67f349fe5f84f5bba8cec21d31c3",
+      "THIRD_PARTY_NOTICES.md": "3dc1cf335fddfa8460c64623e9732cb825f6e8996bf4b2aaed6b9c810974a071"
+    },
+    "archiveSha256": "a5a5ea11f538d5469d2d62c19acaf00feecdfbe30cbdc480cbe97bdd141f32b0",
+    "archive": "dist/highlight-boost-0.1.0-dc9941b4/highlight-boost.zip",
+    "extractedPlugin": "dist/highlight-boost-0.1.0-dc9941b4/unpacked/highlight-boost"
+  }
+}

@@ -6,11 +6,11 @@
 
 ## 本机候选
 
-源码：`989b2c71f0939b56dfaf1a26cd78ef30138a2968`。
+源码：`01418fab87cbeb6b2e9725c269ee01768a720508`。
 
-- ZIP：`dist/highlight-boost-0.1.0-989b2c71/highlight-boost.zip`
-- ZIP SHA-256：`495d94f8acba67fceab4436bd59b01b1d8b0f5fc8800c58bb6b4c2f664595c06`
-- main.js SHA-256：`24587cc5e79de111eba95e7f654a6cb605a576fe184ffdc67c59bab95e9fa6af`
+- ZIP：`dist/highlight-boost-0.1.0-01418fab/highlight-boost.zip`
+- ZIP SHA-256：`894950597900751d0fb6c05ca0610fe63ea3fa52b7759c79e5a69db178f031db`
+- main.js SHA-256：`7aa02854a535a8d9e5c3a067322068201d286abfca080ed78277d6ad64d75b7e`
 - styles.css SHA-256：`cc60335a7bbbd1870f7fee4141a598e6b6bd67f349fe5f84f5bba8cec21d31c3`
 
 从 ZIP 解压目录复制到全新 `.test-install-vault`。没有旧插件配置和笔记状态。首次运行 [25 项检查](host-install-results.json)、独立进程重启后 [18 项检查](host-install-restart-results.json)通过，页面错误为零。
@@ -20,6 +20,8 @@
 ## CI 与复现
 
 Desktop host 工作流在 Windows、macOS、Linux 分别打包、解压校验、全新安装并重启。每个平台产物保存候选 ZIP、`candidate.json`、宿主结果和环境信息。当前运行入口：[Desktop host](https://github.com/danlingdan/highlight-boost/actions/workflows/host.yml)。
+
+最终[三平台验收运行](https://github.com/danlingdan/highlight-boost/actions/runs/43718754693)全部通过，候选源码为 `dc9941b4fffad2146eb0aa500c8fb859e8e292a0`。该提交补充窗口测试的系统剪贴板核对，产品源码与上述本机候选相同。各平台 ZIP 摘要及逐文件摘要已经下载复核，见 [Windows](platforms/windows.json)、[macOS](platforms/macos.json)、[Linux](platforms/ubuntu.json) 的 `candidate` 字段。
 
 ```sh
 pnpm package:candidate

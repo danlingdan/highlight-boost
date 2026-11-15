@@ -39,6 +39,10 @@
       "passed": true
     },
     {
+      "name": "native-popup-copy-command",
+      "passed": true
+    },
+    {
       "name": "native-popout-reading",
       "passed": true
     },
@@ -56,6 +60,10 @@
     },
     {
       "name": "native-cross-window-jump",
+      "passed": true
+    },
+    {
+      "name": "native-popup-copy-excerpt",
       "passed": true
     },
     {
@@ -111,6 +119,10 @@
       "passed": true
     },
     {
+      "name": "shiki-popup-copy-command",
+      "passed": true
+    },
+    {
       "name": "shiki-popout-source-tokens",
       "passed": true
     },
@@ -139,6 +151,10 @@
       "passed": true
     },
     {
+      "name": "shiki-popup-copy-excerpt",
+      "passed": true
+    },
+    {
       "name": "shiki-workbench-window-closed",
       "passed": true
     },
@@ -159,11 +175,24 @@
       "passed": true
     },
     {
+      "name": "restore-layout-source-window",
+      "passed": true
+    },
+    {
+      "name": "restore-layout-workbench-window",
+      "passed": true
+    },
+    {
+      "name": "restore-layout-saved",
+      "passed": true
+    },
+    {
       "name": "multiwindow-no-page-errors",
       "passed": true
     }
   ],
   "errors": [],
+  "testVaultTrustAccepted": false,
   "observations": {
     "errors": [],
     "providers": [

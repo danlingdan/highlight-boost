@@ -91,6 +91,10 @@
       "passed": true
     },
     {
+      "name": "toolbar-prose-context-ready",
+      "passed": true
+    },
+    {
       "name": "toolbar-arrow-navigation",
       "passed": true
     },
@@ -231,5 +235,6 @@
       "passed": true
     }
   ],
-  "errors": []
+  "errors": [],
+  "testVaultTrustAccepted": false
 }

@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-15",
+  "desktopStable": "1.15.1",
+  "desktopSource": "https://obsidian.md/changelog/",
+  "sdkLatest": "1.14.4",
+  "sdkInstalled": "1.14.4",
+  "sdkSource": "https://registry.npmjs.org/obsidian/latest",
+  "manifestVersion": "0.1.0",
+  "manifestMinAppVersion": "1.15.1",
+  "runtimeAppVersion": "1.15.1",
+  "runtimeElectronVersion": "43.8.9",
+  "runtimeSha256": "3f6808c14204063349d5a7a59b9f2f637958063fa85eeebe767e13e06d314c0f",
+  "desktopOnly": true
+}

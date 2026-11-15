@@ -1,0 +1,41 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "baseline-source-window",
+      "passed": true
+    },
+    {
+      "name": "baseline-second-window",
+      "passed": true
+    },
+    {
+      "name": "baseline-windows-closed",
+      "passed": true
+    },
+    {
+      "name": "baseline-source-window",
+      "passed": true
+    },
+    {
+      "name": "baseline-second-window",
+      "passed": true
+    },
+    {
+      "name": "baseline-windows-closed",
+      "passed": true
+    },
+    {
+      "name": "baseline-plugin-disabled",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "pluginEnabled": false,
+    "errors": [],
+    "afterQuietPeriod": 0
+  }
+}

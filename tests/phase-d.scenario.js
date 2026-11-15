@@ -24,10 +24,12 @@
   mark('**核心观点**', 'apply-important');
   assert('d-prose-inline-markdown-preserved', editor.getValue().includes('==🟡**核心观点**=='));
   select('a==b');
+  const menuEvent = app.workspace.on('editor-menu', menu => menu.setUseNativeMenu(false));
   const rect = editor.cm.coordsAtPos(editor.cm.state.selection.main.head);
   editor.cm.contentDOM.dispatchEvent(new MouseEvent('contextmenu', { bubbles: true, cancelable: true, clientX: rect.left, clientY: rect.top }));
   assert('d-context-menu-entry', await until(() => [...document.querySelectorAll('.menu-item-title')].some(item => item.textContent === '标记为疑问')));
   [...document.querySelectorAll('.menu-item-title')].find(item => item.textContent === '标记为疑问').closest('.menu-item').click();
+  app.workspace.offref(menuEvent);
   assert('d-context-menu-applies-inline-semantic', await until(() => editor.getValue().includes('%%hbi:') && editor.getValue().includes('"semantic":"question"')));
   mark('src', 'apply-question'); mark('print', 'apply-reference'); mark('add ax', 'lines-action');
   const before = editor.getValue();

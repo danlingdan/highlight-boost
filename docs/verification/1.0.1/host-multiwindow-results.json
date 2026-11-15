@@ -1,0 +1,203 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "native-actual-popout",
+      "passed": true
+    },
+    {
+      "name": "native-popout-focus-emulated",
+      "passed": true
+    },
+    {
+      "name": "native-popout-toolbar",
+      "passed": true
+    },
+    {
+      "name": "native-popout-mark-prose",
+      "passed": true
+    },
+    {
+      "name": "native-popout-mark-inline",
+      "passed": true
+    },
+    {
+      "name": "native-popout-mark-code",
+      "passed": true
+    },
+    {
+      "name": "native-host-saved-source",
+      "passed": true
+    },
+    {
+      "name": "native-duplicate-synchronized",
+      "passed": true
+    },
+    {
+      "name": "native-popout-index",
+      "passed": true
+    },
+    {
+      "name": "native-popup-copy-command",
+      "passed": true
+    },
+    {
+      "name": "native-popout-reading",
+      "passed": true
+    },
+    {
+      "name": "native-popout-source-kept",
+      "passed": true
+    },
+    {
+      "name": "native-workbench-moved",
+      "passed": true
+    },
+    {
+      "name": "native-workbench-source-context",
+      "passed": true
+    },
+    {
+      "name": "native-cross-window-jump",
+      "passed": true
+    },
+    {
+      "name": "native-popup-copy-excerpt",
+      "passed": true
+    },
+    {
+      "name": "native-workbench-window-closed",
+      "passed": true
+    },
+    {
+      "name": "native-source-window-closed",
+      "passed": true
+    },
+    {
+      "name": "native-closed-document-released",
+      "passed": true
+    },
+    {
+      "name": "native-source-restored",
+      "passed": true
+    },
+    {
+      "name": "shiki-actual-popout",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-focus-emulated",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-toolbar",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-mark-prose",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-mark-inline",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-mark-code",
+      "passed": true
+    },
+    {
+      "name": "shiki-host-saved-source",
+      "passed": true
+    },
+    {
+      "name": "shiki-duplicate-synchronized",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-index",
+      "passed": true
+    },
+    {
+      "name": "shiki-popup-copy-command",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-source-tokens",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-reading",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-style",
+      "passed": true
+    },
+    {
+      "name": "shiki-popout-source-kept",
+      "passed": true
+    },
+    {
+      "name": "shiki-workbench-moved",
+      "passed": true
+    },
+    {
+      "name": "shiki-workbench-source-context",
+      "passed": true
+    },
+    {
+      "name": "shiki-cross-window-jump",
+      "passed": true
+    },
+    {
+      "name": "shiki-popup-copy-excerpt",
+      "passed": true
+    },
+    {
+      "name": "shiki-workbench-window-closed",
+      "passed": true
+    },
+    {
+      "name": "shiki-source-window-closed",
+      "passed": true
+    },
+    {
+      "name": "shiki-closed-document-released",
+      "passed": true
+    },
+    {
+      "name": "shiki-closed-window-runtime-released",
+      "passed": true
+    },
+    {
+      "name": "shiki-source-restored",
+      "passed": true
+    },
+    {
+      "name": "restore-layout-source-window",
+      "passed": true
+    },
+    {
+      "name": "restore-layout-workbench-window",
+      "passed": true
+    },
+    {
+      "name": "restore-layout-saved",
+      "passed": true
+    },
+    {
+      "name": "multiwindow-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "errors": [],
+    "providers": [
+      "native",
+      "shiki"
+    ]
+  }
+}

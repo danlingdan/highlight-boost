@@ -1,0 +1,61 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "window-restart-source-restored",
+      "passed": true
+    },
+    {
+      "name": "window-restart-shiki-provider",
+      "passed": true
+    },
+    {
+      "name": "window-restart-source-tokens",
+      "passed": true
+    },
+    {
+      "name": "window-restart-style-restored",
+      "passed": true
+    },
+    {
+      "name": "window-restart-workbench-restored",
+      "passed": true
+    },
+    {
+      "name": "window-restart-two-distinct-windows",
+      "passed": true
+    },
+    {
+      "name": "window-restart-three-cards",
+      "passed": true
+    },
+    {
+      "name": "window-restart-jump",
+      "passed": true
+    },
+    {
+      "name": "window-restart-closed",
+      "passed": true
+    },
+    {
+      "name": "window-restart-documents-released",
+      "passed": true
+    },
+    {
+      "name": "window-restart-source-preserved",
+      "passed": true
+    },
+    {
+      "name": "window-restart-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "errors": [],
+    "restoredWindows": 2,
+    "sourcePath": "多窗口验收.md"
+  }
+}

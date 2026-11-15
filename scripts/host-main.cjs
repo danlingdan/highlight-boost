@@ -40,6 +40,7 @@ scenarios.lifecycle = ['lifecycle.scenario.js', 'host-lifecycle-results.json'];
 scenarios['lifecycle-shiki'] = ['lifecycle.scenario.js', 'host-lifecycle-shiki-results.json'];
 scenarios.pagination = ['pagination.scenario.js', 'host-pagination-results.json'];
 scenarios.compatibility = ['compatibility.scenario.js', 'host-compatibility-results.json'];
+scenarios.multiwindow = ['multiwindow.scenario.js', 'host-multiwindow-results.json'];
 scenarios.migration = ['migration.scenario.js', 'host-migration-results.json'];
 scenarios['migration-restart'] = ['migration-restart.scenario.js', 'host-migration-restart-results.json'];
 scenarios.parameters = ['fence-params.scenario.js', 'host-parameters-results.json'];
@@ -86,7 +87,7 @@ if (lifecycle && process.env.HB_MEMORY_PROFILE === '1') electron.ipcMain.handle(
   finally { event.sender.debugger.removeListener('message', chunk); }
 });
 if (captureModes.includes(mode) || mode === 'performance') electron.ipcMain.handle('hb-selection-capture', async (event, name) => {
-  if (!['selection-dark-zh', 'selection-light-en', 'phase-d-live', 'phase-d-reading', 'phase-e-collection', 'phase-e-light', 'notes-reading', 'notes-live', 'display-native', 'display-builtin', 'parameters', 'migration-preview', 'workbench-pagination'].includes(name)) throw new Error('Unknown screenshot');
+  if (!['selection-dark-zh', 'selection-light-en', 'phase-d-live', 'phase-d-reading', 'phase-e-collection', 'phase-e-light', 'notes-reading', 'notes-live', 'display-native', 'display-builtin', 'parameters', 'migration-preview', 'workbench-pagination'].includes(name) && !/^compat-(default|minimal|anuppuccin)-(dark|light)-(zh|en)$/.test(name)) throw new Error('Unknown screenshot');
   const { data } = await event.sender.debugger.sendCommand('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
   const directory = path.join(root, 'docs', 'verification', 'images');
   fs.mkdirSync(directory, { recursive: true });
@@ -130,7 +131,13 @@ app.on('browser-window-created', (_event, window) => {
     if (event.level === 'error' || event.level === 'warning') console.log(event.message);
   });
   contents.on('did-finish-load', async () => {
-    if (!contents.getURL().includes('index.html')) return;
+    if (!contents.getURL().includes('index.html')) {
+      if (mode === 'multiwindow') {
+        contents.debugger.attach('1.3'); await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
+        await contents.executeJavaScript('window.__hbPopoutReady = true');
+      }
+      return;
+    }
     try {
       const deadline = Date.now() + (scale ? 180000 : 30000);
       while (!await contents.executeJavaScript('Boolean(window.app?.workspace?.layoutReady) && !document.body.classList.contains("in-progress")')) {
@@ -139,7 +146,7 @@ app.on('browser-window-created', (_event, window) => {
       }
       const actualPath = await contents.executeJavaScript('app.vault.adapter.basePath');
       if (path.resolve(actualPath) !== vault) throw new Error('Unexpected test vault');
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || lifecycle) {
+      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || lifecycle) {
         contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }
@@ -148,6 +155,7 @@ app.on('browser-window-created', (_event, window) => {
       await contents.executeJavaScript(`window.__hbHostMode = ${JSON.stringify(mode)}`);
       await contents.executeJavaScript(`window.__hbPerformanceProfile = ${process.env.HB_PERF_PROFILE === '1'}`);
       await contents.executeJavaScript(`window.__hbMemoryProfile = ${process.env.HB_MEMORY_PROFILE === '1'}`);
+      await contents.executeJavaScript(`window.__hbCompatibilityCase = ${JSON.stringify(process.env.HB_COMPAT_CASE ?? 'default-native')}`);
       const outcome = await contents.executeJavaScript(script);
       results.checks.push(...outcome);
       const matrix = await contents.executeJavaScript('window.__hbLanguageMatrix ?? null');

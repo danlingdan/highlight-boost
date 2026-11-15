@@ -1,0 +1,58 @@
+(async () => {
+  const checks = [], errors = []; window.__hbChecks = checks;
+  const assert = (name, value, details) => { if (!value) throw new Error(`${name}: ${JSON.stringify(details)}`); checks.push({ name, passed: true }); };
+  const tick = () => new Promise(resolve => setTimeout(resolve, 100));
+  const until = async predicate => { for (let i = 0; i < 80 && !predicate(); i++) await tick(); return predicate(); };
+  window.addEventListener('error', event => errors.push(event.message));
+  await app.plugins.loadManifests(); await app.plugins.setEnable(true); await app.plugins.enablePlugin('highlight-boost');
+  let plugin = app.plugins.plugins['highlight-boost']; const original = structuredClone(plugin.settings);
+  const path = '多窗口验收.md', source = '# Windows\n\nwindow prose and `inline_window()`\n\n```js\nconst value = 1;\nconsole.log(value);\n```\n';
+  const old = app.vault.getFileByPath(path), file = old ? (await app.vault.modify(old, source), old) : await app.vault.create(path, source);
+  for (const provider of ['native', 'shiki']) {
+    plugin.settings.syntaxProvider = provider; plugin.settings.language = 'zh'; await plugin.saveSettings();
+    await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
+    for (const existing of app.workspace.getLeavesOfType('markdown')) if (existing.view.file?.path === path) existing.detach();
+    const duplicate = app.workspace.getLeaf('tab'); await duplicate.openFile(file);
+    const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
+    await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
+    leaf.view.editor.setValue(source); await app.vault.modify(file, source);
+    const popout = app.workspace.moveLeafToPopout(leaf, { width: 1000, height: 800 });
+    assert(`${provider}-actual-popout`, await until(() => popout.doc?.body && leaf.view.containerEl.ownerDocument === popout.doc));
+    assert(`${provider}-popout-focus-emulated`, await until(() => popout.win.__hbPopoutReady));
+    const popoutWindow = popout.win, popoutDocument = popout.doc;
+    popout.win.addEventListener('error', event => errors.push(event.message));
+    app.workspace.setActiveLeaf(leaf, { focus: true });
+    const editor = leaf.view.editor;
+    const select = word => { const from = editor.getValue().lastIndexOf(word); editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); editor.scrollIntoView({ from: editor.offsetToPos(from), to: editor.offsetToPos(from + word.length) }, true); };
+    select('window prose');
+    assert(`${provider}-popout-toolbar`, await until(() => Boolean(popout.doc.querySelector('.hb-selection-toolbar'))));
+    assert(`${provider}-popout-mark-prose`, plugin.apply(editor, plugin.presetForAction('important')));
+    select('inline_window'); assert(`${provider}-popout-mark-inline`, plugin.apply(editor, plugin.presetForAction('question')));
+    select('value'); assert(`${provider}-popout-mark-code`, plugin.apply(editor, plugin.presetForAction('reference')));
+    const marked = editor.getValue(); await app.vault.modify(file, marked); await plugin.index.ready;
+    assert(`${provider}-duplicate-synchronized`, await until(() => duplicate.view.editor.getValue() === marked));
+    assert(`${provider}-popout-index`, plugin.index.notes.get(path).text === marked && plugin.index.notes.get(path).items.length === 3);
+    if (provider === 'shiki') assert('shiki-popout-source-tokens', await until(() => Boolean(leaf.view.containerEl.querySelector('.hb-syntax-token'))));
+    await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
+    const preview = leaf.view.containerEl.querySelector('.markdown-preview-view');
+    assert(`${provider}-popout-reading`, await until(() => Boolean(preview.querySelector('pre .hb-text')) && Boolean(preview.querySelector('code.hb-inline'))));
+    if (provider === 'shiki') assert('shiki-popout-style', Boolean(popout.doc.querySelector('style[data-hb-syntax]')));
+    assert(`${provider}-popout-source-kept`, editor.getValue() === marked);
+    await plugin.openPanel('note'); const panelLeaf = app.workspace.getLeavesOfType('highlight-boost')[0];
+    const panelWindow = app.workspace.moveLeafToPopout(panelLeaf, { width: 500, height: 800 });
+    assert(`${provider}-workbench-moved`, await until(() => panelWindow.doc?.querySelectorAll('.hb-card').length === 3));
+    const workbenchWindow = panelWindow.win;
+    app.workspace.setActiveLeaf(leaf, { focus: true }); plugin.refreshPanels(); app.workspace.setActiveLeaf(panelLeaf, { focus: true });
+    assert(`${provider}-workbench-source-context`, panelLeaf.view.note === leaf.view);
+    const codeCard = [...panelWindow.doc.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'value'); codeCard.querySelector('.hb-quote').click();
+    assert(`${provider}-cross-window-jump`, await until(() => leaf.view.getMode() === 'source' && editor.getSelection() === 'value'), { mode: leaf.view.getMode(), selection: editor.getSelection() });
+    workbenchWindow.close(); assert(`${provider}-workbench-window-closed`, await until(() => workbenchWindow.closed));
+    popoutWindow.close(); assert(`${provider}-source-window-closed`, await until(() => popoutWindow.closed)); await tick();
+    assert(`${provider}-closed-document-released`, ![...plugin.editorViews.values()].some(view => view.dom.ownerDocument === popoutDocument));
+    if (provider === 'shiki') assert('shiki-closed-window-runtime-released', !plugin.syntax.runtime.documents.has(popoutDocument));
+    const reopened = app.workspace.getLeaf('tab'); await reopened.openFile(file);
+    assert(`${provider}-source-restored`, await until(() => reopened.view.editor.getValue() === marked), { actual: reopened.view.editor.getValue(), expected: marked, disk: await app.vault.read(file) }); reopened.detach(); duplicate.detach();
+  }
+  plugin.settings = original; await plugin.saveSettings(); await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost');
+  assert('multiwindow-no-page-errors', errors.length === 0, errors); window.__hbObservations = { errors, providers: ['native', 'shiki'] }; return checks;
+})()

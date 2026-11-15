@@ -6,8 +6,10 @@ const executable = require('electron');
 require('./obsidian-runtime.cjs')(process.cwd());
 const environment = { ...process.env };
 delete environment.ELECTRON_RUN_AS_NODE;
-const single = process.argv.find(argument => argument.startsWith('--mode='))?.slice(7);
-const available = ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart', 'shiki', 'languages-shiki', 'shiki-live-077', 'shiki-live-080', 'embedded', 'inline', 'inline-restart', 'prose', 'prose-restart', 'i18n', 'i18n-restart', 'selection', 'phase-d', 'phase-d-restart', 'phase-e', 'phase-e-restart', 'notes', 'notes-restart', 'display', 'display-restart', 'parameters', 'migration', 'migration-restart', 'performance', 'scale', 'pagination', 'responsive', 'lifecycle', 'lifecycle-shiki', 'compatibility'];
+const modeIndex = process.argv.indexOf('--mode');
+const single = process.argv.find(argument => argument.startsWith('--mode='))?.slice(7) ?? (modeIndex >= 0 ? process.argv[modeIndex + 1] : undefined);
+if (modeIndex >= 0 && !single) throw new Error('Missing host scenario');
+const available = ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart', 'shiki', 'languages-shiki', 'shiki-live-077', 'shiki-live-080', 'embedded', 'inline', 'inline-restart', 'prose', 'prose-restart', 'i18n', 'i18n-restart', 'selection', 'phase-d', 'phase-d-restart', 'phase-e', 'phase-e-restart', 'notes', 'notes-restart', 'display', 'display-restart', 'parameters', 'migration', 'migration-restart', 'performance', 'scale', 'pagination', 'responsive', 'lifecycle', 'lifecycle-shiki', 'compatibility', 'multiwindow'];
 if (single && !available.includes(single)) throw new Error(`Unknown host scenario: ${single}`);
 const modes = single ? [single] : process.argv.includes('--shiki') ? ['shiki', 'languages-shiki'] : process.argv.includes('--languages-shiki') ? ['languages-shiki'] : process.argv.includes('--advanced') ? ['advanced'] : process.argv.includes('--languages') ? ['languages'] : process.argv.includes('--layout') ? ['layout'] : process.argv.includes('--settings') ? ['settings'] : ['functional', 'advanced', 'languages', 'layout', 'settings', 'restart', 'embedded', 'inline', 'inline-restart', 'prose', 'prose-restart', 'i18n', 'i18n-restart', 'selection', 'phase-d', 'phase-d-restart', 'phase-e', 'phase-e-restart', 'notes', 'notes-restart', 'display', 'display-restart', 'parameters', 'migration', 'migration-restart', 'pagination', 'lifecycle', 'lifecycle-shiki'];
 for (const mode of modes) {

@@ -10,9 +10,24 @@
 | 公开文档 | 中文 / English README、桌面操作、贡献说明及发布日志已成稿，等待维护者检查 |
 | 阶段 G 功能验收 | 已归档，见[验收矩阵](../verification/phase-g-matrix.md) |
 | 本次工程检查 | lint、类型检查、33 文件 / 200 项测试及构建通过；集中路径后基础宿主 46 项、窗口 47 项与独立进程恢复 12 项通过，页面错误为零 |
+| 完整宿主 CI 复核 | 窗口专项间歇出现 ResizeObserver 通知，仍待定位；观察器追踪已记录原生工作区与 CodeMirror 目标，见下方运行记录 |
 | 1.0.0 下载与安装测试 | 由维护者执行，结果待记录 |
 | 社区目录 | 已提交，等待官方审核 |
-| tag 与 GitHub Release | 待文档检查和维护者安装确认后执行 |
+| tag 与 GitHub Release | 待公开文档检查后执行 |
+
+本机窗口检查已通过；[完整上下文诊断](https://github.com/danlingdan/highlight-boost/actions/runs/43723313269)在 macOS 捕获了布局通知，[独立窗口诊断](https://github.com/danlingdan/highlight-boost/actions/runs/43722824864)通过。两种运行结果分别保留。固定工具栏宽度的尝试没有消除通知，已恢复原有样式。正式发布前继续处理该专项。
+
+## 交给维护者的安装检查
+
+本机候选：`dist/highlight-boost-1.0.0-e668b55d/highlight-boost.zip`，源码为 `e668b55dad56f055bc4109282a4e4a83a9b69b27`，ZIP SHA-256 为 `0008ae9489fa1b81c44df6c7d6dbbdaaef6088909e34ed07a14dc7492cfac22f`。该包已完成构建、解压与逐文件摘要核对。
+
+下载安装由维护者执行，可从候选 CI 产物或正式 Release 取得同一版本文件。建议检查：
+
+1. 最新 Obsidian 桌面版中新建笔记库，安装后显示版本 1.0.0，插件正常启用。
+2. 正文、行内代码、代码块精确范围与整行标注，以及一次撤销 / 重做。
+3. Live Preview 与阅读视图显示；宿主 / 内置 Shiki 切换并重新启用。
+4. 工作台来源跳转、批注、纯代码复制和摘录；重启后保留设置与笔记数据。
+5. 日常使用的主题与代码插件组合，记录实际观察到的问题和触发步骤。
 
 ## 每次发布日志怎么写
 
@@ -30,8 +45,8 @@
 1. 核对最新 Obsidian 桌面稳定版、SDK 与运行包；同步 manifest、package、versions 及运行包配置。
 2. 完成版本日志和公开文档检查，运行 `pnpm check` 与适合改动范围的验证。
 3. 提交源码后运行 `pnpm package:candidate`，核对 `candidate.json` 中的提交、文件和 ZIP 摘要。
-4. 维护者进行下载、全新安装与使用检查，将实际结果记录到本页；本次由维护者执行。
+4. 将候选包与 CI 构建入口交给维护者进行下载、全新安装与使用检查，按实际执行情况记录结果；本次由维护者执行。
 5. 使用与 manifest 完全一致的 tag，例如 `1.0.0`。创建 GitHub Release，上传 `main.js`、`manifest.json`、`styles.css`、安装 ZIP 和摘要清单，正文使用本版本日志。
 6. 更新 README 和 CHANGELOG 的“发布准备中”状态、实际日期、发布链接。社区目录沿用已有提交，记录后续审核结果。
 
-Obsidian 官方说明：[使用 GitHub Actions 发布插件](https://github.com/obsidianmd/obsidian-developer-docs/blob/main/en/Plugins/Releasing/Release%20your%20plugin%20with%20GitHub%20Actions.md)。当前项目先完成文档审阅与维护者安装确认，再执行正式发布。
+Obsidian 官方说明：[使用 GitHub Actions 发布插件](https://github.com/obsidianmd/obsidian-developer-docs/blob/main/en/Plugins/Releasing/Release%20your%20plugin%20with%20GitHub%20Actions.md)。当前项目先完成公开文档审阅，再执行正式发布。

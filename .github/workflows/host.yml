@@ -15,7 +15,6 @@ jobs:
     timeout-minutes: 20
     env:
       HB_TRACE: '1'
-      HB_RO_TRACE: '1'
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

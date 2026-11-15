@@ -11,14 +11,16 @@
   plugin.settings.syntaxProvider = 'shiki'; plugin.settings.language = 'zh'; plugin.settings.selectionToolbar = true; await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
   const path = '辅助技术验收.md', source = '# 辅助技术验收\n\n键盘重点 alpha，正文内容。\n\n行内 `inline()`。\n\n```js\nconst value = 1;\nconsole.log(value);\n```\n\n输入：\n';
+  for (const existing of app.workspace.getLeavesOfType('markdown')) if (existing.view.file?.path === path) { await existing.view.save(); existing.detach(); }
   const old = app.vault.getFileByPath(path), file = old ? (await app.vault.modify(old, source), old) : await app.vault.create(path, source);
   const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: false } });
   const editor = leaf.view.editor;
-  const select = word => { const from = editor.getValue().lastIndexOf(word); editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); editor.scrollIntoView({ from: editor.offsetToPos(from), to: editor.offsetToPos(from + word.length) }, true); };
-  assert('keyboard-toolbar-visible', await until(() => { select('alpha'); return document.querySelector('.hb-selection-toolbar'); }));
-  const toolbar = () => document.querySelector('.hb-selection-toolbar'); toolbar().querySelector('button').focus();
-  await key('End', 'End', 35); assert('keyboard-toolbar-end', document.activeElement.dataset.hbAction === 'close');
+  const select = word => { const from = editor.getValue().lastIndexOf(word); editor.focus(); editor.setCursor(editor.offsetToPos(from)); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); editor.scrollIntoView({ from: editor.offsetToPos(from), to: editor.offsetToPos(from + word.length) }, true); };
+  let toolbarVisible = false; for (let i = 0; i < 60 && !toolbarVisible; i++) { select('alpha'); await tick(); toolbarVisible = Boolean(document.querySelector('.hb-selection-toolbar')); }
+  assert('keyboard-toolbar-visible', toolbarVisible, { enabled: plugin.settings.selectionToolbar, focus: editor.hasFocus(), cmFocus: editor.cm.hasFocus, connected: editor.cm.dom.isConnected, documentFocus: document.hasFocus(), selection: editor.getSelection(), toolbars: [...plugin.toolbars].map(toolbar => ({ matches: toolbar.matches(editor), dismissed: toolbar.dismissed, disposed: toolbar.disposed, generation: toolbar.generation, composing: toolbar.view?.composing, coords: toolbar.view?.coordsAtPos(toolbar.view.state.selection.main.head), focus: toolbar.view?.hasFocus, connected: toolbar.view?.dom.isConnected, owner: toolbar.view?.dom.ownerDocument === document })), bounds: editor.cm.scrollDOM.getBoundingClientRect().toJSON(), active: document.activeElement?.outerHTML.slice(0, 300) });
+  const toolbar = () => document.querySelector('.hb-selection-toolbar'); await tick(); toolbar().querySelector('button').focus(); await tick();
+  await key('End', 'End', 35); assert('keyboard-toolbar-end', document.activeElement.dataset.hbAction === 'close', { active: document.activeElement?.outerHTML.slice(0, 300), toolbar: Boolean(toolbar()) });
   await key('Home', 'Home', 36); assert('keyboard-toolbar-home', document.activeElement === toolbar().querySelector('button'));
   await key('ArrowRight', 'ArrowRight', 39); assert('keyboard-toolbar-arrow', document.activeElement === toolbar().querySelectorAll('button')[1]);
   await key('Escape', 'Escape', 27); assert('keyboard-toolbar-escape-restores-editor', await until(() => !document.querySelector('.hb-selection-toolbar') && editor.hasFocus()));
@@ -72,6 +74,7 @@
   };
   for (const appearance of ['dark', 'light']) {
     app.changeTheme(`obsidian${appearance === 'dark' ? '' : '-light'}`); await tick();
+    assert(`a11y-${appearance}-code-mark-ready`, await until(() => preview.querySelector('pre .hb-text')));
     const codeMark = preview.querySelector('pre .hb-text'), originalClass = codeMark.className;
     assert(`a11y-${appearance}-code-underline-visible`, getComputedStyle(codeMark).textDecorationLine === 'underline');
     for (const color of ['default', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']) {

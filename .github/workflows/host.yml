@@ -6,6 +6,10 @@ on:
         description: 仅运行 macOS 窗口观察器诊断
         type: boolean
         default: false
+      resize_trace:
+        description: 记录窗口观察目标与调用栈
+        type: boolean
+        default: false
   push:
     paths: ['src/**', 'tests/**', 'scripts/**', 'styles.css', 'manifest.json', 'package.json', 'pnpm-lock.yaml', '.github/workflows/host.yml']
 permissions:
@@ -21,6 +25,7 @@ jobs:
     timeout-minutes: 20
     env:
       HB_TRACE: '1'
+      HB_RO_TRACE: ${{ inputs.resize_trace && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -74,7 +79,7 @@ jobs:
     timeout-minutes: 10
     env:
       HB_TRACE: '1'
-      HB_RO_TRACE: '1'
+      HB_RO_TRACE: ${{ inputs.resize_trace && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

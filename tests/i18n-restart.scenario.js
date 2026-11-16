@@ -15,8 +15,8 @@
   const leaf = app.workspace.getLeaf(false);
   await leaf.openFile(file);
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: false } });
-  await plugin.openPanel();
-  assert('english-sidebar-restores', document.querySelector('.hb-panel h4').textContent === 'Note highlights');
+  await plugin.openPanel('note');
+  assert('english-sidebar-restores', document.querySelector('.hb-panel h4').textContent === 'Highlight workbench');
   assert('snapshot-names-restore', document.querySelector('.hb-panel').textContent.includes('Reference') && document.querySelector('.hb-panel').textContent.includes('疑问'));
   app.setting.open();
   app.setting.openTabById('highlight-boost');

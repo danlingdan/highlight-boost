@@ -69,7 +69,7 @@
   const afterTable = editor.getValue();
   editor.undo(); assert('inline-table-single-undo', editor.getValue() === beforeTable);
   editor.redo(); assert('inline-table-redo', editor.getValue() === afterTable);
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   const cards = [...document.querySelectorAll('.hb-card')];
   assert('inline-sidebar-items', cards.length === 7 && cards.every(card => card.textContent.includes('行内代码')));
   assert('inline-sidebar-no-block-rebind', !document.querySelector('.hb-rebind'));

@@ -40,7 +40,7 @@
   editor.redo(); assert('d-redo-restores-code', codes().some(metadata => metadata.marks.some(mark => mark.quote === 'memcpy(dst, src, n)')));
   mark('```js\nconst sample = 1;\n```', 'apply-reference');
   const saved = editor.getValue();
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   const panel = () => document.querySelector('.hb-panel');
   const card = quote => [...panel().querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === quote);
   assert('d-current-note-all-object-types', panel().querySelectorAll('.hb-card').length === 7);
@@ -66,20 +66,20 @@
       assert(`d-${mode}-code-render`, await until(() => [...view.containerEl.querySelectorAll('.hb-text')].some(node => node.textContent === 'src')));
       assert(`d-${mode}-inline-render`, await until(() => Boolean(view.containerEl.querySelector('.hb-inline'))));
     }
-    await plugin.openPanel();
+    await plugin.openPanel('note');
     if (mode !== 'source') {
       card('src').querySelector('details').open = true;
       await window.require('electron').ipcRenderer.invoke('hb-selection-capture', `phase-d-${mode}`);
     }
     for (const word of ['**核心观点**', 'a==b', 'src', 'print', 'add ax, 1']) {
       if (mode === 'reading') await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
-      await plugin.openPanel(); card(word).querySelector('.hb-quote').click();
+      await plugin.openPanel('note'); card(word).querySelector('.hb-quote').click();
       assert(`d-${mode}-jump-${word}`, await until(() => view.getMode() === 'source' && editor.getSelection() === word));
     }
     assert(`d-${mode}-source-exact`, editor.getValue() === saved);
   }
-  await plugin.openPanel();
-  const oldRemove = card('src').querySelector('.hb-remove-item');
+  await plugin.openPanel('note');
+  const oldRemove = window.__hbUI.menu(card('src').querySelector('.hb-card-more'), plugin.t('removeItem'));
   const otherPath = '阶段D另一篇.md', otherOld = app.vault.getFileByPath(otherPath);
   const other = otherOld ? (await app.vault.modify(otherOld, saved), otherOld) : await app.vault.create(otherPath, saved);
   await leaf.openFile(other); oldRemove.click();

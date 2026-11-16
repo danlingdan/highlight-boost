@@ -44,6 +44,11 @@
   assert('migration-open-editor-updated', await until(() => leaf.view.editor.getValue() === run.files.find(file => file.path === pathA).after));
   assert('migration-native-markdown-preserved', leaf.view.editor.getValue().includes('==🔴**alpha**==') && leaf.view.editor.getValue().includes('`<mark>inline</mark>`') && leaf.view.editor.getValue().includes('```js hl:2\nfirst();\ntarget();\n```'));
   assert('migration-index-prose-and-code', await until(() => plugin.index.notes.get(pathA)?.items.length === 3));
+  const collectionCount = plugin.settings.collections.length;
+  control('results').click();
+  assert('migration-success-files-workbench', await until(() => { const view = app.workspace.getLeavesOfType('highlight-boost')[0]?.view; return view && view.hits.length === 4 && view.hits.every(hit => [pathA, pathC].includes(hit.path)) && view.contentEl.textContent.includes('本次导入结果'); }));
+  assert('migration-results-do-not-create-collection', plugin.settings.collections.length === collectionCount);
+  app.commands.executeCommandById('highlight-boost:open-migration'); await until(() => modal() && control('preview') && !control('preview').disabled);
   const options = { highlightr: true, hilo: true, fences: true, mapping: { 'hilo:soft-rose': 'purple' } };
   assert('migration-repeat-no-new-changes', !(await plugin.migrations.preview([pathA, pathC], options)).some(file => file.before !== file.after));
   const previewB = await plugin.migrations.preview([pathB], options), changedB = originals[pathB] + '新增内容';

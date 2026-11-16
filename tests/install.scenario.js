@@ -23,7 +23,7 @@
   const select = word => { const from = editor.getValue().lastIndexOf(word); editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); };
   let expected;
   if (!restart) {
-    assert('install-default-provider', plugin.settings.syntaxProvider === 'native');
+    assert('install-unified-engine', plugin.settings.schemaVersion === 3 && Boolean(plugin.syntax.engine));
     for (const [word, command] of [['alpha', 'apply-important'], ['inline()', 'apply-question'], ['value', 'apply-reference']]) {
       select(word); assert(`install-command-${word}`, app.commands.executeCommandById(`highlight-boost:${command}`));
     }
@@ -34,11 +34,11 @@
     await app.vault.adapter.write(`${app.vault.configDir}/install-expectation.json`, JSON.stringify({ text: expected, version: candidate.version }));
     select('value'); await plugin.copyCode(editor);
     assert('install-copy-pure-code', await navigator.clipboard.readText() === 'const value = 1;\nconsole.log(value);');
-    plugin.settings.syntaxProvider = 'shiki'; plugin.settings.language = 'en'; await plugin.saveSettings();
+    plugin.settings.language = 'en'; await plugin.saveSettings();
     await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
   } else {
     expected = JSON.parse(await app.vault.adapter.read(`${app.vault.configDir}/install-expectation.json`)).text;
-    assert('install-restart-settings', plugin.settings.syntaxProvider === 'shiki' && plugin.settings.language === 'en');
+    assert('install-restart-settings', Boolean(plugin.syntax.engine) && plugin.settings.language === 'en');
   }
   assert('install-source-persisted', editor.getValue() === expected);
   assert('install-three-object-types', plugin.documentFor(editor).items.length === 3);

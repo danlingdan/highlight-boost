@@ -47,6 +47,7 @@ it('diff 增删背景保留原始代码，复制两种内容并保留行号', as
   renderCode(code, block, 'zh', true); renderCodeDisplay(code, block, { ...defaultCodeDisplay, showLineNumbers: true }, 'zh', new Map(), 'one');
   expect([...code.querySelectorAll('[data-hb-diff]')].map(row => row.getAttribute('data-hb-diff'))).toEqual(['delete', 'insert', 'context']);
   const write = vi.fn().mockResolvedValue(undefined); Object.defineProperty(navigator, 'clipboard', { value: { writeText: write }, configurable: true });
-  (root.querySelector('[data-hb-display-action="copy-after"]') as HTMLButtonElement).click(); await Promise.resolve(); await Promise.resolve();
+  root.addEventListener('hb-copy-menu', event => { const { after, copy } = (event as CustomEvent<{ after: string; copy: (value: string) => void }>).detail; copy(after); });
+  (root.querySelector('[data-hb-display-action="copy-menu"]') as HTMLButtonElement).click(); await Promise.resolve(); await Promise.resolve();
   expect(write).toHaveBeenCalledWith('new\nsame'); expect(renderedCodeText(code)).toBe(block.text);
 });

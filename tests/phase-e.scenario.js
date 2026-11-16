@@ -7,6 +7,7 @@
   const until = async predicate => { for (let i = 0; i < 45 && !predicate(); i++) await tick(); return predicate(); };
   await app.plugins.loadManifests(); await app.plugins.setEnable(true); await app.plugins.enablePlugin('highlight-boost');
   const plugin = app.plugins.plugins['highlight-boost'], originalSettings = structuredClone(plugin.settings);
+  plugin.settings.collections = plugin.settings.collections.filter(collection => collection.name !== '复习 E');
   plugin.settings.language = 'zh'; plugin.settings.excerptTemplate = 'markdown';
   plugin.settings.presets = [{ id: 'important', name: '重点', color: 'yellow' }, { id: 'question', name: '疑问', color: 'red' }, { id: 'reference', name: '引用', color: 'blue' }, { id: 'action', name: '行动', color: 'green' }];
   await plugin.saveSettings();
@@ -26,7 +27,7 @@
   await leaf.openFile(b); mark('print', 'apply-reference'); await leaf.openFile(a);
   await plugin.index.ready; await plugin.openPanel('vault');
   const panel = document.querySelector('.hb-panel');
-  const set = (key, value) => { const control = panel.querySelector(`.hb-${key}`); control.value = value; control.dispatchEvent(new Event(control.tagName === 'INPUT' ? 'input' : 'change', { bubbles: true })); };
+  const set = (key, value) => { if (key === 'scope') { panel.querySelector(`[data-hb-scope="${value}"]`).click(); return; } if (key === 'template') { window.__hbUI.template(panel, value); return; } const control = panel.querySelector(`.hb-${key}`); control.value = value; control.dispatchEvent(new Event(control.tagName === 'INPUT' ? 'input' : 'change', { bubbles: true })); };
   const cards = () => [...panel.querySelectorAll('.hb-card')];
   const card = quote => cards().find(card => card.querySelector('.hb-quote').textContent === quote);
   const scope = async value => { set('scope', value); await tick(); };
@@ -58,11 +59,11 @@
   assert('e-collection-name-dialog', await until(() => document.querySelector('.hb-collection-name')));
   const input = document.querySelector('.hb-collection-name'); input.value = '复习 E'; input.dispatchEvent(new Event('input', { bubbles: true }));
   [...input.closest('.modal').querySelectorAll('button')].find(button => button.textContent === '创建').click();
-  assert('e-create-collection-ui', await until(() => plugin.settings.collections.some(collection => collection.name === '复习 E') && !input.isConnected && panel.querySelector('.hb-scope').value === 'collection'));
+  assert('e-create-collection-ui', await until(() => plugin.settings.collections.some(collection => collection.name === '复习 E') && !input.isConnected && panel.querySelector('[data-hb-scope="collection"]').getAttribute('aria-pressed') === 'true'));
   const collectionId = plugin.settings.collections.find(collection => collection.name === '复习 E').id;
   await scope('vault');
   for (const quote of ['alpha', 'value', 'beta', 'alpha']) {
-    const add = card(quote).querySelector('.hb-add-collection'); add.value = collectionId; add.dispatchEvent(new Event('change', { bubbles: true })); await plugin.settingsWrites;
+    await window.__hbUI.collection(card(quote), collectionId); await plugin.settingsWrites;
   }
   assert('e-add-collection-deduplicates', plugin.settings.collections.find(collection => collection.id === collectionId).entries.length === 3);
   await scope('collection'); set('collection', collectionId);
@@ -94,7 +95,7 @@
   set('template', 'quote'); await plugin.settingsWrites; assert('e-quote-template', plugin.excerpt(collectionHit).startsWith('> ```c\n> value'));
   set('template', 'markdown'); await plugin.settingsWrites;
   const existing = new Set(app.vault.getMarkdownFiles().map(file => file.path));
-  panel.querySelector('[data-hb-workbench-action="export"]').click();
+  window.__hbUI.export(panel);
   assert('e-export-note-created', await until(() => app.vault.getMarkdownFiles().some(file => file.path.startsWith('Highlight Boost/') && !existing.has(file.path))));
   const exported = app.vault.getMarkdownFiles().find(file => file.path.startsWith('Highlight Boost/') && !existing.has(file.path));
   const output = await app.vault.read(exported); await plugin.index.ready;
@@ -112,12 +113,12 @@
   await new Promise(resolve => setTimeout(resolve, 8500));
   await window.require('electron').ipcRenderer.invoke('hb-selection-capture', 'phase-e-collection');
   plugin.settings.language = 'en'; await plugin.saveSettings();
-  assert('e-workbench-english', await until(() => panel.querySelector('h4').textContent === 'Highlight workbench' && panel.textContent.includes('Create excerpt note')));
+  assert('e-workbench-english', await until(() => panel.querySelector('h4').textContent === 'Highlight workbench' && panel.textContent.includes('Build excerpt')));
   const dark = document.body.classList.contains('theme-dark'); document.body.classList.remove('theme-dark'); document.body.classList.add('theme-light');
   await window.require('electron').ipcRenderer.invoke('hb-selection-capture', 'phase-e-light');
   document.body.classList.toggle('theme-dark', dark); document.body.classList.toggle('theme-light', !dark);
   app.commands.executeCommandById('highlight-boost:open-highlights');
-  assert('e-current-note-command-resets-saved-filter', await until(() => panel.querySelector('.hb-scope').value === 'note' && panel.querySelector('.hb-path-filter').value === '' && cards().length === 3));
+  assert('e-current-note-command-resets-saved-filter', await until(() => panel.querySelector('[data-hb-scope="note"]').getAttribute('aria-pressed') === 'true' && panel.querySelector('.hb-path-filter').value === '' && cards().length === 3));
   await plugin.index.ready; await plugin.settingsWrites;
   await app.vault.adapter.write(`${app.vault.configDir}/hb-phase-e-expected.json`, JSON.stringify({ originalSettings, collectionId, path: a.path, source: sourceA, exported: exported.path, gone }));
   assert('e-no-page-errors', errors.length === 0, errors);

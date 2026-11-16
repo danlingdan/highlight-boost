@@ -8,7 +8,7 @@
   const file = app.vault.getFileByPath('阶段D验收.md'), leaf = app.workspace.getLeaf(false);
   assert('d-restart-source-exact', await app.vault.read(file) === expected.source);
   await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   const cards = [...document.querySelectorAll('.hb-card')];
   assert('d-restart-all-seven-marks', cards.length === 7);
   for (const word of ['核心观点', 'a==b', 'src', 'print', 'add ax, 1', 'memcpy', 'const sample']) assert(`d-restart-${word}`, cards.some(card => card.querySelector('.hb-quote').textContent.includes(word)));

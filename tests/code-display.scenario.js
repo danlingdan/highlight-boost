@@ -5,6 +5,7 @@
   const tick = () => new Promise(resolve => setTimeout(resolve, 100));
   const until = async predicate => { for (let i = 0; i < 50 && !predicate(); i++) await tick(); return predicate(); };
   await app.plugins.loadManifests(); await app.plugins.setEnable(true); await app.plugins.enablePlugin('highlight-boost');
+  await window.require('electron').ipcRenderer.invoke('hb-display-viewport');
   let plugin = app.plugins.plugins['highlight-boost']; const originalSettings = structuredClone(plugin.settings);
   if (plugin.syntax) { plugin.settings.syntaxProvider = 'native'; await plugin.saveSettings(); await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost']; }
   plugin.settings.language = 'zh'; await plugin.saveSettings();
@@ -18,7 +19,7 @@
   const select = word => { const from = editor.getValue().lastIndexOf(word); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); };
   select('target()'); app.commands.executeCommandById('highlight-boost:apply-important');
   select('newCall'); app.commands.executeCommandById('highlight-boost:apply-question');
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   const hit = app.workspace.getLeavesOfType('highlight-boost')[0].view.hits.find(hit => hit.item.quote === 'newCall');
   plugin.saveNote(editor, hit.item, 'diff 人工批注');
   const saved = editor.getValue();
@@ -40,25 +41,25 @@
   editor.focus();
   assert('display-native-fold-command', Boolean(fold)); app.commands.executeCommandById(fold); await tick();
   assert('display-native-folded-range', await until(() => { if (foldedAt(editor.getValue().lastIndexOf('target()'))) return true; app.commands.executeCommandById(fold); return false; }));
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   [...document.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'target()').querySelector('.hb-quote').click();
   assert('display-native-folded-jump-expands', await until(() => editor.getSelection() === 'target()' && [...view.containerEl.querySelectorAll('.cm-line')].some(node => node.textContent.includes('target()'))), { selection: editor.getSelection(), placeholders: [...view.containerEl.querySelectorAll('.cm-foldPlaceholder')].map(node => node.textContent) });
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
-  let root = view.containerEl;
+  let root = view.containerEl.querySelector('.markdown-preview-view');
   const component = title => [...root.querySelectorAll('.hb-code-display')].find(block => block.querySelector('.hb-code-title')?.textContent === title);
-  assert('display-native-four-components', await until(() => root.querySelectorAll('.hb-code-display').length === 4));
+  assert('display-native-four-components', await until(() => root.querySelectorAll('.hb-code-display').length === 4), { count: root.querySelectorAll('.hb-code-display').length, height: root.clientHeight, scroll: root.scrollTop, pres: [...root.querySelectorAll('pre')].map(pre => ({ text: pre.textContent.slice(0, 60), hb: Boolean(pre.closest('.hb-unified-code')) })), blocks: plugin.documentFor(editor).parsed.blocks.map(block => block.language), html: root.innerHTML.slice(-1800) });
   assert('display-title-as-text', Boolean(component('src/<demo>.js')) && !root.querySelector('demo'));
   assert('display-default-folded', component('change.patch').querySelector('.hb-code-body').hidden);
   assert('display-fold-summary-semantics', component('change.patch').querySelector('.hb-code-mark-count').textContent.includes('疑问'));
   const write = navigator.clipboard.writeText; let copied = ''; navigator.clipboard.writeText = async value => { copied = value; };
   component('change.patch').querySelector('[data-hb-display-action="copy"]').click();
   assert('display-copy-collapsed-diff-raw', await until(() => copied === diff));
-  component('change.patch').querySelector('[data-hb-display-action="copy-after"]').click();
+  window.__hbUI.menu(component('change.patch').querySelector('[data-hb-display-action="copy-menu"]'), plugin.t('copyDiffAfter')).click();
   assert('display-copy-collapsed-diff-after', await until(() => copied === 'newCall();\nshared();'));
   if (!component('src/<demo>.js').querySelector('.hb-code-body').hidden) component('src/<demo>.js').querySelector('[data-hb-display-action="toggle"]').click();
   component('src/<demo>.js').querySelector('[data-hb-display-action="toggle"]').click();
   assert('display-toggle-expands', !component('src/<demo>.js').querySelector('.hb-code-body').hidden);
-  const rows = component('src/<demo>.js').querySelectorAll('.hb-code-row');
+  const rows = component('src/<demo>.js').querySelectorAll('.ec-line');
   assert('display-logical-numbers', [...rows].filter(row => row.dataset.hbNumber).map(row => row.dataset.hbNumber).join(',') === '7,8,9');
   assert('display-wrap-long-line', await until(() => rows[1].getBoundingClientRect().height > rows[2].getBoundingClientRect().height * 3));
   assert('display-fence-overrides-line-default', !component('range.js').querySelector('[data-hb-number]'));
@@ -68,7 +69,7 @@
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
   assert('display-fold-session-survives-view-switch', await until(() => component('src/<demo>.js')?.querySelector('.hb-code-body').hidden));
-  await plugin.openPanel(); [...document.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'target()').querySelector('.hb-quote').click();
+  await plugin.openPanel('note'); [...document.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'target()').querySelector('.hb-quote').click();
   assert('display-folded-sidebar-jump', await until(() => editor.getSelection() === 'target()' && view.getMode() === 'source'));
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
   assert('display-jump-remembers-expanded-block', await until(() => component('src/<demo>.js') && !component('src/<demo>.js').querySelector('.hb-code-body').hidden));
@@ -80,7 +81,7 @@
   plugin.settings.codeDisplay.showLineNumbers = true; plugin.settings.codeDisplay.diff = true; plugin.settings.codeDisplay.startLine = 20; await plugin.saveSettings();
   assert('display-live-start-number-change', await until(() => component('src/<demo>.js')?.querySelector('[data-hb-number="20"]')));
   assert('display-settings-source-unchanged', editor.getValue() === saved);
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
   await until(() => component('src/<demo>.js'));
   await window.require('electron').ipcRenderer.invoke('hb-selection-capture', 'display-native');
@@ -96,7 +97,7 @@
   const jsCopy = component('src/<demo>.js').querySelector('.expressive-code .copy button');
   assert('display-builtin-original-copy-data', jsCopy.dataset.code.replaceAll('\x7f', '\n') === js);
   assert('display-builtin-shell-copy-data', component('terminal.sh').querySelector('.expressive-code .copy button').dataset.code.replaceAll('\x7f', '\n') === shell);
-  component('change.patch').querySelector('[data-hb-display-action="copy-after"]').click(); assert('display-builtin-copy-after', await until(() => copied === 'newCall();\nshared();'));
+  window.__hbUI.menu(component('change.patch').querySelector('[data-hb-display-action="copy-menu"]'), plugin.t('copyDiffAfter')).click(); assert('display-builtin-copy-after', await until(() => copied === 'newCall();\nshared();'));
   component('src/<demo>.js').querySelector('[data-hb-display-action="toggle"]').click(); component('change.patch').querySelector('[data-hb-display-action="toggle"]').click();
   assert('display-builtin-english-controls', component('change.patch').querySelector('[data-hb-display-action="copy"]').textContent === 'Copy original diff');
   const ecRows = component('src/<demo>.js').querySelectorAll('.ec-line');

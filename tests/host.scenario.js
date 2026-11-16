@@ -130,8 +130,8 @@
   for (let i = 0; i < 40 && ![...scroller.querySelectorAll('pre .hb-text')].some(mark=>mark.textContent === 'source'); i++) await tick();
   assert('reading-code-decoration', [...scroller.querySelectorAll('pre .hb-text')].some(mark=>mark.textContent === 'source'));
   const code = Array.from(scroller.querySelectorAll('pre code')).find(code => code.textContent.includes('memcpy'));
-  assert('reading-code-preserves-text', code.textContent === 'void copy(char *dst, const char *src, size_t n) {\n  memcpy(dst, source, n);\n}\n', code.textContent);
-  assert('reading-token-preserved', Boolean(code.querySelector('.token')));
+  assert('reading-code-preserves-text', [...code.querySelectorAll('.ec-line > .code')].map(row => row.textContent).join('\n') === 'void copy(char *dst, const char *src, size_t n) {\n  memcpy(dst, source, n);\n}', code.textContent);
+  assert('reading-token-preserved', Boolean(code.querySelector('span[style]')));
 
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: true } });
   assert('source-mode', view.getState().source === true);

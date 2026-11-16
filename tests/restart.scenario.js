@@ -23,7 +23,7 @@
   const leaf = app.workspace.getLeaf(false);
   await leaf.openFile(file);
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: false } });
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   const quotes = Array.from(document.querySelectorAll('.hb-quote')).map(element=>element.textContent);
   assert('sidebar-restored', quotes.includes('source') && quotes.includes('console'));
   const editor = leaf.view.editor;

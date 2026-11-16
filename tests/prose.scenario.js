@@ -78,7 +78,7 @@
   assert('prose-table-async-commit', await until(() => metadata().length === 4));
   assert('prose-new-mark-uses-renamed-preset', metadata()[3].label === '改名以后' && metadata()[3].semantic === 'important');
   const saved = editor.getValue();
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   const cards = [...document.querySelectorAll('.hb-card')];
   assert('prose-sidebar-semantic-identities', cards.map(card => card.dataset.hbSemantic).join(',') === 'action,important,question,important');
   assert('prose-sidebar-snapshot-label', cards.some(card => card.textContent.includes('核心观点')));

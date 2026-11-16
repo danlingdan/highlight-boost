@@ -8,7 +8,7 @@
   window.addEventListener('error', event => errors.push(event.message));
   await app.plugins.loadManifests(); await app.plugins.setEnable(true); await app.plugins.enablePlugin('highlight-boost');
   let plugin = app.plugins.plugins['highlight-boost']; const original = structuredClone(plugin.settings);
-  plugin.settings.syntaxProvider = 'shiki'; plugin.settings.language = 'zh'; plugin.settings.selectionToolbar = true; await plugin.saveSettings();
+  plugin.settings.language = 'zh'; plugin.settings.selectionToolbar = true; await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
   const path = '辅助技术验收.md', source = '# 辅助技术验收\n\n键盘重点 alpha，正文内容。\n\n行内 `inline()`。\n\n```js\nconst value = 1;\nconsole.log(value);\n```\n\n输入：\n';
   for (const existing of app.workspace.getLeavesOfType('markdown')) if (existing.view.file?.path === path) { await existing.view.save(); existing.detach(); }
@@ -58,12 +58,18 @@
     inputText = inputText.slice(0, offset) + '测试' + inputText.slice(offset);
     assert(`ime-${kind}-committed-exact`, await until(() => editor.getValue() === inputText), editor.getValue());
     await until(() => !editor.cm.composing);
+    await tick();
+    assert(`ime-${kind}-committed-stable`, editor.getValue() === inputText, { expected: inputText, actual: editor.getValue() });
     assert(`ime-${kind}-metadata-preserved`, plugin.documentFor(editor).items.length === 3);
   }
-  await app.vault.modify(file, inputText);
+  select('console.log(value);测试'); plugin.apply(editor, plugin.presetForAction('action'), 'lines'); inputText = editor.getValue();
+  assert('pdf-whole-line-and-text-annotations', plugin.documentFor(editor).items.length === 4);
+  await leaf.view.save(); await tick();
+  assert('ime-and-lines-saved-stably', await app.vault.read(file) === inputText, { expected: inputText, actual: await app.vault.read(file) });
   await plugin.openPanel('note');
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
   assert('a11y-reading-ready', await until(() => leaf.view.containerEl.querySelector('pre .hb-text')));
+  assert('reading-source-remains-committed', editor.getValue() === inputText && await app.vault.read(file) === inputText);
   const tree = await cdp('Accessibility.getFullAXTree');
   const names = tree.nodes.filter(node => !node.ignored).map(node => ({ role: node.role?.value, name: node.name?.value }));
   assert('a11y-copy-button-named', names.some(node => node.role === 'button' && /复制|copy/i.test(node.name)), names);
@@ -88,10 +94,13 @@
     assert(`a11y-${appearance}-code-mark-ready`, await until(() => preview.querySelector('pre .hb-text')));
     const codeMark = preview.querySelector('pre .hb-text'), originalClass = codeMark.className;
     assert(`a11y-${appearance}-code-underline-visible`, getComputedStyle(codeMark).textDecorationLine === 'underline');
-    for (const color of ['default', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']) {
+    const lineMark = codeMark.closest('.hb-line'), lineClass = lineMark?.className;
+    for (const lineColor of ['default', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']) for (const color of ['default', 'red', 'orange', 'yellow', 'green', 'blue', 'purple']) {
+      if (lineMark) lineMark.className = lineClass.replace(/hb-(default|red|orange|yellow|green|blue|purple)\b/g, `hb-${lineColor}`);
       codeMark.className = `hb-text hb-${color}`; const value = ratio(codeMark);
-      contrast.push({ appearance, target: `code-${color}`, ratio: value, foreground: getComputedStyle(codeMark).color, theme: document.body.className });
+      contrast.push({ appearance, target: `code-${lineColor}-${color}`, ratio: value, foreground: getComputedStyle(codeMark).color });
     }
+    if (lineMark) lineMark.className = lineClass;
     codeMark.className = originalClass;
     for (const [target, selector] of [['prose', 'mark'], ['inline', 'code.hb-inline']]) {
       const value = ratio(preview.querySelector(selector)); contrast.push({ appearance, target, ratio: value });
@@ -114,8 +123,11 @@
   let pdf;
   for (let i = 0; i < 100 && !pdf; i++) { await tick(); pdf = await cdp('pdf-status'); }
   assert('pdf-actual-export', pdf?.bytes > 1000 && pdf.header === '%PDF-', pdf);
-  assert('pdf-code-mark-style', pdf.rendering.codeMark === 'value' && pdf.rendering.decoration === 'underline' && pdf.rendering.background !== 'rgba(0, 0, 0, 0)', pdf.rendering);
+  assert('pdf-code-mark-style', pdf.rendering.codeMark === 'value' && pdf.rendering.decoration === 'underline' && (pdf.rendering.background !== 'rgba(0, 0, 0, 0)' || pdf.rendering.lineBackground !== 'rgba(0, 0, 0, 0)'), pdf.rendering);
   assert('pdf-full-code-annotation', pdf.rendering.noteVisible && pdf.rendering.note.includes('第二行批注。'), pdf.rendering);
+  assert('pdf-no-interface-controls', !/编辑批注|复制当前代码块|Copy code|Edit annotation/.test(pdf.rendering.text), pdf.rendering.text);
+  assert('pdf-preserves-chinese-code', pdf.rendering.text.includes('测试') && !pdf.rendering.text.includes('ceshi'), pdf.rendering.text);
+  assert('pdf-whole-line-background', pdf.rendering.line?.includes('console.log') && pdf.rendering.lineBackground !== 'rgba(0, 0, 0, 0)', pdf.rendering);
   assert('pdf-metadata-hidden', !/%%hb/.test(pdf.rendering.text));
   window.__hbObservations = { errors, names, contrast, resizeIterations: 24, ime: 'Chromium Input.imeSetComposition + Input.insertText', pdf };
   assert('a11y-no-page-errors', errors.length === 0, errors);

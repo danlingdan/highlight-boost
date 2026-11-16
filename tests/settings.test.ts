@@ -26,7 +26,7 @@ describe('设置迁移与校验', () => {
   });
   it('从旧配置迁移并保持默认语义', () => {
     const result = normalizeSettings({ schemaVersion: 1, defaultPreset: 'question' });
-    expect(result.schemaVersion).toBe(2);
+    expect(result.schemaVersion).toBe(3);
     expect(result.defaultPreset).toBe('question');
     expect(result.presets).toHaveLength(4);
     expect(normalizeSettings(result)).toEqual(result);

@@ -8,10 +8,13 @@
 | 测试库 | `prepare-vault.mjs`、`prepare-scale-vault.mjs` | 准备默认 / 专项测试库与规模样例 |
 | 共存依赖 | `prepare-shiki.mjs`、`prepare-compatibility.mjs` | 准备固定版本第三方插件和主题 |
 | 实际宿主 | `test-host.mjs`、`host-main.cjs` | 启动隔离 Electron，执行 `tests/*.scenario.js` |
+| 界面融合 | `pnpm test:fusion` | 工具栏、批注冲突、集合、完整查询摘录、设置预览及 280 / 360 / 600 px 深浅布局 |
+| 统一代码 | `pnpm test:unified` | schema 3 升级、全代码路径、断网加载、本地资源重载及容器 / 嵌入来源 |
 | 专项编排 | `test-shiki-live.mjs`、`test-compatibility.mjs` | 上游版本对照、主题与插件组合矩阵 |
 | CI | `prepare-host-ci.mjs`、`report-host-matrix.mjs` | 清理本轮产物，汇总三平台证据和候选摘要 |
 | 性能 | `benchmark-core.mjs`、`verify-parsing.mjs` | 核心性能样例、固定种子解析差分 |
 | 分析 | `report-performance.mjs`、`report-memory.mjs`、`report-sidebar-profile.mjs` | 性能对照、堆快照和 CPU profile 报告 |
+| 1.1.0 设计 | `inspect-phase-one.mjs`、`verify-phase-one.cjs` | 固定上游源码与代码能力基线、深浅主题样稿布局及交互检查 |
 | 打包 | `package-candidate.mjs`、`zip-candidate.ps1` | 根据已提交源码生成候选 ZIP 并解压核对文件摘要 |
 | 安装准备 | `prepare-install.mjs` | 将已核对候选复制到全新的安装测试库 |
 

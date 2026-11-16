@@ -43,13 +43,13 @@
   assert('pagination-english-status', panel().querySelector('.hb-pagination [role="status"]').textContent === 'Page 2/3 · 51–100 of 123');
   await window.require('electron').ipcRenderer.invoke('hb-selection-capture', 'workbench-pagination');
   let exported;
-  const exportHits = plugin.exportHits.bind(plugin);
-  plugin.exportHits = async hits => { assert('pagination-export-all-hits', hits.length === 123); exported = await exportHits(hits); return exported; };
-  panel().querySelector('[data-hb-workbench-action="export"]').click();
+  const exportHits = plugin.exportExcerpt.bind(plugin);
+  plugin.exportExcerpt = async hits => { assert('pagination-export-all-hits', hits.includes('item-000') && hits.includes('item-122')); exported = await exportHits(hits); return exported; };
+  window.__hbUI.export(panel());
   for (let i = 0; i < 50 && !exported; i++) await tick();
   const exportText = exported && await app.vault.read(exported);
   assert('pagination-export-first-last', exportText?.includes('item-000') && exportText.includes('item-122'));
-  plugin.exportHits = exportHits;
+  plugin.exportExcerpt = exportHits;
   const entries = plugin.index.notes.get(path).items.map(item => ({ id: crypto.randomUUID(), path, kind: item.kind, from: item.from, quote: item.quote, prefix: '', suffix: '', color: item.color, label: item.label }));
   plugin.settings.collections.push({ id: 'pagination-full', name: 'Full pages', entries }, { id: 'pagination-part', name: 'Partial pages', entries: entries.slice(60).map(entry => ({ ...entry, id: crypto.randomUUID() })) });
   await plugin.saveSettings(); set('collection', 'pagination-full'); await workbench.setScope('collection'); turn('next');

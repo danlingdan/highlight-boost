@@ -10,10 +10,11 @@
   const observations = { case: test, cells: [], errors }; window.__hbObservations = observations;
   await app.plugins.loadManifests(); await app.plugins.setEnable(true); await app.plugins.enablePlugin('highlight-boost');
   let plugin = app.plugins.plugins['highlight-boost'];
-  plugin.settings.syntaxProvider = test.provider; plugin.settings.language = 'zh'; await plugin.saveSettings();
+  plugin.settings.language = 'zh'; await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
   await app.customCss.setTheme(test.theme); await app.customCss.loadTheme();
   assert('compat-theme-css-loaded', test.theme ? app.customCss.styleEl.textContent.includes(test.theme === 'Minimal' ? 'Minimal Theme for Obsidian' : 'AnuPpuccin') : !app.customCss.styleEl.textContent.trim());
+  for (const id of [...app.plugins.enabledPlugins]) if (id !== 'highlight-boost' && !test.plugins.includes(id)) await app.plugins.disablePlugin(id);
   for (const id of test.plugins) { await app.plugins.enablePlugin(id); assert(`compat-plugin-${id}-loaded`, Boolean(app.plugins.plugins[id])); }
   const customizer = app.plugins.plugins['codeblock-customizer'];
   if (customizer) { customizer.settings.pluginSettings.codeblock.enableLineNumbers = true; customizer.settings.pluginSettings.common.enableInSourceMode = true; await customizer.saveSettings(); }
@@ -21,6 +22,7 @@
   const source = '# Compatibility\n\nprose target and `inline_target()`\n\n## C\n\n```c\nvoid copy(void) {\n    memcpy(dst, src, n);\n}\n```\n\n## Python\n\n```python\ndef greet():\n    print("hello")\n```\n\n## ASM\n\n```asm\nMOV AX, BX\nADD AX, 1\n```\n';
   const longSource = source.replace('    memcpy(dst, src, n);', `    memcpy(dst, src, n); // ${'long-code-content '.repeat(25).trimEnd()}`);
   const expectedCopy = longSource.match(/```c\n([\s\S]*?)\n```/)[1];
+  for (const existing of app.workspace.getLeavesOfType('markdown')) { await existing.view.save(); existing.detach(); }
   const path = '兼容验收.md', old = app.vault.getFileByPath(path), file = old ? (await app.vault.modify(old, longSource), old) : await app.vault.create(path, longSource);
   const leaf = app.workspace.getLeaf(false); await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
@@ -36,7 +38,7 @@
   }
   plugin.settings.codeDisplay.collapsible = true; await plugin.saveSettings();
   const marked = editor.getValue(); await app.vault.modify(file, marked); await plugin.index.ready;
-  await plugin.openPanel(); assert('compat-five-object-results', document.querySelectorAll('.hb-panel .hb-card').length === 5);
+  await plugin.openPanel('note'); assert('compat-five-object-results', document.querySelectorAll('.hb-panel .hb-card').length === 5);
   const settings = app.plugins.plugins['obsidian-style-settings'];
   if (settings && test.theme) {
     assert('compat-style-settings-theme-parsed', await until(() => settings.settingsList.length > 0));
@@ -63,7 +65,7 @@
         for (const word of ['memcpy', 'print', 'MOV AX']) assert(`${prefix}-${word}`, await until(() => {
           if ([...preview.querySelectorAll('pre > code')].some(code => [...code.querySelectorAll('.hb-text, .hb-line')].map(node => node.textContent).join('').includes(word))) return true;
           preview.scrollTop = preview.scrollTop + preview.clientHeight / 2 >= preview.scrollHeight ? 0 : preview.scrollTop + preview.clientHeight / 2; preview.dispatchEvent(new Event('scroll')); return false;
-        }), [...preview.querySelectorAll('pre > code')].map(code => ({ text: code.textContent, html: code.innerHTML.slice(0, 1300) })));
+        }), [...preview.querySelectorAll('pre > code')].map(code => ({ text: code.textContent, html: code.innerHTML.slice(0, 400), parent: code.closest('.hb-unified-code')?.outerHTML.slice(0, 500), class: code.parentElement.className })));
         preview.scrollTop = 0; preview.dispatchEvent(new Event('scroll'));
         assert(`${prefix}-annotation`, await until(() => [...preview.querySelectorAll('.hb-code-notes .hb-note-text')].some(node => node.textContent === 'Compatibility note: memcpy')), { sourceNote: marked.includes('"note":"Compatibility note: memcpy"'), notes: [...preview.querySelectorAll('.hb-note-text')].map(node => node.textContent) });
         const pre = [...preview.querySelectorAll('pre')].find(pre => pre.textContent.includes('memcpy'));
@@ -73,7 +75,7 @@
         assert(`${prefix}-long-line-bounds`, bounds.width > 0 && bounds.width <= view.containerEl.clientWidth + 2, { width: bounds.width, viewWidth: view.containerEl.clientWidth });
         const wrapper = pre.closest('.hb-code-display'), toggle = wrapper.querySelector('[data-hb-display-action="toggle"]'), body = wrapper.querySelector('.hb-code-body');
         toggle.click(); assert(`${prefix}-fold`, body.hidden); wrapper.querySelector('[data-hb-display-action="toggle"]').click(); assert(`${prefix}-unfold`, !body.hidden);
-        if (['default-native', 'minimal-native', 'anuppuccin-native'].includes(test.id) && (language === 'zh' && appearance === 'dark' || language === 'en' && appearance === 'light')) {
+        if (['default', 'minimal', 'anuppuccin'].includes(test.id) && (language === 'zh' && appearance === 'dark' || language === 'en' && appearance === 'light')) {
           for (const details of preview.querySelectorAll('.hb-code-notes details')) details.open = true;
           await window.require('electron').ipcRenderer.invoke('hb-selection-capture', `compat-${test.id.split('-')[0]}-${appearance}-${language}`);
         }

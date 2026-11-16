@@ -24,6 +24,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 20
     env:
+      HB_DESKTOP: '1'
       HB_TRACE: '1'
       HB_RO_TRACE: ${{ inputs.resize_trace && '1' || '0' }}
     steps:
@@ -45,9 +46,9 @@ jobs:
       - if: runner.os == 'Linux'
         run: xvfb-run -a pnpm test:host
       - if: runner.os != 'Linux'
-        run: pnpm test:multiwindow && pnpm test:accessibility
+        run: pnpm test:multiwindow && pnpm test:accessibility && pnpm test:journey
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'pnpm test:multiwindow && pnpm test:accessibility'
+        run: xvfb-run -a sh -c 'pnpm test:multiwindow && pnpm test:accessibility && pnpm test:journey'
       - run: pnpm package:candidate
       - run: node scripts/prepare-install.mjs --current
       - if: runner.os != 'Linux'
@@ -56,9 +57,9 @@ jobs:
         run: xvfb-run -a sh -c 'pnpm test:install && pnpm test:frames'
       - run: node scripts/prepare-vault.mjs --suite=compat && node scripts/prepare-compatibility.mjs --core
       - if: runner.os != 'Linux'
-        run: node scripts/test-compatibility.mjs --case=default-native && node scripts/test-compatibility.mjs --case=default-internal
+        run: node scripts/test-compatibility.mjs --case=default
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'node scripts/test-compatibility.mjs --case=default-native && node scripts/test-compatibility.mjs --case=default-internal'
+        run: xvfb-run -a sh -c 'node scripts/test-compatibility.mjs --case=default'
       - if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -69,7 +70,7 @@ jobs:
             docs/verification/host-results.json
             docs/verification/host-environment.json
             docs/verification/images/
-            docs/verification/compatibility/default-*.json
+            docs/verification/compatibility/default.json
             .local/exports/pdf/*.pdf
             dist/**/candidate.json
             dist/**/highlight-boost.zip
@@ -78,6 +79,7 @@ jobs:
     runs-on: macos-latest
     timeout-minutes: 10
     env:
+      HB_DESKTOP: '1'
       HB_TRACE: '1'
       HB_RO_TRACE: ${{ inputs.resize_trace && '1' || '0' }}
     steps:

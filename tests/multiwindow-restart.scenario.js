@@ -9,7 +9,7 @@
   const source = () => app.workspace.getLeavesOfType('markdown').find(leaf => leaf.view.file?.path === saved.path && leaf.view.containerEl.ownerDocument !== document);
   assert('window-restart-source-restored', await until(() => source()?.view.editor.getValue() === saved.text));
   const sourceLeaf = source(), editor = sourceLeaf.view.editor, sourceDoc = sourceLeaf.view.containerEl.ownerDocument;
-  assert('window-restart-shiki-provider', plugin.settings.syntaxProvider === 'shiki');
+  assert('window-restart-unified-engine', plugin.settings.schemaVersion === 3 && Boolean(plugin.syntax.engine) && !('syntaxProvider' in plugin.settings));
   assert('window-restart-source-tokens', await until(() => sourceDoc.querySelector('.hb-syntax-token')));
   assert('window-restart-style-restored', Boolean(sourceDoc.querySelector('.hb-syntax-editor')));
   const panel = () => app.workspace.getLeavesOfType('highlight-boost').find(leaf => leaf.view.containerEl.ownerDocument !== document);

@@ -14,8 +14,8 @@
   await app.plugins.disablePlugin('highlight-boost');
   await app.plugins.enablePlugin('highlight-boost');
   plugin = app.plugins.plugins['highlight-boost'];
-  assert('legacy-settings-migrate', plugin.settings.schemaVersion === 2 && plugin.settings.defaultPreset === 'question');
-  assert('migration-persists', (await plugin.loadData()).schemaVersion === 2);
+  assert('legacy-settings-migrate', plugin.settings.schemaVersion === 3 && plugin.settings.defaultPreset === 'question');
+  assert('migration-persists', (await plugin.loadData()).schemaVersion === 3);
   plugin.getPreset('important').name = '考点';
   plugin.getPreset('important').color = 'purple';
   plugin.settings.defaultPreset = 'important';
@@ -61,7 +61,7 @@
   const tab = app.setting.pluginTabs.find(tab => tab.id === 'highlight-boost');
   const definitions = tab.settingItems.flatMap(item => item.items ?? [item]);
   assert('settings-search-definitions', definitions.some(item => item.name === plugin.t('language')) && definitions.some(item => item.name === plugin.t('showCodeNumbers')) && definitions.every(item => typeof item.name === 'string'));
-  const inputs = [...tab.containerEl.querySelectorAll('input')].filter(input => input.type === 'text');
+  const inputs = [...tab.containerEl.querySelectorAll('input[data-hb-preset]')];
   assert(`settings-controls-render (${inputs.length})`, inputs.length === 4);
   inputs[0].value = '界面修改';
   inputs[0].dispatchEvent(new Event('input', { bubbles: true }));

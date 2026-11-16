@@ -3,6 +3,7 @@
   const assert = (name, value, details) => { if (!value) throw new Error(`${name}: ${JSON.stringify(details)}`); checks.push({ name, passed: true }); };
   const tick = () => new Promise(resolve => setTimeout(resolve, 100));
   const clipboard = (action, text) => window.require('electron').ipcRenderer.invoke('hb-window-clipboard', action, text);
+  const activate = leaf => app.workspace.setActiveLeaf(leaf, { focus: true });
   const until = async predicate => { for (let i = 0; i < 80 && !predicate(); i++) await tick(); return predicate(); };
   let phase = 'load'; const phases = {};
   const recordError = event => { errors.push(event.message); phases[phase]=(phases[phase]??0)+1; };
@@ -11,21 +12,21 @@
   let plugin = app.plugins.plugins['highlight-boost']; const original = structuredClone(plugin.settings);
   const path = '多窗口验收.md', source = '# Windows\n\nwindow prose and `inline_window()`\n\n```js\nconst value = 1;\nconsole.log(value);\n```\n';
   const old = app.vault.getFileByPath(path), file = old ? (await app.vault.modify(old, source), old) : await app.vault.create(path, source);
-  for (const provider of ['native', 'shiki']) {
+  for (const provider of ['unified']) {
     phase = `${provider}-open`;
-    plugin.settings.syntaxProvider = provider; plugin.settings.language = 'zh'; plugin.settings.selectionToolbar = true; await plugin.saveSettings();
+    plugin.settings.language = 'zh'; plugin.settings.selectionToolbar = true; await plugin.saveSettings();
     await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
     for (const existing of app.workspace.getLeavesOfType('markdown')) if (existing.view.file?.path === path) existing.detach();
     await app.vault.modify(file, source);
     const duplicate = app.workspace.getLeaf('tab'); await duplicate.openFile(file);
-    const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
+    const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file); activate(leaf);
     await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
     const popout = app.workspace.moveLeafToPopout(leaf, { width: 1000, height: 800 });
     assert(`${provider}-actual-popout`, await until(() => popout.doc?.body && leaf.view.containerEl.ownerDocument === popout.doc));
     assert(`${provider}-popout-focus-emulated`, await until(() => popout.win.__hbPopoutReady));
     const popoutWindow = popout.win, popoutDocument = popout.doc;
     popout.win.addEventListener('error', recordError);
-    app.workspace.setActiveLeaf(leaf, { focus: true });
+    activate(leaf);
     const editor = leaf.view.editor;
     const select = word => { const from = editor.getValue().lastIndexOf(word); editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); editor.scrollIntoView({ from: editor.offsetToPos(from), to: editor.offsetToPos(from + word.length) }, true); };
     select('window prose');
@@ -42,17 +43,17 @@
     await plugin.copyCode(editor);
     let copied = ''; for(let i=0;i<30&&!copied;i++){await tick();const value=await clipboard('read');if(value!=='pending')copied=value;}
     assert(`${provider}-popup-copy-command`, copied === 'const value = 1;\nconsole.log(value);', { copied, copyContext });
-    if (provider === 'shiki') assert('shiki-popout-source-tokens', await until(() => Boolean(leaf.view.containerEl.querySelector('.hb-syntax-token'))));
+    assert('unified-popout-source-tokens', await until(() => Boolean(leaf.view.containerEl.querySelector('.hb-syntax-token'))));
     phase = `${provider}-reading`; await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
     const preview = leaf.view.containerEl.querySelector('.markdown-preview-view');
     assert(`${provider}-popout-reading`, await until(() => Boolean(preview.querySelector('pre .hb-text')) && Boolean(preview.querySelector('code.hb-inline'))));
-    if (provider === 'shiki') assert('shiki-popout-style', Boolean(popout.win.getComputedStyle(preview.querySelector('.hb-syntax-render')).getPropertyValue('--shiki-code-background').trim()));
+    assert('unified-popout-style', Boolean(popout.win.getComputedStyle(preview.querySelector('.hb-syntax-render')).getPropertyValue('--shiki-code-background').trim()));
     assert(`${provider}-popout-source-kept`, editor.getValue() === marked);
-    phase = `${provider}-workbench`; await plugin.openPanel('note'); const panelLeaf = app.workspace.getLeavesOfType('highlight-boost')[0];
+    phase = `${provider}-workbench`; await plugin.openPanel('note'); const panelLeaf = app.workspace.getLeavesOfType('highlight-boost').find(leaf => leaf.view.containerEl.ownerDocument === popout.doc);
     const panelWindow = app.workspace.moveLeafToPopout(panelLeaf, { width: 500, height: 800 });
     assert(`${provider}-workbench-moved`, await until(() => panelWindow.doc?.querySelectorAll('.hb-card').length === 3));
     const workbenchWindow = panelWindow.win;
-    app.workspace.setActiveLeaf(leaf, { focus: true }); plugin.refreshPanels(); app.workspace.setActiveLeaf(panelLeaf, { focus: true });
+    activate(leaf); plugin.refreshPanels(); activate(panelLeaf);
     assert(`${provider}-workbench-source-context`, panelLeaf.view.note === leaf.view);
     phase = `${provider}-jump`; const codeCard = [...panelWindow.doc.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'value'); codeCard.querySelector('.hb-quote').click();
     assert(`${provider}-cross-window-jump`, await until(() => leaf.view.getMode() === 'source' && editor.getSelection() === 'value'), { mode: leaf.view.getMode(), selection: editor.getSelection() });
@@ -60,17 +61,38 @@
     await clipboard('write', 'pending'); proseCard.querySelector('.hb-copy-excerpt').click();
     let excerpt = ''; for(let i=0;i<30&&!excerpt;i++){await tick();const value=await clipboard('read');if(value!=='pending')excerpt=value;}
     assert(`${provider}-popup-copy-excerpt`, excerpt.includes('window prose'), excerpt);
+    phase = `${provider}-modal`;
+    activate(panelLeaf);
+    const annotationTrigger = panelWindow.doc.querySelector('.hb-edit-note'); annotationTrigger.focus(); annotationTrigger.click();
+    assert('popout-shared-annotation-owned-by-window', await until(() => panelWindow.doc.querySelector('.hb-note-input')) && !document.querySelector('.hb-note-input'));
+    const modalInput = panelWindow.doc.querySelector('.hb-note-input'); modalInput.value = '窗口草稿';
+    [...modalInput.closest('.modal').querySelectorAll('button')].find(button => button.textContent === '取消').click(); await tick();
+    assert('popout-cancel-keeps-source-and-restores-focus', editor.getValue() === marked && panelWindow.doc.activeElement === annotationTrigger);
+    const panelSearch = panelWindow.doc.querySelector('.hb-search'); panelSearch.value = 'window prose'; panelSearch.dispatchEvent(new panelWindow.win.Event('input', { bubbles: true }));
+    panelWindow.doc.querySelector('[data-hb-workbench-action="preview"]').click();
+    assert('popout-excerpt-owned-by-window', await until(() => panelWindow.doc.querySelector('.hb-excerpt-preview')) && !document.querySelector('.hb-excerpt-preview'));
+    const excerptModal = panelWindow.doc.querySelector('.hb-excerpt-preview').closest('.modal');
+    assert('popout-excerpt-current-filter', panelWindow.doc.querySelector('.hb-excerpt-preview').value.includes('window prose') && !panelWindow.doc.querySelector('.hb-excerpt-preview').value.includes('inline_window'));
+    plugin.settings.language = 'en'; await plugin.saveSettings();
+    assert('popout-modal-language-updates', excerptModal.querySelector('.modal-title').textContent === 'Build excerpt' && [...excerptModal.querySelectorAll('button')].some(button => button.textContent === 'Cancel'));
+    [...excerptModal.querySelectorAll('button')].find(button => button.textContent === 'Cancel').click();
+    const mainPanel = app.workspace.getRightLeaf(false); await mainPanel.setViewState({ type: 'highlight-boost' });
+    mainPanel.view.setSource(duplicate.view); await mainPanel.view.setScope('note', true);
+    const mainSearch = mainPanel.view.contentEl.querySelector('.hb-search'); mainSearch.value = 'inline_window'; mainSearch.dispatchEvent(new Event('input', { bubbles: true }));
+    plugin.refreshPanels();
+    assert('workbench-window-query-isolation', panelSearch.value === 'window prose' && mainSearch.value === 'inline_window' && panelWindow.doc.querySelectorAll('.hb-card').length === 1 && mainPanel.view.contentEl.querySelectorAll('.hb-card').length === 1, { popup: panelSearch.value, main: mainSearch.value, popupCards: panelWindow.doc.querySelectorAll('.hb-card').length, mainCards: mainPanel.view.contentEl.querySelectorAll('.hb-card').length });
+    await tick(); mainPanel.detach(); await tick(); plugin.settings.language = 'zh'; await plugin.saveSettings();
     phase = `${provider}-close`; workbenchWindow.close(); assert(`${provider}-workbench-window-closed`, await until(() => workbenchWindow.closed));
     popoutWindow.close(); assert(`${provider}-source-window-closed`, await until(() => popoutWindow.closed)); await tick();
     assert(`${provider}-closed-document-released`, ![...plugin.editorViews.values()].some(view => view.dom.ownerDocument === popoutDocument));
-    if (provider === 'shiki') assert('shiki-closed-window-runtime-released', !plugin.syntax.runtime.documents.has(popoutDocument));
+    assert('unified-closed-window-runtime-released', !plugin.syntax.runtime.documents.has(popoutDocument));
     const reopened = app.workspace.getLeaf('tab'); await reopened.openFile(file);
     assert(`${provider}-source-restored`, await until(() => reopened.view.editor.getValue() === marked), { actual: reopened.view.editor.getValue(), expected: marked, disk: await app.vault.read(file) }); reopened.detach(); duplicate.detach();
   }
   phase = 'restore-layout'; plugin.settings = original; await plugin.saveSettings(); await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost');
-  plugin = app.plugins.plugins['highlight-boost']; plugin.settings.syntaxProvider = 'shiki'; plugin.settings.selectionToolbar = true; await plugin.saveSettings();
+  plugin = app.plugins.plugins['highlight-boost']; plugin.settings.selectionToolbar = true; await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
-  const restoredLeaf = app.workspace.getLeaf('tab'); await restoredLeaf.openFile(file); app.workspace.setActiveLeaf(restoredLeaf, { focus: true });
+  const restoredLeaf = app.workspace.getLeaf('tab'); await restoredLeaf.openFile(file); activate(restoredLeaf);
   await restoredLeaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   const restoredWindow = app.workspace.moveLeafToPopout(restoredLeaf, { width: 1000, height: 800 });
   assert('restore-layout-source-window', await until(() => restoredWindow.doc?.body && restoredWindow.win.__hbPopoutReady));
@@ -79,10 +101,10 @@
   const restoredPanelWindow = app.workspace.moveLeafToPopout(restoredPanel, { width: 500, height: 800 });
   assert('restore-layout-workbench-window', await until(() => restoredPanelWindow.doc?.querySelectorAll('.hb-card').length === 3));
   restoredPanelWindow.win.addEventListener('error', recordError);
-  app.workspace.setActiveLeaf(restoredLeaf, { focus: true });
+  activate(restoredLeaf);
   await app.vault.adapter.write(`${app.vault.configDir}/hb-window-restore.json`, JSON.stringify({ path, text: await app.vault.read(file), original }));
   await app.workspace.requestSaveLayout.run();
   assert('restore-layout-saved', (await app.vault.adapter.read(`${app.vault.configDir}/workspace.json`)).includes(path));
   await new Promise(resolve => setTimeout(resolve, 1000));
-  assert('multiwindow-no-page-errors', errors.length === 0, phases); window.__hbObservations = { errors, providers: ['native', 'shiki'] }; return checks;
+  assert('multiwindow-no-page-errors', errors.length === 0, phases); window.__hbObservations = { errors, mode: 'unified' }; return checks;
 })()

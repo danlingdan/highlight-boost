@@ -30,8 +30,8 @@
   mark('inline()', 'apply-question');
   mark('value =', 'apply-action');
   const saved = editor.getValue(), configured = JSON.stringify(plugin.settings.presets);
-  await plugin.openPanel();
-  assert('zh-sidebar-title', document.querySelector('.hb-panel h4').textContent === '当前笔记重点');
+  await plugin.openPanel('note');
+  assert('zh-sidebar-title', document.querySelector('.hb-panel h4').textContent === '高亮工作台');
   app.setting.open();
   app.setting.openTabById('highlight-boost');
   await tick();
@@ -46,11 +46,11 @@
   assert('english-default-preset-display', tab.containerEl.querySelector('[data-hb-preset="important"]').value === 'Important');
   assert('language-keeps-configured-names', JSON.stringify(plugin.settings.presets) === configured);
   assert('language-keeps-note-snapshots', editor.getValue() === saved);
-  assert('english-sidebar-title', document.querySelector('.hb-panel h4').textContent === 'Note highlights');
+  assert('english-sidebar-title', document.querySelector('.hb-panel h4').textContent === 'Highlight workbench');
   const sidebarLeaf = app.workspace.getLeavesOfType('highlight-boost')[0];
-  assert('english-sidebar-tab-title', await until(() => sidebarLeaf.tabHeaderEl.textContent.includes('Note highlights')), sidebarLeaf.tabHeaderEl.outerHTML);
+  assert('english-sidebar-tab-title', await until(() => sidebarLeaf.tabHeaderEl.textContent.includes('Highlight workbench')), sidebarLeaf.tabHeaderEl.outerHTML);
   assert('english-sidebar-content-labels', document.querySelector('.hb-panel').textContent.includes('Inline code') && document.querySelector('.hb-panel').textContent.includes('重点'));
-  assert('english-legacy-color-label', [...document.querySelectorAll('.hb-card')].some(card => card.querySelector('.hb-quote').textContent === 'legacy' && card.textContent.includes('Red · Prose')));
+  assert('english-legacy-color-label', [...document.querySelectorAll('.hb-card')].some(card => card.querySelector('.hb-quote').textContent === 'legacy' && card.querySelector('.hb-semantic').textContent === 'Red' && card.querySelector('.hb-type').textContent === 'Prose'));
   assert('english-metadata-labels', await until(() => [...view.containerEl.querySelectorAll('.hb-metadata-chip')].some(chip => chip.textContent === 'Prose annotation')));
   assert('english-metadata-accessibility', [...view.containerEl.querySelectorAll('.hb-metadata-chip')].every(chip => chip.getAttribute('aria-label') === 'Expand annotation metadata'));
   assert('english-setting-accessibility', tab.containerEl.querySelector('[data-hb-preset="important"]').getAttribute('aria-label') === 'Important name');

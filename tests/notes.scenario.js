@@ -13,10 +13,10 @@
   const leaf = app.workspace.getLeaf(false); await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   const view = leaf.view, editor = view.editor;
-  const select = word => { const from = editor.getValue().lastIndexOf(word); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); };
+  const select = word => { editor.focus(); const from = editor.getValue().lastIndexOf(word); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); };
   const mark = (word, command) => { select(word); app.commands.executeCommandById(`highlight-boost:${command}`); };
   mark('核心概念', 'apply-important'); mark('a==b', 'apply-question'); mark('count = 1', 'apply-reference'); mark('return count;', 'lines-action');
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   const panel = document.querySelector('.hb-panel');
   const cards = () => [...panel.querySelectorAll('.hb-card')];
   const card = quote => cards().find(card => card.querySelector('.hb-quote').textContent === quote);
@@ -63,9 +63,9 @@
   card('count = 1').querySelector('.hb-copy-excerpt').click(); assert('notes-excerpt-includes-comment', copied.includes('批注\n\n代码检索词\n不要改动代码'));
   navigator.clipboard.writeText = copy;
   const endPath = '批注末尾.md', endOld = app.vault.getFileByPath(endPath), endFile = endOld ? (await app.vault.modify(endOld, '==末尾=='), endOld) : await app.vault.create(endPath, '==末尾==');
-  await leaf.openFile(endFile); await plugin.openPanel(); await save('末尾', '文件末尾脚注');
+  await leaf.openFile(endFile); await plugin.openPanel('note'); await save('末尾', '文件末尾脚注');
   assert('notes-eof-metadata-before-definition', /==末尾==%%hbp:.+?%%\[\^hb-[^\]]+\]\n\n\[\^hb-/.test(editor.getValue()));
-  await leaf.openFile(file); await plugin.openPanel();
+  await leaf.openFile(file); await plugin.openPanel('note');
   const beforeRebind = hit('count = 1').item.note; select('count = 1'); editor.replaceSelection('total = 2');
   assert('notes-missing-code-keeps-comment', hit('count = 1').item.status === 'missing' && hit('count = 1').item.note === beforeRebind);
   select('total = 2'); card('count = 1').querySelector('.hb-rebind').click();
@@ -81,8 +81,8 @@
   assert('notes-reading-code-note-regions', await until(() => view.containerEl.querySelectorAll('.hb-code-notes details').length === 2));
   const region = view.containerEl.querySelector('.hb-code-notes'); region.querySelector('details').open = true;
   assert('notes-reading-region-outside-code', !region.closest('pre') && region.textContent.includes('代码检索词'));
-  const code = view.containerEl.querySelector('pre code'); assert('notes-reading-code-copy-text', code.textContent.replace(/\n$/, '') === 'const total = 2;\nreturn count;');
-  await plugin.openPanel(); for (const details of panel.querySelectorAll('.hb-note')) details.open = true;
+  const code = view.containerEl.querySelector('.markdown-preview-view pre code'); assert('notes-reading-code-copy-text', [...code.querySelectorAll('.ec-line > .code')].map(row => row.textContent).join('\n') === 'const total = 2;\nreturn count;');
+  await plugin.openPanel('note'); for (const details of panel.querySelectorAll('.hb-note')) details.open = true;
   await new Promise(resolve => setTimeout(resolve, 8500));
   await window.require('electron').ipcRenderer.invoke('hb-selection-capture', 'notes-reading');
   plugin.settings.syntaxProvider = 'shiki'; plugin.settings.language = 'en'; await plugin.saveSettings();
@@ -94,8 +94,8 @@
   assert('notes-builtin-english-region', view.containerEl.querySelector('.hb-code-notes').getAttribute('aria-label') === 'Annotation');
   assert('notes-preview-folds-footnote-definitions', await until(() => view.containerEl.querySelectorAll('[data-hb-metadata="footnote"]').length === 2));
   assert('notes-preview-hides-owned-reference-ids', !view.containerEl.querySelector('.cm-content').textContent.includes('[^hb-'));
-  await plugin.openPanel();
-  const currentPanel = document.querySelector('.hb-panel'); assert('notes-english-edit-action', currentPanel.querySelector('.hb-edit-note').textContent === 'Edit annotation');
+  await plugin.openPanel('note');
+  const currentPanel = document.querySelector('.hb-panel'); assert('notes-english-edit-action', currentPanel.querySelector('.hb-edit-note').textContent === 'Annotation');
   const dark = document.body.classList.contains('theme-dark'); document.body.classList.remove('theme-dark'); document.body.classList.add('theme-light');
   await window.require('electron').ipcRenderer.invoke('hb-selection-capture', 'notes-live');
   document.body.classList.toggle('theme-dark', dark); document.body.classList.toggle('theme-light', !dark);

@@ -18,7 +18,7 @@
   const leaf = app.workspace.getLeaf(false);
   await leaf.openFile(file);
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'source', source: false } });
-  await plugin.openPanel();
+  await plugin.openPanel('note');
   assert('inline-restart-sidebar', document.querySelectorAll('.hb-card').length === 7);
   await leaf.setViewState({ type: 'markdown', state: { file: file.path, mode: 'preview' } });
   const root = leaf.view.containerEl.querySelector('.markdown-preview-view');

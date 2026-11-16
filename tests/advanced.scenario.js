@@ -101,10 +101,10 @@
   const scroller = view.containerEl.querySelector('.markdown-preview-view');
   scroller.scrollTop = 0; scroller.dispatchEvent(new Event('scroll'));
   for (let i = 0; i < 40 && scroller.querySelectorAll('pre .hb-text').length < 2; i++) await tick();
-  const duplicates = [...scroller.querySelectorAll('pre code')].filter(code=>code.textContent === 'same();\n');
+    const duplicates = [...scroller.querySelectorAll('pre code')].filter(code=>[...code.querySelectorAll('.ec-line > .code')].map(row => row.textContent).join('\n') === 'same();');
   assert('duplicate-reading-block-count', duplicates.length === 2);
   assert('duplicate-first-color', Boolean(duplicates[0].querySelector('.hb-yellow')));
   assert('duplicate-second-color', Boolean(duplicates[1].querySelector('.hb-red')));
-  assert('duplicate-text-preserved', duplicates.every(code=>code.textContent === 'same();\n'));
+  assert('duplicate-text-preserved', duplicates.every(code=>[...code.querySelectorAll('.ec-line > .code')].map(row => row.textContent).join('\n') === 'same();'));
   return checks;
 })()

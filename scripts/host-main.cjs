@@ -8,18 +8,24 @@ const net = require('node:net');
 
 const listen = net.Server.prototype.listen;
 net.Server.prototype.listen = function (...args) {
-  if (typeof args[0] === 'string' && args[0].includes('obsidian-cli-')) args[0] += '-highlight-boost-test';
+  if (typeof args[0] === 'string' && args[0].includes('obsidian-cli-')) args[0] += `-highlight-boost-test-${process.pid}`;
   return listen.apply(this, args);
 };
 
 const root = path.resolve(__dirname, '..');
+const desktop = process.env.HB_DESKTOP === '1';
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
-const suite = { responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
+const suite = { journey: 'journey', responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', 'multiwindow-combined': 'multiwindow', 'multiwindow-actions': 'multiwindow', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
 const profile = paths.profile(suite);
 const vault = paths.vault(suite);
 const runtime = require('./obsidian-runtime.cjs')(root);
 const source = runtime.source;
 const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
+scenarios['multiwindow-combined'] = ['multiwindow-combined.scenario.js', 'host-multiwindow-combined-results.json'];
+scenarios['multiwindow-actions'] = ['multiwindow-actions.scenario.js', 'host-multiwindow-actions-results.json'];
+scenarios.journey = ['journey.scenario.js', 'host-journey-results.json'];
+scenarios.fusion = ['fusion.scenario.js', 'host-fusion-results.json'];
+scenarios.unified = ['unified.scenario.js', 'host-unified-results.json'];
 scenarios.settings = ['settings.scenario.js', 'host-settings-results.json'];
 scenarios.embedded = ['embedded-syntax.scenario.js', 'host-embedded-results.json'];
 scenarios.inline = ['inline.scenario.js', 'host-inline-results.json'];
@@ -57,10 +63,32 @@ scenarios['inline-restart'] = ['inline-restart.scenario.js', 'host-inline-restar
 scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-results.json'];
 scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
+if (mode === 'multiwindow' || mode === 'multiwindow-actions' || mode === 'multiwindow-combined') { const layout = path.join(vault, '.obsidian', 'workspace.json'); if (fs.existsSync(layout)) fs.unlinkSync(layout); }
 const lifecycle = mode === 'lifecycle' || mode === 'lifecycle-shiki';
-const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination', 'compatibility'];
+const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination', 'compatibility', 'fusion'];
+if (mode === 'display') electron.ipcMain.handle('hb-display-viewport', async event => {
+  if (!event.sender.debugger.isAttached()) event.sender.debugger.attach('1.3');
+  return event.sender.debugger.sendCommand('Emulation.setDeviceMetricsOverride', { width: 1280, height: 1800, deviceScaleFactor: 1, mobile: false });
+});
+if (mode === 'unified') electron.ipcMain.handle('hb-unified-network', async (event, offline) => {
+  if (!event.sender.debugger.isAttached()) event.sender.debugger.attach('1.3');
+  await event.sender.debugger.sendCommand('Network.enable');
+  return event.sender.debugger.sendCommand('Network.emulateNetworkConditions', { offline: Boolean(offline), latency: 0, downloadThroughput: -1, uploadThroughput: -1 });
+});
+if (mode === 'fusion') electron.ipcMain.handle('hb-fusion-settings-capture', async () => {
+  const contents = electron.webContents.getAllWebContents().find(contents => contents.getURL() === 'about:blank' && /设置|Settings/.test(contents.getTitle()));
+  if (!contents) throw new Error('Settings window missing');
+  const preview = await contents.executeJavaScript(`(() => { document.activeElement?.blur(); const element = document.querySelector('.hb-settings-preview'); element.scrollIntoView({ block: 'center' }); return element.getBoundingClientRect().toJSON(); })()`);
+  await contents.capturePage(undefined, { stayHidden: true });
+  await new Promise(resolve => setTimeout(resolve, 200));
+  const bitmap = await contents.capturePage(undefined, { stayHidden: true });
+  const directory = path.join(root, 'docs/verification/images'); fs.mkdirSync(directory, { recursive: true });
+  fs.writeFileSync(path.join(directory, 'fusion-settings.png'), bitmap.toPNG());
+  return { empty: bitmap.isEmpty(), size: bitmap.getSize(), preview };
+});
+if (mode === 'fusion') electron.ipcMain.handle('hb-fusion-windows', () => electron.webContents.getAllWebContents().map(contents => ({ id: contents.id, url: contents.getURL(), title: contents.getTitle() })));
 let pdfRendering;
-if (mode.startsWith('multiwindow')) electron.ipcMain.handle('hb-window-clipboard', (_event, action, text) => {
+if (mode.startsWith('multiwindow') || ['unified', 'fusion', 'journey'].includes(mode)) electron.ipcMain.handle('hb-window-clipboard', (_event, action, text) => {
   if (action === 'read') return electron.clipboard.readText();
   if (action === 'write' && typeof text === 'string') { electron.clipboard.writeText(text); return; }
   throw new Error('Unknown clipboard action');
@@ -75,7 +103,7 @@ if (mode === 'frames') electron.ipcMain.handle('hb-frame-capture', async (event,
   fs.writeFileSync(path.join(directory, `${name}.png`), png);
   return { empty: bitmap.isEmpty(), bytes: png.length, size: bitmap.getSize(), sha256: require('node:crypto').createHash('sha256').update(png).digest('hex') };
 });
-if (mode === 'accessibility') electron.ipcMain.handle('hb-accessibility', async (event, method, parameters) => {
+if (mode === 'accessibility' || mode === 'journey') electron.ipcMain.handle('hb-accessibility', async (event, method, parameters) => {
   const pdfPath = path.join(paths.pdf, 'highlight-boost-export.pdf');
   if (method === 'pdf-prepare') {
     fs.mkdirSync(path.dirname(pdfPath), { recursive: true }); if (fs.existsSync(pdfPath)) fs.unlinkSync(pdfPath);
@@ -88,7 +116,7 @@ if (mode === 'accessibility') electron.ipcMain.handle('hb-accessibility', async 
   if (!['Accessibility.getFullAXTree', 'Input.dispatchKeyEvent', 'Input.insertText', 'Input.imeSetComposition'].includes(method)) throw new Error('Unknown accessibility command');
   return event.sender.debugger.sendCommand(method, parameters ?? {});
 });
-if (!['performance', 'scale', 'responsive'].includes(mode)) {
+if (!desktop && !['performance', 'scale', 'responsive'].includes(mode)) {
   app.disableHardwareAcceleration();
   const BrowserWindow = electron.BrowserWindow;
   const offscreenElectron = Object.create(electron);
@@ -123,7 +151,8 @@ if (lifecycle && process.env.HB_MEMORY_PROFILE === '1') electron.ipcMain.handle(
   finally { event.sender.debugger.removeListener('message', chunk); }
 });
 if (captureModes.includes(mode) || mode === 'performance') electron.ipcMain.handle('hb-selection-capture', async (event, name) => {
-  if (!['selection-dark-zh', 'selection-light-en', 'phase-d-live', 'phase-d-reading', 'phase-e-collection', 'phase-e-light', 'notes-reading', 'notes-live', 'display-native', 'display-builtin', 'parameters', 'migration-preview', 'workbench-pagination'].includes(name) && !/^compat-(default|minimal|anuppuccin)-(dark|light)-(zh|en)$/.test(name)) throw new Error('Unknown screenshot');
+  if (!['selection-dark-zh', 'selection-light-en', 'phase-d-live', 'phase-d-reading', 'phase-e-collection', 'phase-e-light', 'notes-reading', 'notes-live', 'display-native', 'display-builtin', 'parameters', 'migration-preview', 'workbench-pagination'].includes(name) && !/^fusion-(280|360|600)-(dark|light)$/.test(name) && !/^fusion-(annotation|excerpt|settings|toolbar)$/.test(name) && !/^compat-(default|minimal|anuppuccin)-(dark|light)-(zh|en)$/.test(name)) throw new Error('Unknown screenshot');
+  if (!event.sender.debugger.isAttached()) event.sender.debugger.attach('1.3');
   const { data } = await event.sender.debugger.sendCommand('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
   const directory = path.join(root, 'docs', 'verification', 'images');
   fs.mkdirSync(directory, { recursive: true });
@@ -147,7 +176,7 @@ protocol.registerSchemesAsPrivileged([
   { scheme: 'app', privileges: { standard: true, secure: true, supportFetchAPI: true, stream: true, codeCache: true, corsEnabled: true } },
 ]);
 
-const results = { obsidian: version, electron: process.versions.electron, checks: [], errors: [] };
+const results = { desktop, obsidian: version, electron: process.versions.electron, checks: [], errors: [] };
 let completed = false;
 function finish(error) {
   if (completed) return;
@@ -165,7 +194,7 @@ const resizeTraceSource = `(() => {
   window.addEventListener('error', event=>{ if(/ResizeObserver/.test(event.message)&&errors++<2)console.warn('HB resize trace: '+JSON.stringify(calls)); });
 })();`;
 app.on('browser-window-created', (_event, window) => {
-  window.on('show', () => window.hide());
+  if (!desktop) window.on('show', () => window.hide());
   window.setSize(1400, 1000);
   const contents = window.webContents;
   if (mode === 'multiwindow' && process.env.HB_RO_TRACE === '1') {
@@ -177,7 +206,7 @@ app.on('browser-window-created', (_event, window) => {
     contents.printToPDF = async options => {
       if (!contents.debugger.isAttached()) contents.debugger.attach('1.3');
       await contents.debugger.sendCommand('Emulation.setEmulatedMedia', { media: 'print' });
-      pdfRendering = await contents.executeJavaScript(`(() => { const root=document.querySelector('.print'), mark=root.querySelector('pre .hb-text'), note=root.querySelector('.hb-note-text'), style=getComputedStyle(mark); return { text:root.innerText, codeMark:mark.textContent, background:style.backgroundColor, decoration:style.textDecorationLine, noteVisible:note.getBoundingClientRect().height>0, note:note.innerText }; })()`);
+      pdfRendering = await contents.executeJavaScript(`(() => { const root=document.querySelector('.print'), mark=root.querySelector('pre .hb-text'), note=root.querySelector('.hb-note-text'), style=getComputedStyle(mark); return { text:root.innerText, codeMark:mark.textContent, background:style.backgroundColor, decoration:style.textDecorationLine, noteVisible:note.getBoundingClientRect().height>0, note:note.innerText, line:root.querySelector('pre .hb-line')?.textContent, lineBackground:root.querySelector('pre .hb-line') ? getComputedStyle(root.querySelector('pre .hb-line')).backgroundColor : null }; })()`);
       return print(options);
     };
   }
@@ -213,10 +242,11 @@ app.on('browser-window-created', (_event, window) => {
         if(accepted) for(let i=0;i<200&&!app.commands.commands['highlight-boost:open-highlights'];i++) await new Promise(resolve=>setTimeout(resolve,50));
         return accepted;
       })()`);
-      if (mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || mode === 'accessibility' || mode === 'frames' || mode.startsWith('install') || lifecycle) {
+      if (mode === 'unified' || mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || mode === 'accessibility' || mode === 'journey' || mode === 'frames' || mode.startsWith('install') || lifecycle) {
         if (!contents.debugger.isAttached()) contents.debugger.attach('1.3');
         await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }
+      await contents.executeJavaScript(fs.readFileSync(path.join(root, 'tests/ui-helpers.js'), 'utf8'));
       const script = fs.readFileSync(path.join(root, 'tests', scenarioName), 'utf8');
       if (process.env.HB_TRACE === '1') await contents.executeJavaScript(`Object.defineProperty(window, '__hbChecks', { configurable: true, set(checks) { this.__hbTraceChecks = checks; const push = checks.push; Object.defineProperty(checks, 'push', { configurable: true, value(...items) { for (const item of items) console.warn('HB check: ' + item.name); return push.apply(this, items); } }); }, get() { return this.__hbTraceChecks; } }); void 0;`);
       await contents.executeJavaScript(`window.__hbHostMode = ${JSON.stringify(mode)}`);

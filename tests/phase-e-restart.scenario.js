@@ -14,10 +14,10 @@
   assert('e-restart-three-collection-cards', panel.querySelectorAll('.hb-card').length === 3);
   const missing = [...panel.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'beta');
   assert('e-restart-missing-snapshot', missing.textContent.includes('Needs relocation'));
-  missing.querySelector('.hb-remove-collection').click(); await plugin.settingsWrites;
+  window.__hbUI.menu(missing.querySelector('.hb-card-more'), plugin.t('removeCollectionEntry')).click(); await plugin.settingsWrites;
   assert('e-remove-entry-keeps-source', plugin.settings.collections.find(collection => collection.id === expected.collectionId).entries.length === 2 && await app.vault.read(app.vault.getFileByPath(expected.path)) === expected.source);
   const saved = await plugin.loadData(); assert('e-collection-write-restores-consistently', saved.collections.find(collection => collection.id === expected.collectionId).entries.length === 2);
-  const remove = panel.querySelector('[data-hb-workbench-action="delete-collection"]'); remove.click(); await plugin.settingsWrites;
+  const remove = window.__hbUI.menu(panel.querySelector('.hb-panel-header button'), plugin.t('deleteCollection')); remove.click(); await plugin.settingsWrites;
   assert('e-delete-collection-keeps-source', !plugin.settings.collections.some(collection => collection.id === expected.collectionId) && await app.vault.read(app.vault.getFileByPath(expected.path)) === expected.source);
   plugin.settings = expected.originalSettings; await plugin.saveSettings();
   assert('e-restart-settings-restored', JSON.stringify(plugin.settings) === JSON.stringify(expected.originalSettings));

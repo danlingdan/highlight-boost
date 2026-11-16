@@ -26,7 +26,7 @@
   await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost']; await plugin.index.ready;
   const prefix = '# Performance\n\nneedle and ==second==\n\n', paragraph = 'A paragraph with plain text and **formatting**.\n\n';
   const medium = prefix + paragraph.repeat(Math.ceil((200 * 1024 - prefix.length) / paragraph.length)).slice(0, 200 * 1024 - prefix.length);
-  editor.setValue(medium); await plugin.index.ready; await plugin.openPanel(); await settled();
+  editor.setValue(medium); await plugin.index.ready; await plugin.openPanel('note'); await settled();
   if (window.__hbPerformanceProfile) await window.require('electron').ipcRenderer.invoke('hb-performance-profile', 'start');
   await measure('edit-to-sidebar-200KiB', 5, async i => {
     const from = editor.getValue().indexOf('needle'); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 6));

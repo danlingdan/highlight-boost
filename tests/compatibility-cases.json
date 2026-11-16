@@ -1,12 +1,53 @@
 [
-  { "id": "default-native", "theme": "", "provider": "native", "plugins": [] },
-  { "id": "default-internal", "theme": "", "provider": "shiki", "plugins": ["obsidian-style-settings"] },
-  { "id": "minimal-native", "theme": "Minimal", "provider": "native", "plugins": ["obsidian-style-settings"] },
-  { "id": "minimal-internal", "theme": "Minimal", "provider": "shiki", "plugins": ["obsidian-style-settings"] },
-  { "id": "anuppuccin-native", "theme": "AnuPpuccin", "provider": "native", "plugins": ["obsidian-style-settings"] },
-  { "id": "anuppuccin-internal", "theme": "AnuPpuccin", "provider": "shiki", "plugins": ["obsidian-style-settings"] },
-  { "id": "code-styler", "theme": "Minimal", "provider": "native", "plugins": ["obsidian-style-settings", "code-styler"] },
-  { "id": "customizer", "theme": "AnuPpuccin", "provider": "native", "plugins": ["obsidian-style-settings", "codeblock-customizer"] },
-  { "id": "external-shiki", "theme": "", "provider": "native", "plugins": ["shiki-highlighter"] },
-  { "id": "extractor", "theme": "", "provider": "shiki", "plugins": ["highlightextractor"] }
+  {
+    "id": "default",
+    "theme": "",
+    "plugins": [
+      "obsidian-style-settings"
+    ]
+  },
+  {
+    "id": "minimal",
+    "theme": "Minimal",
+    "plugins": [
+      "obsidian-style-settings"
+    ]
+  },
+  {
+    "id": "anuppuccin",
+    "theme": "AnuPpuccin",
+    "plugins": [
+      "obsidian-style-settings"
+    ]
+  },
+  {
+    "id": "code-styler",
+    "theme": "Minimal",
+    "plugins": [
+      "obsidian-style-settings",
+      "code-styler"
+    ]
+  },
+  {
+    "id": "customizer",
+    "theme": "AnuPpuccin",
+    "plugins": [
+      "obsidian-style-settings",
+      "codeblock-customizer"
+    ]
+  },
+  {
+    "id": "external-shiki",
+    "theme": "",
+    "plugins": [
+      "shiki-highlighter"
+    ]
+  },
+  {
+    "id": "extractor",
+    "theme": "",
+    "plugins": [
+      "highlightextractor"
+    ]
+  }
 ]

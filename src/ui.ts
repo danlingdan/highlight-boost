@@ -11,11 +11,18 @@ export function action(parent: HTMLElement, label: string, icon: string, run: ()
 export function menuAt(button: HTMLElement, build: (menu: Menu) => void): void {
   const menu = new Menu(); build(menu);
   const rect = button.getBoundingClientRect();
-  menu.onHide(() => button.ownerDocument.defaultView!.requestAnimationFrame(() => {
-    const document = button.ownerDocument; if (document.querySelector('.menu, .modal-container')) return;
-    const target = button.isConnected ? button : document.querySelector<HTMLElement>('.hb-panel h4');
-    target?.focus({ preventScroll: true });
-  }));
+  const document = button.ownerDocument;
+  let escaped = false;
+  const onKey = (event: KeyboardEvent) => { if (event.key === 'Escape') escaped = true; };
+  document.addEventListener('keydown', onKey, true);
+  menu.onHide(() => {
+    document.removeEventListener('keydown', onKey, true);
+    if (escaped) document.defaultView!.requestAnimationFrame(() => {
+      if (document.querySelector('.menu, .modal-container')) return;
+      const target = button.isConnected ? button : document.querySelector<HTMLElement>('.hb-panel h4');
+      target?.focus({ preventScroll: true });
+    });
+  });
   menu.showAtPosition({ x: rect.left, y: rect.bottom }, button.ownerDocument);
 }
 

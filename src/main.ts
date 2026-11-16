@@ -1,4 +1,4 @@
-import { editorInfoField, editorLivePreviewField, getLanguage, MarkdownView, Notice, Plugin, PluginSettingTab, Setting, setTooltip, SuggestModal, TFile, type Command, type Editor, type MarkdownPostProcessorContext, type SettingDefinitionItem, type SettingDefinitionRender } from 'obsidian';
+import { editorInfoField, editorLivePreviewField, getLanguage, MarkdownView, Notice, Plugin, setTooltip, SuggestModal, TFile, type Command, type Editor, type MarkdownPostProcessorContext } from 'obsidian';
 import { ViewPlugin, type EditorView } from '@codemirror/view';
 import { colorPreset, colors, type Color, type EditPlan, type HighlightItem, type Preset } from './domain';
 import { applyChanges, planCodeRebind, planHighlight } from './editing';
@@ -10,11 +10,11 @@ import { ReadingHighlights } from './reading-view';
 import { composingState, compositionEvents } from './composition';
 import { normalizeSettings, type ConfiguredPreset, type Settings } from './settings';
 import { SyntaxService } from './syntax/service';
-import { colorName, colorSearch, errorMessage, presetName, resolveLocale, translate, type Language, type Locale, type Message } from './i18n';
+import { colorName, colorSearch, errorMessage, presetName, resolveLocale, translate, type Locale, type Message } from './i18n';
 import type { Extension } from '@codemirror/state';
 import { selectionToolbar } from './selection-toolbar';
 import { currentItem, planItemUpdate } from './item-editing';
-import { excerptContext, formatExcerpt } from './excerpts';
+import { excerptContext, formatExcerpt, type ExcerptTemplate } from './excerpts';
 import { HighlightIndex, type IndexHit } from './vault-index';
 import { renameCollections, collectionEntry, resolveEntry } from './collections';
 import { HighlightsView } from './workbench';
@@ -25,8 +25,12 @@ import { liveCalloutHighlights } from './live-callouts';
 import { createMigrationService } from './migration-obsidian';
 import type { MigrationService } from './migration-service';
 import { MigrationModal } from './migration-ui';
+import { HighlightSettings } from './settings-view';
 import { DocumentSnapshot } from './document-snapshot';
 import { clearEditorDocuments, editorDocument } from './editor-document';
+import { annotate } from './item-actions';
+import { menuAt, type FocusModal } from './ui';
+import { unifiedCodeModel } from './syntax/model';
 
 const VIEW = 'highlight-boost';
 
@@ -37,9 +41,12 @@ export default class HighlightBoost extends Plugin {
   private uiExtensions: Extension[] = [];
   private lastLocale?: Locale;
   private lastDisplay = '';
+  private lastSyntax = '';
   readonly codeDisplaySessions = new Map<string, boolean>();
   private ribbon?: HTMLElement;
   private settingTab?: HighlightSettings;
+  readonly workbenchStates = new WeakMap<Document, Record<string, unknown>>();
+  readonly uiModals = new Set<FocusModal>();
   private colorPickers = new Set<ColorPicker>();
   private readingChildren = new Set<ReadingHighlights>();
   private editorViews = new Map<Editor, EditorView>();
@@ -64,10 +71,36 @@ export default class HighlightBoost extends Plugin {
       },
     }, () => this.refreshPanels());
     if (JSON.stringify(loaded) !== JSON.stringify(this.settings)) await this.saveSettings();
-    if (this.settings.syntaxProvider === 'shiki') {
-      this.syntax = this.addChild(new SyntaxService(this, (element, context) => this.createReadingChild(element, context), () => this.locale));
-      await this.syntax.initialize();
-    }
+    this.lastSyntax = JSON.stringify(this.settings.codeSyntax);
+    this.syntax = this.addChild(new SyntaxService(this, () => this.settings.codeSyntax, () => this.locale, () => this.settings.codeDisplay, this.codeDisplaySessions, () => { for (const child of this.readingChildren) child.refresh(); void this.settingTab?.refreshPreview(); }));
+    await this.syntax.initialize();
+    const listenBlocks = (doc: Document) => {
+      this.registerDomEvent(doc, 'hb-edit-mark' as keyof DocumentEventMap, event => {
+        const { key, id } = (event as CustomEvent<{ key: string; id: string }>).detail;
+        const path = key.split('\u0000')[0]!; const view = this.openView(path);
+        const text = view?.editor.getValue() ?? this.index.notes.get(path)?.text;
+        if (text === undefined) return;
+        const item = (view ? this.documentFor(view.editor).items : this.index.notes.get(path)?.items)?.find(item => item.markId === id);
+        if (item) annotate(this, { path, text, item }, event.target as HTMLElement, view);
+      });
+      this.registerDomEvent(doc, 'hb-copy-menu' as keyof DocumentEventMap, event => {
+        const { raw, after, copy } = (event as CustomEvent<{ raw: string; after: string; copy: (value: string) => void }>).detail;
+        menuAt(event.target as HTMLElement, menu => { menu.addItem(item => item.setTitle(this.t('copyRawDiff')).onClick(() => copy(raw))); menu.addItem(item => item.setTitle(this.t('copyDiffAfter')).onClick(() => copy(after))); });
+      });
+      this.registerDomEvent(doc, 'hb-show-block' as keyof DocumentEventMap, event => {
+      const detail = (event as CustomEvent<{ blockFrom: number; key: string }>).detail;
+      const path = detail.key.split('\u0000')[0]!;
+      if (!this.app.vault.getFileByPath(path)) return;
+      void this.openPanel('vault', doc).then(() => {
+        const view = this.app.workspace.getLeavesOfType(VIEW).map(leaf => leaf.view).find((view): view is HighlightsView => view instanceof HighlightsView && view.contentEl.ownerDocument === doc);
+        view?.showFiles([path], this.t('blockResults'), detail.blockFrom);
+      });
+    });
+    };
+    listenBlocks(document);
+    this.registerEvent(this.app.workspace.on('window-open', (_window, win) => listenBlocks(win.document)));
+    this.registerEvent(this.app.workspace.on('window-close', (_window, win) => { for (const modal of this.uiModals) if (modal.containerEl.ownerDocument === win.document) modal.close(); }));
+    this.addTranslatedCommand({ id: 'reload-code-resources', callback: () => { void this.syntax?.reload().catch(error => console.error('HB 代码资源更新失败', error)); } }, () => this.t('reloadCodeResources'));
     this.uiExtensions.push(metadataLocale.of(this.locale), codeDisplayFacet.of(this.settings.codeDisplay), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField), selectionToolbar(this), unfoldSelectedCode);
     this.registerEditorExtension(this.uiExtensions);
     this.registerEditorExtension(ViewPlugin.define(view => {
@@ -161,7 +194,7 @@ export default class HighlightBoost extends Plugin {
     this.translatedCommands.push({ command: this.addCommand({ ...command, name: title() }), title });
   }
   private createReadingChild(element: HTMLElement, context: MarkdownPostProcessorContext): ReadingHighlights {
-    const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child), () => this.locale, () => this.settings.codeDisplay, this.codeDisplaySessions);
+    const child = new ReadingHighlights(element, context, this.app, () => this.readingChildren.delete(child), () => this.locale, () => this.settings.codeDisplay, this.codeDisplaySessions, () => this.syntax?.engine);
     this.readingChildren.add(child);
     return child;
   }
@@ -178,11 +211,14 @@ export default class HighlightBoost extends Plugin {
     const locale = this.locale, changed = this.lastLocale !== locale;
     this.lastLocale = locale;
     const updates: Promise<unknown>[] = [];
+    const syntax = JSON.stringify(this.settings.codeSyntax);
+    if (syntax !== this.lastSyntax) { this.lastSyntax = syntax; if (this.syntax) updates.push(this.syntax.reload()); }
     const display = JSON.stringify(this.settings.codeDisplay), displayChanged = display !== this.lastDisplay;
     this.lastDisplay = display;
     if (displayChanged && this.uiExtensions.length) {
       this.uiExtensions.splice(1, 1, codeDisplayFacet.of(this.settings.codeDisplay));
       this.app.workspace.updateOptions();
+      if (this.syntax) updates.push(this.syntax.refresh());
       for (const child of this.readingChildren) child.refresh();
     }
     if (changed && this.uiExtensions.length) {
@@ -190,6 +226,7 @@ export default class HighlightBoost extends Plugin {
       this.app.workspace.updateOptions();
       if (this.ribbon) setTooltip(this.ribbon, this.t('panelTitle'));
       for (const picker of this.colorPickers) picker.refreshLocale();
+      for (const modal of this.uiModals) modal.refreshLocale();
       this.settingTab?.update();
       for (const leaf of this.app.workspace.getLeavesOfType(VIEW)) updates.push(leaf.setViewState(leaf.getViewState()));
       if (this.syntax) updates.push(this.syntax.refresh());
@@ -200,7 +237,7 @@ export default class HighlightBoost extends Plugin {
     const snapshot = structuredClone(this.settings);
     const write = this.settingsWrites.catch(() => {}).then(() => this.saveData(snapshot));
     this.settingsWrites = write;
-    return Promise.all([write, ...updates]).then(() => {});
+    return Promise.all([write, ...updates]).then(() => { void this.settingTab?.refreshPreview(); });
   }
 
   apply(editor: Editor, preset: Preset | null, mode: 'text' | 'lines' = 'text'): boolean {
@@ -252,6 +289,8 @@ export default class HighlightBoost extends Plugin {
       view.editor.setSelection(from, to);
       view.editor.scrollIntoView({ from, to }, true);
       view.editor.focus();
+      const target = this.editorViews.get(view.editor)?.dom;
+      if (target) { target.removeClass('hb-jump-target'); target.ownerDocument.defaultView!.requestAnimationFrame(() => target.addClass('hb-jump-target')); }
     } catch (error) { new Notice(errorMessage(error, this.locale)); }
   }
 
@@ -290,7 +329,7 @@ export default class HighlightBoost extends Plugin {
   }
   async copyDiffAfter(editor: Editor): Promise<void> {
     const position = editor.posToOffset(editor.getCursor());
-    const block = parseDocument(editor.getValue()).blocks.find(block => block.from <= position && position <= block.to && block.language === 'diff');
+    const block = parseDocument(editor.getValue()).blocks.find(block => block.from <= position && position <= block.to && unifiedCodeModel(block, this.settings.codeDisplay).diff);
     if (!block) { new Notice(this.t('cursorInDiff')); return; }
     await navigator.clipboard.writeText(diffAfter(block.text)); new Notice(this.t('copiedCode'));
   }
@@ -313,11 +352,14 @@ export default class HighlightBoost extends Plugin {
       await run(view);
     } catch (error) { new Notice(errorMessage(error, this.locale)); }
   }
-  excerpt(hit: IndexHit): string {
+  excerptLink(hit: IndexHit): string {
     const file = this.app.vault.getFileByPath(hit.path), context = excerptContext(hit.text, hit.item);
     const subpath = context.blockId ? `#^${context.blockId}` : context.heading ? `#${context.heading}` : '';
-    const link = file ? this.app.fileManager.generateMarkdownLink(file, '', subpath) : `[${hit.path.replace(/[\\[\]]/g, '\\$&')}](<${encodeURI(hit.path).replaceAll('#', '%23').replaceAll('>', '%3E')}>)`;
-    return formatExcerpt(hit.item, context, link, hit.item.markId ? hit.item.label : this.colorLabel(hit.item.color), this.locale, this.settings.excerptTemplate);
+    return file ? this.app.fileManager.generateMarkdownLink(file, '', subpath) : `[${hit.path.replace(/[\\[\]]/g, '\\$&')}](<${encodeURI(hit.path).replaceAll('#', '%23').replaceAll('>', '%3E')}>)`;
+  }
+  excerpt(hit: IndexHit, template: ExcerptTemplate = this.settings.excerptTemplate, sourceLink = this.excerptLink(hit)): string {
+    const context = excerptContext(hit.text, hit.item);
+    return formatExcerpt(hit.item, context, sourceLink, hit.item.markId ? hit.item.label : this.colorLabel(hit.item.color), this.locale, template);
   }
   async addToCollection(id: string, hit: IndexHit): Promise<void> {
     const collection = this.settings.collections.find(collection => collection.id === id);
@@ -327,24 +369,33 @@ export default class HighlightBoost extends Plugin {
   }
   async exportHits(hits: IndexHit[]): Promise<TFile | undefined> {
     if (!hits.length) { new Notice(this.t('noExport')); return; }
+    return this.exportExcerpt(hits.map(hit => this.excerpt(hit)).join('\n\n---\n\n'));
+  }
+  async exportExcerpt(body: string): Promise<TFile> {
     const folder = 'Highlight Boost';
     if (!this.app.vault.getFolderByPath(folder)) {
       try { await this.app.vault.createFolder(folder); } catch (error) { if (!this.app.vault.getFolderByPath(folder)) throw error; }
     }
     const title = this.t('excerptNoteTitle'), path = `${folder}/${title}-${new Date().toISOString().replace(/[:.]/g, '-')}-${crypto.randomUUID().slice(0, 8)}.md`;
-    const text = `---\nhighlight-boost-export: true\n---\n\n# ${title}\n\n${hits.map(hit => this.excerpt(hit)).join('\n\n---\n\n')}\n`;
+    const text = `---\nhighlight-boost-export: true\n---\n\n# ${title}\n\n${body}\n`;
     const file = await this.app.vault.create(path, text);
     new Notice(this.t('exported', { path })); return file;
   }
-  async openPanel(scope: SearchScope = 'note'): Promise<void> {
-    let leaf = this.app.workspace.getLeavesOfType(VIEW)[0];
+  async openPanel(scope?: SearchScope, ownerDocument?: Document): Promise<void> {
+    const source = this.app.workspace.getActiveViewOfType(MarkdownView);
+    const doc = ownerDocument ?? source?.containerEl.ownerDocument;
+    let leaf = this.app.workspace.getLeavesOfType(VIEW).find(leaf => !doc || leaf.view.containerEl.ownerDocument === doc);
     if (!leaf) {
-      leaf = this.app.workspace.getRightLeaf(false) ?? undefined;
+      const local = doc && this.app.workspace.getLeavesOfType('markdown').find(leaf => leaf.view.containerEl.ownerDocument === doc);
+      if (doc && doc !== document && local) {
+        this.app.workspace.setActiveLeaf(local, { focus: false }); leaf = this.app.workspace.getLeaf('tab');
+      } else leaf = this.app.workspace.getRightLeaf(false) ?? undefined;
       if (!leaf) return;
       await leaf.setViewState({ type: VIEW, active: true });
     }
+    if (source && leaf.view instanceof HighlightsView && (scope === 'note' || scope === 'folder' || !leaf.view.hasSource())) leaf.view.setSource(source);
     await this.app.workspace.revealLeaf(leaf);
-    if (leaf.view instanceof HighlightsView) await leaf.view.setScope(scope, true);
+    if (scope && leaf.view instanceof HighlightsView) await leaf.view.setScope(scope, true);
     this.refreshPanels();
   }
 
@@ -357,97 +408,9 @@ export default class HighlightBoost extends Plugin {
     this.index.dispose();
     for (const toolbar of this.toolbars) toolbar.destroy();
     for (const picker of this.colorPickers) picker.close();
+    for (const modal of this.uiModals) modal.close();
     for (const child of this.readingChildren) child.unload();
     this.codeDisplaySessions.clear();
-  }
-}
-
-class HighlightSettings extends PluginSettingTab {
-  constructor(private plugin: HighlightBoost) { super(plugin.app, plugin); }
-  getSettingDefinitions(): SettingDefinitionItem[] {
-    const t = this.plugin.t.bind(this.plugin);
-    const setting = (name: string, render: (row: Setting) => void, desc?: string): SettingDefinitionRender => ({ name, desc, render: row => { render(row); } });
-    let defaults: HTMLSelectElement | undefined;
-    const general = [
-      setting(t('language'), row => { row.addDropdown(dropdown => {
-        dropdown.selectEl.dataset.hbSetting = 'language'; dropdown.selectEl.setAttribute('aria-label', t('language'));
-        dropdown.addOption('auto', t('autoLanguage')).addOption('zh', '中文').addOption('en', 'English')
-          .setValue(this.plugin.settings.language).onChange(async value => {
-            this.plugin.settings.language = value as Language; await this.plugin.saveSettings();
-          });
-      }); }, t('languageHint')),
-      setting(t('syntax'), row => { row.addDropdown(dropdown => {
-        dropdown.selectEl.dataset.hbSetting = 'syntax'; dropdown.selectEl.setAttribute('aria-label', t('syntax'));
-        dropdown.addOption('native', t('native')).addOption('shiki', t('builtinShiki'))
-          .setValue(this.plugin.settings.syntaxProvider).onChange(async value => {
-            this.plugin.settings.syntaxProvider = value as 'native' | 'shiki'; await this.plugin.saveSettings();
-          });
-      }); }, t('syntaxHint')),
-      setting(t('selectionToolbar'), row => { row.addToggle(toggle => {
-        toggle.toggleEl.dataset.hbSetting = 'selectionToolbar';
-        toggle.setValue(this.plugin.settings.selectionToolbar).onChange(async value => {
-          this.plugin.settings.selectionToolbar = value; await this.plugin.saveSettings();
-        });
-      }); }, t('selectionToolbarHint')),
-    ];
-    const code: SettingDefinitionRender[] = [
-      setting(t('migration'), row => { row.addButton(button => button.setButtonText(t('migration')).onClick(() => new MigrationModal(this.plugin).open())); }, t('migrationHint')),
-      ...([['showTitle', 'showCodeTitle'], ['showLineNumbers', 'showCodeNumbers'], ['collapsible', 'foldCode'], ['collapseByDefault', 'foldByDefault'], ['wrap', 'wrapCode'], ['diff', 'showDiff']] as const).map(([key, label]) =>
-        setting(t(label), row => { row.addToggle(toggle => {
-          toggle.toggleEl.dataset.hbCodeSetting = key;
-          toggle.setValue(this.plugin.settings.codeDisplay[key]).onChange(async value => {
-            this.plugin.settings.codeDisplay[key] = value; await this.plugin.saveSettings();
-          });
-        }); })),
-      setting(t('startCodeLine'), row => { row.addText(text => {
-        text.inputEl.type = 'number'; text.inputEl.min = '1'; text.inputEl.max = '1000000'; text.inputEl.step = '1';
-        text.inputEl.dataset.hbCodeSetting = 'startLine'; text.inputEl.setAttribute('aria-label', t('startCodeLine'));
-        text.setValue(String(this.plugin.settings.codeDisplay.startLine)).onChange(async value => {
-          this.plugin.settings.codeDisplay.startLine = Number(value); await this.plugin.saveSettings();
-        });
-      }); }),
-      setting(t('codeNumberFont'), row => { row.addDropdown(dropdown => {
-        dropdown.selectEl.dataset.hbCodeSetting = 'numberFont'; dropdown.selectEl.setAttribute('aria-label', t('codeNumberFont'));
-        dropdown.addOption('monospace', t('monospaceFont')).addOption('interface', t('interfaceFont'))
-          .setValue(this.plugin.settings.codeDisplay.numberFont).onChange(async value => {
-            this.plugin.settings.codeDisplay.numberFont = value as 'monospace' | 'interface'; await this.plugin.saveSettings();
-          });
-      }); }),
-    ];
-    const presetItems: SettingDefinitionRender[] = [setting(t('defaultPreset'), row => { row.addDropdown(dropdown => {
-      defaults = dropdown.selectEl; defaults.dataset.hbSetting = 'defaultPreset'; defaults.setAttribute('aria-label', t('defaultPreset'));
-      for (const preset of this.plugin.settings.presets) dropdown.addOption(preset.id, this.plugin.presetLabel(preset));
-      dropdown.setValue(this.plugin.settings.defaultPreset).onChange(async value => {
-        this.plugin.settings.defaultPreset = value; await this.plugin.saveSettings();
-      });
-    }); }, t('defaultPresetHint'))];
-    for (const preset of this.plugin.settings.presets) {
-      const name = this.plugin.presetLabel(preset);
-      const definition = setting(name, row => {
-        row.addText(text => {
-          text.inputEl.dataset.hbPreset = preset.id; text.inputEl.setAttribute('aria-label', t('presetName', { preset: name }));
-          text.setPlaceholder(name).setValue(name).onChange(async value => {
-            this.plugin.getPreset(preset.id).name = value; this.plugin.getPreset(preset.id).customName = true;
-            await this.plugin.saveSettings();
-            definition.name = this.plugin.presetLabel(this.plugin.getPreset(preset.id)); row.setName(definition.name);
-            for (const option of defaults?.options ?? []) option.textContent = this.plugin.presetLabel(this.plugin.getPreset(option.value));
-          });
-        }).addDropdown(dropdown => {
-          dropdown.selectEl.dataset.hbPresetColor = preset.id; dropdown.selectEl.setAttribute('aria-label', t('presetColor', { preset: name }));
-          for (const color of colors) dropdown.addOption(color, this.plugin.colorLabel(color));
-          dropdown.setValue(preset.color).onChange(async value => {
-            this.plugin.getPreset(preset.id).color = value as Color; await this.plugin.saveSettings();
-          });
-        });
-      }, t('presetsHint'));
-      presetItems.push(definition);
-    }
-    presetItems.push(setting(t('resetPresets'), row => { row.addButton(button => button.setButtonText(t('reset')).onClick(async () => {
-      this.plugin.settings = normalizeSettings({ ...this.plugin.settings, presets: undefined, defaultPreset: undefined });
-      await this.plugin.saveSettings(); this.update();
-    })); }));
-    return [...general, { type: 'group', heading: t('codeDisplay'), items: code },
-      { type: 'group', heading: t('presets'), items: presetItems }, { name: t('shortcutsHint'), searchable: false }];
   }
 }
 

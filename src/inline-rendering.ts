@@ -16,7 +16,7 @@ export function inlineTargets(root: HTMLElement, text: string, sectionOf: (eleme
     const candidates = inlines.filter(inline => {
       const first = text.slice(0, inline.from).split('\n').length - 1;
       const last = text.slice(0, inline.to).split('\n').length - 1;
-      return code.textContent === inline.text && (!section || section.lineStart <= last && first <= section.lineEnd);
+      return (code.dataset.hbInlineSource ?? code.textContent) === inline.text && (!section || section.lineStart <= last && first <= section.lineEnd);
     });
     return [code, candidates] as const;
   }));

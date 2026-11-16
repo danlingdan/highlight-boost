@@ -1,3 +1,4 @@
+import { HighlightsView } from './workbench';
 import { Modal, Setting, normalizePath } from 'obsidian';
 import { colors, type Color } from './domain';
 import { defaultImportOptions, importColor, type ImportOptions } from './migration-plan';
@@ -36,6 +37,8 @@ export class MigrationModal extends Modal {
       const applied = run.files.filter(file => file.status === 'applied');
       this.files = []; this.selected.clear(); this.previewEl.replaceChildren();
       this.status.textContent = t('migrationApplied', { files: applied.length, count: applied.reduce((sum, file) => sum + file.count, 0), errors: run.files.filter(file => file.status === 'error').length });
+      const result = this.status.createEl('button', { text: t('viewImported'), attr: { 'data-hb-import': 'results' } });
+      result.addEventListener('click', () => { this.close(); void this.plugin.openPanel('vault').then(() => { const view = this.plugin.app.workspace.getLeavesOfType('highlight-boost')[0]?.view; if (view instanceof HighlightsView) view.showFiles(applied.map(file => file.path), t('importedResults')); }); });
       await this.renderHistory();
     }); };
     this.status = this.contentEl.createEl('p', { attr: { role: 'status', 'data-hb-import': 'status' } });

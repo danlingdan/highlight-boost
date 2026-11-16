@@ -1,16 +1,23 @@
 import { detachedEl } from './dom';
-import { ItemView, MarkdownView, Modal, Notice, Setting, type WorkspaceLeaf, type ViewStateResult } from 'obsidian';
+import { ItemView, MarkdownView, type WorkspaceLeaf, type ViewStateResult } from 'obsidian';
 import { collectItems } from './anchors';
 import { colors } from './domain';
-import { createExcerptContext, type ExcerptContext, type ExcerptTemplate } from './excerpts';
+import { createExcerptContext } from './excerpts';
 import { queryHighlights, type SearchScope } from './query';
 import { resolveEntry } from './collections';
 import { isExportNote, type IndexHit } from './vault-index';
 import type HighlightBoost from './main';
-import { errorMessage, type Message } from './i18n';
+import { type Message } from './i18n';
+import { action, menuAt } from './ui';
+import { createCollection } from './item-actions';
+import { renderCard } from './workbench-card';
+import { ExcerptModal } from './excerpt-modal';
 
 export class HighlightsView extends ItemView {
   private note?: MarkdownView;
+  private sourcePath?: string;
+  setSource(view: MarkdownView): void { this.note = view; this.sourcePath = view.file?.path; }
+  hasSource(): boolean { return !!this.note; }
   private searchScope: SearchScope = 'note';
   private controls = new Map<string, HTMLInputElement | HTMLSelectElement>();
   private results?: HTMLElement;
@@ -27,20 +34,35 @@ export class HighlightsView extends ItemView {
   private renderKey = '';
   private renderedNote?: MarkdownView;
   private closed = false;
+  private filterArea?: HTMLDetailsElement;
+  private chips?: HTMLElement;
+  private source?: HTMLElement;
+  private expanded = new Map<string, boolean>();
+  private temporary?: { paths: Set<string>; blockFrom?: number; label: string };
+  showFiles(paths: string[], label: string, blockFrom?: number): void {
+    this.temporary = { paths: new Set(paths), label, blockFrom }; void this.setScope('vault', true, true);
+  }
   private excerptContexts = new Map<string, ReturnType<typeof createExcerptContext>>();
   constructor(leaf: WorkspaceLeaf, private plugin: HighlightBoost) { super(leaf); }
   getViewType(): string { return 'highlight-boost'; }
-  getDisplayText(): string { return this.plugin.t(this.searchScope === 'note' ? 'panelTitle' : 'workbench'); }
+  getDisplayText(): string { return this.plugin.t('workbench'); }
   getIcon(): string { return 'highlighter'; }
-  getState(): Record<string, unknown> { return { ...Object.fromEntries([...this.controls].map(([key, control]) => [key, control.value])), scope: this.searchScope, page: this.page }; }
+  getState(): Record<string, unknown> {
+    for (const details of this.cards?.querySelectorAll<HTMLDetailsElement>('details[data-hb-expanded]') ?? []) this.expanded.set(`${details.closest<HTMLElement>('[data-hb-item]')!.dataset.hbItem}:${details.dataset.hbExpanded}`, details.open);
+    return { sourcePath: this.note?.file?.path ?? this.sourcePath, scroll: this.contentEl.scrollTop, expanded: [...this.expanded], filtersOpen: this.filterArea?.open, ...Object.fromEntries([...this.controls].map(([key, control]) => [key, control.value])), scope: this.searchScope, page: this.page }; }
   async setState(state: unknown, result: ViewStateResult): Promise<void> {
     const saved = state && typeof state === 'object' ? state as Record<string, unknown> : {};
     if (['note', 'folder', 'vault', 'collection'].includes(String(saved.scope))) this.searchScope = saved.scope as SearchScope;
+    if (typeof saved.sourcePath === 'string') { this.sourcePath = saved.sourcePath; this.note = this.plugin.openView(saved.sourcePath, this.note); }
+    if (Array.isArray(saved.expanded)) for (const pair of saved.expanded) if (Array.isArray(pair) && typeof pair[0] === 'string' && typeof pair[1] === 'boolean') this.expanded.set(pair[0], pair[1]);
     this.refresh();
     for (const [key, control] of this.controls) if (typeof saved[key] === 'string') control.value = saved[key];
-    this.refresh(typeof saved.page === 'number' && Number.isSafeInteger(saved.page) && saved.page >= 0 ? saved.page : 0); await super.setState(state, result);
+    this.refresh(typeof saved.page === 'number' && Number.isSafeInteger(saved.page) && saved.page >= 0 ? saved.page : 0); if (this.filterArea && typeof saved.filtersOpen === 'boolean') this.filterArea.open = saved.filtersOpen;
+    if (typeof saved.scroll === 'number') this.contentEl.scrollTop = saved.scroll;
+    await super.setState(state, result);
   }
-  async setScope(scope: SearchScope, reset = false): Promise<void> {
+  async setScope(scope: SearchScope, reset = false, keepTemporary = false): Promise<void> {
+    if (reset && !keepTemporary) this.temporary = undefined;
     if (this.searchScope !== scope || reset) this.page = 0;
     this.searchScope = scope;
     if (reset) for (const key of ['search', 'type-filter', 'semantic-filter', 'color-filter', 'language-filter', 'path-filter']) {
@@ -49,50 +71,60 @@ export class HighlightsView extends ItemView {
     await this.leaf.setViewState({ type: this.getViewType(), state: this.getState() });
     this.refresh();
   }
-  async onOpen(): Promise<void> { this.closed = false; this.refresh(); }
+  async onOpen(): Promise<void> { this.closed = false; const saved = this.plugin.workbenchStates.get(this.contentEl.ownerDocument); if (saved) await this.setState(saved, { history: false }); else this.refresh(); }
   private value(key: string): string { return this.controls.get(key)?.value ?? ''; }
   private initialize(): void {
-    this.contentEl.empty(); this.contentEl.addClass('hb-panel'); this.contentEl.createEl('h4');
-    const scope = this.contentEl.createEl('select', { cls: 'hb-scope' }); this.controls.set('scope', scope);
-    scope.addEventListener('change', () => { void this.setScope(scope.value as SearchScope); });
-    for (const key of ['search', 'type-filter', 'semantic-filter', 'color-filter', 'language-filter', 'path-filter', 'sort', 'collection', 'template']) {
-      const input = key === 'search' || key === 'path-filter';
-      const control = input ? this.contentEl.createEl('input', { type: key === 'search' ? 'search' : 'text', cls: `hb-${key}` }) : this.contentEl.createEl('select', { cls: `hb-${key}` });
-      this.controls.set(key, control);
-      control.addEventListener(input ? 'input' : 'change', () => {
-        if (key === 'template') { this.plugin.settings.excerptTemplate = control.value as ExcerptTemplate; void this.plugin.saveSettings(); }
-        else this.refresh();
-      });
+    this.contentEl.empty(); this.contentEl.addClass('hb-panel');
+    const header = this.contentEl.createDiv({ cls: 'hb-panel-header' }); header.createEl('h4', { attr: { tabindex: '-1' } });
+    const more = action(header, this.plugin.t('more'), 'ellipsis', () => menuAt(more, menu => {
+      menu.addItem(item => item.setTitle(this.plugin.t('rebuildIndex')).setIcon('refresh-cw').onClick(() => { void this.plugin.index.rebuild(); }));
+      if (this.searchScope === 'collection' && this.value('collection')) menu.addItem(item => item.setTitle(this.plugin.t('deleteCollection')).setIcon('trash-2').onClick(() => {
+        this.plugin.settings.collections = this.plugin.settings.collections.filter(collection => collection.id !== this.value('collection')); void this.plugin.saveSettings();
+      }));
+    }), 'hb-icon-only');
+    const scopes = this.contentEl.createDiv({ cls: 'hb-scope-nav', attr: { role: 'group', 'aria-label': this.plugin.t('scope') } });
+    for (const [scope, label] of [['note', 'noteScope'], ['folder', 'folderScope'], ['vault', 'vaultScope'], ['collection', 'collectionScope']] as const) {
+      const button = scopes.createEl('button', { text: this.plugin.t(label), attr: { 'data-hb-scope': scope, 'data-hb-label': label } });
+      button.addEventListener('click', () => { this.temporary = undefined; void this.setScope(scope); });
     }
-    for (const [action, key] of [['rebuild', 'rebuildIndex'], ['new-collection', 'newCollection'], ['delete-collection', 'deleteCollection'], ['export', 'exportNote']] as const) {
-      const button = this.contentEl.createEl('button'); button.dataset.hbWorkbenchAction = action; button.dataset.hbLabel = key;
-      button.addEventListener('click', () => {
-        if (action === 'new-collection') {
-          new CollectionNameModal(this.plugin, async name => {
-            const id = crypto.randomUUID(); this.plugin.settings.collections.push({ id, name, entries: [] });
-            await this.plugin.saveSettings(); this.controls.get('collection')!.value = id; await this.setScope('collection');
-          }).open();
-        } else if (action === 'delete-collection') {
-          this.plugin.settings.collections = this.plugin.settings.collections.filter(collection => collection.id !== this.value('collection')); void this.plugin.saveSettings();
-        } else {
-          button.disabled = true;
-          const operation = action === 'rebuild' ? this.plugin.index.rebuild() : this.plugin.index.ready.then(() => { this.refresh(); return this.plugin.exportHits(this.hits); });
-          void operation.catch(error => new Notice(String(error))).finally(() => { button.disabled = false; });
-        }
-      });
-    }
-    this.status = this.contentEl.createEl('p', { cls: 'hb-index-status' });
+    this.contentEl.addEventListener('scroll', () => this.app.workspace.requestSaveLayout());
+    this.source = this.contentEl.createDiv({ cls: 'hb-current-source' });
+    const collectionRow = this.contentEl.createDiv({ cls: 'hb-collection-row' });
+    const searchRow = this.contentEl.createDiv({ cls: 'hb-search-row' });
+    this.filterArea = this.contentEl.createEl('details', { cls: 'hb-filter-area' });
+    this.filterArea.createEl('summary', { text: this.plugin.t('filters'), attr: { 'data-hb-label': 'filters' } });
+    const filterGrid = this.filterArea.createDiv({ cls: 'hb-filter-grid' });
+    this.chips = this.contentEl.createDiv({ cls: 'hb-filter-chips' });
+    this.status = this.contentEl.createEl('p', { cls: 'hb-index-status', attr: { role: 'status' } });
     this.results = this.contentEl.createDiv({ cls: 'hb-results' });
-    this.summary = this.results.createEl('p', { cls: 'hb-summary' });
+    const resultHeader = this.results.createDiv({ cls: 'hb-result-header' });
+    this.summary = resultHeader.createSpan({ cls: 'hb-summary' });
+    for (const key of ['search', 'type-filter', 'semantic-filter', 'color-filter', 'language-filter', 'path-filter', 'sort', 'collection']) {
+      const input = key === 'search' || key === 'path-filter';
+      const parent = key === 'search' ? searchRow : key === 'sort' ? resultHeader : key === 'collection' ? collectionRow : filterGrid;
+      const control = input ? parent.createEl('input', { type: key === 'search' ? 'search' : 'text', cls: `hb-${key}` }) : parent.createEl('select', { cls: `hb-${key}` });
+      this.controls.set(key, control); control.addEventListener(input ? 'input' : 'change', () => this.refresh());
+    }
+    const add = action(collectionRow, this.plugin.t('newCollection'), 'plus', () => createCollection(this.plugin, async id => { this.controls.get('collection')!.value = id; await this.setScope('collection'); }, add)); add.dataset.hbWorkbenchAction = 'new-collection';
+    const filters = action(searchRow, this.plugin.t('filters'), 'list-filter', () => { this.filterArea!.open = !this.filterArea!.open; filters.setAttribute('aria-expanded', String(this.filterArea!.open)); }, 'hb-icon-only');
+    filters.setAttribute('aria-expanded', 'false');
+    const exportButton = action(resultHeader, this.plugin.t('excerptPreview'), 'download', () => {
+      new ExcerptModal(this.plugin, () => { this.refresh(); return { hits: this.hits, key: this.queryKey, description: [this.source?.textContent, ...[...this.controls].filter(([key, control]) => key !== 'sort' && key !== 'collection' && control.value).map(([, control]) => control.tagName === 'SELECT' ? (control as HTMLSelectElement).selectedOptions[0]?.textContent : control.value)].filter(Boolean).join(' · ') }; }, exportButton).open();
+    }); exportButton.dataset.hbWorkbenchAction = 'preview';
     this.cards = this.results.createDiv({ cls: 'hb-result-cards' });
   }
   refresh(restorePage?: number): void {
     if (this.closed) return;
     const active = this.app.workspace.getActiveViewOfType(MarkdownView);
-    if (active) this.note = active;
+    if (active && (!this.note || active.containerEl.ownerDocument === this.contentEl.ownerDocument || active.file?.path === this.sourcePath)) this.setSource(active);
+    if (!this.note && this.sourcePath) this.note = this.plugin.openView(this.sourcePath);
     if (!this.results) this.initialize();
     const t = this.plugin.t.bind(this.plugin);
     this.contentEl.querySelector('h4')!.textContent = this.getDisplayText();
+    for (const [selector, message] of [['.hb-panel-header button', 'more'], ['[data-hb-workbench-action="new-collection"]', 'newCollection'], ['.hb-search-row button', 'filters'], ['[data-hb-workbench-action="preview"]', 'excerptPreview']] as const) {
+      const button = this.contentEl.querySelector<HTMLButtonElement>(selector); if (!button) continue; button.setAttribute('aria-label', t(message)); button.title = t(message); button.lastElementChild!.textContent = t(message);
+    }
+    this.contentEl.querySelector('.hb-scope-nav')!.setAttribute('aria-label', t('scope'));
     const options = (key: string, title: Message, entries: [string, string][]) => {
       const select = this.controls.get(key) as HTMLSelectElement, value = select.value;
       select.setAttribute('aria-label', t(title));
@@ -102,8 +134,7 @@ export class HighlightsView extends ItemView {
       })); this.optionKeys.set(key, keyValue); }
       select.value = entries.some(([key]) => key === value) ? value : entries[0]?.[0] ?? '';
     };
-    options('scope', 'scope', [['note', t('noteScope')], ['folder', t('folderScope')], ['vault', t('vaultScope')], ['collection', t('collectionScope')]]);
-    this.controls.get('scope')!.value = this.searchScope;
+    for (const button of this.contentEl.querySelectorAll<HTMLButtonElement>('[data-hb-scope]')) button.setAttribute('aria-pressed', String(button.dataset.hbScope === this.searchScope));
     options('type-filter', 'allTypes', [['', t('allTypes')], ['prose', t('prose')], ['inline-code', t('inlineCode')], ['code', t('code')]]);
     options('semantic-filter', 'allSemantics', [['', t('allSemantics')], ...this.plugin.settings.presets.map(preset => [preset.id, this.plugin.presetLabel(preset)] as [string, string])]);
     options('color-filter', 'allColors', [['', t('allColors')], ...colors.map(color => [color, this.plugin.colorLabel(color)] as [string, string])]);
@@ -111,21 +142,33 @@ export class HighlightsView extends ItemView {
     options('sort', 'sortOrder', [['source', t('sourceOrder')], ['semantic', t('semanticOrder')]]);
     options('collection', 'chooseCollection', [['', t('chooseCollection')], ...this.plugin.settings.collections.map(collection => [collection.id, collection.name] as [string, string])]);
     this.controls.get('collection')!.hidden = this.searchScope !== 'collection';
-    options('template', 'exportTemplate', [['markdown', t('templateMarkdown')], ['plain', t('templatePlain')], ['quote', t('templateQuote')], ['code', t('templateCode')]]);
-    this.controls.get('template')!.value = this.plugin.settings.excerptTemplate;
     for (const [key, title] of [['search', this.searchScope === 'note' ? 'searchHighlights' : 'searchAllHighlights'], ['path-filter', 'pathFilter']] as const) {
       const input = this.controls.get(key) as HTMLInputElement; input.placeholder = t(title); input.setAttribute('aria-label', t(title));
     }
     for (const button of this.contentEl.querySelectorAll<HTMLButtonElement>('[data-hb-label]')) button.textContent = t(button.dataset.hbLabel as Message);
-    this.contentEl.querySelector<HTMLButtonElement>('[data-hb-workbench-action="delete-collection"]')!.hidden = this.searchScope !== 'collection' || !this.value('collection');
+    this.contentEl.querySelector<HTMLElement>('.hb-collection-row')!.hidden = this.searchScope !== 'collection';
+    this.chips!.empty();
+    for (const key of ['type-filter', 'semantic-filter', 'color-filter', 'language-filter', 'path-filter']) {
+      const control = this.controls.get(key)!; if (!control.value) continue;
+      const label = control.tagName === 'SELECT' ? (control as HTMLSelectElement).selectedOptions[0]?.textContent ?? control.value : control.value;
+      action(this.chips!, label + ' ×', 'x', () => { control.value = ''; this.refresh(); });
+    }
+    if (this.chips!.childElementCount) action(this.chips!, t('clearFilters'), 'filter-x', () => { for (const key of ['search', 'type-filter', 'semantic-filter', 'color-filter', 'language-filter', 'path-filter']) this.controls.get(key)!.value = ''; this.refresh(); });
     this.status!.textContent = t('indexedNotes', { count: this.plugin.index.notes.size }) + (this.plugin.index.errors.size ? ` · ${t('indexErrors', { count: this.plugin.index.errors.size })}` : '');
+    if (this.plugin.index.errors.size) {
+      const retry = action(this.status!, t('rebuildIndex'), 'refresh-cw', () => { for (const path of this.plugin.index.errors.keys()) void this.plugin.index.enqueue(path); });
+      retry.dataset.hbRetry = 'true';
+      const errors = this.status!.createEl('details'); errors.createEl('summary', { text: t('indexErrors', { count: this.plugin.index.errors.size }) });
+      for (const [path, error] of this.plugin.index.errors) errors.createDiv({ text: `${path}: ${error}` });
+    }
+    this.status!.title = [...this.plugin.index.errors].map(([path, error]) => `${path}: ${error}`).join('\n');
     const results = this.results!;
     const view = this.note;
     const file = view?.file && this.app.workspace.getLeavesOfType('markdown').includes(view.leaf) ? view.file : undefined;
     if ((this.searchScope === 'note' || this.searchScope === 'folder') && (!file || this.app.vault.getFileByPath(file.path) !== file)) {
       this.hits = []; this.rendered = []; this.renderKey = ''; this.renderedNote = undefined;
-      this.page = 0; this.queryKey = ''; this.summary!.textContent = t('panelEmpty');
-      this.cards!.empty(); this.pagination?.remove(); this.pagination = undefined; return;
+      this.page = 0; this.queryKey = ''; this.summary!.textContent = t('panelEmpty'); this.source!.textContent = t('noteScope');
+      this.cards!.empty(); action(this.cards!, t('vaultScope'), 'library', () => { void this.setScope('vault'); }); this.pagination?.remove(); this.pagination = undefined; return;
     }
     const collection = this.plugin.settings.collections.find(collection => collection.id === this.value('collection'));
     let all = this.searchScope === 'collection' ? collection?.entries.map(entry => resolveEntry(this.plugin.index.notes.get(entry.path), entry)) ?? [] : this.plugin.index.all();
@@ -139,9 +182,11 @@ export class HighlightsView extends ItemView {
     const queryKey = JSON.stringify({ ...query, collection: this.value('collection') });
     if (queryKey !== this.queryKey) this.page = 0;
     this.queryKey = queryKey;
+    if (this.temporary) all = all.filter(hit => this.temporary!.paths.has(hit.path) && (this.temporary!.blockFrom === undefined || hit.item.blockFrom === this.temporary!.blockFrom));
     this.hits = queryHighlights(all, query, label);
     this.page = Math.max(0, Math.min(restorePage ?? this.page, Math.ceil(this.hits.length / this.pageSize) - 1));
     const name = this.searchScope === 'note' ? file!.basename : this.searchScope === 'folder' ? file!.parent?.path || '/' : this.searchScope === 'collection' ? collection?.name || t('collectionScope') : t('vaultScope');
+    this.source!.textContent = this.temporary?.label ?? name; this.source!.title = file?.path ?? name;
     this.summary!.textContent = t(this.hits.length === 1 ? 'summaryOne' : 'summary', { note: name, count: this.hits.length });
     if (this.hits.length > this.pageSize) {
       const navigation = this.pagination ??= results.createEl('nav', { cls: 'hb-pagination' });
@@ -165,13 +210,21 @@ export class HighlightsView extends ItemView {
     const visible = this.hits.slice(this.page * this.pageSize, (this.page + 1) * this.pageSize).map(hit => {
       const view = this.plugin.openView(hit.path, this.note); return { hit, view, file: view?.file };
     });
-    const renderKey = JSON.stringify([queryKey, this.page, this.plugin.locale, this.plugin.settings.presets, this.plugin.settings.collections.map(({ id, name }) => [id, name])]);
+    const renderKey = JSON.stringify([queryKey, this.page, this.plugin.settings.codeDisplay.wrap, this.plugin.locale, this.plugin.settings.presets, this.plugin.settings.collections.map(({ id, name }) => [id, name])]);
     if (visible.length && renderKey === this.renderKey && this.renderedNote === this.note && visible.length === this.rendered.length && visible.every(({ hit, view, file }, index) => {
       const before = this.rendered[index]!; return hit.path === before.hit.path && hit.text === before.hit.text && hit.item === before.hit.item && hit.entryId === before.hit.entryId && view === before.view && file === before.file;
     })) return;
     this.renderKey = renderKey; this.rendered = visible; this.renderedNote = this.note;
+    const scroll = this.contentEl.scrollTop;
+    const focused = this.cards!.contains(this.contentEl.ownerDocument.activeElement) ? this.contentEl.ownerDocument.activeElement as HTMLElement : undefined;
+    const focusItem = focused?.closest<HTMLElement>('[data-hb-item]')?.dataset.hbItem, focusClass = focused?.className;
+    for (const details of this.cards!.querySelectorAll<HTMLDetailsElement>('details[data-hb-expanded]')) this.expanded.set(`${details.closest<HTMLElement>('[data-hb-item]')!.dataset.hbItem}:${details.dataset.hbExpanded}`, details.open);
     this.cards!.empty();
     if (!this.hits.length) this.cards!.createEl('p', { text: this.searchScope === 'collection' && !collection ? t('noCollection') : all.length ? t('noMatches') : t('noHighlights', { preset: this.plugin.presetLabel(this.plugin.getPreset('important')) }) });
+    if (!this.hits.length) {
+      if (all.length) action(this.cards!, t('clearFilters'), 'filter-x', () => { for (const key of ['search', 'type-filter', 'semantic-filter', 'color-filter', 'language-filter', 'path-filter']) this.controls.get(key)!.value = ''; this.refresh(); });
+      else action(this.cards!, t(this.searchScope === 'collection' ? 'noteScope' : 'openSelectionToolbar'), 'highlighter', () => { if (this.searchScope === 'collection') void this.setScope('note'); else if (this.note) for (const toolbar of this.plugin.toolbars) if (toolbar.matches(this.note.editor)) toolbar.open(); });
+    }
     let group = '';
     for (const { hit } of visible) {
       const key = this.value('sort') === 'semantic' ? label(hit) : this.searchScope === 'note' ? '' : hit.path;
@@ -183,89 +236,18 @@ export class HighlightsView extends ItemView {
       }
       this.excerptContexts.delete(hit.text); this.excerptContexts.set(hit.text, context);
       while (this.excerptContexts.size > this.pageSize) this.excerptContexts.delete(this.excerptContexts.keys().next().value!);
-      this.card(hit, context(hit.item));
-    }
-  }
-  private card(hit: IndexHit, context: ExcerptContext): void {
-    const { item } = hit, t = this.plugin.t.bind(this.plugin);
-    const card = this.cards!.createDiv({ cls: `hb-card hb-${item.color}` }); card.dataset.hbPath = hit.path;
-    if (item.semantic) card.dataset.hbSemantic = item.semantic;
-    const jump = card.createEl('button', { text: item.quote || t('blankLine'), cls: item.kind === 'prose' ? 'hb-quote' : 'hb-quote hb-code-quote' });
-    const label = item.markId ? item.label : this.plugin.colorLabel(item.color);
-    const info = item.kind === 'prose' ? t('prose') : item.kind === 'inline-code' ? item.line ? t('inlineInfo', { line: item.line }) : t('inlineCode') : item.line ? t('codeInfo', { language: item.language || t('code'), line: item.line }) : t('code');
-    card.createEl('small', { text: `${label} · ${info}${item.status === 'resolved' ? '' : ` · ${t('pending')}`}` });
-    if (this.searchScope !== 'note') card.createEl('small', { text: hit.path, cls: 'hb-source-path' });
-    if (item.note) {
-      const note = card.createEl('details', { cls: 'hb-note' }); note.createEl('summary', { text: t('annotation') });
-      note.createDiv({ text: item.note, cls: 'hb-note-text' });
-    }
-    if (context.headings.length) card.createEl('small', { text: context.headings.join(' › '), cls: 'hb-heading-context' });
-    if (context.code !== undefined && context.code !== item.quote) {
-      const details = card.createEl('details', { cls: 'hb-card-context' }); details.createEl('summary', { text: t('excerptCodeContext', { from: context.contextFrom!, to: context.contextTo! }) }); details.createEl('pre').createEl('code', { text: context.code });
-    }
-    const sourceView = this.plugin.openView(hit.path, this.note), file = sourceView?.file;
-    const act = (run: (view: MarkdownView) => void | Promise<void>) => {
-      if (sourceView && sourceView.file !== file) { new Notice(t('staleMark')); return; }
-      void this.plugin.editHit(hit, run, sourceView);
-    };
-    jump.addEventListener('click', () => { if (item.status !== 'resolved') new Notice(t('contentChanged')); else act(view => this.plugin.jumpToItem(view, item)); });
-    if ((item.kind === 'code-line' || item.kind === 'code-range') && sourceView && sourceView === this.note) {
-      const rebind = card.createEl('button', { text: t('rebind'), cls: 'hb-rebind' }); rebind.title = t('rebindHint');
-      rebind.addEventListener('click', () => { if (sourceView.file === file) this.plugin.rebind(sourceView.editor, item); });
-    }
-    if (item.status === 'resolved') {
-      card.createEl('button', { text: t('editAnnotation'), cls: 'hb-edit-note' }).addEventListener('click', () => {
-        new AnnotationModal(this.plugin, item.note ?? '', note => this.plugin.editNoteHit(hit, note, sourceView)).open();
-      });
-      const semantic = card.createEl('select', { cls: 'hb-change-semantic' }); semantic.setAttribute('aria-label', t('changeSemantic')); semantic.createEl('option', { value: '', text: t('changeSemantic') });
-      for (const preset of this.plugin.settings.presets) semantic.createEl('option', { value: preset.id, text: this.plugin.presetLabel(preset) });
-      semantic.addEventListener('change', () => { if (semantic.value) act(view => this.plugin.updateItem(view.editor, item, this.plugin.presetForAction(semantic.value))); });
-      card.createEl('button', { text: t('removeItem'), cls: 'hb-remove-item' }).addEventListener('click', () => act(view => this.plugin.updateItem(view.editor, item, null)));
-      const add = card.createEl('select', { cls: 'hb-add-collection' }); add.setAttribute('aria-label', t('addCollection')); add.createEl('option', { value: '', text: t('addCollection') });
-      for (const collection of this.plugin.settings.collections) add.createEl('option', { value: collection.id, text: collection.name });
-      add.disabled = !this.plugin.settings.collections.length;
-      add.addEventListener('change', () => { if (add.value) void this.plugin.addToCollection(add.value, hit); });
-    }
-    if (hit.entryId) card.createEl('button', { text: t('removeCollectionEntry'), cls: 'hb-remove-collection' }).addEventListener('click', () => {
       const collection = this.plugin.settings.collections.find(collection => collection.id === this.value('collection'));
-      if (collection) { collection.entries = collection.entries.filter(entry => entry.id !== hit.entryId); void this.plugin.saveSettings(); }
-    });
-    card.createEl('button', { text: t('copyExcerpt'), cls: 'hb-copy-excerpt' }).addEventListener('click', () => { void navigator.clipboard.writeText(this.plugin.excerpt(hit)); });
+      renderCard(this.cards!, this.plugin, hit, context(hit.item), this.note, hit.entryId && collection ? () => { collection.entries = collection.entries.filter(entry => entry.id !== hit.entryId); void this.plugin.saveSettings(); } : undefined);
+    }
+    for (const details of this.cards!.querySelectorAll<HTMLDetailsElement>('details[data-hb-expanded]')) details.open = this.expanded.get(`${details.closest<HTMLElement>('[data-hb-item]')!.dataset.hbItem}:${details.dataset.hbExpanded}`) ?? false;
+    if (focusItem) { const card = [...this.cards!.querySelectorAll<HTMLElement>('[data-hb-item]')].find(card => card.dataset.hbItem === focusItem); (card && [...card.querySelectorAll<HTMLElement>('button,summary')].find(button => button.className === focusClass) || this.contentEl.querySelector<HTMLElement>('h4'))?.focus({ preventScroll: true }); }
+    this.contentEl.scrollTop = scroll;
   }
   async onClose(): Promise<void> {
+    this.plugin.workbenchStates.set(this.contentEl.ownerDocument, this.getState());
     this.closed = true;
     this.hits = []; this.rendered = []; this.note = undefined; this.renderedNote = undefined;
     this.renderKey = ''; this.queryKey = ''; this.controls.clear(); this.optionKeys.clear(); this.excerptContexts.clear();
     this.contentEl.empty(); this.results = undefined; this.summary = undefined; this.cards = undefined; this.pagination = undefined;
   }
-}
-
-class AnnotationModal extends Modal {
-  constructor(private plugin: HighlightBoost, private note: string, private submit: (note: string) => Promise<void>) { super(plugin.app); }
-  onOpen(): void {
-    this.contentEl.createEl('h3', { text: this.plugin.t('editAnnotation') });
-    this.contentEl.createEl('p', { text: this.plugin.t('annotationHint') });
-    const input = this.contentEl.createEl('textarea', { cls: 'hb-note-input' }); input.value = this.note;
-    input.setAttribute('aria-label', this.plugin.t('annotation')); input.rows = 8;
-    new Setting(this.contentEl).addButton(button => button.setButtonText(this.plugin.t('save')).onClick(async () => {
-      button.setDisabled(true);
-      try { await this.submit(input.value); this.close(); } catch (error) { new Notice(errorMessage(error, this.plugin.locale)); button.setDisabled(false); }
-    })).addButton(button => button.setButtonText(this.plugin.t('cancel')).onClick(() => this.close()));
-  }
-  onClose(): void { this.contentEl.empty(); }
-}
-
-class CollectionNameModal extends Modal {
-  constructor(private plugin: HighlightBoost, private submit: (name: string) => Promise<void>) { super(plugin.app); }
-  onOpen(): void {
-    let name = '';
-    this.contentEl.createEl('h3', { text: this.plugin.t('newCollection') });
-    const row = new Setting(this.contentEl).setName(this.plugin.t('collectionName'));
-    row.addText(text => { text.inputEl.className = 'hb-collection-name'; text.inputEl.setAttribute('aria-label', this.plugin.t('collectionName')); text.onChange(value => { name = value.trim(); }); });
-    row.addButton(button => button.setButtonText(this.plugin.t('create')).onClick(async () => {
-      if (!name) return; button.setDisabled(true);
-      try { await this.submit(name); this.close(); } catch (error) { new Notice(String(error)); button.setDisabled(false); }
-    }));
-  }
-  onClose(): void { this.contentEl.empty(); }
 }

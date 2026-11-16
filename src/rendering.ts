@@ -11,6 +11,7 @@ import { clearCodeDisplay } from './code-display';
 import { parameterLines } from './fence-params';
 import { editorDocument } from './editor-document';
 import { structuredRows, rowText } from './code-rows';
+import { unifiedCodeModel } from './syntax/model';
 
 const rendered = new WeakMap<HTMLElement, { original: Node[]; signature: string; rows: HTMLElement[] }>();
 const rowTitles = new WeakMap<HTMLElement, { original: string | null; applied: string }>();
@@ -45,7 +46,7 @@ export function clearRenderedCode(code: HTMLElement): void {
 function editorDecorations(text: string, settings: CodeDisplaySettings, parsed = parseDocument(text)): DecorationSet {
   const ranges = [];
   for (const block of parsed.blocks) {
-    const options = codeOptions(block, settings), diff = block.language === 'diff' && options.diff ? diffKinds(block.text) : [];
+    const options = codeOptions(block, settings), diff = unifiedCodeModel(block, settings).diff ? diffKinds(block.text) : [];
     const markers = parameterLines(block);
     if (!options.showLineNumbers && !diff.length && !markers.some(Boolean)) continue;
     for (const [index, line] of block.lines.entries()) {

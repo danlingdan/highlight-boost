@@ -6,14 +6,16 @@ import { fenceParameters, parameterValue } from './fence-params';
 export interface CodeDisplaySettings {
   showTitle: boolean; showLineNumbers: boolean; startLine: number; numberFont: 'monospace' | 'interface';
   collapsible: boolean; collapseByDefault: boolean; wrap: boolean; diff: boolean;
+  frame: 'auto' | 'code' | 'terminal' | 'none';
 }
-export const defaultCodeDisplay: CodeDisplaySettings = { showTitle: false, showLineNumbers: false, startLine: 1, numberFont: 'monospace', collapsible: false, collapseByDefault: false, wrap: false, diff: true };
+export const defaultCodeDisplay: CodeDisplaySettings = { showTitle: false, showLineNumbers: false, startLine: 1, numberFont: 'monospace', collapsible: false, collapseByDefault: false, wrap: false, diff: true, frame: 'auto' };
 export function normalizeCodeDisplay(value: unknown): CodeDisplaySettings {
   const input = value && typeof value === 'object' ? value as Record<string, unknown> : {};
   return { showTitle: input.showTitle === true, showLineNumbers: input.showLineNumbers === true,
     startLine: Number.isSafeInteger(input.startLine) && Number(input.startLine) >= 1 && Number(input.startLine) <= 1000000 ? Number(input.startLine) : 1,
     numberFont: input.numberFont === 'interface' ? 'interface' : 'monospace', collapsible: input.collapsible === true,
-    collapseByDefault: input.collapseByDefault === true, wrap: input.wrap === true, diff: input.diff !== false };
+    collapseByDefault: input.collapseByDefault === true, wrap: input.wrap === true, diff: input.diff !== false,
+    frame: input.frame === 'code' || input.frame === 'terminal' || input.frame === 'none' ? input.frame : 'auto' };
 }
 export const codeDisplayFacet = Facet.define<CodeDisplaySettings, CodeDisplaySettings>({ combine: values => values[0] ?? defaultCodeDisplay });
 export function codeOptions(block: CodeBlock, settings: CodeDisplaySettings): CodeDisplaySettings & { title: string } {
@@ -25,10 +27,13 @@ export function codeOptions(block: CodeBlock, settings: CodeDisplaySettings): Co
   const title = value('title', 'file') ?? (foldTitle && !['true', 'false'].includes(foldTitle) ? foldTitle : '');
   const ln = value('ln', 'linenos'), numbered = ln === 'true' || ln === 'table' || ln === 'inline' || /^\d+$/.test(ln ?? '');
   const first = Number(value('startLineNumber', 'linenostart') ?? (/^\d+$/.test(ln ?? '') ? ln : undefined));
+  const frame = value('frame');
   return { ...settings, title, showTitle: settings.showTitle || Boolean(title), showLineNumbers: flag('showLineNumbers', ln === 'false' ? false : numbered || settings.showLineNumbers),
+    frame: frame === 'code' || frame === 'terminal' || frame === 'none' || frame === 'auto' ? frame : settings.frame,
     startLine: Number.isSafeInteger(first) && first > 0 && first <= 1000000 ? first : settings.startLine,
     wrap: flag('wrap', settings.wrap), collapsible: flag('hb-fold', settings.collapsible || folded || unfolded || flag('hb-collapsed', false)), collapseByDefault: flag('hb-collapsed', unfolded ? false : folded || settings.collapseByDefault) };
 }
+export const resolveCodeOptions = codeOptions;
 export type DiffKind = 'insert' | 'delete' | 'context' | 'meta';
 export function diffKinds(code: string): DiffKind[] {
   const lines = code.split('\n'); let old = 0, next = 0, hunk = false;
@@ -48,8 +53,9 @@ export function diffAfter(code: string): string {
 }
 export function codeDisplayKey(path: string, block: CodeBlock, blocks: CodeBlock[]): string {
   const identity = block.metadata?.blockId;
-  const occurrence = identity ? blocks.filter(other => other.metadata?.blockId === identity).findIndex(other => other.fenceFrom === block.fenceFrom) : block.fenceFrom;
-  return `${path}\u0000${identity ?? block.language}\u0000${occurrence}`;
+  const matching = identity ? blocks.filter(other => other.metadata?.blockId === identity) : blocks.filter(other => !other.metadata?.blockId && other.language === block.language && other.text === block.text);
+  const occurrence = matching.findIndex(other => other.fenceFrom === block.fenceFrom);
+  return `${path}\u0000${identity ?? `${block.language}\u0000${block.text}`}\u0000${occurrence}`;
 }
 export const unfoldSelectedCode = EditorState.transactionExtender.of(transaction => {
   if (!transaction.selection) return null;

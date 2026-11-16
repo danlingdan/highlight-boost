@@ -4,6 +4,7 @@ import { codeOptions, diffAfter, diffKinds, type CodeDisplaySettings } from './c
 import { translate, type Locale } from './i18n';
 import { parameterLines } from './fence-params';
 import { structuredRows } from './code-rows';
+import { unifiedCodeModel } from './syntax/model';
 
 interface DisplayState { wrapper: HTMLElement; body: HTMLElement; header: HTMLElement; target: HTMLElement; pre: HTMLElement; signature: string }
 const displays = new WeakMap<HTMLElement, DisplayState>();
@@ -17,9 +18,9 @@ export function clearCodeDisplay(code: HTMLElement): void {
 }
 
 export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings: CodeDisplaySettings, locale: Locale, sessions: Map<string, boolean>, key: string): void {
-  const options = codeOptions(block, settings), isDiff = block.language.toLowerCase() === 'diff';
+  const options = codeOptions(block, settings), isDiff = unifiedCodeModel(block, settings).diff;
   const markers = parameterLines(block);
-  const active = options.showTitle || options.showLineNumbers || options.collapsible || options.wrap || isDiff && options.diff || markers.some(Boolean);
+  const active = !!code.closest('[data-hb-syntax-root]') || !!block.metadata?.marks.length || options.showTitle || options.showLineNumbers || options.collapsible || options.wrap || isDiff && options.diff || markers.some(Boolean);
   const pre = code.closest('pre');
   if (!active || !pre?.parentElement) { clearCodeDisplay(code); return; }
   let display = displays.get(code);
@@ -32,6 +33,9 @@ export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings:
     display = { wrapper, header, body, target, pre, signature: '' }; displays.set(code, display);
   }
   display.wrapper.dataset.hbFence = String(block.fenceFrom);
+  const frame = options.frame === 'auto' ? (display.target.querySelector('figure.is-terminal') ? 'terminal' : 'code') : options.frame;
+  display.wrapper.dataset.hbFrame = frame;
+  for (const duplicate of display.target.querySelectorAll<HTMLElement>(':scope > figure > .header, :scope > figure > .copy')) duplicate.hidden = true;
   display.wrapper.classList.toggle('hb-show-numbers', options.showLineNumbers);
   pre.classList.toggle('hb-code-wrap', options.wrap);
   pre.style.setProperty('--hb-number-font', options.numberFont === 'interface' ? 'var(--font-interface)' : 'var(--font-monospace)');
@@ -50,11 +54,11 @@ export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings:
   if (display.signature === signature) return;
   display.signature = signature; display.header.replaceChildren();
   const doc = code.ownerDocument;
-  if (options.showTitle) {
+  if (options.showTitle || frame === 'terminal') {
     const title = detachedEl(doc, 'span'); title.className = 'hb-code-title'; title.textContent = options.title || block.language || t('code'); display.header.append(title);
   }
   if (block.metadata?.marks.length) {
-    const count = detachedEl(doc, 'span'); count.className = 'hb-code-mark-count'; count.textContent = `${translate(locale, 'codeMarks', { count: block.metadata.marks.length })} · ${[...new Set(block.metadata.marks.map(mark => mark.label))].join(' / ')}`; display.header.append(count);
+    const count = detachedEl(doc, 'button'); count.addEventListener('click', () => { code.dispatchEvent(new CustomEvent('hb-show-block', { bubbles: true, detail: { blockFrom: block.fenceFrom, key } })); }); count.className = 'hb-code-mark-count'; count.textContent = `${translate(locale, 'codeMarks', { count: block.metadata.marks.length })} · ${[...new Set(block.metadata.marks.map(mark => mark.label))].join(' / ')}`; display.header.append(count);
   }
   const button = (action: string, text: string, run: (button: HTMLButtonElement) => void) => {
     const button = detachedEl(doc, 'button'); button.dataset.hbDisplayAction = action; button.textContent = text; button.setAttribute('aria-label', text);
@@ -68,8 +72,8 @@ export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings:
     toggle.setAttribute('aria-expanded', String(!collapsed)); toggle.setAttribute('aria-controls', display.body.id);
   }
   const copy = (value: string, button: HTMLButtonElement) => {
-    void Promise.resolve().then(() => doc.defaultView!.navigator.clipboard.writeText(value)).then(() => { button.dataset.hbCopied = 'true'; button.title = t('copiedCode'); button.setAttribute('aria-description', t('copiedCode')); }).catch(() => { delete button.dataset.hbCopied; button.title = t('copyFailed'); button.setAttribute('aria-description', t('copyFailed')); });
+    void Promise.resolve().then(() => doc.defaultView!.navigator.clipboard.writeText(value)).then(() => { button.dataset.hbCopied = 'true'; button.title = t('copiedCode'); button.setAttribute('aria-description', t('copiedCode')); doc.defaultView!.setTimeout(() => { delete button.dataset.hbCopied; button.removeAttribute('aria-description'); button.title = button.getAttribute('aria-label') ?? ''; }, 2000); }).catch(() => { delete button.dataset.hbCopied; button.title = t('copyFailed'); button.setAttribute('aria-description', t('copyFailed')); });
   };
   button('copy', t(isDiff ? 'copyRawDiff' : 'copyCode'), button => copy(block.text, button));
-  if (isDiff) button('copy-after', t('copyDiffAfter'), button => copy(diffAfter(block.text), button));
+  if (isDiff) button('copy-menu', t('more'), trigger => { trigger.dispatchEvent(new CustomEvent('hb-copy-menu', { bubbles: true, detail: { raw: block.text, after: diffAfter(block.text), copy: (value: string) => copy(value, trigger) } })); });
 }

@@ -72,7 +72,7 @@ export function createCssVariableThemeBundle(theme: ThemeRegistration): CssVaria
 
 	const mappedTheme: ThemeRegistration = {
 		...theme,
-		colors: Object.fromEntries(Object.entries(theme.colors ?? {}).map(([key, value]) => [key, toPlaceholder(value)])),
+		colors: Object.fromEntries(Object.entries(theme.colors ?? {}).filter(([, value]) => typeof value === 'string').map(([key, value]) => [key, toPlaceholder(value)])),
 		tokenColors: (theme.tokenColors ?? []).map(mapThemeTokenColor),
 	};
 

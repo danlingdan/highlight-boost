@@ -10,7 +10,7 @@
 - 目录：`src/syntax/upstream/`。
 - 文件：`Config.ts`、`ECTheme.ts`、`ObsidianTheme.ts`、`styles.css`。
 - 许可证：MIT；原作者版权声明保存在 [Shiki-Highlighter-MIT.txt](licenses/Shiki-Highlighter-MIT.txt)。
-- 本地改动：移除重复副作用导入、调整主题占位颜色恢复，样式限定到 HB 语法组件并在构建时合入插件样式；保留文件名注释、diff 前缀和终端复制注释，展示状态由 HB 管理。其余接入与生命周期实现位于 `src/syntax/`。
+- 本地改动：移除重复副作用导入、调整主题占位颜色恢复并过滤主题中的非颜色值，样式限定到 HB 语法组件并在构建时合入插件样式；保留文件名注释、diff 前缀和终端复制注释，展示状态由 HB 管理。其余接入与生命周期实现位于 `src/syntax/`，包括统一代码组件、主题与自定义语法加载、源区段后处理及多窗口资源管理。
 
 ## 引擎依赖
 

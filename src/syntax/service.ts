@@ -1,50 +1,56 @@
-import { Component, MarkdownRenderChild, type MarkdownPostProcessorContext, type Plugin } from 'obsidian';
+import { Component, Notice, type Plugin } from 'obsidian';
 import { SyntaxEngine } from './engine';
-import { syntaxEditor } from './editor';
+import { syntaxEditor, refreshSyntax } from './editor';
 import { SyntaxRuntime } from './runtime';
+import { loadSyntaxResources, type SyntaxResources } from './resources';
+import type { CodeSyntaxSettings } from './settings';
 import type { Locale } from '../i18n';
-import { EditorView } from '@codemirror/view';
-
-class SyntaxBlock extends MarkdownRenderChild {
-  private generation = 0;
-  private highlights?: MarkdownRenderChild;
-  constructor(element: HTMLElement, private engine: SyntaxEngine, private code: string, private language: string, private context: MarkdownPostProcessorContext, private decorate: (element: HTMLElement, context: MarkdownPostProcessorContext) => MarkdownRenderChild, private getLocale: () => Locale, private dispose: () => void) { super(element); }
-  onload(): void { void this.render().catch(error => console.error('HB 代码渲染失败', error)); }
-  async render(): Promise<void> {
-    const generation = ++this.generation;
-    const section = this.context.getSectionInfo(this.containerEl);
-    const opening = section?.text.split('\n')[section.lineStart] ?? '';
-    const meta = opening.match(/(?:`{3,}|~{3,})\S*\s+(.*)$/)?.[1] ?? '';
-    const rendered = await this.engine.render(this.code, this.language, meta, this.containerEl.ownerDocument, this.getLocale());
-    if (generation !== this.generation) return;
-    if (this.highlights) this.removeChild(this.highlights);
-    this.containerEl.replaceChildren(rendered);
-    this.highlights = this.addChild(this.decorate(this.containerEl, this.context));
-  }
-  onunload(): void { this.generation++; this.dispose(); }
-}
+import type { CodeDisplaySettings } from '../code-options';
+import { syntaxCodeWidgets } from './widgets';
+import { EditorView, ViewPlugin } from '@codemirror/view';
 
 export class SyntaxService extends Component {
   readonly runtime = this.addChild(new SyntaxRuntime(() => this.getLocale()));
-  readonly engine = new SyntaxEngine(document => this.runtime.attach(document));
-  readonly editorExtension = syntaxEditor(this.engine);
-  private blocks = new Set<SyntaxBlock>();
-  constructor(private plugin: Plugin, private decorate: (element: HTMLElement, context: MarkdownPostProcessorContext) => MarkdownRenderChild, private getLocale: () => Locale) { super(); }
-  async refresh(): Promise<void> { await Promise.all([...this.blocks].map(block => block.render())); }
-  onunload(): void { for (const block of this.blocks) block.unload(); }
-  async initialize(): Promise<void> {
-    this.runtime.attach(document);
-    this.registerEvent(this.plugin.app.workspace.on('window-close', (_workspaceWindow, window) => this.runtime.detach(window.document)));
-    await this.engine.initialize();
-    this.register(() => this.engine.dispose());
-    this.plugin.registerEditorExtension([this.editorExtension, EditorView.editorAttributes.of({ class: 'hb-syntax-editor' })]);
-    for (const language of this.engine.languages.filter(language => /^[a-z0-9][a-z0-9-]*$/.test(language) && language !== 'mermaid')) {
-      this.plugin.registerMarkdownCodeBlockProcessor(language, (source, element, context) => {
-        if (element.closest('.mod-frontmatter')) return;
-        const block = new SyntaxBlock(element, this.engine, source, language, context, this.decorate, this.getLocale, () => this.blocks.delete(block));
-        this.blocks.add(block);
-        context.addChild(block);
-      }, 100);
-    }
+  engine!: SyntaxEngine;
+  readonly editorExtension = syntaxEditor(() => this.engine);
+  resources: SyntaxResources = { themes: [], languages: [], errors: [] };
+  private queue: Promise<void> = Promise.resolve();
+  private editors = new Set<EditorView>();
+  private stopped = false;
+  constructor(private plugin: Plugin, private getSettings: () => CodeSyntaxSettings, private getLocale: () => Locale, private getDisplay: () => CodeDisplaySettings, private sessions: Map<string, boolean>, private refreshReading: () => void) { super(); }
+  async reload(): Promise<void> {
+    const task = this.queue.catch(() => {}).then(async () => {
+      if (this.stopped) return;
+      const settings = structuredClone(this.getSettings());
+      const resources = await loadSyntaxResources(settings, this.plugin.app.vault.adapter);
+      const next = new SyntaxEngine(document => this.runtime.attach(document));
+      try { await next.initialize({ settings, resources, dark: this.plugin.app.isDarkMode() }); }
+      catch (error) { next.dispose(); new Notice(String(error)); throw error; }
+      if (this.stopped) { next.dispose(); return; }
+      const previous = this.engine;
+      this.engine = next; this.resources = resources;
+      for (const view of this.editors) view.dispatch({ effects: refreshSyntax.of(next.revision) });
+      this.refreshReading();
+      previous?.dispose();
+      for (const issue of next.issues) new Notice(`${issue.path}: ${issue.message}`);
+    });
+    this.queue = task;
+    return task;
   }
+  async refresh(): Promise<void> {
+    for (const view of this.editors) view.dispatch({ effects: refreshSyntax.of(this.engine.revision) });
+    this.refreshReading();
+  }
+  async initialize(): Promise<void> {
+    await this.reload();
+    this.runtime.attach(document);
+    this.registerEvent(this.plugin.app.workspace.on('window-close', (_workspaceWindow, window) => { this.runtime.detach(window.document); this.engine.detach(window.document); }));
+    this.registerEvent(this.plugin.app.workspace.on('css-change', () => { void this.reload().catch(error => console.error('HB 主题更新失败', error)); }));
+    this.plugin.registerEditorExtension([
+      this.editorExtension, syntaxCodeWidgets(() => this.engine, this.getLocale, this.getDisplay, this.sessions),
+      EditorView.editorAttributes.of({ class: 'hb-syntax-editor' }),
+      ViewPlugin.define(view => { this.editors.add(view); return { destroy: () => { this.editors.delete(view); } }; }),
+    ]);
+  }
+  onunload(): void { this.stopped = true; this.editors.clear(); this.engine?.dispose(); }
 }

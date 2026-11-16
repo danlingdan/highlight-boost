@@ -3,14 +3,15 @@ import type { Language } from './i18n';
 import { normalizeCollections, type HighlightCollection } from './collections';
 import type { ExcerptTemplate } from './excerpts';
 import { normalizeCodeDisplay, type CodeDisplaySettings } from './code-options';
+import { normalizeCodeSyntax, type CodeSyntaxSettings } from './syntax/settings';
 
 export interface ConfiguredPreset extends Preset { customName?: true }
 
 export interface Settings {
-  schemaVersion: 2;
+  schemaVersion: 3;
   defaultPreset: string;
   presets: ConfiguredPreset[];
-  syntaxProvider: 'native' | 'shiki';
+  codeSyntax: CodeSyntaxSettings;
   language: Language;
   selectionToolbar: boolean;
   recentColors: Color[];
@@ -35,10 +36,10 @@ export function normalizeSettings(value: unknown): Settings {
     return preset;
   });
   return {
-    schemaVersion: 2,
+    schemaVersion: 3,
     defaultPreset: normalized.some(preset => preset.id === input.defaultPreset) ? input.defaultPreset as string : presets[0]!.id,
     presets: normalized,
-    syntaxProvider: input.syntaxProvider === 'shiki' ? 'shiki' : 'native',
+    codeSyntax: normalizeCodeSyntax(input.codeSyntax),
     language: input.language === 'zh' || input.language === 'en' ? input.language : 'auto',
     selectionToolbar: input.selectionToolbar !== false,
     recentColors: Array.isArray(input.recentColors) ? [...new Set(input.recentColors.filter((color): color is Color => colors.includes(color as Color)))].slice(0, 3) : [],

@@ -5,10 +5,18 @@ function unquote(value: string): string {
   return /^(["']).*\1$/s.test(value) ? value.slice(1, -1).replace(/\\([\\"'])/g, '$1') : value;
 }
 function split(value: string, commas = false): string[] {
-  const result: string[] = []; let start = 0, quote = '', depth = 0;
+  const result: string[] = []; let start = 0, quote = '', depth = 0, regex = false, characterClass = false;
   for (let i = 0; i <= value.length; i++) {
     const character = value[i] ?? ' ';
+    if (regex) {
+      if (character === '\\') i++;
+      else if (character === '[') characterClass = true;
+      else if (character === ']') characterClass = false;
+      else if (character === '/' && !characterClass) regex = false;
+      continue;
+    }
     if (quote) { if (character === '\\') i++; else if (character === quote) quote = ''; continue; }
+    if (character === '/' && (i === start || /^(?:hl|mark|ins|del)[:=]$/i.test(value.slice(start, i)))) { regex = true; continue; }
     if (character === '"' || character === "'") { quote = character; continue; }
     if (character === '[' || character === '{') depth++;
     if (character === ']' || character === '}') depth--;
@@ -18,6 +26,7 @@ function split(value: string, commas = false): string[] {
   }
   return result;
 }
+export function fenceTokens(meta: string): string[] { return split(meta); }
 export function fenceParameters(meta: string): FenceParameter[] {
   return split(meta).flatMap(raw => {
     if (raw.startsWith('{') && raw.endsWith('}')) {

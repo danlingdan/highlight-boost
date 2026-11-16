@@ -17,6 +17,7 @@
     "test:shiki": "pnpm build && pnpm prepare:vault && node scripts/prepare-shiki.mjs && node scripts/test-host.mjs --shiki",
     "test:shiki-live": "pnpm build && pnpm prepare:vault && node scripts/test-shiki-live.mjs",
     "test:embedded": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=embedded",
+    "test:unified": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=unified",
     "test:inline": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=inline && node scripts/test-host.mjs --mode=inline-restart",
     "test:prose": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=prose && node scripts/test-host.mjs --mode=prose-restart",
     "test:i18n": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=i18n && node scripts/test-host.mjs --mode=i18n-restart",
@@ -34,12 +35,14 @@
     "test:pagination": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=pagination",
     "bench:responsive": "pnpm build && node scripts/prepare-scale-vault.mjs --responsive && node scripts/test-host.mjs --mode=responsive",
     "test:lifecycle": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=lifecycle && node scripts/test-host.mjs --mode=lifecycle-shiki",
-    "test:multiwindow": "pnpm build && node scripts/prepare-vault.mjs --suite=multiwindow && node scripts/test-host.mjs --mode=multiwindow && node scripts/test-host.mjs --mode=multiwindow-restart",
+    "test:multiwindow": "pnpm build && node scripts/prepare-vault.mjs --suite=multiwindow && node scripts/test-host.mjs --mode=multiwindow && node scripts/test-host.mjs --mode=multiwindow-restart && node scripts/test-host.mjs --mode=multiwindow-actions && node scripts/test-host.mjs --mode=multiwindow-combined",
     "test:accessibility": "pnpm build && node scripts/prepare-vault.mjs --suite=accessibility && node scripts/test-host.mjs --mode=accessibility",
     "test:compatibility": "pnpm build && node scripts/prepare-compatibility.mjs && node scripts/test-compatibility.mjs",
     "test:frames": "pnpm build && node scripts/prepare-vault.mjs --suite=frames && node scripts/test-host.mjs --mode=frames",
     "package:candidate": "pnpm build && node scripts/package-candidate.mjs",
-    "test:install": "node scripts/test-host.mjs --mode=install && node scripts/test-host.mjs --mode=install-restart"
+    "test:install": "node scripts/test-host.mjs --mode=install && node scripts/test-host.mjs --mode=install-restart",
+    "test:fusion": "pnpm build && pnpm prepare:vault && node scripts/test-host.mjs --mode=fusion",
+    "test:journey": "pnpm build && node scripts/prepare-vault.mjs --suite=journey && node scripts/test-host.mjs --mode=journey"
   },
   "devDependencies": {
     "@codemirror/commands": "6.11.1",

@@ -1,15 +1,18 @@
 import { detachedEl } from './dom';
 import { ViewPlugin, type EditorView, type ViewUpdate } from '@codemirror/view';
-import { editorInfoField, type Editor } from 'obsidian';
-import { colors, type Color } from './domain';
+import { editorInfoField, MarkdownView, type Editor } from 'obsidian';
+import { colors, overlaps, type Color, type Preset } from './domain';
 import { composingState } from './composition';
 import { selectionContext } from './selection-context';
 import type HighlightBoost from './main';
+import { annotate, chooseCollection, chooseTarget } from './item-actions';
 import { editorDocument } from './editor-document';
 
 export function selectionToolbar(plugin: HighlightBoost) {
   return ViewPlugin.fromClass(class {
     private element?: HTMLElement;
+    private owner?: Document;
+    private palette = false;
     private mode: 'text' | 'lines' = 'text';
     private dismissed = false;
     private executing = false;
@@ -24,15 +27,31 @@ export function selectionToolbar(plugin: HighlightBoost) {
     private readonly outside = (event: Event) => {
       if (this.element && !event.composedPath().includes(this.element)) this.close(false);
     };
+    private readonly modalClose = (event: Event) => { if (event.target === this.view.contentDOM) { this.dismissed = false; this.manual = true; this.view.focus(); this.refresh(true); } };
     private readonly escape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && this.element) { event.preventDefault(); event.stopPropagation(); this.close(true); }
+      const target = event.target as Node | null;
+      const ownsFocus = target && (this.view.dom.contains(target) || this.element?.contains(target));
+      if (!event.defaultPrevented && event.key === 'Escape' && this.element && ownsFocus && !this.view.dom.ownerDocument.querySelector('.menu, .modal-container')) { event.preventDefault(); event.stopPropagation(); this.close(true); }
     };
     constructor(private view: EditorView) {
       plugin.toolbars.add(this);
-      view.dom.ownerDocument.addEventListener('pointerdown', this.outside, true);
-      view.dom.ownerDocument.addEventListener('keydown', this.escape, true);
+      this.bindDocument();
       view.scrollDOM.addEventListener('scroll', this.reposition);
-      view.dom.ownerDocument.defaultView?.addEventListener('resize', this.reposition);
+    }
+    private unbindDocument(): void {
+      this.owner?.removeEventListener('pointerdown', this.outside, true);
+      this.owner?.removeEventListener('keydown', this.escape, true);
+      this.owner?.removeEventListener('hb-modal-close', this.modalClose);
+      this.owner?.defaultView?.removeEventListener('resize', this.reposition);
+      this.owner = undefined;
+    }
+    private bindDocument(): void {
+      const document = this.view.dom.ownerDocument; if (this.owner === document) return;
+      this.unbindDocument(); this.owner = document;
+      document.addEventListener('pointerdown', this.outside, true);
+      document.addEventListener('keydown', this.escape, true);
+      document.addEventListener('hb-modal-close', this.modalClose);
+      document.defaultView?.addEventListener('resize', this.reposition);
     }
     update(update: ViewUpdate): void {
       if (update.selectionSet && !update.startState.selection.eq(update.state.selection)) { this.dismissed = false; if (!this.executing) this.mode = 'text'; }
@@ -50,6 +69,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
       const view = this.view;
       this.generation++;
       if (this.disposed) return;
+      this.bindDocument();
       if (view.state.readOnly || (!force && ((!plugin.settings.selectionToolbar && !this.manual) || this.dismissed || (!view.hasFocus && !this.element?.contains(view.dom.ownerDocument.activeElement)))) || view.composing || view.state.field(composingState, false) || (!force && !this.manual && view.state.selection.ranges.every(range => range.empty))) {
         this.cancelFrame(); this.element?.remove(); this.element = undefined; return;
       }
@@ -83,7 +103,12 @@ export function selectionToolbar(plugin: HighlightBoost) {
       const view = this.view, document = view.dom.ownerDocument;
       const context = selectionContext(view.state.doc.toString(), view.state.selection.ranges, editorDocument(view.state).parsed);
       const contextLabel = context.kind === 'code' ? plugin.t('blockSelection', { block: context.block!, from: context.from!, to: context.to! }) : plugin.t(context.kind === 'mixed' ? 'mixedSelection' : context.kind === 'inline-code' ? 'inlineCode' : 'prose');
-      const renderKey = JSON.stringify({ context, contextLabel, mode: this.mode, locale: plugin.locale, presets: plugin.settings.presets, recentColors: plugin.settings.recentColors });
+      const editor = view.state.field(editorInfoField, false)?.editor;
+      const text = view.state.doc.toString();
+      const path = view.state.field(editorInfoField, false)?.file?.path;
+      const selected = editorDocument(view.state).items.filter(item => item.status === 'resolved' && view.state.selection.ranges.some(range => range.empty ? item.from <= range.from && range.from <= item.to : overlaps(item, range)));
+      const overlapping = selected.some((item, index) => selected.slice(index + 1).some(other => overlaps(item, other)));
+      const renderKey = JSON.stringify({ selected, palette: this.palette, context, contextLabel, mode: this.mode, locale: plugin.locale, presets: plugin.settings.presets, recentColors: plugin.settings.recentColors });
       if (this.element?.isConnected && this.element.ownerDocument === document && renderKey === this.renderKey) {
         if (this.takeFocus) this.element.querySelector('button')?.focus();
         this.takeFocus = false; return;
@@ -97,7 +122,8 @@ export function selectionToolbar(plugin: HighlightBoost) {
       element.setAttribute('role', 'toolbar'); element.setAttribute('aria-label', plugin.t('selectionToolbar'));
       element.addEventListener('pointerdown', event => { if (event.button === 0) event.preventDefault(); });
       element.addEventListener('keydown', event => {
-        const buttons = [...element.querySelectorAll('button')];
+        if (event.isComposing || view.composing) return;
+        const buttons = [...element.querySelectorAll('button')].filter(button => !button.closest('[hidden]'));
         const index = buttons.indexOf(document.activeElement as HTMLButtonElement);
         let next: number | undefined;
         if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % buttons.length;
@@ -115,22 +141,53 @@ export function selectionToolbar(plugin: HighlightBoost) {
         button.addEventListener('click', () => {
           this.executing = true;
           try { run(); } finally { this.executing = false; }
-          view.focus(); this.refresh(true);
+          if (!this.dismissed) { if (id === 'palette' || id.startsWith('mode-')) button.focus(); else view.focus(); this.refresh(true); } else this.element?.remove();
         }); element.append(button); return button;
       };
       if (context.kind === 'code') for (const mode of ['text', 'lines'] as const) {
         const control = button(`mode-${mode}`, plugin.t(mode === 'text' ? 'textMode' : 'lineMode'), () => { this.mode = mode; });
         control.setAttribute('aria-pressed', String(this.mode === mode));
       }
-      const editor = view.state.field(editorInfoField, false)?.editor;
       if (editor) {
-        for (const preset of plugin.settings.presets) button(`preset-${preset.id}`, plugin.presetLabel(preset), () => plugin.apply(editor, plugin.presetForAction(preset.id), this.mode), preset.color);
+        const apply = (preset: Preset) => {
+          if (overlapping && view.state.selection.ranges.length === 1 && path) {
+            this.dismissed = true; this.manual = false;
+            chooseTarget(plugin, selected.map(item => ({ path, text, item })), hit => plugin.updateItem(editor, hit.item, preset), view.contentDOM);
+          } else plugin.apply(editor, preset, this.mode);
+        };
+        const recolor = (color: Color) => {
+          if (overlapping && view.state.selection.ranges.length === 1 && path) {
+            this.dismissed = true; this.manual = false;
+            chooseTarget(plugin, selected.map(item => ({ path, text, item })), hit => plugin.updateItem(editor, hit.item, { id: hit.item.semantic ?? `color:${color}`, name: hit.item.label, color }), view.contentDOM);
+          } else plugin.applyColor(editor, color, this.mode);
+        };
+        for (const preset of plugin.settings.presets) button(`preset-${preset.id}`, plugin.presetLabel(preset), () => apply(plugin.presetForAction(preset.id)), preset.color);
+        const paletteButton = button('palette', plugin.t('chooseColor'), () => { this.palette = !this.palette; }); paletteButton.setAttribute('aria-expanded', String(this.palette));
+        const paletteStart = element.childElementCount;
         if (plugin.settings.recentColors.length) {
           const recent = detachedEl(document, 'span'); recent.textContent = plugin.t('recentColors'); element.append(recent);
-          for (const color of plugin.settings.recentColors) button(`recent-${color}`, plugin.colorLabel(color), () => plugin.applyColor(editor, color, this.mode), color);
+          for (const color of plugin.settings.recentColors) button(`recent-${color}`, plugin.colorLabel(color), () => recolor(color), color);
         }
-        for (const color of colors) button(`color-${color}`, plugin.colorLabel(color), () => plugin.applyColor(editor, color, this.mode), color);
-        button('remove', plugin.t('remove'), () => plugin.apply(editor, null));
+        for (const color of colors) { const control = button(`color-${color}`, plugin.colorLabel(color), () => recolor(color), color); control.setAttribute('aria-pressed', String(selected.length > 0 && selected.every(item => item.color === color))); }
+        for (const child of [...element.children].slice(paletteStart)) (child as HTMLElement).hidden = !this.palette;
+        if (selected.length && path) {
+          const hits = selected.map(item => ({ path, text, item }));
+          const run = (trigger: HTMLElement, operation: 'note' | 'collection' | 'remove') => {
+            this.dismissed = true; this.manual = false;
+            chooseTarget(plugin, hits, hit => {
+              if (operation === 'note') {
+                const source = plugin.app.workspace.getLeavesOfType('markdown').map(leaf => leaf.view).find((source): source is MarkdownView => source instanceof MarkdownView && source.editor === editor);
+                annotate(plugin, hit, view.contentDOM, source);
+              }
+              else if (operation === 'collection') chooseCollection(plugin, hit, view.contentDOM);
+              else plugin.updateItem(editor, hit.item, null);
+            }, trigger);
+          };
+          const note = button('annotation', plugin.t('annotation'), () => run(note, 'note'));
+          const collection = button('collection', plugin.t('addCollection'), () => run(collection, 'collection'));
+          const remove = button('remove', plugin.t('removeItem'), () => run(remove, 'remove'));
+          for (const preset of plugin.settings.presets) element.querySelector(`[data-hb-action="preset-${preset.id}"]`)?.setAttribute('aria-pressed', String(selected.every(item => item.semantic === preset.id)));
+        } else button('remove', plugin.t('remove'), () => plugin.apply(editor, null));
       }
       const close = detachedEl(document, 'button'); close.textContent = '×'; close.setAttribute('aria-label', plugin.t('close'));
       close.dataset.hbAction = 'close'; close.addEventListener('click', () => this.close(true)); element.append(close);
@@ -142,10 +199,8 @@ export function selectionToolbar(plugin: HighlightBoost) {
     destroy(): void {
       this.cancelFrame();
       this.disposed = true; this.element?.remove();
-      this.view.dom.ownerDocument.removeEventListener('pointerdown', this.outside, true);
-      this.view.dom.ownerDocument.removeEventListener('keydown', this.escape, true);
+      this.unbindDocument();
       this.view.scrollDOM.removeEventListener('scroll', this.reposition);
-      this.view.dom.ownerDocument.defaultView?.removeEventListener('resize', this.reposition);
       plugin.toolbars.delete(this);
     }
   });

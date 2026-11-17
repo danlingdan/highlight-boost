@@ -13,6 +13,7 @@
   const path = '窗口批注融合.md', text = '# Window actions\n\nlocal text\n';
   const old = app.vault.getFileByPath(path), file = old ? (await app.vault.modify(old, text), old) : await app.vault.create(path, text);
   const duplicate = app.workspace.getLeaf('tab'); await duplicate.openFile(file);
+  await duplicate.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: window.__hbHostMode === 'multiwindow-actions-source' } });
   const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file);
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   const popout = app.workspace.moveLeafToPopout(leaf, { width: 900, height: 700 });

@@ -14,7 +14,7 @@ on:
       diagnostic_scenario:
         description: 桌面专项
         type: choice
-        options: [multiwindow, window-actions, journey]
+        options: [multiwindow, window-actions, window-actions-source, journey]
         default: multiwindow
       resize_trace:
         description: 记录窗口观察目标与调用栈
@@ -118,6 +118,10 @@ jobs:
         run: node scripts/test-host.mjs --mode=multiwindow-actions
       - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'window-actions'
         run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-actions'
+      - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'window-actions-source'
+        run: node scripts/test-host.mjs --mode=multiwindow-actions-source
+      - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'window-actions-source'
+        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-actions-source'
       - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'journey'
         run: pnpm test:journey
       - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'journey'

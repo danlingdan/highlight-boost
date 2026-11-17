@@ -140,7 +140,7 @@
   assert('live-preview-mode', view.getState().source === false);
 
   plugin.settings.defaultPreset = 'question';
-  await plugin.saveData(plugin.settings);
+  await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost');
   assert('plugin-unload', !app.plugins.plugins['highlight-boost']);
   await app.plugins.enablePlugin('highlight-boost');

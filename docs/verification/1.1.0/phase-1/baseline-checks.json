@@ -1,0 +1,50 @@
+{
+  "date": "2026-11-16",
+  "checks": [
+    {
+      "name": "全部规范语言和别名生成 token",
+      "passed": true
+    },
+    {
+      "name": "全部渲染样例完成",
+      "passed": true
+    },
+    {
+      "name": "普通代码与 Unicode 空白复制保留原文",
+      "passed": true
+    },
+    {
+      "name": "行强调三种类型",
+      "passed": true
+    },
+    {
+      "name": "标签保留",
+      "passed": true
+    },
+    {
+      "name": "文本与正则精确标记",
+      "passed": true
+    },
+    {
+      "name": "局部折叠与样式",
+      "passed": true
+    },
+    {
+      "name": "终端框架",
+      "passed": true
+    },
+    {
+      "name": "标题和行号",
+      "passed": true
+    }
+  ],
+  "knownDifferences": [
+    {
+      "id": "ansi-copy",
+      "current": "red",
+      "source": "\u001b[31mred\u001b[0m",
+      "target": "统一复制服务从源代码读取，保留原始 ANSI 转义。"
+    }
+  ],
+  "passed": true
+}

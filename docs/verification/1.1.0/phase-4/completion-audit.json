@@ -1,0 +1,192 @@
+{
+  "objective": "完成阶段4",
+  "complete": false,
+  "requirements": [
+    {
+      "requirement": "全新安装、两种旧配置统一升级，界面移除提供者选择",
+      "status": "passed-local",
+      "evidence": [
+        "host-install-results.json",
+        "host-install-restart-results.json",
+        "host-unified-results.json",
+        "host-settings-results.json"
+      ]
+    },
+    {
+      "requirement": "完整语言、别名、主题、自定义语法与代码能力矩阵",
+      "status": "passed-local",
+      "evidence": [
+        "host-languages-results.json",
+        "host-embedded-results.json",
+        "host-parameters-results.json",
+        "host-unified-results.json",
+        "host-frames-results.json"
+      ]
+    },
+    {
+      "requirement": "正文、行内、精确代码、整行与混合多选的标注、改色、语义和撤销重做",
+      "status": "passed-local",
+      "evidence": [
+        "host-results.json",
+        "host-advanced-results.json",
+        "host-selection-results.json",
+        "host-phase-d-results.json",
+        "host-fusion-results.json"
+      ]
+    },
+    {
+      "requirement": "标注、批注、集合、检索、定位与摘录连续流程",
+      "status": "passed-local",
+      "evidence": [
+        "host-journey-results.json",
+        "host-fusion-results.json",
+        "host-phase-e-results.json"
+      ]
+    },
+    {
+      "requirement": "重叠标注逐条处理、旧批注、集合引用和重新绑定",
+      "status": "passed-local",
+      "evidence": [
+        "host-advanced-results.json",
+        "host-notes-results.json",
+        "host-notes-restart-results.json",
+        "host-selection-results.json",
+        "host-phase-d-results.json",
+        "host-phase-e-results.json",
+        "host-fusion-results.json"
+      ]
+    },
+    {
+      "requirement": "完整查询筛选与摘录，分页不截断输出",
+      "status": "passed-local",
+      "evidence": [
+        "host-pagination-results.json",
+        "host-phase-e-results.json",
+        "host-fusion-results.json"
+      ]
+    },
+    {
+      "requirement": "迁移预览、映射、应用、重启恢复与成功文件查看",
+      "status": "passed-local",
+      "evidence": [
+        "host-migration-results.json",
+        "host-migration-restart-results.json"
+      ]
+    },
+    {
+      "requirement": "源码、实时预览与阅读内容、行号、参数、标注和复制一致，标题栏不重复",
+      "status": "passed-local",
+      "evidence": [
+        "host-unified-results.json",
+        "host-display-results.json",
+        "host-display-restart-results.json",
+        "host-frames-results.json"
+      ]
+    },
+    {
+      "requirement": "主题切换、未知和无语言、diff、长行、嵌套容器及专用处理器归属",
+      "status": "passed-local",
+      "evidence": [
+        "host-unified-results.json",
+        "host-embedded-results.json",
+        "host-parameters-results.json",
+        "host-frames-results.json"
+      ]
+    },
+    {
+      "requirement": "280、360、600 像素布局与深浅色实际截图",
+      "status": "passed-local",
+      "evidence": [
+        "host-fusion-results.json",
+        "host-layout-results.json"
+      ]
+    },
+    {
+      "requirement": "默认主题、Minimal、AnuPpuccin 和现有插件共存 84 单元",
+      "status": "passed-local",
+      "evidence": [
+        "compatibility/default.json",
+        "compatibility/minimal.json",
+        "compatibility/anuppuccin.json",
+        "compatibility/code-styler.json",
+        "compatibility/customizer.json",
+        "compatibility/external-shiki.json",
+        "compatibility/extractor.json"
+      ]
+    },
+    {
+      "requirement": "完整键盘、Escape 返回焦点、中文组合输入及可访问名称",
+      "status": "passed-local",
+      "evidence": [
+        "host-journey-results.json",
+        "host-accessibility-results.json"
+      ]
+    },
+    {
+      "requirement": "多窗口设置、主题和语言同步；来源、查询、滚动及焦点独立",
+      "status": "passed-local",
+      "evidence": [
+        "host-multiwindow-results.json",
+        "host-multiwindow-restart-results.json",
+        "host-multiwindow-actions-results.json",
+        "host-multiwindow-combined-results.json"
+      ]
+    },
+    {
+      "requirement": "PDF 颜色、代码标注、完整批注、无元数据和界面按钮",
+      "status": "passed-local",
+      "evidence": [
+        "host-accessibility-results.json"
+      ]
+    },
+    {
+      "requirement": "实际旧配置升级及重启，升级不改写笔记",
+      "status": "passed-local",
+      "evidence": [
+        "host-unified-results.json",
+        "host-restart-results.json",
+        "host-settings-results.json"
+      ]
+    },
+    {
+      "requirement": "pnpm check 与统一场景宿主回归",
+      "status": "passed-local",
+      "evidence": [
+        "host-results.json",
+        "host-unified-results.json",
+        "host-fusion-results.json"
+      ]
+    },
+    {
+      "requirement": "隔离运行包、固定版本、安装包摘要与本地路径约定",
+      "status": "passed-local",
+      "evidence": [
+        "host-install-results.json",
+        "host-install-restart-results.json"
+      ]
+    },
+    {
+      "requirement": "中文逻辑提交，源码、运行包与验证摘要对应",
+      "status": "passed-local",
+      "evidence": [
+        "host-install-results.json"
+      ]
+    },
+    {
+      "requirement": "Windows、macOS、Linux 新一轮实际宿主 CI",
+      "status": "pending-approval",
+      "evidence": [
+        "../../../../.github/workflows/host.yml"
+      ],
+      "reason": "自动审批拒绝远程推送，等待用户授权目标仓库与验证分支。"
+    }
+  ],
+  "engineering": "engineering-check.log",
+  "capabilities": "code-capability-audit.json",
+  "sourceCommit": "ca4a65024123beabd4b7d4c20c7f9295d476735f",
+  "remaining": [
+    "推送 codex/1.1.0-phase4-validation 至 github.com/danlingdan/highlight-boost",
+    "运行并归档 Windows、macOS、Linux 实际宿主 CI"
+  ],
+  "optionalEnhancementsAdded": false
+}

@@ -1,0 +1,4118 @@
+{
+  "sourceVersion": "1.0.1",
+  "sourceRevision": "ac8dd6e134385c4e21aa3ba84ba08500370255f7",
+  "sourceFiles": [
+    {
+      "file": "src/syntax/engine.ts",
+      "sha256": "87c58aa227f46a91b4abde48e5d12a30ef13863e95e24794a70f0067f5d5815a"
+    },
+    {
+      "file": "src/syntax/service.ts",
+      "sha256": "bb28a6207be59182f455a88153df9e83fbe0d8452b3174db06cfdeb6c0d338e1"
+    },
+    {
+      "file": "src/syntax/editor.ts",
+      "sha256": "29a509a924cc32a058cf0f8d54da5c9bab323503378d509ae397a78daa122f2a"
+    },
+    {
+      "file": "src/syntax/upstream/Config.ts",
+      "sha256": "e507867450f8b5f4d4cd2efb23593d6930dc4f3c9993ee11d0aa94fa14f3fa0f"
+    },
+    {
+      "file": "src/code-display.ts",
+      "sha256": "a995fe1e750ed61abd76d2daa8390aa5aa908b0dc20ce6ac1ecb16aac028f860"
+    },
+    {
+      "file": "src/code-options.ts",
+      "sha256": "fc7b5df3782b3e2439ea670c809a6fad361ea4a4fa855dd8c21f99baa6a9354a"
+    },
+    {
+      "file": "src/settings.ts",
+      "sha256": "3a120544ebae2bf67433f780f50faa31b8d7bb1933c2e4f4aa419797a5a12959"
+    }
+  ],
+  "languages": [
+    {
+      "id": "abap",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "abap",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "actionscript-3",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "actionscript-3",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "ada",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "ada",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "angular-html",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "angular-html",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "angular-ts",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "angular-ts",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "apache",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "apache",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "apex",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "apex",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "apl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "apl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "applescript",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "applescript",
+          "supported": true,
+          "registered": true,
+          "tokens": 6
+        }
+      ]
+    },
+    {
+      "id": "ara",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "ara",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "asciidoc",
+      "aliases": [
+        "adoc"
+      ],
+      "entries": [
+        {
+          "name": "asciidoc",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "adoc",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "asm",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "asm",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "astro",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "astro",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "awk",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "awk",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "ballerina",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "ballerina",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "bat",
+      "aliases": [
+        "batch"
+      ],
+      "entries": [
+        {
+          "name": "bat",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        },
+        {
+          "name": "batch",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "beancount",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "beancount",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "berry",
+      "aliases": [
+        "be"
+      ],
+      "entries": [
+        {
+          "name": "berry",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "be",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "bibtex",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "bibtex",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "bicep",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "bicep",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "bird2",
+      "aliases": [
+        "bird"
+      ],
+      "entries": [
+        {
+          "name": "bird2",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "bird",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "blade",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "blade",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "bsl",
+      "aliases": [
+        "1c"
+      ],
+      "entries": [
+        {
+          "name": "bsl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "1c",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "c",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "c",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "c3",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "c3",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "cadence",
+      "aliases": [
+        "cdc"
+      ],
+      "entries": [
+        {
+          "name": "cadence",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "cdc",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "cairo",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "cairo",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "clarity",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "clarity",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "clojure",
+      "aliases": [
+        "clj"
+      ],
+      "entries": [
+        {
+          "name": "clojure",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        },
+        {
+          "name": "clj",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "cmake",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "cmake",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "cobol",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "cobol",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "codeowners",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "codeowners",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "codeql",
+      "aliases": [
+        "ql"
+      ],
+      "entries": [
+        {
+          "name": "codeql",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "ql",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "coffee",
+      "aliases": [
+        "coffeescript"
+      ],
+      "entries": [
+        {
+          "name": "coffee",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "coffeescript",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "common-lisp",
+      "aliases": [
+        "lisp"
+      ],
+      "entries": [
+        {
+          "name": "common-lisp",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "lisp",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "coq",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "coq",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "cpp",
+      "aliases": [
+        "c++"
+      ],
+      "entries": [
+        {
+          "name": "cpp",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "c++",
+          "supported": true,
+          "registered": false,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "crystal",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "crystal",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "csharp",
+      "aliases": [
+        "c#",
+        "cs"
+      ],
+      "entries": [
+        {
+          "name": "csharp",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "c#",
+          "supported": true,
+          "registered": false,
+          "tokens": 4
+        },
+        {
+          "name": "cs",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "css",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "css",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "csv",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "csv",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "cue",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "cue",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "cypher",
+      "aliases": [
+        "cql"
+      ],
+      "entries": [
+        {
+          "name": "cypher",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "cql",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "d",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "d",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "dart",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "dart",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "dax",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "dax",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "desktop",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "desktop",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "diff",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "diff",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "docker",
+      "aliases": [
+        "dockerfile"
+      ],
+      "entries": [
+        {
+          "name": "docker",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        },
+        {
+          "name": "dockerfile",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "dotenv",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "dotenv",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "dream-maker",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "dream-maker",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "edge",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "edge",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "elixir",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "elixir",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "elm",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "elm",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "emacs-lisp",
+      "aliases": [
+        "elisp"
+      ],
+      "entries": [
+        {
+          "name": "emacs-lisp",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "elisp",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "erb",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "erb",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "erlang",
+      "aliases": [
+        "erl"
+      ],
+      "entries": [
+        {
+          "name": "erlang",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "erl",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "fennel",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "fennel",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "fish",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "fish",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "fluent",
+      "aliases": [
+        "ftl"
+      ],
+      "entries": [
+        {
+          "name": "fluent",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        },
+        {
+          "name": "ftl",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "fortran-fixed-form",
+      "aliases": [
+        "f",
+        "for",
+        "f77"
+      ],
+      "entries": [
+        {
+          "name": "fortran-fixed-form",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "f",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "for",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "f77",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "fortran-free-form",
+      "aliases": [
+        "f90",
+        "f95",
+        "f03",
+        "f08",
+        "f18"
+      ],
+      "entries": [
+        {
+          "name": "fortran-free-form",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "f90",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "f95",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "f03",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "f08",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "f18",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "fsharp",
+      "aliases": [
+        "f#",
+        "fs"
+      ],
+      "entries": [
+        {
+          "name": "fsharp",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "f#",
+          "supported": true,
+          "registered": false,
+          "tokens": 4
+        },
+        {
+          "name": "fs",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "gdresource",
+      "aliases": [
+        "tscn",
+        "tres"
+      ],
+      "entries": [
+        {
+          "name": "gdresource",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "tscn",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "tres",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "gdscript",
+      "aliases": [
+        "gd"
+      ],
+      "entries": [
+        {
+          "name": "gdscript",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "gd",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "gdshader",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "gdshader",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "genie",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "genie",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "gherkin",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "gherkin",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "git-commit",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "git-commit",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "git-rebase",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "git-rebase",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "gleam",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "gleam",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "glimmer-js",
+      "aliases": [
+        "gjs"
+      ],
+      "entries": [
+        {
+          "name": "glimmer-js",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "gjs",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "glimmer-ts",
+      "aliases": [
+        "gts"
+      ],
+      "entries": [
+        {
+          "name": "glimmer-ts",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "gts",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "glsl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "glsl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "gn",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "gn",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "gnuplot",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "gnuplot",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "go",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "go",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "graphql",
+      "aliases": [
+        "gql"
+      ],
+      "entries": [
+        {
+          "name": "graphql",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "gql",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "groovy",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "groovy",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "hack",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "hack",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "haml",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "haml",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "handlebars",
+      "aliases": [
+        "hbs"
+      ],
+      "entries": [
+        {
+          "name": "handlebars",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "hbs",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "haskell",
+      "aliases": [
+        "hs"
+      ],
+      "entries": [
+        {
+          "name": "haskell",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "hs",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "haxe",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "haxe",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "hcl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "hcl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "hjson",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "hjson",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "hlsl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "hlsl",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "html",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "html",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "html-derivative",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "html-derivative",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "http",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "http",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "hurl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "hurl",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "hxml",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "hxml",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "hy",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "hy",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "imba",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "imba",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "ini",
+      "aliases": [
+        "properties"
+      ],
+      "entries": [
+        {
+          "name": "ini",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "properties",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "java",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "java",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "javascript",
+      "aliases": [
+        "js",
+        "cjs",
+        "mjs"
+      ],
+      "entries": [
+        {
+          "name": "javascript",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "js",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "cjs",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "mjs",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "jinja",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "jinja",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "jison",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "jison",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "json",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "json",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "json5",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "json5",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "jsonc",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "jsonc",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "jsonl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "jsonl",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "jsonnet",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "jsonnet",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "jssm",
+      "aliases": [
+        "fsl"
+      ],
+      "entries": [
+        {
+          "name": "jssm",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "fsl",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "jsx",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "jsx",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "julia",
+      "aliases": [
+        "jl"
+      ],
+      "entries": [
+        {
+          "name": "julia",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "jl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "just",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "just",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "kdl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "kdl",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "kotlin",
+      "aliases": [
+        "kt",
+        "kts"
+      ],
+      "entries": [
+        {
+          "name": "kotlin",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "kt",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "kts",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "kusto",
+      "aliases": [
+        "kql"
+      ],
+      "entries": [
+        {
+          "name": "kusto",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "kql",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "latex",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "latex",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "lean",
+      "aliases": [
+        "lean4"
+      ],
+      "entries": [
+        {
+          "name": "lean",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        },
+        {
+          "name": "lean4",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "less",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "less",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "liquid",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "liquid",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "llvm",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "llvm",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "log",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "log",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "logo",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "logo",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "lua",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "lua",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "luau",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "luau",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "make",
+      "aliases": [
+        "makefile"
+      ],
+      "entries": [
+        {
+          "name": "make",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "makefile",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "markdown",
+      "aliases": [
+        "md"
+      ],
+      "entries": [
+        {
+          "name": "markdown",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "md",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "marko",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "marko",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "matlab",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "matlab",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "mdc",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "mdc",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "mdx",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "mdx",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "mermaid",
+      "aliases": [
+        "mmd"
+      ],
+      "entries": [
+        {
+          "name": "mermaid",
+          "supported": true,
+          "registered": false,
+          "tokens": 1
+        },
+        {
+          "name": "mmd",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "mipsasm",
+      "aliases": [
+        "mips"
+      ],
+      "entries": [
+        {
+          "name": "mipsasm",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        },
+        {
+          "name": "mips",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "mojo",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "mojo",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "moonbit",
+      "aliases": [
+        "mbt",
+        "mbti"
+      ],
+      "entries": [
+        {
+          "name": "moonbit",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "mbt",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "mbti",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "move",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "move",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "narrat",
+      "aliases": [
+        "nar"
+      ],
+      "entries": [
+        {
+          "name": "narrat",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "nar",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "nextflow",
+      "aliases": [
+        "nf"
+      ],
+      "entries": [
+        {
+          "name": "nextflow",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "nf",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "nextflow-groovy",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "nextflow-groovy",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "nginx",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "nginx",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "nim",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "nim",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "nix",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "nix",
+          "supported": true,
+          "registered": true,
+          "tokens": 7
+        }
+      ]
+    },
+    {
+      "id": "nushell",
+      "aliases": [
+        "nu"
+      ],
+      "entries": [
+        {
+          "name": "nushell",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "nu",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "objective-c",
+      "aliases": [
+        "objc"
+      ],
+      "entries": [
+        {
+          "name": "objective-c",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "objc",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "objective-cpp",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "objective-cpp",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "ocaml",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "ocaml",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "odin",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "odin",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "openscad",
+      "aliases": [
+        "scad"
+      ],
+      "entries": [
+        {
+          "name": "openscad",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "scad",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "pascal",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "pascal",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "perl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "perl",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "php",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "php",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "pkl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "pkl",
+          "supported": true,
+          "registered": true,
+          "tokens": 6
+        }
+      ]
+    },
+    {
+      "id": "plsql",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "plsql",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "po",
+      "aliases": [
+        "pot",
+        "potx"
+      ],
+      "entries": [
+        {
+          "name": "po",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "pot",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "potx",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "polar",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "polar",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "postcss",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "postcss",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "powerquery",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "powerquery",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "powershell",
+      "aliases": [
+        "ps",
+        "ps1"
+      ],
+      "entries": [
+        {
+          "name": "powershell",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "ps",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "ps1",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "prisma",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "prisma",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "prolog",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "prolog",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "proto",
+      "aliases": [
+        "protobuf"
+      ],
+      "entries": [
+        {
+          "name": "proto",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "protobuf",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "pug",
+      "aliases": [
+        "jade"
+      ],
+      "entries": [
+        {
+          "name": "pug",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "jade",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "puppet",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "puppet",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "purescript",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "purescript",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "python",
+      "aliases": [
+        "py"
+      ],
+      "entries": [
+        {
+          "name": "python",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "py",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "qml",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "qml",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "qmldir",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "qmldir",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "qss",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "qss",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "r",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "r",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "racket",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "racket",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "raku",
+      "aliases": [
+        "perl6"
+      ],
+      "entries": [
+        {
+          "name": "raku",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        },
+        {
+          "name": "perl6",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "razor",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "razor",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "reg",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "reg",
+          "supported": true,
+          "registered": true,
+          "tokens": 7
+        }
+      ]
+    },
+    {
+      "id": "regexp",
+      "aliases": [
+        "regex"
+      ],
+      "entries": [
+        {
+          "name": "regexp",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "regex",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "rel",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "rel",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "riscv",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "riscv",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "ron",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "ron",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "rosmsg",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "rosmsg",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "rst",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "rst",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "ruby",
+      "aliases": [
+        "rb"
+      ],
+      "entries": [
+        {
+          "name": "ruby",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "rb",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "rust",
+      "aliases": [
+        "rs"
+      ],
+      "entries": [
+        {
+          "name": "rust",
+          "supported": true,
+          "registered": true,
+          "tokens": 6
+        },
+        {
+          "name": "rs",
+          "supported": true,
+          "registered": true,
+          "tokens": 6
+        }
+      ]
+    },
+    {
+      "id": "sas",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "sas",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "sass",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "sass",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "scala",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "scala",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "scheme",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "scheme",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "scss",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "scss",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "sdbl",
+      "aliases": [
+        "1c-query"
+      ],
+      "entries": [
+        {
+          "name": "sdbl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "1c-query",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "shaderlab",
+      "aliases": [
+        "shader"
+      ],
+      "entries": [
+        {
+          "name": "shaderlab",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        },
+        {
+          "name": "shader",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "shellscript",
+      "aliases": [
+        "bash",
+        "sh",
+        "shell",
+        "zsh"
+      ],
+      "entries": [
+        {
+          "name": "shellscript",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "bash",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "sh",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "shell",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "zsh",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "shellsession",
+      "aliases": [
+        "console"
+      ],
+      "entries": [
+        {
+          "name": "shellsession",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "console",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "smalltalk",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "smalltalk",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "solidity",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "solidity",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "soy",
+      "aliases": [
+        "closure-templates"
+      ],
+      "entries": [
+        {
+          "name": "soy",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "closure-templates",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "sparql",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "sparql",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "splunk",
+      "aliases": [
+        "spl"
+      ],
+      "entries": [
+        {
+          "name": "splunk",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "spl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "sql",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "sql",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "ssh-config",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "ssh-config",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "stata",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "stata",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "stylus",
+      "aliases": [
+        "styl"
+      ],
+      "entries": [
+        {
+          "name": "stylus",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "styl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "surrealql",
+      "aliases": [
+        "surql"
+      ],
+      "entries": [
+        {
+          "name": "surrealql",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        },
+        {
+          "name": "surql",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "svelte",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "svelte",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "swift",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "swift",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "system-verilog",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "system-verilog",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "systemd",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "systemd",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "talonscript",
+      "aliases": [
+        "talon"
+      ],
+      "entries": [
+        {
+          "name": "talonscript",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "talon",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "tasl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "tasl",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "tcl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "tcl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "templ",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "templ",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "terraform",
+      "aliases": [
+        "tf",
+        "tfvars"
+      ],
+      "entries": [
+        {
+          "name": "terraform",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "tf",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "tfvars",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "tex",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "tex",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "toml",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "toml",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "ts-tags",
+      "aliases": [
+        "lit"
+      ],
+      "entries": [
+        {
+          "name": "ts-tags",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "lit",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "tsv",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "tsv",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "tsx",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "tsx",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "turtle",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "turtle",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "twig",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "twig",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "typescript",
+      "aliases": [
+        "ts",
+        "cts",
+        "mts"
+      ],
+      "entries": [
+        {
+          "name": "typescript",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "ts",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "cts",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "mts",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "typespec",
+      "aliases": [
+        "tsp"
+      ],
+      "entries": [
+        {
+          "name": "typespec",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        },
+        {
+          "name": "tsp",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "typst",
+      "aliases": [
+        "typ"
+      ],
+      "entries": [
+        {
+          "name": "typst",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "typ",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "v",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "v",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "vala",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "vala",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "vb",
+      "aliases": [
+        "cmd"
+      ],
+      "entries": [
+        {
+          "name": "vb",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "cmd",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "verilog",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "verilog",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "vhdl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "vhdl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "viml",
+      "aliases": [
+        "vim",
+        "vimscript"
+      ],
+      "entries": [
+        {
+          "name": "viml",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "vim",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "vimscript",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "vue",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "vue",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "vue-html",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "vue-html",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "vue-vine",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "vue-vine",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "vyper",
+      "aliases": [
+        "vy"
+      ],
+      "entries": [
+        {
+          "name": "vyper",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "vy",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "wasm",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "wasm",
+          "supported": true,
+          "registered": true,
+          "tokens": 5
+        }
+      ]
+    },
+    {
+      "id": "wenyan",
+      "aliases": [
+        "文言"
+      ],
+      "entries": [
+        {
+          "name": "wenyan",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "文言",
+          "supported": true,
+          "registered": false,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "wgsl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "wgsl",
+          "supported": true,
+          "registered": true,
+          "tokens": 3
+        }
+      ]
+    },
+    {
+      "id": "wikitext",
+      "aliases": [
+        "mediawiki",
+        "wiki"
+      ],
+      "entries": [
+        {
+          "name": "wikitext",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "mediawiki",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "wiki",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "wit",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "wit",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "wolfram",
+      "aliases": [
+        "wl"
+      ],
+      "entries": [
+        {
+          "name": "wolfram",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        },
+        {
+          "name": "wl",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    },
+    {
+      "id": "xml",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "xml",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "xsl",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "xsl",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "yaml",
+      "aliases": [
+        "yml"
+      ],
+      "entries": [
+        {
+          "name": "yaml",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        },
+        {
+          "name": "yml",
+          "supported": true,
+          "registered": true,
+          "tokens": 1
+        }
+      ]
+    },
+    {
+      "id": "zenscript",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "zenscript",
+          "supported": true,
+          "registered": true,
+          "tokens": 2
+        }
+      ]
+    },
+    {
+      "id": "zig",
+      "aliases": [],
+      "entries": [
+        {
+          "name": "zig",
+          "supported": true,
+          "registered": true,
+          "tokens": 4
+        }
+      ]
+    }
+  ],
+  "themes": [
+    {
+      "id": "andromeeda",
+      "type": "dark",
+      "displayName": "Andromeeda"
+    },
+    {
+      "id": "aurora-x",
+      "type": "dark",
+      "displayName": "Aurora X"
+    },
+    {
+      "id": "ayu-dark",
+      "type": "dark",
+      "displayName": "Ayu Dark"
+    },
+    {
+      "id": "ayu-light",
+      "type": "light",
+      "displayName": "Ayu Light"
+    },
+    {
+      "id": "ayu-mirage",
+      "type": "dark",
+      "displayName": "Ayu Mirage"
+    },
+    {
+      "id": "catppuccin-frappe",
+      "type": "dark",
+      "displayName": "Catppuccin Frappé"
+    },
+    {
+      "id": "catppuccin-latte",
+      "type": "light",
+      "displayName": "Catppuccin Latte"
+    },
+    {
+      "id": "catppuccin-macchiato",
+      "type": "dark",
+      "displayName": "Catppuccin Macchiato"
+    },
+    {
+      "id": "catppuccin-mocha",
+      "type": "dark",
+      "displayName": "Catppuccin Mocha"
+    },
+    {
+      "id": "dark-plus",
+      "type": "dark",
+      "displayName": "Dark Plus"
+    },
+    {
+      "id": "dracula",
+      "type": "dark",
+      "displayName": "Dracula Theme"
+    },
+    {
+      "id": "dracula-soft",
+      "type": "dark",
+      "displayName": "Dracula Theme Soft"
+    },
+    {
+      "id": "everforest-dark",
+      "type": "dark",
+      "displayName": "Everforest Dark"
+    },
+    {
+      "id": "everforest-light",
+      "type": "light",
+      "displayName": "Everforest Light"
+    },
+    {
+      "id": "github-dark",
+      "type": "dark",
+      "displayName": "GitHub Dark"
+    },
+    {
+      "id": "github-dark-default",
+      "type": "dark",
+      "displayName": "GitHub Dark Default"
+    },
+    {
+      "id": "github-dark-dimmed",
+      "type": "dark",
+      "displayName": "GitHub Dark Dimmed"
+    },
+    {
+      "id": "github-dark-high-contrast",
+      "type": "dark",
+      "displayName": "GitHub Dark High Contrast"
+    },
+    {
+      "id": "github-light",
+      "type": "light",
+      "displayName": "GitHub Light"
+    },
+    {
+      "id": "github-light-default",
+      "type": "light",
+      "displayName": "GitHub Light Default"
+    },
+    {
+      "id": "github-light-high-contrast",
+      "type": "light",
+      "displayName": "GitHub Light High Contrast"
+    },
+    {
+      "id": "gruvbox-dark-hard",
+      "type": "dark",
+      "displayName": "Gruvbox Dark Hard"
+    },
+    {
+      "id": "gruvbox-dark-medium",
+      "type": "dark",
+      "displayName": "Gruvbox Dark Medium"
+    },
+    {
+      "id": "gruvbox-dark-soft",
+      "type": "dark",
+      "displayName": "Gruvbox Dark Soft"
+    },
+    {
+      "id": "gruvbox-light-hard",
+      "type": "light",
+      "displayName": "Gruvbox Light Hard"
+    },
+    {
+      "id": "gruvbox-light-medium",
+      "type": "light",
+      "displayName": "Gruvbox Light Medium"
+    },
+    {
+      "id": "gruvbox-light-soft",
+      "type": "light",
+      "displayName": "Gruvbox Light Soft"
+    },
+    {
+      "id": "horizon",
+      "type": "dark",
+      "displayName": "Horizon"
+    },
+    {
+      "id": "horizon-bright",
+      "type": "dark",
+      "displayName": "Horizon Bright"
+    },
+    {
+      "id": "houston",
+      "type": "dark",
+      "displayName": "Houston"
+    },
+    {
+      "id": "kanagawa-dragon",
+      "type": "dark",
+      "displayName": "Kanagawa Dragon"
+    },
+    {
+      "id": "kanagawa-lotus",
+      "type": "light",
+      "displayName": "Kanagawa Lotus"
+    },
+    {
+      "id": "kanagawa-wave",
+      "type": "dark",
+      "displayName": "Kanagawa Wave"
+    },
+    {
+      "id": "laserwave",
+      "type": "dark",
+      "displayName": "LaserWave"
+    },
+    {
+      "id": "light-plus",
+      "type": "light",
+      "displayName": "Light Plus"
+    },
+    {
+      "id": "material-theme",
+      "type": "dark",
+      "displayName": "Material Theme"
+    },
+    {
+      "id": "material-theme-darker",
+      "type": "dark",
+      "displayName": "Material Theme Darker"
+    },
+    {
+      "id": "material-theme-lighter",
+      "type": "light",
+      "displayName": "Material Theme Lighter"
+    },
+    {
+      "id": "material-theme-ocean",
+      "type": "dark",
+      "displayName": "Material Theme Ocean"
+    },
+    {
+      "id": "material-theme-palenight",
+      "type": "dark",
+      "displayName": "Material Theme Palenight"
+    },
+    {
+      "id": "min-dark",
+      "type": "dark",
+      "displayName": "Min Dark"
+    },
+    {
+      "id": "min-light",
+      "type": "light",
+      "displayName": "Min Light"
+    },
+    {
+      "id": "monokai",
+      "type": "dark",
+      "displayName": "Monokai"
+    },
+    {
+      "id": "night-owl",
+      "type": "dark",
+      "displayName": "Night Owl"
+    },
+    {
+      "id": "night-owl-light",
+      "type": "light",
+      "displayName": "Night Owl Light"
+    },
+    {
+      "id": "nord",
+      "type": "dark",
+      "displayName": "Nord"
+    },
+    {
+      "id": "one-dark-pro",
+      "type": "dark",
+      "displayName": "One Dark Pro"
+    },
+    {
+      "id": "one-light",
+      "type": "light",
+      "displayName": "One Light"
+    },
+    {
+      "id": "plastic",
+      "type": "dark",
+      "displayName": "Plastic"
+    },
+    {
+      "id": "poimandres",
+      "type": "dark",
+      "displayName": "Poimandres"
+    },
+    {
+      "id": "red",
+      "type": "dark",
+      "displayName": "Red"
+    },
+    {
+      "id": "rose-pine",
+      "type": "dark",
+      "displayName": "Rosé Pine"
+    },
+    {
+      "id": "rose-pine-dawn",
+      "type": "light",
+      "displayName": "Rosé Pine Dawn"
+    },
+    {
+      "id": "rose-pine-moon",
+      "type": "dark",
+      "displayName": "Rosé Pine Moon"
+    },
+    {
+      "id": "slack-dark",
+      "type": "dark",
+      "displayName": "Slack Dark"
+    },
+    {
+      "id": "slack-ochin",
+      "type": "light",
+      "displayName": "Slack Ochin"
+    },
+    {
+      "id": "snazzy-light",
+      "type": "light",
+      "displayName": "Snazzy Light"
+    },
+    {
+      "id": "solarized-dark",
+      "type": "dark",
+      "displayName": "Solarized Dark"
+    },
+    {
+      "id": "solarized-light",
+      "type": "light",
+      "displayName": "Solarized Light"
+    },
+    {
+      "id": "synthwave-84",
+      "type": "dark",
+      "displayName": "Synthwave '84"
+    },
+    {
+      "id": "tokyo-night",
+      "type": "dark",
+      "displayName": "Tokyo Night"
+    },
+    {
+      "id": "vesper",
+      "type": "dark",
+      "displayName": "Vesper"
+    },
+    {
+      "id": "vitesse-black",
+      "type": "dark",
+      "displayName": "Vitesse Black"
+    },
+    {
+      "id": "vitesse-dark",
+      "type": "dark",
+      "displayName": "Vitesse Dark"
+    },
+    {
+      "id": "vitesse-light",
+      "type": "light",
+      "displayName": "Vitesse Light"
+    }
+  ],
+  "probes": [
+    {
+      "id": "plain",
+      "language": "js",
+      "meta": "",
+      "code": "const value = 1;",
+      "renderedText": "const value = 1;",
+      "copy": "const value = 1;",
+      "lines": 1,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-keyword)\">const</span><span style=\"--0:var(--shiki-code-normal)\"> value </span><span style=\"--0:var(--shiki-code-keyword)\">=</span><span style=\"--0:var(--shiki-code-normal)\"> </span><span style=\"--0:var(--shiki-code-value)\">1</span><span style=\"--0:var(--shiki-code-punctuation)\">;</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"const value = 1;\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "title-number-wrap",
+      "language": "js",
+      "meta": "title=\"demo.js\" showLineNumbers startLineNumber=20 wrap",
+      "code": "const value = 1;",
+      "renderedText": "20const value = 1;",
+      "copy": "const value = 1;",
+      "lines": 1,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame has-title\"><figcaption class=\"header\"><span class=\"title\">demo.js</span></figcaption><pre data-language=\"js\" class=\"wrap\" style=\"--ecMaxLine:16ch\"><code><div class=\"ec-line\"><div class=\"gutter\"><div class=\"ln\" aria-hidden=\"true\">20</div></div><div class=\"code\"><span style=\"--0:var(--shiki-code-keyword)\">const</span><span style=\"--0:var(--shiki-code-normal)\"> value </span><span style=\"--0:var(--shiki-code-keyword)\">=</span><span style=\"--0:var(--shiki-code-normal)\"> </span><span style=\"--0:var(--shiki-code-value)\">1</span><span style=\"--0:var(--shiki-code-punctuation)\">;</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"const value = 1;\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "line-markers",
+      "language": "js",
+      "meta": "mark={1} ins={2} del={3}",
+      "code": "first();\nsecond();\nthird();",
+      "renderedText": "first();second();third();",
+      "copy": "first();\nsecond();\nthird();",
+      "lines": 3,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line highlight mark\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">first</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-line highlight ins\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">second</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-line highlight del\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">third</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"first();second();third();\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "label-marker",
+      "language": "js",
+      "meta": "mark={\"核对\":2}",
+      "code": "first();\nsecond();",
+      "renderedText": "first();second();",
+      "copy": "first();\nsecond();",
+      "lines": 2,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">first</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-line highlight mark tm-label\" style=\"--tmLabel:'核对'\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">second</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"first();second();\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "text-marker",
+      "language": "js",
+      "meta": "\"value\"",
+      "code": "const value = 1;",
+      "renderedText": "const value = 1;",
+      "copy": "const value = 1;",
+      "lines": 1,
+      "inlineMarkers": 1,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-keyword)\">const</span><span style=\"--0:var(--shiki-code-normal)\"> </span><mark><span style=\"--0:var(--shiki-code-normal)\">value</span></mark><span style=\"--0:var(--shiki-code-normal)\"> </span><span style=\"--0:var(--shiki-code-keyword)\">=</span><span style=\"--0:var(--shiki-code-normal)\"> </span><span style=\"--0:var(--shiki-code-value)\">1</span><span style=\"--0:var(--shiki-code-punctuation)\">;</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"const value = 1;\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "regex-marker",
+      "language": "js",
+      "meta": "/val\\w+/",
+      "code": "const value = 1;",
+      "renderedText": "const value = 1;",
+      "copy": "const value = 1;",
+      "lines": 1,
+      "inlineMarkers": 1,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-keyword)\">const</span><span style=\"--0:var(--shiki-code-normal)\"> </span><mark><span style=\"--0:var(--shiki-code-normal)\">value</span></mark><span style=\"--0:var(--shiki-code-normal)\"> </span><span style=\"--0:var(--shiki-code-keyword)\">=</span><span style=\"--0:var(--shiki-code-normal)\"> </span><span style=\"--0:var(--shiki-code-value)\">1</span><span style=\"--0:var(--shiki-code-punctuation)\">;</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"const value = 1;\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "collapse",
+      "language": "js",
+      "meta": "collapse={2-3}",
+      "code": "first();\nsecond();\nthird();",
+      "renderedText": "first();已折叠 2 行second();third();",
+      "copy": "first();\nsecond();\nthird();",
+      "lines": 4,
+      "inlineMarkers": 0,
+      "collapses": 1,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">first</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><details class=\"ec-section github\"><summary><div class=\"ec-line\"><div class=\"code\"><span class=\"expand\"></span><span class=\"collapse\"></span><span class=\"text\">已折叠 2 行</span></div></div></summary><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">second</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">third</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div></details></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"first();second();third();\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "collapse-style",
+      "language": "js",
+      "meta": "collapse={2-3} collapseStyle=\"collapsible-auto\" collapsePreserveIndent=false",
+      "code": "first();\nsecond();\nthird();",
+      "renderedText": "first();已折叠 2 行second();third();",
+      "copy": "first();\nsecond();\nthird();",
+      "lines": 4,
+      "inlineMarkers": 0,
+      "collapses": 2,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">first</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-section collapsible-end\"><details><summary><div class=\"ec-line\"><div class=\"code\"><span class=\"expand\"></span><span class=\"collapse\"></span><span class=\"text\">已折叠 2 行</span></div></div></summary></details><div class=\"content-lines\"><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">second</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-function)\">third</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"first();second();third();\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "frame-terminal",
+      "language": "bash",
+      "meta": "frame=\"terminal\"",
+      "code": "# keep this comment\necho hello",
+      "renderedText": "# keep this commentecho hello",
+      "copy": "# keep this comment\necho hello",
+      "lines": 2,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame is-terminal\"><figcaption class=\"header\"><span class=\"title\"></span><span class=\"sr-only\">终端窗口</span></figcaption><pre data-language=\"bash\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-comment)\"># keep this comment</span></div></div><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-property)\">echo</span><span style=\"--0:var(--shiki-code-normal)\"> </span><span style=\"--0:var(--shiki-code-string)\">hello</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"# keep this commentecho hello\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "frame-none",
+      "language": "js",
+      "meta": "frame=\"none\"",
+      "code": "// demo.js\nconst value = 1;",
+      "renderedText": "// demo.jsconst value = 1;",
+      "copy": "// demo.js\nconst value = 1;",
+      "lines": 2,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-comment)\">// demo.js</span></div></div><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-keyword)\">const</span><span style=\"--0:var(--shiki-code-normal)\"> value </span><span style=\"--0:var(--shiki-code-keyword)\">=</span><span style=\"--0:var(--shiki-code-normal)\"> </span><span style=\"--0:var(--shiki-code-value)\">1</span><span style=\"--0:var(--shiki-code-punctuation)\">;</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"// demo.jsconst value = 1;\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "diff",
+      "language": "diff",
+      "meta": "lang=\"js\"",
+      "code": "-old();\n+new();\n same();",
+      "renderedText": "-old();+new(); same();",
+      "copy": "-old();\n+new();\n same();",
+      "lines": 3,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-keyword)\">-</span><span style=\"--0:var(--shiki-code-function)\">old</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-keyword)\">+</span><span style=\"--0:var(--shiki-code-keyword);--0fw:bold\">new</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-line\"><div class=\"code\"><span class=\"indent\"> </span><span style=\"--0:var(--shiki-code-function)\">same</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"-old();+new(); same();\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "diff-syntax",
+      "language": "js",
+      "meta": "useDiffSyntax",
+      "code": "-old();\n+new();\n same();",
+      "renderedText": "-old();+new(); same();",
+      "copy": "-old();\n+new();\n same();",
+      "lines": 3,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-keyword)\">-</span><span style=\"--0:var(--shiki-code-function)\">old</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-keyword)\">+</span><span style=\"--0:var(--shiki-code-keyword);--0fw:bold\">new</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div><div class=\"ec-line\"><div class=\"code\"><span class=\"indent\"> </span><span style=\"--0:var(--shiki-code-function)\">same</span><span style=\"--0:var(--shiki-code-punctuation)\">();</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"-old();+new(); same();\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "whitespace-unicode",
+      "language": "js",
+      "meta": "",
+      "code": "\n\tconst 文本 = \"😀\";  \n\n",
+      "renderedText": "\n\tconst 文本 = \"😀\";  \n\n",
+      "copy": "\n\tconst 文本 = \"😀\";  \n\n",
+      "lines": 4,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"js\"><code><div class=\"ec-line\"><div class=\"code\">\n</div></div><div class=\"ec-line\"><div class=\"code\"><span class=\"indent\">\t</span><span style=\"--0:var(--shiki-code-keyword)\">const</span><span style=\"--0:var(--shiki-code-normal)\"> 文本 </span><span style=\"--0:var(--shiki-code-keyword)\">=</span><span style=\"--0:var(--shiki-code-normal)\"> </span><span style=\"--0:var(--shiki-code-string)\">\"😀\"</span><span style=\"--0:var(--shiki-code-punctuation)\">;</span><span style=\"--0:var(--shiki-code-normal)\">  </span></div></div><div class=\"ec-line\"><div class=\"code\">\n</div></div><div class=\"ec-line\"><div class=\"code\">\n</div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"\tconst 文本 = &quot;😀&quot;;  \"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "ansi",
+      "language": "ansi",
+      "meta": "",
+      "code": "\u001b[31mred\u001b[0m",
+      "renderedText": "red",
+      "copy": "red",
+      "lines": 1,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame is-terminal\"><figcaption class=\"header\"><span class=\"title\"></span><span class=\"sr-only\">终端窗口</span></figcaption><pre data-language=\"ansi\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:#cd3131\">red</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"red\"><div></div></button></div></figure></div>"
+    },
+    {
+      "id": "plain-text",
+      "language": "text",
+      "meta": "",
+      "code": "const value = 1;",
+      "renderedText": "const value = 1;",
+      "copy": "const value = 1;",
+      "lines": 1,
+      "inlineMarkers": 0,
+      "collapses": 0,
+      "html": "<div class=\"expressive-code hb-syntax-render\" data-hb-syntax-root=\"\"><figure class=\"frame\"><figcaption class=\"header\"></figcaption><pre data-language=\"text\"><code><div class=\"ec-line\"><div class=\"code\"><span style=\"--0:var(--shiki-code-normal)\">const value = 1;</span></div></div></code></pre><div class=\"copy\"><div aria-live=\"polite\"></div><button title=\"复制到剪贴板\" data-copied=\"已复制！\" data-code=\"const value = 1;\"><div></div></button></div></figure></div>"
+    }
+  ]
+}

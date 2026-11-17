@@ -1,0 +1,52 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "d-restart-source-exact",
+      "passed": true
+    },
+    {
+      "name": "d-restart-all-seven-marks",
+      "passed": true
+    },
+    {
+      "name": "d-restart-核心观点",
+      "passed": true
+    },
+    {
+      "name": "d-restart-a==b",
+      "passed": true
+    },
+    {
+      "name": "d-restart-src",
+      "passed": true
+    },
+    {
+      "name": "d-restart-print",
+      "passed": true
+    },
+    {
+      "name": "d-restart-add ax, 1",
+      "passed": true
+    },
+    {
+      "name": "d-restart-memcpy",
+      "passed": true
+    },
+    {
+      "name": "d-restart-const sample",
+      "passed": true
+    },
+    {
+      "name": "d-restart-heading-and-code-context",
+      "passed": true
+    },
+    {
+      "name": "d-restart-restores-settings",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

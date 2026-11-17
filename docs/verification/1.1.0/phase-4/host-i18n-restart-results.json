@@ -1,0 +1,49 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "language-survives-new-process",
+      "passed": true
+    },
+    {
+      "name": "custom-name-marker-survives",
+      "passed": true
+    },
+    {
+      "name": "english-custom-command-restores",
+      "passed": true
+    },
+    {
+      "name": "i18n-restart-note-exact",
+      "passed": true
+    },
+    {
+      "name": "english-sidebar-restores",
+      "passed": true
+    },
+    {
+      "name": "snapshot-names-restore",
+      "passed": true
+    },
+    {
+      "name": "first-preset-edit-keeps-input",
+      "passed": true
+    },
+    {
+      "name": "same-input-accepts-next-edit",
+      "passed": true
+    },
+    {
+      "name": "i18n-test-settings-restored",
+      "passed": true
+    },
+    {
+      "name": "i18n-restoring-settings-keeps-note",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

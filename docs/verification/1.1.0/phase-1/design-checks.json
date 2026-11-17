@@ -1,0 +1,927 @@
+{
+  "date": "2026-11-16",
+  "scope": "第一阶段设计样稿，未验证插件实现",
+  "runtime": {
+    "electron": "43.8.9",
+    "chromium": "150.0.7871.250"
+  },
+  "layouts": [
+    {
+      "theme": "light",
+      "scene": "workbench",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 938
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "workbench",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 858
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "workbench",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 831
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "workspace",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 1631
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "workspace",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 1475
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "workspace",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 1368
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "workspace",
+      "width": 1080,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 100,
+        "y": 162,
+        "width": 1080,
+        "height": 858
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "toolbar",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 474
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "toolbar",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 442
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "toolbar",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 442
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "code",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 723
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "code",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 672
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "code",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 629
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "annotation",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 464
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "annotation",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 472
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "annotation",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 472
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "excerpt",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 636
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "excerpt",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 644
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "excerpt",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 629
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "settings",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 1315
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "settings",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 1276
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "settings",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 1255
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "states",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 464
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "states",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 472
+      },
+      "passed": true
+    },
+    {
+      "theme": "light",
+      "scene": "states",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 472
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "workbench",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 938
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "workbench",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 858
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "workbench",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 831
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "workspace",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 1631
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "workspace",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 1475
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "workspace",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 1368
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "workspace",
+      "width": 1080,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 100,
+        "y": 162,
+        "width": 1080,
+        "height": 858
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "toolbar",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 474
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "toolbar",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 442
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "toolbar",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 442
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "code",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 723
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "code",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 672
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "code",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 629
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "annotation",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 464
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "annotation",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 472
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "annotation",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 472
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "excerpt",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 636
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "excerpt",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 644
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "excerpt",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 629
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "settings",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 1315
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "settings",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 1276
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "settings",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 1255
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "states",
+      "width": 280,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 500,
+        "y": 162,
+        "width": 280,
+        "height": 464
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "states",
+      "width": 360,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 460,
+        "y": 162,
+        "width": 360,
+        "height": 472
+      },
+      "passed": true
+    },
+    {
+      "theme": "dark",
+      "scene": "states",
+      "width": 600,
+      "overflows": [],
+      "unlabeled": [],
+      "rect": {
+        "x": 340,
+        "y": 162,
+        "width": 600,
+        "height": 472
+      },
+      "passed": true
+    }
+  ],
+  "checks": [
+    {
+      "name": "light · 展开筛选布局",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 筛选与标签同步",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 清除筛选恢复结果",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 正文工具栏",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 行内代码工具栏",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 混合选区工具栏",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 展开筛选布局",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 筛选与标签同步",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 清除筛选恢复结果",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 正文工具栏",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 行内代码工具栏",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 混合选区工具栏",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "展开筛选",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "搜索更新结果",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "批注保存更新卡片",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "取消保留原批注",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "语义操作更新当前标注",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "代码粒度切换",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "加入集合反馈",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "代码整块折叠",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "代码局部展开",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "设置即时更新行号预览",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "设置即时更新换行预览",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "摘录模板更新预览",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "工具栏键盘导航",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 尚无标注",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 无匹配",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 空集合",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 未打开笔记",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 待定位",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 读取失败",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "light · 处理中",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 尚无标注",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 无匹配",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 空集合",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 未打开笔记",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 待定位",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 读取失败",
+      "passed": true,
+      "actual": true
+    },
+    {
+      "name": "dark · 处理中",
+      "passed": true,
+      "actual": true
+    }
+  ],
+  "errors": [],
+  "images": [
+    "workbench-light-360.png",
+    "workspace-light-1080.png",
+    "toolbar-light-360.png",
+    "code-light-600.png",
+    "annotation-light-360.png",
+    "excerpt-light-360.png",
+    "settings-light-600.png",
+    "states-light-360.png",
+    "workbench-dark-360.png",
+    "workspace-dark-1080.png",
+    "toolbar-dark-360.png",
+    "code-dark-600.png",
+    "annotation-dark-360.png",
+    "excerpt-dark-360.png",
+    "settings-dark-600.png",
+    "states-dark-360.png"
+  ],
+  "passed": true
+}

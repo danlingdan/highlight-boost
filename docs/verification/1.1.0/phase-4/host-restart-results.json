@@ -1,0 +1,45 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "plugin-loaded-in-new-process",
+      "passed": true
+    },
+    {
+      "name": "settings-survive-restart",
+      "passed": true
+    },
+    {
+      "name": "document-survives-restart",
+      "passed": true
+    },
+    {
+      "name": "four-code-blocks-restored",
+      "passed": true
+    },
+    {
+      "name": "code-anchors-restored",
+      "passed": true
+    },
+    {
+      "name": "block-identities-restored",
+      "passed": true
+    },
+    {
+      "name": "sidebar-restored",
+      "passed": true
+    },
+    {
+      "name": "code-decoration-restored",
+      "passed": true
+    },
+    {
+      "name": "reading-does-not-rewrite-metadata",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

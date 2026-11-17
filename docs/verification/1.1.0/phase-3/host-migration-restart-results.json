@@ -1,0 +1,44 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "migration-restart-source-after",
+      "passed": true
+    },
+    {
+      "name": "migration-restart-journal",
+      "passed": true
+    },
+    {
+      "name": "migration-restart-history-ui",
+      "passed": true
+    },
+    {
+      "name": "migration-restart-restore-exact",
+      "passed": true
+    },
+    {
+      "name": "migration-restart-file-迁移验收/A.md",
+      "passed": true
+    },
+    {
+      "name": "migration-restart-file-迁移验收/B.md",
+      "passed": true
+    },
+    {
+      "name": "migration-restart-file-迁移验收/C.md",
+      "passed": true
+    },
+    {
+      "name": "migration-restart-status-persisted",
+      "passed": true
+    },
+    {
+      "name": "migration-restart-settings-restored",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

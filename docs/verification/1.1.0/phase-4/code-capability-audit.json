@@ -1,0 +1,483 @@
+{
+  "baseline": "../../../design/1.1.0/code-capabilities.md",
+  "items": [
+    {
+      "id": "K01",
+      "baseline": "235 种语言、97 个别名；引擎支持但阅读注册过滤部分名称",
+      "entry": "`syntax/engine.ts` 语言解析与普通代码后处理",
+      "views": "E/L/R/P",
+      "acceptance": "332 个名称均正确解析，专用 Mermaid 按归属处理",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-languages-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K02",
+      "baseline": "大写调用可归一化，特殊字符和中文名称不能依靠当前注册路径",
+      "entry": "`resolveLanguage` 保留源名称，内部规范化",
+      "views": "E/L/R/P",
+      "acceptance": "JS、C++、C#、F#、文言显示与规范 ID 对应",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-languages-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K03",
+      "baseline": "文本模式与 ANSI 可由 EC 渲染，HB token 路径未纳入特殊语言",
+      "entry": "`syntax/engine.ts` 特殊语言分支",
+      "views": "E/L/R/P",
+      "acceptance": "纯文本不误着色，ANSI 前景 / 背景 / 字体与原文映射正确",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K04",
+      "baseline": "token 保留前景与字体位，编辑器已有斜体 / 粗体 / 下划线",
+      "entry": "统一 token 模型与装饰",
+      "views": "E/L/R/P",
+      "acceptance": "多行状态、Unicode、字体样式及 ANSI 删除线保留",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-embedded-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K05",
+      "baseline": "使用 Shiki 语法依赖加载",
+      "entry": "`syntax/engine.ts` 嵌入语法加载",
+      "views": "E/L/R/P",
+      "acceptance": "Vue、HTML 内 JS/CSS、模板字符串和多行注释不丢状态",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-embedded-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K06",
+      "baseline": "上游支持自定义 TextMate JSON，HB 当前未接入",
+      "entry": "`codeSyntax.customLanguageFolder`、资源加载服务",
+      "views": "E/L/R/P",
+      "acceptance": "自定义名、别名、注入 / 嵌入依赖生效，重新加载更新",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K07",
+      "baseline": "安装包含 65 个主题，当前仅 Obsidian 映射",
+      "entry": "`codeSyntax.lightTheme/darkTheme`、主题选择器",
+      "views": "E/L/R/P",
+      "acceptance": "全部内置主题可选，切换深浅色对应独立主题",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-unified-results.json",
+        "host-settings-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K08",
+      "baseline": "上游支持自定义 VS Code JSON，HB 未接入",
+      "entry": "`customThemeFolder`、主题加载与稳定 ID",
+      "views": "E/L/R/P",
+      "acceptance": "自定义主题可选且编辑后可重载，颜色与字体样式保留",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K09",
+      "baseline": "Obsidian CSS 映射已有；优先主题色为内部固定值",
+      "entry": "`preferThemeColors` 与主题解析",
+      "views": "E/L/R/P",
+      "acceptance": "跟随主题与独立配色都可配置，背景和强调层可读",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-settings-results.json",
+        "host-accessibility-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K10",
+      "baseline": "上游 `{lang} code` 行内着色，HB 仅有整段语义标注",
+      "entry": "行内解析、`syntax/editor.ts`、`inline-rendering.ts`",
+      "views": "E/L/R/P",
+      "acceptance": "显式语言着色、声明显隐、开关、批注和整段标注融合",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-inline-results.json",
+        "host-inline-restart-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K11",
+      "baseline": "上游可排除语言，HB 当前只有 Mermaid 固定例外",
+      "entry": "`disabledLanguages` 与 `resolveCodeOwner`",
+      "views": "E/L/R",
+      "acceptance": "排除 / 恢复即时生效，其他处理器输出保持原样",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K12",
+      "baseline": "EC 提供四种框架，HB 通用层未表达 frame",
+      "entry": "展示模型 `frame`、统一代码组件",
+      "views": "L/R/P",
+      "acceptance": "code / terminal / none / auto 均可用，无重复头栏",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-frames-results.json",
+        "host-fusion-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K13",
+      "baseline": "title/file/fold 文本与路径已有",
+      "entry": "`resolveCodeOptions`、统一标题栏",
+      "views": "L/R/P",
+      "acceptance": "长标题断行，优先级一致，文字不作为 HTML",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-display-results.json",
+        "host-parameters-results.json",
+        "host-frames-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K14",
+      "baseline": "行号、起始编号、字体与别名适配已有",
+      "entry": "`code-options.ts` 与共享逻辑行模型",
+      "views": "E/L/R/P",
+      "acceptance": "同一逻辑行编号，显示起点不改变标记范围",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-parameters-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K15",
+      "baseline": "wrap 与长行滚动已有",
+      "entry": "统一组件与编辑布局设置",
+      "views": "E/L/R/P",
+      "acceptance": "280 px 下容器不溢出，行内滚动 / 换行正确",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-fusion-results.json",
+        "host-frames-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K16",
+      "baseline": "mark/ins/del 行范围、标签由 EC 与适配层提供",
+      "entry": "保留 EC 选择器，输出共享范围模型",
+      "views": "E/L/R/P",
+      "acceptance": "范围、标签、增删类别均保留并与人工标注叠加",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-parameters-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K17",
+      "baseline": "文本 / 正则标记在 EC 路径可用，通用层未完整表达",
+      "entry": "meta 结构解析与文本标记映射",
+      "views": "E/L/R/P",
+      "acceptance": "引号、正则、重复匹配和类型标记可用",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-parameters-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K18",
+      "baseline": "Code Styler、Customizer、Hugo 通用参数已有",
+      "entry": "`fence-params.ts` 规范化到模型",
+      "views": "E/L/R/P",
+      "acceptance": "已发布别名、优先级、大小写与带空格标题保持一致",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-parameters-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K19",
+      "baseline": "整块折叠、默认状态与会话记忆已有",
+      "entry": "共享折叠状态与导航服务",
+      "views": "E/L/R/P",
+      "acceptance": "重绘保持状态，跳转展开，PDF 展开",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-display-results.json",
+        "host-display-restart-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K20",
+      "baseline": "局部折叠、四种样式和缩进由 EC 提供",
+      "entry": "区段模型、EC 局部折叠与展开映射",
+      "views": "L/R/P；E 原生",
+      "acceptance": "各样式、多个区段、保留缩进、跳转和复制通过",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K21",
+      "baseline": "原 diff 复制与 HB 背景已有；关闭 EC 预处理后需显式承接 useDiffSyntax",
+      "entry": "保留源前缀的 diff 模型、`lang` 与 `useDiffSyntax`",
+      "views": "E/L/R/P",
+      "acceptance": "两种 diff 输入着色、语法、行号和标注共同正确",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-display-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K22",
+      "baseline": "HB 原始 diff / 变更片段复制已有",
+      "entry": "一个复制服务、二级选项",
+      "views": "E/L/R",
+      "acceptance": "补丁头、删除行和上下文处理正确",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-display-results.json",
+        "host-fusion-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K23",
+      "baseline": "普通代码空白、注释、Unicode 保留；EC ANSI 复制剥离转义",
+      "entry": "复制从源模型读取，绕开 DOM 和 EC 拷贝数据",
+      "views": "E/L/R",
+      "acceptance": "字符串按字节等价；ANSI 复制保留原始转义",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K24",
+      "baseline": "重叠精确 / 整行标注、批注与关联元数据已有",
+      "entry": "条目动作与渲染映射复用",
+      "views": "E/L/R/P",
+      "acceptance": "单条修改不影响重叠条目，复制仍只含代码",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-advanced-results.json",
+        "host-notes-results.json",
+        "host-selection-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K25",
+      "baseline": "Callout、引用、嵌入与重复块已有映射逻辑",
+      "entry": "`readingTargets`、源路径与区段",
+      "views": "E/L/R/P",
+      "acceptance": "相同文本的多个块各自定位、编号与批注正确",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-embedded-results.json",
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K26",
+      "baseline": "未知语言回到普通路径；专用块归属需统一",
+      "entry": "`resolveCodeOwner` 与普通代码后处理",
+      "views": "E/L/R/P",
+      "acceptance": "未知 / 无语言可标注；专用块输出不变",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K27",
+      "baseline": "设置 / CSS 更新与资源重载在两条路径中分散",
+      "entry": "串行引擎重建与刷新服务",
+      "views": "E/L/R",
+      "acceptance": "配置、围栏 meta、JSON 修改后更新，无过期异步结果",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-settings-results.json",
+        "host-unified-results.json",
+        "host-lifecycle-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K28",
+      "baseline": "窗口事件、复制和资源释放已有",
+      "entry": "所属 document 的共享组件生命周期",
+      "views": "E/L/R",
+      "acceptance": "弹出窗口交互正确，关闭 / 停用后资源归零",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-multiwindow-results.json",
+        "host-multiwindow-combined-results.json",
+        "host-lifecycle-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K29",
+      "baseline": "源数据离线打包、按需解压已有",
+      "entry": "保留压缩目录和懒加载",
+      "views": "E/L/R",
+      "acceptance": "无网络加载语言、主题与自定义资源",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-unified-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    },
+    {
+      "id": "K30",
+      "baseline": "中英文、键盘、PDF、批注展开已有",
+      "entry": "统一组件、翻译键与打印样式",
+      "views": "E/L/R/P",
+      "acceptance": "中英文即时切换、键盘可操作、PDF 无元数据",
+      "status": "passed-local",
+      "hostEvidence": [
+        "host-i18n-results.json",
+        "host-journey-results.json",
+        "host-accessibility-results.json"
+      ],
+      "unitEvidence": [
+        "engineering-check.log",
+        "../../../../tests/unified-syntax.test.ts"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,40 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "display-restart-options",
+      "passed": true
+    },
+    {
+      "name": "display-restart-source-exact",
+      "passed": true
+    },
+    {
+      "name": "display-restart-note-preserved",
+      "passed": true
+    },
+    {
+      "name": "display-restart-session-starts-fresh",
+      "passed": true
+    },
+    {
+      "name": "display-restart-components",
+      "passed": true
+    },
+    {
+      "name": "display-restart-default-folding",
+      "passed": true
+    },
+    {
+      "name": "display-restart-start-number",
+      "passed": true
+    },
+    {
+      "name": "display-restart-settings-restored",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-16",
+  "commit": "5268557c6874439ef9fbf4a48e2ae223f54e09de",
+  "files": [
+    {
+      "file": "README.md",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/README.md",
+      "sha256": "ddb2a5cbc310b3f3b2a3ff2cfe1b1df5b4df28f9cc6f4ead06ba86fd74d10365"
+    },
+    {
+      "file": "package.json",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/package.json",
+      "sha256": "737d7100d1a8632c48a30a03f7146aafd683b8736090ae20e766d7d1c265296f"
+    },
+    {
+      "file": "packages/obsidian/src/settings/Settings.ts",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/packages/obsidian/src/settings/Settings.ts",
+      "sha256": "3a4e11620543bd8c0bf893a1061f226c116dd323014ffc7cac111580b589d775"
+    },
+    {
+      "file": "packages/obsidian/src/settings/SettingsTab.ts",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/packages/obsidian/src/settings/SettingsTab.ts",
+      "sha256": "775adb6806584194e0dae7b3f86e413706840d41adaebfb2e643002da0c02f2c"
+    },
+    {
+      "file": "packages/obsidian/src/Highlighter.ts",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/packages/obsidian/src/Highlighter.ts",
+      "sha256": "aea619a8101e7e4e34fffa1aac2b35a381ea6e9e2067f20b9ea505acf95f884e"
+    },
+    {
+      "file": "packages/obsidian/src/main.ts",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/packages/obsidian/src/main.ts",
+      "sha256": "8bb5784fae930b09dbcc3f24b2edbeb822828e48f20b2103dfc6ab9a964ec8e6"
+    },
+    {
+      "file": "packages/obsidian/src/PrismPlugin.ts",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/packages/obsidian/src/PrismPlugin.ts",
+      "sha256": "b507f0741f10ea5c980549d119e15a7bc32cbbcd3c8cdfa3163068458dba1186"
+    },
+    {
+      "file": "packages/obsidian/src/InlineCodeBlock.ts",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/packages/obsidian/src/InlineCodeBlock.ts",
+      "sha256": "c75b2e66950aef6c85a4d2a9fc6e87d29fed55670a2ec023160a8a5df08c1303"
+    },
+    {
+      "file": "packages/obsidian/src/codemirror/Cm6_ViewPlugin.ts",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/packages/obsidian/src/codemirror/Cm6_ViewPlugin.ts",
+      "sha256": "7c75688284307db91744fc581b3910f7f592505e2b7cc2ac5c1ca51abbfddb33"
+    },
+    {
+      "file": "packages/obsidian/src/themes/ThemeMapper.ts",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/packages/obsidian/src/themes/ThemeMapper.ts",
+      "sha256": "1402224a434469a040def2384a520eef62a2247c52ea10954b845258c596a8df"
+    },
+    {
+      "file": "packages/ec-core/src/Config.ts",
+      "url": "https://github.com/mProjectsCode/obsidian-shiki-plugin/blob/5268557c6874439ef9fbf4a48e2ae223f54e09de/packages/ec-core/src/Config.ts",
+      "sha256": "895d93269f5347154314fd04a3d1bc13d0107b12859e719d46fe2e865c914258"
+    }
+  ],
+  "local": {
+    "shiki": "3.23.0",
+    "expressiveCode": "0.41.7"
+  },
+  "upstreamSettings": "import { OBSIDIAN_THEME_IDENTIFIER } from 'packages/obsidian/src/themes/ThemeMapper';\n\nexport enum FrameType {\n\tCode = 'code',\n\tTerminal = 'terminal',\n\tNone = 'none',\n\tAuto = 'auto',\n}\n\nexport interface Settings {\n\tdisabledLanguages: string[];\n\tcustomThemeFolder: string;\n\tcustomLanguageFolder: string;\n\t/**\n\t * Old theme setting, from before we had separate light/dark theme settings. Will me migrated on load.\n\t */\n\ttheme: string | undefined;\n\tdarkTheme: string;\n\tlightTheme: string;\n\tpreferThemeColors: boolean;\n\tinlineHighlighting: boolean;\n\tecDefaultShowLineNumbers: boolean;\n\tecDefaultWrap: boolean;\n\tecDefaultFrame: FrameType;\n}\n\nexport const DEFAULT_SETTINGS: Settings = {\n\tdisabledLanguages: [],\n\tcustomThemeFolder: '',\n\tcustomLanguageFolder: '',\n\ttheme: undefined,\n\tdarkTheme: OBSIDIAN_THEME_IDENTIFIER,\n\tlightTheme: OBSIDIAN_THEME_IDENTIFIER,\n\tpreferThemeColors: true,\n\tinlineHighlighting: true,\n\tecDefaultShowLineNumbers: false,\n\tecDefaultWrap: false,\n\tecDefaultFrame: FrameType.Auto,\n};\n"
+}

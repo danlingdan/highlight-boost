@@ -1,0 +1,72 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "legacy-settings-migrate",
+      "passed": true
+    },
+    {
+      "name": "migration-persists",
+      "passed": true
+    },
+    {
+      "name": "command-name-updates",
+      "passed": true
+    },
+    {
+      "name": "command-keeps-plugin-name",
+      "passed": true
+    },
+    {
+      "name": "line-command-name-updates",
+      "passed": true
+    },
+    {
+      "name": "preset-color-applies-to-prose",
+      "passed": true
+    },
+    {
+      "name": "preset-snapshot-applies-to-code",
+      "passed": true
+    },
+    {
+      "name": "preset-edit-keeps-existing-mark",
+      "passed": true
+    },
+    {
+      "name": "queued-writes-keep-latest-setting",
+      "passed": true
+    },
+    {
+      "name": "custom-presets-reload",
+      "passed": true
+    },
+    {
+      "name": "default-preset-reloads",
+      "passed": true
+    },
+    {
+      "name": "settings-search-definitions",
+      "passed": true
+    },
+    {
+      "name": "settings-controls-render (4)",
+      "passed": true
+    },
+    {
+      "name": "settings-input-persists",
+      "passed": true
+    },
+    {
+      "name": "settings-reset-restores-defaults",
+      "passed": true
+    },
+    {
+      "name": "original-settings-restored",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

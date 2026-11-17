@@ -1,0 +1,193 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "plugin-load",
+      "passed": true
+    },
+    {
+      "name": "desktop-only",
+      "passed": true
+    },
+    {
+      "name": "color-command-default",
+      "passed": true
+    },
+    {
+      "name": "color-command-red",
+      "passed": true
+    },
+    {
+      "name": "color-command-orange",
+      "passed": true
+    },
+    {
+      "name": "color-command-yellow",
+      "passed": true
+    },
+    {
+      "name": "color-command-green",
+      "passed": true
+    },
+    {
+      "name": "color-command-blue",
+      "passed": true
+    },
+    {
+      "name": "color-command-purple",
+      "passed": true
+    },
+    {
+      "name": "native-color-default",
+      "passed": true
+    },
+    {
+      "name": "native-color-red",
+      "passed": true
+    },
+    {
+      "name": "native-color-orange",
+      "passed": true
+    },
+    {
+      "name": "native-color-yellow",
+      "passed": true
+    },
+    {
+      "name": "native-color-green",
+      "passed": true
+    },
+    {
+      "name": "native-color-blue",
+      "passed": true
+    },
+    {
+      "name": "native-color-purple",
+      "passed": true
+    },
+    {
+      "name": "prose-partial-recolor",
+      "passed": true
+    },
+    {
+      "name": "prose-selection-preserved",
+      "passed": true
+    },
+    {
+      "name": "single-undo",
+      "passed": true
+    },
+    {
+      "name": "redo",
+      "passed": true
+    },
+    {
+      "name": "code-exact-text",
+      "passed": true
+    },
+    {
+      "name": "editor-code-decoration",
+      "passed": true
+    },
+    {
+      "name": "live-preview-metadata-folded",
+      "passed": true
+    },
+    {
+      "name": "metadata-widget-expands",
+      "passed": true
+    },
+    {
+      "name": "metadata-keyboard-expands",
+      "passed": true
+    },
+    {
+      "name": "code-single-undo",
+      "passed": true
+    },
+    {
+      "name": "code-redo",
+      "passed": true
+    },
+    {
+      "name": "code-line-mark",
+      "passed": true
+    },
+    {
+      "name": "callout-code-mark",
+      "passed": true
+    },
+    {
+      "name": "list-code-mark",
+      "passed": true
+    },
+    {
+      "name": "unified-sidebar",
+      "passed": true
+    },
+    {
+      "name": "sidebar-source-jump",
+      "passed": true
+    },
+    {
+      "name": "rewritten-mark-pending",
+      "passed": true
+    },
+    {
+      "name": "sidebar-rebind",
+      "passed": true
+    },
+    {
+      "name": "rebind-single-undo",
+      "passed": true
+    },
+    {
+      "name": "rebind-redo",
+      "passed": true
+    },
+    {
+      "name": "reading-code-decoration",
+      "passed": true
+    },
+    {
+      "name": "reading-code-preserves-text",
+      "passed": true
+    },
+    {
+      "name": "reading-token-preserved",
+      "passed": true
+    },
+    {
+      "name": "source-mode",
+      "passed": true
+    },
+    {
+      "name": "source-shows-metadata",
+      "passed": true
+    },
+    {
+      "name": "live-preview-mode",
+      "passed": true
+    },
+    {
+      "name": "plugin-unload",
+      "passed": true
+    },
+    {
+      "name": "plugin-reload",
+      "passed": true
+    },
+    {
+      "name": "settings-reloaded",
+      "passed": true
+    },
+    {
+      "name": "metadata-persisted",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

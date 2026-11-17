@@ -1,0 +1,33 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "prose-restart-source-exact",
+      "passed": true
+    },
+    {
+      "name": "prose-restart-identities-exact",
+      "passed": true
+    },
+    {
+      "name": "prose-restart-semantic-snapshots",
+      "passed": true
+    },
+    {
+      "name": "prose-restart-sidebar",
+      "passed": true
+    },
+    {
+      "name": "prose-restart-reading",
+      "passed": true
+    },
+    {
+      "name": "prose-restart-reading-keeps-source",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

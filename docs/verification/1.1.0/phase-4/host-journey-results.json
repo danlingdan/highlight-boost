@@ -1,0 +1,170 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "keyboard-toolbar-entry",
+      "passed": true
+    },
+    {
+      "name": "keyboard-creates-annotation",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-entry",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-recolors-preserving-semantic",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-entry",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-opens-note",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-saves-note",
+      "passed": true
+    },
+    {
+      "name": "keyboard-note-focus-restored",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-entry",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-collection-dialog",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-new-collection-input",
+      "passed": true
+    },
+    {
+      "name": "keyboard-collection-created-and-added",
+      "passed": true
+    },
+    {
+      "name": "keyboard-collection-focus-restored",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-searches-note",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-locates-source",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-card-opens-shared-note",
+      "passed": true
+    },
+    {
+      "name": "keyboard-note-escape-restores-card",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-opens-menu",
+      "passed": true
+    },
+    {
+      "name": "keyboard-menu-escape-restores-trigger",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-excerpt-preview",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-copies-snapshot",
+      "passed": true
+    },
+    {
+      "name": "keyboard-clipboard-matches-preview",
+      "passed": true
+    },
+    {
+      "name": "keyboard-tab-target",
+      "passed": true
+    },
+    {
+      "name": "keyboard-generates-and-opens-note",
+      "passed": true
+    },
+    {
+      "name": "keyboard-output-matches-preview",
+      "passed": true
+    },
+    {
+      "name": "keyboard-source-keeps-annotation",
+      "passed": true
+    },
+    {
+      "name": "keyboard-journey-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "errors": [],
+    "input": "Chromium Input.dispatchKeyEvent / Input.insertText",
+    "pointerActions": 0
+  }
+}

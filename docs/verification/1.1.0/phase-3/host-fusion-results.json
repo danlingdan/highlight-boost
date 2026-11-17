@@ -1,0 +1,251 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "toolbar-preset-important",
+      "passed": true
+    },
+    {
+      "name": "mark-retains-selection",
+      "passed": true
+    },
+    {
+      "name": "palette-collapsed",
+      "passed": true
+    },
+    {
+      "name": "toolbar-annotation",
+      "passed": true
+    },
+    {
+      "name": "toolbar-shared-note-modal",
+      "passed": true
+    },
+    {
+      "name": "annotation-saved",
+      "passed": true
+    },
+    {
+      "name": "toolbar-returns-after-note-save",
+      "passed": true
+    },
+    {
+      "name": "toolbar-preset-question",
+      "passed": true
+    },
+    {
+      "name": "unified-title",
+      "passed": true
+    },
+    {
+      "name": "scope-navigation",
+      "passed": true
+    },
+    {
+      "name": "filters-collapsed",
+      "passed": true
+    },
+    {
+      "name": "card-primary-actions",
+      "passed": true
+    },
+    {
+      "name": "note-search",
+      "passed": true
+    },
+    {
+      "name": "refresh-retains-input-focus-scroll",
+      "passed": true
+    },
+    {
+      "name": "refresh-retains-card-expansion",
+      "passed": true
+    },
+    {
+      "name": "collection-create-enter",
+      "passed": true
+    },
+    {
+      "name": "card-menu-collection",
+      "passed": true
+    },
+    {
+      "name": "shared-collection-picker",
+      "passed": true
+    },
+    {
+      "name": "collection-snapshot-added",
+      "passed": true
+    },
+    {
+      "name": "excerpt-preview-opens",
+      "passed": true
+    },
+    {
+      "name": "excerpt-includes-note-and-code",
+      "passed": true
+    },
+    {
+      "name": "snapshot-change-explicit",
+      "passed": true
+    },
+    {
+      "name": "export-opens-exact-snapshot",
+      "passed": true
+    },
+    {
+      "name": "export-matches-preview",
+      "passed": true
+    },
+    {
+      "name": "layout-280-dark",
+      "passed": true
+    },
+    {
+      "name": "layout-360-dark",
+      "passed": true
+    },
+    {
+      "name": "layout-600-dark",
+      "passed": true
+    },
+    {
+      "name": "layout-280-light",
+      "passed": true
+    },
+    {
+      "name": "layout-360-light",
+      "passed": true
+    },
+    {
+      "name": "layout-600-light",
+      "passed": true
+    },
+    {
+      "name": "annotation-conflict-keeps-draft",
+      "passed": true
+    },
+    {
+      "name": "annotation-refresh-and-save",
+      "passed": true
+    },
+    {
+      "name": "annotation-independent-undo",
+      "passed": true
+    },
+    {
+      "name": "annotation-cancel-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "toolbar-preset-reference",
+      "passed": true
+    },
+    {
+      "name": "overlap-target-choice",
+      "passed": true
+    },
+    {
+      "name": "overlap-only-chosen-target-updated",
+      "passed": true
+    },
+    {
+      "name": "reopen-retains-query-and-expansion",
+      "passed": true
+    },
+    {
+      "name": "reading-block-summary-ready",
+      "passed": true
+    },
+    {
+      "name": "block-summary-opens-only-block-items",
+      "passed": true
+    },
+    {
+      "name": "reading-note-shared-editor",
+      "passed": true
+    },
+    {
+      "name": "settings-all-syntax-themes",
+      "passed": true
+    },
+    {
+      "name": "settings-real-code-preview",
+      "passed": true
+    },
+    {
+      "name": "settings-frame-and-groups",
+      "passed": true
+    },
+    {
+      "name": "settings-update-real-preview-immediately",
+      "passed": true
+    },
+    {
+      "name": "settings-terminal-has-one-visible-header",
+      "passed": true
+    },
+    {
+      "name": "settings-refresh-retains-input-and-caret",
+      "passed": true
+    },
+    {
+      "name": "index-failure-shows-file-and-retry",
+      "passed": true
+    },
+    {
+      "name": "index-retry-recovers-file",
+      "passed": true
+    },
+    {
+      "name": "fusion-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "settingsDocument": "about:blank",
+    "settingsWindows": [
+      {
+        "id": 2,
+        "url": "about:blank",
+        "title": "设置 - default - Obsidian 1.15.1"
+      },
+      {
+        "id": 1,
+        "url": "app://obsidian.md/index.html",
+        "title": "融合验收 - default - Obsidian 1.15.1"
+      }
+    ],
+    "settingsScreenshot": {
+      "empty": false,
+      "size": {
+        "width": 2102,
+        "height": 1503
+      },
+      "preview": {
+        "x": 495.66668701171875,
+        "y": 393.875,
+        "width": 648,
+        "height": 243.83334350585938,
+        "top": 393.875,
+        "right": 1143.6666870117188,
+        "bottom": 637.7083435058594,
+        "left": 495.66668701171875
+      }
+    },
+    "settingsConnected": true,
+    "settingsRect": {
+      "x": 250,
+      "y": 30,
+      "width": 1151.3333740234375,
+      "height": 972,
+      "top": 30,
+      "right": 1401.3333740234375,
+      "bottom": 1002,
+      "left": 250
+    }
+  }
+}

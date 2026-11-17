@@ -1,0 +1,189 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "lifecycle-view-loaded",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-leaf-location-preserved",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-view-unloaded",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-index-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-render-references-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-closed-refresh-stays-empty",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-editor-resources-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-syntax-runtime-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-objects-collected",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-view-loaded",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-leaf-location-preserved",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-view-unloaded",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-index-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-render-references-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-closed-refresh-stays-empty",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-editor-resources-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-syntax-runtime-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-objects-collected",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-view-loaded",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-leaf-location-preserved",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-view-unloaded",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-index-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-render-references-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-closed-refresh-stays-empty",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-editor-resources-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-syntax-runtime-released",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-objects-collected",
+      "passed": true
+    },
+    {
+      "name": "lifecycle-reenable-works",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "samples": [
+      {
+        "heap": {
+          "backingStorageSize": 7648001,
+          "embedderHeapUsedSize": 4441096,
+          "totalSize": 23330816,
+          "usedSize": 20681944
+        },
+        "dom": {
+          "documents": 2,
+          "jsEventListeners": 870,
+          "nodes": 2571
+        }
+      },
+      {
+        "heap": {
+          "backingStorageSize": 7648030,
+          "embedderHeapUsedSize": 4590776,
+          "totalSize": 24633344,
+          "usedSize": 21858820
+        },
+        "dom": {
+          "documents": 2,
+          "jsEventListeners": 864,
+          "nodes": 2570
+        },
+        "retained": {
+          "plugins": 0,
+          "views": 0
+        }
+      },
+      {
+        "heap": {
+          "backingStorageSize": 7648030,
+          "embedderHeapUsedSize": 4627408,
+          "totalSize": 23330816,
+          "usedSize": 20898292
+        },
+        "dom": {
+          "documents": 2,
+          "jsEventListeners": 864,
+          "nodes": 2570
+        },
+        "retained": {
+          "plugins": 0,
+          "views": 0
+        }
+      },
+      {
+        "heap": {
+          "backingStorageSize": 7648030,
+          "embedderHeapUsedSize": 4589440,
+          "totalSize": 25157632,
+          "usedSize": 22074304
+        },
+        "dom": {
+          "documents": 2,
+          "jsEventListeners": 864,
+          "nodes": 2570
+        },
+        "retained": {
+          "plugins": 0,
+          "views": 0
+        }
+      }
+    ],
+    "method": "Baseline and three complete enable/open/select/disable cycles, CDP HeapProfiler.collectGarbage followed by Runtime.getHeapUsage and Memory.getDOMCounters; plugin and view references leave the cycle scope before collection."
+  }
+}

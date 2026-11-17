@@ -1,0 +1,180 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "d-prose-inline-markdown-preserved",
+      "passed": true
+    },
+    {
+      "name": "d-context-menu-entry",
+      "passed": true
+    },
+    {
+      "name": "d-context-menu-applies-inline-semantic",
+      "passed": true
+    },
+    {
+      "name": "d-overlapping-code-identities",
+      "passed": true
+    },
+    {
+      "name": "d-single-undo",
+      "passed": true
+    },
+    {
+      "name": "d-redo-restores-code",
+      "passed": true
+    },
+    {
+      "name": "d-current-note-all-object-types",
+      "passed": true
+    },
+    {
+      "name": "d-sidebar-heading-context",
+      "passed": true
+    },
+    {
+      "name": "d-sidebar-code-context",
+      "passed": true
+    },
+    {
+      "name": "d-excerpt-heading-link",
+      "passed": true
+    },
+    {
+      "name": "d-excerpt-exact-selection-and-context",
+      "passed": true
+    },
+    {
+      "name": "d-excerpt-literal-fence-safe",
+      "passed": true
+    },
+    {
+      "name": "d-pure-code-copy-unicode-exact",
+      "passed": true
+    },
+    {
+      "name": "d-source-code-render",
+      "passed": true
+    },
+    {
+      "name": "d-source-inline-render",
+      "passed": true
+    },
+    {
+      "name": "d-source-jump-**核心观点**",
+      "passed": true
+    },
+    {
+      "name": "d-source-jump-a==b",
+      "passed": true
+    },
+    {
+      "name": "d-source-jump-src",
+      "passed": true
+    },
+    {
+      "name": "d-source-jump-print",
+      "passed": true
+    },
+    {
+      "name": "d-source-jump-add ax, 1",
+      "passed": true
+    },
+    {
+      "name": "d-source-source-exact",
+      "passed": true
+    },
+    {
+      "name": "d-live-code-render",
+      "passed": true
+    },
+    {
+      "name": "d-live-inline-render",
+      "passed": true
+    },
+    {
+      "name": "d-live-jump-**核心观点**",
+      "passed": true
+    },
+    {
+      "name": "d-live-jump-a==b",
+      "passed": true
+    },
+    {
+      "name": "d-live-jump-src",
+      "passed": true
+    },
+    {
+      "name": "d-live-jump-print",
+      "passed": true
+    },
+    {
+      "name": "d-live-jump-add ax, 1",
+      "passed": true
+    },
+    {
+      "name": "d-live-source-exact",
+      "passed": true
+    },
+    {
+      "name": "d-reading-prose-render",
+      "passed": true
+    },
+    {
+      "name": "d-reading-inline-literal",
+      "passed": true
+    },
+    {
+      "name": "d-reading-src-decorated",
+      "passed": true
+    },
+    {
+      "name": "d-reading-print-decorated",
+      "passed": true
+    },
+    {
+      "name": "d-reading-add ax, 1-decorated",
+      "passed": true
+    },
+    {
+      "name": "d-reading-jump-**核心观点**",
+      "passed": true
+    },
+    {
+      "name": "d-reading-jump-a==b",
+      "passed": true
+    },
+    {
+      "name": "d-reading-jump-src",
+      "passed": true
+    },
+    {
+      "name": "d-reading-jump-print",
+      "passed": true
+    },
+    {
+      "name": "d-reading-jump-add ax, 1",
+      "passed": true
+    },
+    {
+      "name": "d-reading-source-exact",
+      "passed": true
+    },
+    {
+      "name": "d-old-card-keeps-other-note",
+      "passed": true
+    },
+    {
+      "name": "d-note-persists",
+      "passed": true
+    },
+    {
+      "name": "d-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

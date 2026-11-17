@@ -1,0 +1,253 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "toolbar-auto-opens",
+      "passed": true
+    },
+    {
+      "name": "toolbar-accessible",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-preset-important",
+      "passed": true
+    },
+    {
+      "name": "toolbar-marks-prose",
+      "passed": true
+    },
+    {
+      "name": "sidebar-follows-toolbar-edit",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-palette",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-color-purple",
+      "passed": true
+    },
+    {
+      "name": "toolbar-recolor-retains-semantics-selection",
+      "passed": true
+    },
+    {
+      "name": "toolbar-recent-color",
+      "passed": true
+    },
+    {
+      "name": "toolbar-color-single-undo",
+      "passed": true
+    },
+    {
+      "name": "toolbar-color-redo",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-preset-question",
+      "passed": true
+    },
+    {
+      "name": "toolbar-inline-whole-token",
+      "passed": true
+    },
+    {
+      "name": "toolbar-code-context",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-mode-lines",
+      "passed": true
+    },
+    {
+      "name": "toolbar-line-mode-selected",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-preset-action",
+      "passed": true
+    },
+    {
+      "name": "toolbar-marks-whole-line",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-preset-reference",
+      "passed": true
+    },
+    {
+      "name": "toolbar-new-selection-defaults-text",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-remove",
+      "passed": true
+    },
+    {
+      "name": "toolbar-remove-keeps-other-code-mark",
+      "passed": true
+    },
+    {
+      "name": "toolbar-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "toolbar-prose-context-ready",
+      "passed": true
+    },
+    {
+      "name": "toolbar-arrow-navigation",
+      "passed": true
+    },
+    {
+      "name": "toolbar-end-navigation",
+      "passed": true
+    },
+    {
+      "name": "toolbar-escape-closes",
+      "passed": true
+    },
+    {
+      "name": "toolbar-setting-disables-auto",
+      "passed": true
+    },
+    {
+      "name": "toolbar-command-opens-when-auto-off",
+      "passed": true
+    },
+    {
+      "name": "toolbar-outside-closes",
+      "passed": true
+    },
+    {
+      "name": "toolbar-language-switch",
+      "passed": true
+    },
+    {
+      "name": "toolbar-language-keeps-note",
+      "passed": true
+    },
+    {
+      "name": "toolbar-hidden-during-composition",
+      "passed": true
+    },
+    {
+      "name": "sidebar-search-filters",
+      "passed": true
+    },
+    {
+      "name": "sidebar-search-control-retained",
+      "passed": true
+    },
+    {
+      "name": "sidebar-code-filter",
+      "passed": true
+    },
+    {
+      "name": "sidebar-combined-filters-empty-state",
+      "passed": true
+    },
+    {
+      "name": "sidebar-changes-code-semantic",
+      "passed": true
+    },
+    {
+      "name": "sidebar-removes-single-code-mark",
+      "passed": true
+    },
+    {
+      "name": "sidebar-remove-single-undo",
+      "passed": true
+    },
+    {
+      "name": "sidebar-prose-edit-applies-preset",
+      "passed": true
+    },
+    {
+      "name": "sidebar-inline-remove-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "toolbar-disjoint-selection-context",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-preset-question",
+      "passed": true
+    },
+    {
+      "name": "toolbar-disjoint-selection-transaction",
+      "passed": true
+    },
+    {
+      "name": "toolbar-disjoint-single-undo",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-mode-lines",
+      "passed": true
+    },
+    {
+      "name": "toolbar-line-color-mode-ready",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-color-blue",
+      "passed": true
+    },
+    {
+      "name": "toolbar-line-color-keeps-kind-semantic",
+      "passed": true
+    },
+    {
+      "name": "toolbar-live-preview-opens",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-preset-reference",
+      "passed": true
+    },
+    {
+      "name": "toolbar-live-preview-semantic",
+      "passed": true
+    },
+    {
+      "name": "toolbar-reading-view-cleans-editor-ui",
+      "passed": true
+    },
+    {
+      "name": "toolbar-action-preset-reference",
+      "passed": true
+    },
+    {
+      "name": "toolbar-disjoint-existing-marks-keep-bulk-selection",
+      "passed": true
+    },
+    {
+      "name": "toolbar-recent-colors-persist",
+      "passed": true
+    },
+    {
+      "name": "toolbar-unload-cleans-dom",
+      "passed": true
+    },
+    {
+      "name": "toolbar-setting-and-recents-reload",
+      "passed": true
+    },
+    {
+      "name": "toolbar-settings-restore",
+      "passed": true
+    },
+    {
+      "name": "toolbar-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

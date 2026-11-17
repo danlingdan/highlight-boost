@@ -1,0 +1,128 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "migration-command",
+      "passed": true
+    },
+    {
+      "name": "migration-modal-real-controls",
+      "passed": true
+    },
+    {
+      "name": "migration-preview-three-files",
+      "passed": true
+    },
+    {
+      "name": "migration-preview-does-not-write",
+      "passed": true
+    },
+    {
+      "name": "migration-custom-color-mapping-control",
+      "passed": true
+    },
+    {
+      "name": "migration-option-invalidates-preview",
+      "passed": true
+    },
+    {
+      "name": "migration-preview-mapped-native",
+      "passed": true
+    },
+    {
+      "name": "migration-preview-count-matches-five",
+      "passed": true
+    },
+    {
+      "name": "migration-selected-preview-count-four",
+      "passed": true
+    },
+    {
+      "name": "migration-apply-selected-real-ui",
+      "passed": true
+    },
+    {
+      "name": "migration-journal-before-after",
+      "passed": true
+    },
+    {
+      "name": "migration-apply-count-four",
+      "passed": true
+    },
+    {
+      "name": "migration-unselected-file-exact",
+      "passed": true
+    },
+    {
+      "name": "migration-open-editor-updated",
+      "passed": true
+    },
+    {
+      "name": "migration-native-markdown-preserved",
+      "passed": true
+    },
+    {
+      "name": "migration-index-prose-and-code",
+      "passed": true
+    },
+    {
+      "name": "migration-repeat-no-new-changes",
+      "passed": true
+    },
+    {
+      "name": "migration-stale-preview-per-file-result",
+      "passed": true
+    },
+    {
+      "name": "migration-stale-preview-keeps-edit",
+      "passed": true
+    },
+    {
+      "name": "migration-restore-one-file-ui",
+      "passed": true
+    },
+    {
+      "name": "migration-restore-one-file-exact",
+      "passed": true
+    },
+    {
+      "name": "migration-other-file-still-applied",
+      "passed": true
+    },
+    {
+      "name": "migration-restore-edited-file-message",
+      "passed": true
+    },
+    {
+      "name": "migration-restore-edited-file-unchanged",
+      "passed": true
+    },
+    {
+      "name": "migration-restore-open-file-exact",
+      "passed": true
+    },
+    {
+      "name": "migration-reapply-for-restart",
+      "passed": true
+    },
+    {
+      "name": "migration-incomplete-state-keeps-snapshot",
+      "passed": true
+    },
+    {
+      "name": "migration-english-interface",
+      "passed": true
+    },
+    {
+      "name": "migration-history-read-from-records",
+      "passed": true
+    },
+    {
+      "name": "migration-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

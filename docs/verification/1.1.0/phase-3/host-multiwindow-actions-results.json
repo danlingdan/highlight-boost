@@ -1,0 +1,67 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "actions-real-popout",
+      "passed": true
+    },
+    {
+      "name": "actions-toolbar-ready",
+      "passed": true
+    },
+    {
+      "name": "actions-note-owned-by-source-window",
+      "passed": true
+    },
+    {
+      "name": "actions-note-saved",
+      "passed": true
+    },
+    {
+      "name": "actions-toolbar-continues-after-modal",
+      "passed": true
+    },
+    {
+      "name": "actions-undo-in-trigger-editor",
+      "passed": true
+    },
+    {
+      "name": "actions-redo-note",
+      "passed": true
+    },
+    {
+      "name": "actions-duplicate-synchronized",
+      "passed": true
+    },
+    {
+      "name": "actions-window-closed",
+      "passed": true
+    },
+    {
+      "name": "actions-runtime-released",
+      "passed": true
+    },
+    {
+      "name": "actions-source-preserved",
+      "passed": true
+    },
+    {
+      "name": "actions-no-unexpected-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "nativeLayoutNotifications": [
+      "ResizeObserver loop completed with undelivered notifications.",
+      "ResizeObserver loop completed with undelivered notifications.",
+      "ResizeObserver loop completed with undelivered notifications.",
+      "ResizeObserver loop completed with undelivered notifications.",
+      "ResizeObserver loop completed with undelivered notifications.",
+      "ResizeObserver loop completed with undelivered notifications."
+    ],
+    "errors": []
+  }
+}

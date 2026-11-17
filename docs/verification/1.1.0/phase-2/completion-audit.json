@@ -1,0 +1,112 @@
+{
+  "date": "2026-11-17",
+  "objective": "完成阶段2",
+  "requirements": [
+    {
+      "requirement": "默认统一着色并删除提供者设置",
+      "sources": [
+        "src/main.ts",
+        "src/settings.ts",
+        "src/syntax/service.ts"
+      ],
+      "evidence": [
+        "host-unified-results.json"
+      ],
+      "completed": true
+    },
+    {
+      "requirement": "代码模型、语言归属与展示参数",
+      "sources": [
+        "src/syntax/model.ts",
+        "src/syntax/languages.ts",
+        "src/code-options.ts",
+        "src/fence-params.ts"
+      ],
+      "evidence": [
+        "host-parameters-results.json",
+        "host-unified-results.json"
+      ],
+      "completed": true
+    },
+    {
+      "requirement": "阅读、实时预览、容器与嵌入",
+      "sources": [
+        "src/reading-view.ts",
+        "src/syntax/widgets.ts",
+        "src/syntax/component.ts"
+      ],
+      "evidence": [
+        "host-unified-results.json",
+        "host-embedded-results.json"
+      ],
+      "completed": true
+    },
+    {
+      "requirement": "标注、批注、复制、折叠和重载",
+      "sources": [
+        "src/rendering.ts",
+        "src/code-display.ts",
+        "src/syntax/engine.ts"
+      ],
+      "evidence": [
+        "host-results.json",
+        "host-notes-results.json",
+        "host-display-results.json",
+        "host-unified-results.json"
+      ],
+      "completed": true
+    },
+    {
+      "requirement": "schema 3 转换及旧字段保留",
+      "sources": [
+        "src/settings.ts",
+        "src/syntax/settings.ts"
+      ],
+      "evidence": [
+        "host-settings-results.json",
+        "host-unified-results.json"
+      ],
+      "completed": true
+    },
+    {
+      "requirement": "全部语言主题与自定义资源",
+      "sources": [
+        "src/syntax/engine.ts",
+        "src/syntax/resources.ts",
+        "tests/unified-syntax.test.ts"
+      ],
+      "evidence": [
+        "summary.json",
+        "host-unified-results.json"
+      ],
+      "completed": true
+    },
+    {
+      "requirement": "多窗口、停用释放和新进程恢复",
+      "sources": [
+        "src/syntax/runtime.ts",
+        "src/syntax/service.ts"
+      ],
+      "evidence": [
+        "host-multiwindow-results.json",
+        "host-multiwindow-restart-results.json",
+        "host-lifecycle-results.json"
+      ],
+      "completed": true
+    },
+    {
+      "requirement": "工程检查与基础宿主回归",
+      "sources": [
+        "tests/unified.scenario.js",
+        "scripts/test-host.mjs"
+      ],
+      "evidence": [
+        "summary.json"
+      ],
+      "completed": true
+    }
+  ],
+  "hostChecks": 941,
+  "unitTests": 224,
+  "passed": true
+}

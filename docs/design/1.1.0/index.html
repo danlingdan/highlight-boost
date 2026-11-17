@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Highlight Boost 1.1.0 · 交互与视觉定稿</title>
+  <link rel="stylesheet" href="prototype.css">
+</head>
+<body>
+  <header class="review-bar">
+    <div><strong>Highlight Boost <span class="accent">1.1.0</span></strong><small>交互与视觉定稿 · 示例数据</small></div>
+    <div class="review-controls">
+      <label>主题<select id="theme"><option value="light">浅色</option><option value="dark">深色</option></select></label>
+      <label>视图宽度<select id="width"><option value="280">280 px</option><option value="360" selected>360 px</option><option value="600">600 px</option><option value="1080">1080 px</option></select></label>
+    </div>
+  </header>
+  <nav class="scene-nav" aria-label="设计场景" id="scenes"></nav>
+  <main id="stage" class="stage" style="--canvas-width:360px"></main>
+  <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+  <script src="prototype.js"></script>
+</body>
+</html>

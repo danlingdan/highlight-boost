@@ -1,0 +1,103 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "install-hash-LICENSE",
+      "passed": true
+    },
+    {
+      "name": "install-hash-licenses/Expressive-Code-MIT.txt",
+      "passed": true
+    },
+    {
+      "name": "install-hash-licenses/Shiki-Highlighter-MIT.txt",
+      "passed": true
+    },
+    {
+      "name": "install-hash-licenses/Shiki-MIT.txt",
+      "passed": true
+    },
+    {
+      "name": "install-hash-main.js",
+      "passed": true
+    },
+    {
+      "name": "install-hash-manifest.json",
+      "passed": true
+    },
+    {
+      "name": "install-hash-styles.css",
+      "passed": true
+    },
+    {
+      "name": "install-hash-THIRD_PARTY_NOTICES.md",
+      "passed": true
+    },
+    {
+      "name": "install-version-matches-candidate",
+      "passed": true
+    },
+    {
+      "name": "install-restart-note-exists",
+      "passed": true
+    },
+    {
+      "name": "install-restart-settings",
+      "passed": true
+    },
+    {
+      "name": "install-source-persisted",
+      "passed": true
+    },
+    {
+      "name": "install-three-object-types",
+      "passed": true
+    },
+    {
+      "name": "install-sidebar-three-cards",
+      "passed": true
+    },
+    {
+      "name": "install-reading-code-mark",
+      "passed": true
+    },
+    {
+      "name": "install-reading-prose-inline",
+      "passed": true
+    },
+    {
+      "name": "install-reading-annotation",
+      "passed": true
+    },
+    {
+      "name": "install-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "candidate": {
+      "version": "1.0.1",
+      "minAppVersion": "1.15.1",
+      "sourceCommit": "ca4a65024123beabd4b7d4c20c7f9295d476735f",
+      "files": {
+        "LICENSE": "7fda7b20bcb287c1e6c669a8c507c46287920f7211cfd64373cfbce97ed8202d",
+        "licenses/Expressive-Code-MIT.txt": "6f7819c01d385dd627bc92d069823f9c7921eda6a11897df86116c7dfefcd59f",
+        "licenses/Shiki-Highlighter-MIT.txt": "3fb1457aa472de410511dff4969e736641cf9c46f4b422ee450c9064aa55eea0",
+        "licenses/Shiki-MIT.txt": "dee9ba158e159d48f49487dbcf36e49b33c2a6454a9351aaafb1b0a68b3a8b54",
+        "main.js": "e8d008e26af5b2e0ef3c2d3edb9325fd413c55ad0c18a6e5e4ffb6dba291cc80",
+        "manifest.json": "f34d665dffef1d98a47005b87bc68be53396c24ccaaa8e8ae5c0be7840935b0c",
+        "styles.css": "c7d59a679175fd71d8e9dc94d34cf64c134cc50079daf66f29433dc9facb947a",
+        "THIRD_PARTY_NOTICES.md": "051f2bb4f99fbbba4adec40bfe425d05fe3cbebcbfd88baef6a0ffea7ec12168"
+      },
+      "archiveSha256": "51a48310b7f9ac2fd178ba5d83cfa50670e8c27820df69fb7989a24f888d08c0",
+      "archive": "dist/highlight-boost-1.0.1-ca4a6502/highlight-boost.zip",
+      "extractedPlugin": "dist/highlight-boost-1.0.1-ca4a6502/unpacked/highlight-boost"
+    },
+    "restart": true,
+    "errors": []
+  }
+}

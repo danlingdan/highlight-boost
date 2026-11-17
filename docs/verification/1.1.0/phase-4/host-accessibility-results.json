@@ -1,0 +1,2408 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "keyboard-toolbar-visible",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-focused",
+      "passed": true
+    },
+    {
+      "name": "keyboard-geometry-keeps-controls-focus",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-end",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-home",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-arrow",
+      "passed": true
+    },
+    {
+      "name": "keyboard-toolbar-escape-restores-editor",
+      "passed": true
+    },
+    {
+      "name": "ime-composition-active",
+      "passed": true
+    },
+    {
+      "name": "ime-no-floating-toolbar",
+      "passed": true
+    },
+    {
+      "name": "ime-mark-command-deferred",
+      "passed": true
+    },
+    {
+      "name": "ime-chinese-committed",
+      "passed": true
+    },
+    {
+      "name": "ime-inline-composition-active",
+      "passed": true
+    },
+    {
+      "name": "ime-inline-committed-exact",
+      "passed": true
+    },
+    {
+      "name": "ime-inline-committed-stable",
+      "passed": true
+    },
+    {
+      "name": "ime-inline-metadata-preserved",
+      "passed": true
+    },
+    {
+      "name": "ime-code-composition-active",
+      "passed": true
+    },
+    {
+      "name": "ime-code-committed-exact",
+      "passed": true
+    },
+    {
+      "name": "ime-code-committed-stable",
+      "passed": true
+    },
+    {
+      "name": "ime-code-metadata-preserved",
+      "passed": true
+    },
+    {
+      "name": "pdf-whole-line-and-text-annotations",
+      "passed": true
+    },
+    {
+      "name": "ime-and-lines-saved-stably",
+      "passed": true
+    },
+    {
+      "name": "a11y-reading-ready",
+      "passed": true
+    },
+    {
+      "name": "reading-source-remains-committed",
+      "passed": true
+    },
+    {
+      "name": "a11y-copy-button-named",
+      "passed": true
+    },
+    {
+      "name": "a11y-highlight-text-exposed",
+      "passed": true
+    },
+    {
+      "name": "a11y-all-buttons-named",
+      "passed": true
+    },
+    {
+      "name": "a11y-dark-code-mark-ready",
+      "passed": true
+    },
+    {
+      "name": "a11y-dark-code-underline-visible",
+      "passed": true
+    },
+    {
+      "name": "a11y-light-code-mark-ready",
+      "passed": true
+    },
+    {
+      "name": "a11y-light-code-underline-visible",
+      "passed": true
+    },
+    {
+      "name": "contrast-all-marked-text-4_5",
+      "passed": true
+    },
+    {
+      "name": "resize-24-rerenders-source-exact",
+      "passed": true
+    },
+    {
+      "name": "resize-no-observer-loop-errors",
+      "passed": true
+    },
+    {
+      "name": "pdf-export-dialog",
+      "passed": true
+    },
+    {
+      "name": "pdf-actual-export",
+      "passed": true
+    },
+    {
+      "name": "pdf-code-mark-style",
+      "passed": true
+    },
+    {
+      "name": "pdf-full-code-annotation",
+      "passed": true
+    },
+    {
+      "name": "pdf-no-interface-controls",
+      "passed": true
+    },
+    {
+      "name": "pdf-preserves-chinese-code",
+      "passed": true
+    },
+    {
+      "name": "pdf-whole-line-background",
+      "passed": true
+    },
+    {
+      "name": "pdf-metadata-hidden",
+      "passed": true
+    },
+    {
+      "name": "a11y-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "errors": [],
+    "names": [
+      {
+        "role": "RootWebArea",
+        "name": "辅助技术验收 - accessibility - Obsidian 1.15.1"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "打开快速切换"
+      },
+      {
+        "role": "generic",
+        "name": "查看关系图谱"
+      },
+      {
+        "role": "generic",
+        "name": "新建白板"
+      },
+      {
+        "role": "generic",
+        "name": "打开/创建今天的日记"
+      },
+      {
+        "role": "generic",
+        "name": "插入模板"
+      },
+      {
+        "role": "generic",
+        "name": "打开命令面板"
+      },
+      {
+        "role": "generic",
+        "name": "新建数据库"
+      },
+      {
+        "role": "generic",
+        "name": "当前笔记重点"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "最小化"
+      },
+      {
+        "role": "generic",
+        "name": "最大化"
+      },
+      {
+        "role": "generic",
+        "name": "关闭"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "separator",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "separator",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "阅读视图"
+      },
+      {
+        "role": "StaticText",
+        "name": "27 个词"
+      },
+      {
+        "role": "StaticText",
+        "name": "96 个字符"
+      },
+      {
+        "role": "generic",
+        "name": "Uninitialized"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "0 条反向链接"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "27 个词"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "96 个字符"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "请选择文本，或将光标放入已有高亮。"
+      },
+      {
+        "role": "StaticText",
+        "name": "accessibility"
+      },
+      {
+        "role": "group",
+        "name": "文件列表"
+      },
+      {
+        "role": "group",
+        "name": "搜索"
+      },
+      {
+        "role": "group",
+        "name": "书签"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "generic",
+        "name": "新标签页"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "0 条反向链接"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "请选择文本，或将光标放入已有高亮。"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "accessibility"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "新建笔记"
+      },
+      {
+        "role": "generic",
+        "name": "新建文件夹"
+      },
+      {
+        "role": "generic",
+        "name": "排序"
+      },
+      {
+        "role": "generic",
+        "name": "自动显示当前文件"
+      },
+      {
+        "role": "generic",
+        "name": "全部展开"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "关闭"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": "反向链接"
+      },
+      {
+        "role": "group",
+        "name": "出链"
+      },
+      {
+        "role": "group",
+        "name": "标签"
+      },
+      {
+        "role": "group",
+        "name": "添加笔记属性"
+      },
+      {
+        "role": "group",
+        "name": "大纲"
+      },
+      {
+        "role": "group",
+        "name": "高亮工作台"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "返回"
+      },
+      {
+        "role": "button",
+        "name": "前进"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "该标签页处于阅读视图中 点击此处切换至编辑视图 Ctrl+单击以在新标签页中打开"
+      },
+      {
+        "role": "button",
+        "name": "更多选项"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "heading",
+        "name": "高亮工作台"
+      },
+      {
+        "role": "button",
+        "name": "更多"
+      },
+      {
+        "role": "group",
+        "name": "检索范围"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "searchbox",
+        "name": "搜索当前笔记重点"
+      },
+      {
+        "role": "button",
+        "name": "筛选"
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "status",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收 · 4 条"
+      },
+      {
+        "role": "combobox",
+        "name": "排序"
+      },
+      {
+        "role": "button",
+        "name": "生成摘录"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "重点"
+      },
+      {
+        "role": "StaticText",
+        "name": "正文"
+      },
+      {
+        "role": "button",
+        "name": "alpha"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "定位"
+      },
+      {
+        "role": "button",
+        "name": "批注"
+      },
+      {
+        "role": "button",
+        "name": "复制"
+      },
+      {
+        "role": "button",
+        "name": "更多"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "疑问"
+      },
+      {
+        "role": "StaticText",
+        "name": "行内代码"
+      },
+      {
+        "role": "button",
+        "name": "5inline()测试"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "定位"
+      },
+      {
+        "role": "button",
+        "name": "批注"
+      },
+      {
+        "role": "button",
+        "name": "复制"
+      },
+      {
+        "role": "button",
+        "name": "更多"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "行动"
+      },
+      {
+        "role": "StaticText",
+        "name": "代码 · js"
+      },
+      {
+        "role": "button",
+        "name": "2console.log(value);测试"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "定位"
+      },
+      {
+        "role": "button",
+        "name": "批注"
+      },
+      {
+        "role": "button",
+        "name": "复制"
+      },
+      {
+        "role": "button",
+        "name": "更多"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "引用"
+      },
+      {
+        "role": "StaticText",
+        "name": "代码 · js"
+      },
+      {
+        "role": "button",
+        "name": "2value"
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "定位"
+      },
+      {
+        "role": "button",
+        "name": "批注"
+      },
+      {
+        "role": "button",
+        "name": "复制"
+      },
+      {
+        "role": "button",
+        "name": "更多"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "heading",
+        "name": "​ 辅助技术验收"
+      },
+      {
+        "role": "paragraph",
+        "name": ""
+      },
+      {
+        "role": "paragraph",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "代码标注 · 2 条 · 引用 / 行动"
+      },
+      {
+        "role": "button",
+        "name": "复制当前代码块"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "paragraph",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "高亮工作台"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "button",
+        "name": "当前笔记"
+      },
+      {
+        "role": "button",
+        "name": "当前目录"
+      },
+      {
+        "role": "button",
+        "name": "全库"
+      },
+      {
+        "role": "button",
+        "name": "集合"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "筛选"
+      },
+      {
+        "role": "StaticText",
+        "name": "已索引 2 篇笔记"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收 · 4 条"
+      },
+      {
+        "role": "MenuListPopup",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "生成摘录"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "重点"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "正文"
+      },
+      {
+        "role": "StaticText",
+        "name": "alpha"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收.md"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "定位"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "批注"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "复制"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "疑问"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "行内代码"
+      },
+      {
+        "role": "StaticText",
+        "name": "5"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "5"
+      },
+      {
+        "role": "StaticText",
+        "name": "inline()测试"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收.md"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "定位"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "批注"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "复制"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "行动"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "代码 · js"
+      },
+      {
+        "role": "StaticText",
+        "name": "2"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "2"
+      },
+      {
+        "role": "StaticText",
+        "name": "console.log(value);测试"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收.md"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "代码上下文 · 第 1—2 行"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "定位"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "批注"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "复制"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "引用"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "代码 · js"
+      },
+      {
+        "role": "StaticText",
+        "name": "2"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "2"
+      },
+      {
+        "role": "StaticText",
+        "name": "value"
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "代码批注：保留变量含义。"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收.md"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "代码上下文 · 第 1—2 行"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "定位"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "批注"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "复制"
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "StaticText",
+        "name": "原型验证"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "image",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "键盘重点 "
+      },
+      {
+        "role": "mark",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "，正文内容。"
+      },
+      {
+        "role": "StaticText",
+        "name": "行内 "
+      },
+      {
+        "role": "code",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "。"
+      },
+      {
+        "role": "StaticText",
+        "name": "代码标注 · 2 条 · 引用 / 行动"
+      },
+      {
+        "role": "StaticText",
+        "name": "复制当前代码块"
+      },
+      {
+        "role": "figure",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": "输入："
+      },
+      {
+        "role": "LineBreak",
+        "name": "\n"
+      },
+      {
+        "role": "StaticText",
+        "name": "中文输入"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "高亮工作台"
+      },
+      {
+        "role": "StaticText",
+        "name": "当前笔记"
+      },
+      {
+        "role": "StaticText",
+        "name": "当前目录"
+      },
+      {
+        "role": "StaticText",
+        "name": "全库"
+      },
+      {
+        "role": "StaticText",
+        "name": "集合"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "筛选"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "已索引 2 篇笔记"
+      },
+      {
+        "role": "option",
+        "name": "原文顺序"
+      },
+      {
+        "role": "option",
+        "name": "语义顺序"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "生成摘录"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "alpha"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收.md"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "定位"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "批注"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "复制"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "5"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "inline()测试"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收.md"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "定位"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "批注"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "复制"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "2"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "console.log(value);测试"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收.md"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "代码上下文 · 第 1—2 行"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "定位"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "批注"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "复制"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "2"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "value"
+      },
+      {
+        "role": "StaticText",
+        "name": "代码批注：保留变量含义。"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收.md"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "代码上下文 · 第 1—2 行"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "定位"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "批注"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "复制"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "原型验证"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "StaticText",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "辅助技术验收"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "键盘重点 "
+      },
+      {
+        "role": "StaticText",
+        "name": "alpha"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "，正文内容。"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "行内 "
+      },
+      {
+        "role": "StaticText",
+        "name": "inline()测试"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "。"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "代码标注 · 2 条 · 引用 / 行动"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "复制当前代码块"
+      },
+      {
+        "role": "code",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": "批注"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "输入："
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "\n"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "中文输入"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "当前笔记"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "当前目录"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "全库"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "集合"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "筛选"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "代码上下文 · 第 1—2 行"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "代码批注：保留变量含义。"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "代码上下文 · 第 1—2 行"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "​"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "alpha"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "inline()测试"
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "group",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "DisclosureTriangle",
+        "name": "🗨 引用"
+      },
+      {
+        "role": "StaticText",
+        "name": "const"
+      },
+      {
+        "role": "StaticText",
+        "name": " value "
+      },
+      {
+        "role": "StaticText",
+        "name": "="
+      },
+      {
+        "role": "StaticText",
+        "name": " "
+      },
+      {
+        "role": "StaticText",
+        "name": "1"
+      },
+      {
+        "role": "StaticText",
+        "name": ";"
+      },
+      {
+        "role": "StaticText",
+        "name": "console"
+      },
+      {
+        "role": "StaticText",
+        "name": "."
+      },
+      {
+        "role": "StaticText",
+        "name": "log"
+      },
+      {
+        "role": "StaticText",
+        "name": "("
+      },
+      {
+        "role": "generic",
+        "name": ""
+      },
+      {
+        "role": "StaticText",
+        "name": ");"
+      },
+      {
+        "role": "StaticText",
+        "name": "测试"
+      },
+      {
+        "role": "StaticText",
+        "name": "🗨 引用"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "const"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": " value "
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "="
+      },
+      {
+        "role": "InlineTextBox",
+        "name": " "
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "1"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": ";"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "console"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "."
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "log"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "("
+      },
+      {
+        "role": "StaticText",
+        "name": "value"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": ");"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "测试"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "🗨 引用"
+      },
+      {
+        "role": "InlineTextBox",
+        "name": "value"
+      }
+    ],
+    "contrast": [
+      {
+        "appearance": "dark",
+        "target": "code-default-default",
+        "ratio": 7.49596548576569,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-default-red",
+        "ratio": 7.49596548576569,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-default-orange",
+        "ratio": 7.49596548576569,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-default-yellow",
+        "ratio": 7.49596548576569,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-default-green",
+        "ratio": 7.49596548576569,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-default-blue",
+        "ratio": 7.49596548576569,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-default-purple",
+        "ratio": 7.49596548576569,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-red-default",
+        "ratio": 6.598297467840337,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-red-red",
+        "ratio": 6.598297467840337,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-red-orange",
+        "ratio": 6.598297467840337,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-red-yellow",
+        "ratio": 6.598297467840337,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-red-green",
+        "ratio": 6.598297467840337,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-red-blue",
+        "ratio": 6.598297467840337,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-red-purple",
+        "ratio": 6.598297467840337,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-orange-default",
+        "ratio": 6.142059025473232,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-orange-red",
+        "ratio": 6.142059025473232,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-orange-orange",
+        "ratio": 6.142059025473232,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-orange-yellow",
+        "ratio": 6.142059025473232,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-orange-green",
+        "ratio": 6.142059025473232,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-orange-blue",
+        "ratio": 6.142059025473232,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-orange-purple",
+        "ratio": 6.142059025473232,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-yellow-default",
+        "ratio": 5.577945565922571,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-yellow-red",
+        "ratio": 5.577945565922571,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-yellow-orange",
+        "ratio": 5.577945565922571,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-yellow-yellow",
+        "ratio": 5.577945565922571,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-yellow-green",
+        "ratio": 5.577945565922571,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-yellow-blue",
+        "ratio": 5.577945565922571,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-yellow-purple",
+        "ratio": 5.577945565922571,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-green-default",
+        "ratio": 6.019882011333299,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-green-red",
+        "ratio": 6.019882011333299,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-green-orange",
+        "ratio": 6.019882011333299,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-green-yellow",
+        "ratio": 6.019882011333299,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-green-green",
+        "ratio": 6.019882011333299,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-green-blue",
+        "ratio": 6.019882011333299,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-green-purple",
+        "ratio": 6.019882011333299,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-blue-default",
+        "ratio": 6.68631438043473,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-blue-red",
+        "ratio": 6.68631438043473,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-blue-orange",
+        "ratio": 6.68631438043473,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-blue-yellow",
+        "ratio": 6.68631438043473,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-blue-green",
+        "ratio": 6.68631438043473,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-blue-blue",
+        "ratio": 6.68631438043473,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-blue-purple",
+        "ratio": 6.68631438043473,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-purple-default",
+        "ratio": 6.2841563009795225,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-purple-red",
+        "ratio": 6.2841563009795225,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-purple-orange",
+        "ratio": 6.2841563009795225,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-purple-yellow",
+        "ratio": 6.2841563009795225,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-purple-green",
+        "ratio": 6.2841563009795225,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-purple-blue",
+        "ratio": 6.2841563009795225,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "code-purple-purple",
+        "ratio": 6.2841563009795225,
+        "foreground": "rgb(179, 179, 179)"
+      },
+      {
+        "appearance": "dark",
+        "target": "prose",
+        "ratio": 5.3885478979224475
+      },
+      {
+        "appearance": "dark",
+        "target": "inline",
+        "ratio": 11.242798919556584
+      },
+      {
+        "appearance": "light",
+        "target": "code-default-default",
+        "ratio": 6.406530849084771,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-default-red",
+        "ratio": 6.406530849084771,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-default-orange",
+        "ratio": 6.406530849084771,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-default-yellow",
+        "ratio": 6.406530849084771,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-default-green",
+        "ratio": 6.406530849084771,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-default-blue",
+        "ratio": 6.406530849084771,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-default-purple",
+        "ratio": 6.406530849084771,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-red-default",
+        "ratio": 5.363925372229811,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-red-red",
+        "ratio": 5.363925372229811,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-red-orange",
+        "ratio": 5.363925372229811,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-red-yellow",
+        "ratio": 5.363925372229811,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-red-green",
+        "ratio": 5.363925372229811,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-red-blue",
+        "ratio": 5.363925372229811,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-red-purple",
+        "ratio": 5.363925372229811,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-orange-default",
+        "ratio": 5.626481510491862,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-orange-red",
+        "ratio": 5.626481510491862,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-orange-orange",
+        "ratio": 5.626481510491862,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-orange-yellow",
+        "ratio": 5.626481510491862,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-orange-green",
+        "ratio": 5.626481510491862,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-orange-blue",
+        "ratio": 5.626481510491862,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-orange-purple",
+        "ratio": 5.626481510491862,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-yellow-default",
+        "ratio": 5.860760487780455,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-yellow-red",
+        "ratio": 5.860760487780455,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-yellow-orange",
+        "ratio": 5.860760487780455,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-yellow-yellow",
+        "ratio": 5.860760487780455,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-yellow-green",
+        "ratio": 5.860760487780455,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-yellow-blue",
+        "ratio": 5.860760487780455,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-yellow-purple",
+        "ratio": 5.860760487780455,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-green-default",
+        "ratio": 5.650612704725204,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-green-red",
+        "ratio": 5.650612704725204,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-green-orange",
+        "ratio": 5.650612704725204,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-green-yellow",
+        "ratio": 5.650612704725204,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-green-green",
+        "ratio": 5.650612704725204,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-green-blue",
+        "ratio": 5.650612704725204,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-green-purple",
+        "ratio": 5.650612704725204,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-blue-default",
+        "ratio": 5.386639843902536,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-blue-red",
+        "ratio": 5.386639843902536,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-blue-orange",
+        "ratio": 5.386639843902536,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-blue-yellow",
+        "ratio": 5.386639843902536,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-blue-green",
+        "ratio": 5.386639843902536,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-blue-blue",
+        "ratio": 5.386639843902536,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-blue-purple",
+        "ratio": 5.386639843902536,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-purple-default",
+        "ratio": 5.432853976888432,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-purple-red",
+        "ratio": 5.432853976888432,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-purple-orange",
+        "ratio": 5.432853976888432,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-purple-yellow",
+        "ratio": 5.432853976888432,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-purple-green",
+        "ratio": 5.432853976888432,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-purple-blue",
+        "ratio": 5.432853976888432,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "code-purple-purple",
+        "ratio": 5.432853976888432,
+        "foreground": "rgb(92, 92, 92)"
+      },
+      {
+        "appearance": "light",
+        "target": "prose",
+        "ratio": 12.788719983713651
+      },
+      {
+        "appearance": "light",
+        "target": "inline",
+        "ratio": 15.242876560928476
+      }
+    ],
+    "resizeIterations": 24,
+    "ime": "Chromium Input.imeSetComposition + Input.insertText",
+    "pdf": {
+      "bytes": 117635,
+      "header": "%PDF-",
+      "rendering": {
+        "text": "辅助技术验收\n\n键盘重点 alpha，正文内容。\n\n行内 inline()测试。\n\nconst value = 1;\nconsole.log(value);测试\n🗨 引用\n代码批注：保留变量含义。\n第二行批注。\n\n输入：\n中文输入",
+        "codeMark": "value",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "underline",
+        "noteVisible": true,
+        "note": "代码批注：保留变量含义。\n第二行批注。",
+        "line": "console.log(value);测试",
+        "lineBackground": "color(srgb 0.0313726 0.72549 0.305882 / 0.12)"
+      }
+    }
+  }
+}

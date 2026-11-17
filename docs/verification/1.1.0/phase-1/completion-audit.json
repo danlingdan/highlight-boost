@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-16",
+  "scope": "1.1.0 第一阶段：交互与视觉定稿",
+  "requirements": [
+    {
+      "requirement": "工具栏、窄宽工作台、代码、批注、摘录、设置样稿",
+      "artifact": "docs/design/1.1.0/index.html",
+      "sha256": "381390a5f88b9eb0dc35627c1d511abb4d66ca35074e40f09aacdb21ed0ded92",
+      "completed": true
+    },
+    {
+      "requirement": "深浅主题、组件状态、功能入口与主题变量",
+      "artifact": "docs/design/1.1.0/interface.md",
+      "sha256": "f9feb32b296c9e90c20736a6e4549370a9a1d643fa23ac14211fdc9b8f86ebfc",
+      "completed": true
+    },
+    {
+      "requirement": "普通代码、专用处理器与视图归属",
+      "artifact": "docs/design/1.1.0/code-integration.md",
+      "sha256": "8d211e7db8882e130b4ab09bb62da8ef32856e6a0aefef8e08c468df46ef45bd",
+      "completed": true
+    },
+    {
+      "requirement": "展示参数与旧配置迁移表",
+      "artifact": "docs/design/1.1.0/code-integration.md",
+      "sha256": "8d211e7db8882e130b4ab09bb62da8ef32856e6a0aefef8e08c468df46ef45bd",
+      "completed": true
+    },
+    {
+      "requirement": "语言、参数、主题、终端框、局部折叠能力矩阵",
+      "artifact": "docs/design/1.1.0/code-capabilities.md",
+      "sha256": "de1f4bf82d49123832bd1179f6ae52384ec6bc1842fd06ca8a3831a7f816b74b",
+      "completed": true
+    },
+    {
+      "requirement": "实现入口与固定输入样例",
+      "artifact": "docs/design/1.1.0/code-fixtures.md",
+      "sha256": "009f37c13776dc1cb156ab869f67c144fe27c59eb7acfb31d808cd7eb0a736e6",
+      "completed": true
+    },
+    {
+      "requirement": "源记录、引擎基线与样稿验证",
+      "artifact": "docs/verification/1.1.0/phase-1/README.md",
+      "sha256": "c32d8c8be1dfefb2a3c8b0337c8c4a664938450100646cb0f769868c5b7eb16a",
+      "completed": true
+    }
+  ],
+  "designLayouts": 50,
+  "designChecks": 39,
+  "baselineChecks": 9,
+  "sourceFilesVerified": 11,
+  "passed": true
+}

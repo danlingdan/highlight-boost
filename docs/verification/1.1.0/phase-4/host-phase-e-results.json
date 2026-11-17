@@ -1,0 +1,173 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "e-vault-unified-six-results",
+      "passed": true
+    },
+    {
+      "name": "e-global-source-paths",
+      "passed": true
+    },
+    {
+      "name": "e-workbench-command",
+      "passed": true
+    },
+    {
+      "name": "e-folder-includes-descendants",
+      "passed": true
+    },
+    {
+      "name": "e-current-note-three-results",
+      "passed": true
+    },
+    {
+      "name": "e-code-filter",
+      "passed": true
+    },
+    {
+      "name": "e-combined-filters",
+      "passed": true
+    },
+    {
+      "name": "e-combined-empty-state",
+      "passed": true
+    },
+    {
+      "name": "e-editor-buffer-indexed",
+      "passed": true
+    },
+    {
+      "name": "e-buffer-update-keeps-other-note-cache",
+      "passed": true
+    },
+    {
+      "name": "e-external-modify-indexed",
+      "passed": true
+    },
+    {
+      "name": "e-non-markdown-rename-leaves-index",
+      "passed": true
+    },
+    {
+      "name": "e-markdown-rename-reenters-index",
+      "passed": true
+    },
+    {
+      "name": "e-collection-name-dialog",
+      "passed": true
+    },
+    {
+      "name": "e-create-collection-ui",
+      "passed": true
+    },
+    {
+      "name": "e-add-collection-deduplicates",
+      "passed": true
+    },
+    {
+      "name": "e-collection-unifies-native-semantic-code",
+      "passed": true
+    },
+    {
+      "name": "e-semantic-groups",
+      "passed": true
+    },
+    {
+      "name": "e-file-rename-removes-old-key",
+      "passed": true
+    },
+    {
+      "name": "e-file-rename-updates-collection",
+      "passed": true
+    },
+    {
+      "name": "e-folder-rename-updates-all-entries",
+      "passed": true
+    },
+    {
+      "name": "e-folder-rename-updates-cards",
+      "passed": true
+    },
+    {
+      "name": "e-rebuild-equals-incremental",
+      "passed": true
+    },
+    {
+      "name": "e-cross-note-source-jump",
+      "passed": true
+    },
+    {
+      "name": "e-cross-note-jump-keeps-other-source",
+      "passed": true
+    },
+    {
+      "name": "e-delete-removes-index-entry",
+      "passed": true
+    },
+    {
+      "name": "e-collection-keeps-deleted-excerpt",
+      "passed": true
+    },
+    {
+      "name": "e-collection-language-filter",
+      "passed": true
+    },
+    {
+      "name": "e-template-setting-persists",
+      "passed": true
+    },
+    {
+      "name": "e-plain-template",
+      "passed": true
+    },
+    {
+      "name": "e-code-template",
+      "passed": true
+    },
+    {
+      "name": "e-quote-template",
+      "passed": true
+    },
+    {
+      "name": "e-export-note-created",
+      "passed": true
+    },
+    {
+      "name": "e-export-source-context-and-pending",
+      "passed": true
+    },
+    {
+      "name": "e-export-not-reindexed",
+      "passed": true
+    },
+    {
+      "name": "e-export-link-resolves-renamed-source",
+      "passed": true
+    },
+    {
+      "name": "e-export-link-opens-source",
+      "passed": true
+    },
+    {
+      "name": "e-export-keeps-source-exact",
+      "passed": true
+    },
+    {
+      "name": "e-workbench-english",
+      "passed": true
+    },
+    {
+      "name": "e-current-note-command-resets-saved-filter",
+      "passed": true
+    },
+    {
+      "name": "e-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

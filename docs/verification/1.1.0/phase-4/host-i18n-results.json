@@ -1,0 +1,149 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "zh-sidebar-title",
+      "passed": true
+    },
+    {
+      "name": "language-control-updates-settings",
+      "passed": true
+    },
+    {
+      "name": "english-commands-update",
+      "passed": true
+    },
+    {
+      "name": "english-color-and-static-commands",
+      "passed": true
+    },
+    {
+      "name": "english-default-preset-display",
+      "passed": true
+    },
+    {
+      "name": "language-keeps-configured-names",
+      "passed": true
+    },
+    {
+      "name": "language-keeps-note-snapshots",
+      "passed": true
+    },
+    {
+      "name": "english-sidebar-title",
+      "passed": true
+    },
+    {
+      "name": "english-sidebar-tab-title",
+      "passed": true
+    },
+    {
+      "name": "english-sidebar-content-labels",
+      "passed": true
+    },
+    {
+      "name": "english-legacy-color-label",
+      "passed": true
+    },
+    {
+      "name": "english-metadata-labels",
+      "passed": true
+    },
+    {
+      "name": "english-metadata-accessibility",
+      "passed": true
+    },
+    {
+      "name": "english-setting-accessibility",
+      "passed": true
+    },
+    {
+      "name": "same-as-default-name-can-be-custom",
+      "passed": true
+    },
+    {
+      "name": "custom-name-command-updates",
+      "passed": true
+    },
+    {
+      "name": "english-picker-placeholder",
+      "passed": true
+    },
+    {
+      "name": "bilingual-color-search",
+      "passed": true
+    },
+    {
+      "name": "english-picker-render",
+      "passed": true
+    },
+    {
+      "name": "open-picker-switches-language",
+      "passed": true
+    },
+    {
+      "name": "custom-name-keeps-original-text",
+      "passed": true
+    },
+    {
+      "name": "picker-closes-cleanly",
+      "passed": true
+    },
+    {
+      "name": "english-empty-selection-notice",
+      "passed": true
+    },
+    {
+      "name": "english-core-editing-notice",
+      "passed": true
+    },
+    {
+      "name": "switching-and-notices-keep-source",
+      "passed": true
+    },
+    {
+      "name": "new-default-annotation-uses-english-name",
+      "passed": true
+    },
+    {
+      "name": "custom-annotation-keeps-custom-name",
+      "passed": true
+    },
+    {
+      "name": "builtin-code-english-tooltip",
+      "passed": true
+    },
+    {
+      "name": "builtin-code-english-collapse",
+      "passed": true
+    },
+    {
+      "name": "builtin-code-tooltip-updates-live",
+      "passed": true
+    },
+    {
+      "name": "builtin-code-collapse-updates-live",
+      "passed": true
+    },
+    {
+      "name": "builtin-code-copy-data-kept",
+      "passed": true
+    },
+    {
+      "name": "auto-language-setting-persists",
+      "passed": true
+    },
+    {
+      "name": "language-switch-keeps-saved-note",
+      "passed": true
+    },
+    {
+      "name": "i18n-no-runtime-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

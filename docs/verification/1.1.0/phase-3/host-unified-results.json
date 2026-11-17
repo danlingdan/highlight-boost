@@ -1,0 +1,712 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "native-migrates-schema-3",
+      "passed": true
+    },
+    {
+      "name": "native-unified-engine-enabled",
+      "passed": true
+    },
+    {
+      "name": "native-migration-persisted",
+      "passed": true
+    },
+    {
+      "name": "native-migration-keeps-display",
+      "passed": true
+    },
+    {
+      "name": "native-migration-keeps-collections",
+      "passed": true
+    },
+    {
+      "name": "native-migration-keeps-note",
+      "passed": true
+    },
+    {
+      "name": "shiki-migrates-schema-3",
+      "passed": true
+    },
+    {
+      "name": "shiki-unified-engine-enabled",
+      "passed": true
+    },
+    {
+      "name": "shiki-migration-persisted",
+      "passed": true
+    },
+    {
+      "name": "shiki-migration-keeps-display",
+      "passed": true
+    },
+    {
+      "name": "shiki-migration-keeps-collections",
+      "passed": true
+    },
+    {
+      "name": "shiki-migration-keeps-note",
+      "passed": true
+    },
+    {
+      "name": "cpp-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "cpp-live-component",
+      "passed": true
+    },
+    {
+      "name": "cpp-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "cpp-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "cpp-editor-syntax",
+      "passed": true
+    },
+    {
+      "name": "cpp-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "cpp-one-undo",
+      "passed": true
+    },
+    {
+      "name": "cpp-live-mark",
+      "passed": true
+    },
+    {
+      "name": "cpp-reading-component",
+      "passed": true
+    },
+    {
+      "name": "cpp-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "cpp-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "cpp-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "cpp-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "csharp-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "csharp-live-component",
+      "passed": true
+    },
+    {
+      "name": "csharp-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "csharp-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "csharp-editor-syntax",
+      "passed": true
+    },
+    {
+      "name": "csharp-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "csharp-one-undo",
+      "passed": true
+    },
+    {
+      "name": "csharp-live-mark",
+      "passed": true
+    },
+    {
+      "name": "csharp-reading-component",
+      "passed": true
+    },
+    {
+      "name": "csharp-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "csharp-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "csharp-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "csharp-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "fsharp-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "fsharp-live-component",
+      "passed": true
+    },
+    {
+      "name": "fsharp-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "fsharp-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "fsharp-editor-syntax",
+      "passed": true
+    },
+    {
+      "name": "fsharp-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "fsharp-one-undo",
+      "passed": true
+    },
+    {
+      "name": "fsharp-live-mark",
+      "passed": true
+    },
+    {
+      "name": "fsharp-reading-component",
+      "passed": true
+    },
+    {
+      "name": "fsharp-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "fsharp-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "fsharp-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "fsharp-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "wenyan-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "wenyan-live-component",
+      "passed": true
+    },
+    {
+      "name": "wenyan-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "wenyan-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "wenyan-editor-syntax",
+      "passed": true
+    },
+    {
+      "name": "wenyan-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "wenyan-one-undo",
+      "passed": true
+    },
+    {
+      "name": "wenyan-live-mark",
+      "passed": true
+    },
+    {
+      "name": "wenyan-reading-component",
+      "passed": true
+    },
+    {
+      "name": "wenyan-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "wenyan-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "wenyan-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "wenyan-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "unknown-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "unknown-live-component",
+      "passed": true
+    },
+    {
+      "name": "unknown-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "unknown-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "unknown-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "unknown-one-undo",
+      "passed": true
+    },
+    {
+      "name": "unknown-live-mark",
+      "passed": true
+    },
+    {
+      "name": "unknown-reading-component",
+      "passed": true
+    },
+    {
+      "name": "unknown-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "unknown-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "unknown-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "unknown-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "plain-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "plain-live-component",
+      "passed": true
+    },
+    {
+      "name": "plain-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "plain-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "plain-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "plain-one-undo",
+      "passed": true
+    },
+    {
+      "name": "plain-live-mark",
+      "passed": true
+    },
+    {
+      "name": "plain-reading-component",
+      "passed": true
+    },
+    {
+      "name": "plain-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "plain-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "plain-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "plain-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "markers-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "markers-live-component",
+      "passed": true
+    },
+    {
+      "name": "markers-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "markers-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "markers-editor-syntax",
+      "passed": true
+    },
+    {
+      "name": "parameter-text-mark-in-editor",
+      "passed": true
+    },
+    {
+      "name": "markers-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "markers-one-undo",
+      "passed": true
+    },
+    {
+      "name": "markers-live-mark",
+      "passed": true
+    },
+    {
+      "name": "markers-reading-component",
+      "passed": true
+    },
+    {
+      "name": "markers-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "markers-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "markers-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "fold-whole-block-default-collapsed",
+      "passed": true
+    },
+    {
+      "name": "fold-whole-block-expands",
+      "passed": true
+    },
+    {
+      "name": "fold-local-section-expands",
+      "passed": true
+    },
+    {
+      "name": "fold-rerender-completes",
+      "passed": true
+    },
+    {
+      "name": "fold-rerender-keeps-whole-state",
+      "passed": true
+    },
+    {
+      "name": "fold-rerender-keeps-local-state",
+      "passed": true
+    },
+    {
+      "name": "markers-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "terminal-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "terminal-live-component",
+      "passed": true
+    },
+    {
+      "name": "terminal-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "terminal-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "terminal-editor-syntax",
+      "passed": true
+    },
+    {
+      "name": "terminal-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "terminal-one-undo",
+      "passed": true
+    },
+    {
+      "name": "terminal-live-mark",
+      "passed": true
+    },
+    {
+      "name": "terminal-reading-component",
+      "passed": true
+    },
+    {
+      "name": "terminal-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "terminal-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "terminal-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "terminal-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "ansi-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "ansi-live-component",
+      "passed": true
+    },
+    {
+      "name": "ansi-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "ansi-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "ansi-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "ansi-one-undo",
+      "passed": true
+    },
+    {
+      "name": "ansi-live-mark",
+      "passed": true
+    },
+    {
+      "name": "ansi-reading-component",
+      "passed": true
+    },
+    {
+      "name": "ansi-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "ansi-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "ansi-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "ansi-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "diff-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "diff-live-component",
+      "passed": true
+    },
+    {
+      "name": "diff-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "diff-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "diff-editor-syntax",
+      "passed": true
+    },
+    {
+      "name": "diff-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "diff-one-undo",
+      "passed": true
+    },
+    {
+      "name": "diff-live-mark",
+      "passed": true
+    },
+    {
+      "name": "diff-reading-component",
+      "passed": true
+    },
+    {
+      "name": "diff-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "diff-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "diff-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "diff-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-editor-loads-source",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-live-component",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-live-source-text",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-edit-removes-widget",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-editor-syntax",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-annotation-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-one-undo",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-live-mark",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-reading-component",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-reading-source-text",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-one-visible-copy",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-copy-original-code",
+      "passed": true
+    },
+    {
+      "name": "diff-syntax-source-unchanged-after-reading",
+      "passed": true
+    },
+    {
+      "name": "excluded-alias-no-component",
+      "passed": true
+    },
+    {
+      "name": "restore-alias-without-restart",
+      "passed": true
+    },
+    {
+      "name": "inline-language-render",
+      "passed": true
+    },
+    {
+      "name": "inline-disable-restores-literal",
+      "passed": true
+    },
+    {
+      "name": "custom-language-and-theme-in-reading",
+      "passed": true
+    },
+    {
+      "name": "custom-theme-color-applied",
+      "passed": true
+    },
+    {
+      "name": "custom-resource-reload-updates-reading",
+      "passed": true
+    },
+    {
+      "name": "resource-reload-keeps-note",
+      "passed": true
+    },
+    {
+      "name": "dedicated-mermaid-keeps-renderer",
+      "passed": true
+    },
+    {
+      "name": "dedicated-mermaid-not-wrapped",
+      "passed": true
+    },
+    {
+      "name": "containers-reading-five-independent-components",
+      "passed": true
+    },
+    {
+      "name": "containers-reading-distinct-source-ranges",
+      "passed": true
+    },
+    {
+      "name": "containers-live-components",
+      "passed": true
+    },
+    {
+      "name": "containers-source-unchanged",
+      "passed": true
+    },
+    {
+      "name": "embed-reading-separate-sources",
+      "passed": true
+    },
+    {
+      "name": "embed-live-source-component",
+      "passed": true
+    },
+    {
+      "name": "embed-source-files-unchanged",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

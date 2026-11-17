@@ -1,0 +1,37 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "editor-full-line-background",
+      "passed": true
+    },
+    {
+      "name": "reading-line-background",
+      "passed": true
+    },
+    {
+      "name": "reading-full-line-background",
+      "passed": true
+    },
+    {
+      "name": "reading-soft-wrap",
+      "passed": true
+    },
+    {
+      "name": "text-highlight-crosses-wraps",
+      "passed": true
+    },
+    {
+      "name": "layout-keeps-code-text",
+      "passed": true
+    },
+    {
+      "name": "layout-keeps-source",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

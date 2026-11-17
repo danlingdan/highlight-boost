@@ -1,0 +1,180 @@
+{
+  "objective": "完成阶段3",
+  "scope": "docs/plan/11-1.1.0体验融合计划.md 第三阶段及 docs/design/1.1.0/interface.md 对应实现",
+  "requirements": [
+    {
+      "requirement": "共享视觉与容器布局",
+      "status": "passed",
+      "sources": [
+        "src/styles.css",
+        "src/ui.ts"
+      ],
+      "reports": [
+        "host-fusion-results.json"
+      ],
+      "evidence": "六组宽度与主题检查，实际截图"
+    },
+    {
+      "requirement": "工作台范围、筛选、分组、分页和空状态",
+      "status": "passed",
+      "sources": [
+        "src/workbench.ts"
+      ],
+      "reports": [
+        "host-fusion-results.json",
+        "host-phase-e-results.json",
+        "host-pagination-results.json"
+      ],
+      "evidence": "完整查询、范围命令、活动条件与分页"
+    },
+    {
+      "requirement": "统一条目动作与稳定状态",
+      "status": "passed",
+      "sources": [
+        "src/workbench-card.ts",
+        "src/workbench.ts"
+      ],
+      "reports": [
+        "host-selection-results.json",
+        "host-phase-d-results.json",
+        "host-fusion-results.json"
+      ],
+      "evidence": "定位、复制、语义、颜色、重绑、展开与焦点"
+    },
+    {
+      "requirement": "选区语义、颜色和后续整理",
+      "status": "passed",
+      "sources": [
+        "src/selection-toolbar.ts"
+      ],
+      "reports": [
+        "host-selection-results.json",
+        "host-fusion-results.json"
+      ],
+      "evidence": "选区保持、混合多选、重叠目标选择和非重叠批量操作"
+    },
+    {
+      "requirement": "共享批注、草稿冲突和撤销",
+      "status": "passed",
+      "sources": [
+        "src/item-actions.ts",
+        "src/ui.ts"
+      ],
+      "reports": [
+        "host-notes-results.json",
+        "host-fusion-results.json",
+        "host-multiwindow-actions-results.json"
+      ],
+      "evidence": "原文摘要、刷新目标、保存取消与原编辑器撤销重做"
+    },
+    {
+      "requirement": "集合创建、加入与管理",
+      "status": "passed",
+      "sources": [
+        "src/item-actions.ts",
+        "src/workbench.ts"
+      ],
+      "reports": [
+        "host-fusion-results.json",
+        "host-phase-e-results.json",
+        "host-phase-e-restart-results.json"
+      ],
+      "evidence": "共享选择、创建、去重、快照、检索和移除"
+    },
+    {
+      "requirement": "完整查询摘录快照",
+      "status": "passed",
+      "sources": [
+        "src/excerpt-modal.ts",
+        "src/main.ts"
+      ],
+      "reports": [
+        "host-fusion-results.json",
+        "host-phase-e-results.json",
+        "host-pagination-results.json"
+      ],
+      "evidence": "全量数量、四种模板、预览与输出一致、变化提示"
+    },
+    {
+      "requirement": "代码组件与条目流程衔接",
+      "status": "passed",
+      "sources": [
+        "src/code-display.ts",
+        "src/syntax/component.ts",
+        "src/main.ts"
+      ],
+      "reports": [
+        "host-display-results.json",
+        "host-unified-results.json",
+        "host-fusion-results.json"
+      ],
+      "evidence": "单一可见标题、复制菜单、块条目、代码批注与定位"
+    },
+    {
+      "requirement": "设置分组和真实即时预览",
+      "status": "passed",
+      "sources": [
+        "src/settings-view.ts"
+      ],
+      "reports": [
+        "host-settings-results.json",
+        "host-fusion-results.json",
+        "host-unified-results.json"
+      ],
+      "evidence": "全部主题、语法资源、框架与实时刷新保留输入"
+    },
+    {
+      "requirement": "迁移结果临时查看",
+      "status": "passed",
+      "sources": [
+        "src/migration-ui.ts",
+        "src/workbench.ts"
+      ],
+      "reports": [
+        "host-migration-results.json",
+        "host-migration-restart-results.json"
+      ],
+      "evidence": "成功文件范围，无持久集合副作用"
+    },
+    {
+      "requirement": "独立窗口与界面生命周期",
+      "status": "passed",
+      "sources": [
+        "src/selection-toolbar.ts",
+        "src/ui.ts",
+        "src/syntax/engine.ts"
+      ],
+      "reports": [
+        "host-multiwindow-results.json",
+        "host-multiwindow-restart-results.json",
+        "host-multiwindow-actions-results.json",
+        "host-lifecycle-results.json",
+        "host-lifecycle-shiki-results.json"
+      ],
+      "evidence": "窗口归属、查询隔离、焦点恢复、文档事件重绑和释放"
+    },
+    {
+      "requirement": "代码能力广度保留",
+      "status": "passed",
+      "sources": [
+        "src/syntax/"
+      ],
+      "reports": [
+        "host-languages-results.json",
+        "host-embedded-results.json",
+        "host-unified-results.json"
+      ],
+      "evidence": "225 项单测含完整语言、别名和主题；统一代码 176 项"
+    }
+  ],
+  "nextPhase": {
+    "phase": 4,
+    "checks": [
+      "完整平台矩阵",
+      "主题与插件共存",
+      "完整键盘与 PDF",
+      "诊断中的无界面快速组合操作在真实桌面复核"
+    ]
+  },
+  "optionalEnhancementsAdded": false
+}

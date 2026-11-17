@@ -1,0 +1,44 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "notes-restart-source-exact",
+      "passed": true
+    },
+    {
+      "name": "notes-restart-five-notes",
+      "passed": true
+    },
+    {
+      "name": "notes-restart-rebound-code-note",
+      "passed": true
+    },
+    {
+      "name": "notes-restart-prose-footnote",
+      "passed": true
+    },
+    {
+      "name": "notes-restart-inline-special-characters",
+      "passed": true
+    },
+    {
+      "name": "notes-restart-collection-snapshot",
+      "passed": true
+    },
+    {
+      "name": "notes-restart-export-keeps-comments",
+      "passed": true
+    },
+    {
+      "name": "notes-restart-export-excluded",
+      "passed": true
+    },
+    {
+      "name": "notes-restart-settings-restored",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

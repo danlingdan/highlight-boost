@@ -1,0 +1,196 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "note-dialog-原生",
+      "passed": true
+    },
+    {
+      "name": "note-save-原生",
+      "passed": true
+    },
+    {
+      "name": "notes-native-becomes-persistent-with-footnote",
+      "passed": true
+    },
+    {
+      "name": "notes-native-single-undo",
+      "passed": true
+    },
+    {
+      "name": "notes-native-redo-exact",
+      "passed": true
+    },
+    {
+      "name": "note-dialog-核心概念",
+      "passed": true
+    },
+    {
+      "name": "note-save-核心概念",
+      "passed": true
+    },
+    {
+      "name": "note-dialog-a==b",
+      "passed": true
+    },
+    {
+      "name": "note-save-a==b",
+      "passed": true
+    },
+    {
+      "name": "note-dialog-count = 1",
+      "passed": true
+    },
+    {
+      "name": "note-save-count = 1",
+      "passed": true
+    },
+    {
+      "name": "note-dialog-return count;",
+      "passed": true
+    },
+    {
+      "name": "note-save-return count;",
+      "passed": true
+    },
+    {
+      "name": "notes-five-items-no-footnote-self-indexing",
+      "passed": true
+    },
+    {
+      "name": "notes-footnote-multiline-source",
+      "passed": true
+    },
+    {
+      "name": "notes-inline-recolor-preserves-note",
+      "passed": true
+    },
+    {
+      "name": "notes-partial-prose-inherits-shared-note",
+      "passed": true
+    },
+    {
+      "name": "notes-partial-single-undo",
+      "passed": true
+    },
+    {
+      "name": "note-dialog-原生",
+      "passed": true
+    },
+    {
+      "name": "note-save-原生",
+      "passed": true
+    },
+    {
+      "name": "notes-clear-owned-footnote-only",
+      "passed": true
+    },
+    {
+      "name": "notes-clear-single-undo",
+      "passed": true
+    },
+    {
+      "name": "notes-stale-dialog-retains-draft",
+      "passed": true
+    },
+    {
+      "name": "notes-search-comment-text",
+      "passed": true
+    },
+    {
+      "name": "notes-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "notes-source-tooltip",
+      "passed": true
+    },
+    {
+      "name": "notes-code-copy-excludes-comments",
+      "passed": true
+    },
+    {
+      "name": "notes-excerpt-includes-comment",
+      "passed": true
+    },
+    {
+      "name": "note-dialog-末尾",
+      "passed": true
+    },
+    {
+      "name": "note-save-末尾",
+      "passed": true
+    },
+    {
+      "name": "notes-eof-metadata-before-definition",
+      "passed": true
+    },
+    {
+      "name": "notes-missing-code-keeps-comment",
+      "passed": true
+    },
+    {
+      "name": "notes-rebind-keeps-comment",
+      "passed": true
+    },
+    {
+      "name": "notes-collection-snapshot",
+      "passed": true
+    },
+    {
+      "name": "notes-export-note-comments",
+      "passed": true
+    },
+    {
+      "name": "notes-native-reading-footnotes",
+      "passed": true
+    },
+    {
+      "name": "notes-reading-code-note-regions",
+      "passed": true
+    },
+    {
+      "name": "notes-reading-region-outside-code",
+      "passed": true
+    },
+    {
+      "name": "notes-reading-code-copy-text",
+      "passed": true
+    },
+    {
+      "name": "notes-unload-removes-owned-regions",
+      "passed": true
+    },
+    {
+      "name": "notes-builtin-preview-components",
+      "passed": true
+    },
+    {
+      "name": "notes-builtin-english-region",
+      "passed": true
+    },
+    {
+      "name": "notes-preview-folds-footnote-definitions",
+      "passed": true
+    },
+    {
+      "name": "notes-preview-hides-owned-reference-ids",
+      "passed": true
+    },
+    {
+      "name": "notes-english-edit-action",
+      "passed": true
+    },
+    {
+      "name": "notes-all-view-switches-keep-source",
+      "passed": true
+    },
+    {
+      "name": "notes-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

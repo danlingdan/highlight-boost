@@ -1,0 +1,38 @@
+{
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "baseline-source-window",
+      "passed": true
+    },
+    {
+      "name": "baseline-second-window",
+      "passed": true
+    },
+    {
+      "name": "baseline-windows-closed",
+      "passed": true
+    },
+    {
+      "name": "baseline-source-window",
+      "passed": true
+    },
+    {
+      "name": "baseline-second-window",
+      "passed": true
+    },
+    {
+      "name": "baseline-windows-closed",
+      "passed": true
+    },
+    {
+      "name": "baseline-plugin-disabled",
+      "passed": true
+    }
+  ],
+  "errors": [
+    "Error: baseline-no-layout-errors\n    at assert (<anonymous>:6:53)\n    at <anonymous>:29:3\n    at async IpcRendererInternal.<anonymous> (node:electron/js2c/renderer_init:2:14497)"
+  ],
+  "testVaultTrustAccepted": false
+}

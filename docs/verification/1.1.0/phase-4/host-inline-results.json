@@ -1,0 +1,133 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "inline-code-characters-preserved",
+      "passed": true
+    },
+    {
+      "name": "partial-selection-preserved",
+      "passed": true
+    },
+    {
+      "name": "inline-live-decoration",
+      "passed": true
+    },
+    {
+      "name": "inline-single-undo",
+      "passed": true
+    },
+    {
+      "name": "inline-redo",
+      "passed": true
+    },
+    {
+      "name": "inline-cursor-recolors",
+      "passed": true
+    },
+    {
+      "name": "inline-remove-restores-source",
+      "passed": true
+    },
+    {
+      "name": "inline-mixed-prose-transaction",
+      "passed": true
+    },
+    {
+      "name": "inline-mixed-single-undo",
+      "passed": true
+    },
+    {
+      "name": "inline-table-syntax-preserved",
+      "passed": true
+    },
+    {
+      "name": "inline-table-single-undo",
+      "passed": true
+    },
+    {
+      "name": "inline-table-redo",
+      "passed": true
+    },
+    {
+      "name": "inline-sidebar-items",
+      "passed": true
+    },
+    {
+      "name": "inline-sidebar-no-block-rebind",
+      "passed": true
+    },
+    {
+      "name": "inline-sidebar-source-jump",
+      "passed": true
+    },
+    {
+      "name": "inline-excerpt-uses-safe-delimiter",
+      "passed": true
+    },
+    {
+      "name": "inline-source-decoration",
+      "passed": true
+    },
+    {
+      "name": "inline-source-metadata-visible",
+      "passed": true
+    },
+    {
+      "name": "inline-reading-count",
+      "passed": true
+    },
+    {
+      "name": "inline-reading-visible-underline",
+      "passed": true
+    },
+    {
+      "name": "inline-reading-equals-kept",
+      "passed": true
+    },
+    {
+      "name": "inline-reading-duplicate-colors",
+      "passed": true
+    },
+    {
+      "name": "inline-reading-backtick-kept",
+      "passed": true
+    },
+    {
+      "name": "inline-reading-code-only",
+      "passed": true
+    },
+    {
+      "name": "inline-reading-multiline-normalization",
+      "passed": true
+    },
+    {
+      "name": "inline-reading-quote-container",
+      "passed": true
+    },
+    {
+      "name": "inline-unload-cleanup",
+      "passed": true
+    },
+    {
+      "name": "inline-reload-restores",
+      "passed": true
+    },
+    {
+      "name": "inline-builtin-syntax-coexists",
+      "passed": true
+    },
+    {
+      "name": "inline-reading-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "inline-no-runtime-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

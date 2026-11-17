@@ -99,12 +99,13 @@
   restoredWindow.win.addEventListener('error', recordError);
   await plugin.openPanel('note'); const restoredPanel = app.workspace.getLeavesOfType('highlight-boost')[0];
   const restoredPanelWindow = app.workspace.moveLeafToPopout(restoredPanel, { width: 500, height: 800 });
-  assert('restore-layout-workbench-window', await until(() => restoredPanelWindow.doc?.querySelectorAll('.hb-card').length === 3));
+  assert('restore-layout-workbench-window', await until(() => restoredPanelWindow.win.__hbPopoutReady && restoredPanelWindow.doc?.querySelectorAll('.hb-card').length === 3));
   restoredPanelWindow.win.addEventListener('error', recordError);
   activate(restoredLeaf);
   await app.vault.adapter.write(`${app.vault.configDir}/hb-window-restore.json`, JSON.stringify({ path, text: await app.vault.read(file), original }));
   await app.workspace.requestSaveLayout.run();
-  assert('restore-layout-saved', (await app.vault.adapter.read(`${app.vault.configDir}/workspace.json`)).includes(path));
+  const savedLayout = JSON.parse(await app.vault.adapter.read(`${app.vault.configDir}/workspace.json`));
+  assert('restore-layout-saved', JSON.stringify(savedLayout).includes(path) && savedLayout.floating?.children.length === 2, savedLayout.floating);
   await new Promise(resolve => setTimeout(resolve, 1000));
   window.__hbObservations = { errors, phases, mode: 'unified' };
   assert('multiwindow-no-page-errors', errors.length === 0, { errors, phases }); return checks;

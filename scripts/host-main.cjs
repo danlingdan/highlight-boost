@@ -193,9 +193,10 @@ const resizeTraceSource = `(() => {
   window.ResizeObserver=class extends NativeResizeObserver { constructor(callback) { const stack=new Error().stack; super((entries,observer)=>{ calls.push({stack,targets:entries.map(entry=>({class:entry.target.className,width:entry.contentRect.width,height:entry.contentRect.height}))}); if(calls.length>12)calls.shift(); callback(entries,observer); }); } };
   window.addEventListener('error', event=>{ if(/ResizeObserver/.test(event.message)&&errors++<2)console.warn('HB resize trace: '+JSON.stringify(calls)); });
 })();`;
+let mainWindow;
 app.on('browser-window-created', (_event, window) => {
   if (!desktop) window.on('show', () => window.hide());
-  window.setSize(1400, 1000);
+  if (!mainWindow) { mainWindow = window; window.setSize(1400, 1000); }
   const contents = window.webContents;
   if (mode === 'multiwindow' && process.env.HB_RO_TRACE === '1') {
     contents.debugger.attach('1.3');

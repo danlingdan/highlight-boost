@@ -50,22 +50,22 @@ jobs:
       - if: runner.os != 'Linux'
         run: pnpm test:host
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:host'
+        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:host'
       - if: runner.os != 'Linux'
         run: pnpm test:multiwindow && pnpm test:accessibility && pnpm test:journey
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:multiwindow && pnpm test:accessibility && pnpm test:journey'
+        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:multiwindow && pnpm test:accessibility && pnpm test:journey'
       - run: pnpm package:candidate
       - run: node scripts/prepare-install.mjs --current
       - if: runner.os != 'Linux'
         run: pnpm test:install && pnpm test:frames
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:install && pnpm test:frames'
+        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:install && pnpm test:frames'
       - run: node scripts/prepare-vault.mjs --suite=compat && node scripts/prepare-compatibility.mjs --core
       - if: runner.os != 'Linux'
         run: node scripts/test-compatibility.mjs --case=default
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-compatibility.mjs --case=default'
+        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-compatibility.mjs --case=default'
       - if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -108,7 +108,7 @@ jobs:
       - if: runner.os != 'Linux'
         run: node scripts/test-host.mjs --mode=multiwindow-baseline && pnpm test:multiwindow
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-baseline && pnpm test:multiwindow'
+        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-baseline && pnpm test:multiwindow'
       - if: always()
         uses: actions/upload-artifact@v4
         with:

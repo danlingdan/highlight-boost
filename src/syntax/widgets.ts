@@ -3,18 +3,35 @@ import { Decoration, EditorView, WidgetType, type DecorationSet } from '@codemir
 import { editorInfoField, editorLivePreviewField } from 'obsidian';
 import type { CodeBlock } from '../domain';
 import { editorDocument } from '../editor-document';
-import { codeDisplayKey, type CodeDisplaySettings } from '../code-options';
+import { codeDisplayFacet, codeDisplayKey, type CodeDisplaySettings } from '../code-options';
+import { metadataLocale } from '../metadata-folding';
 import { composingState } from '../composition';
 import type { SyntaxEngine } from './engine';
 import type { Locale } from '../i18n';
 import { renderUnifiedCode } from './component';
 import { refreshSyntax } from './editor';
 import { inlineLanguage, inlineSourceOffsets } from './languages';
+import { unifiedCodeModel } from './model';
+import { renderCodeDisplay } from '../code-display';
+
+const pendingRenders = new WeakSet<HTMLElement>();
 
 class CodeWidget extends WidgetType {
-  private active = true;
   constructor(private engine: SyntaxEngine, private block: CodeBlock, private locale: Locale, private display: CodeDisplaySettings, private sessions: Map<string, boolean>, private key: string) { super(); }
-  eq(other: CodeWidget): boolean { return this.engine === other.engine && this.key === other.key && this.locale === other.locale && JSON.stringify(this.block) === JSON.stringify(other.block) && JSON.stringify(this.display) === JSON.stringify(other.display); }
+  private sameBlock(other: CodeWidget): boolean {
+    return this.engine === other.engine && this.key === other.key && this.locale === other.locale && JSON.stringify(this.block) === JSON.stringify(other.block);
+  }
+  eq(other: CodeWidget): boolean {
+    return this.sameBlock(other) && JSON.stringify(this.display) === JSON.stringify(other.display);
+  }
+  updateDOM(dom: HTMLElement, view: EditorView, previous: CodeWidget): boolean {
+    if (!this.sameBlock(previous) || unifiedCodeModel(this.block, this.display).meta !== unifiedCodeModel(previous.block, previous.display).meta) return false;
+    const code = dom.querySelector<HTMLElement>('.hb-unified-code pre > code');
+    if (!code) return false;
+    renderCodeDisplay(code, this.block, this.display, this.locale, this.sessions, this.key);
+    view.requestMeasure();
+    return true;
+  }
   toDOM(view: EditorView): HTMLElement {
     const holder = view.dom.ownerDocument.createElement('div'); holder.className = 'hb-code-widget';
     if (this.block.prefix) {
@@ -25,10 +42,12 @@ class CodeWidget extends WidgetType {
     const loading = view.dom.ownerDocument.createElement('pre'); loading.textContent = this.block.text; holder.append(loading);
     const edit = view.dom.ownerDocument.createElement('button'); edit.className = 'edit-block-button'; edit.textContent = this.locale === 'zh' ? '编辑代码' : 'Edit code';
     edit.setAttribute('aria-label', edit.textContent);
-    const enter = () => { view.dispatch({ selection: { anchor: this.block.lines[0]?.from ?? this.block.fenceFrom } }); view.focus(); };
+    const anchor = this.block.lines[0]?.from ?? this.block.fenceFrom;
+    const enter = () => { view.dispatch({ selection: { anchor } }); view.focus(); };
     edit.addEventListener('click', enter);
+    pendingRenders.add(holder);
     void renderUnifiedCode(this.engine, this.block, holder.ownerDocument, this.locale, this.display, this.sessions, this.key).then(node => {
-      if (!this.active) return;
+      if (!pendingRenders.delete(holder)) return;
       holder.replaceChildren(edit, node); view.requestMeasure();
     }).catch(error => console.error('HB 代码展示失败', error));
     holder.addEventListener('dblclick', event => {
@@ -38,13 +57,14 @@ class CodeWidget extends WidgetType {
     return holder;
   }
   ignoreEvent(): boolean { return true; }
-  destroy(): void { this.active = false; }
+  destroy(dom: HTMLElement): void { pendingRenders.delete(dom); }
 }
 
-export function syntaxCodeWidgets(getEngine: () => SyntaxEngine, getLocale: () => Locale, getDisplay: () => CodeDisplaySettings, sessions: Map<string, boolean>) {
+export function syntaxCodeWidgets(getEngine: () => SyntaxEngine, sessions: Map<string, boolean>) {
   const build = (state: EditorState): DecorationSet => {
     if (!state.field(editorLivePreviewField, false) || state.field(composingState, false)) return Decoration.none;
     const engine = getEngine(), parsed = editorDocument(state).parsed, path = state.field(editorInfoField, false)?.file?.path ?? '';
+    const locale = state.facet(metadataLocale), display = state.facet(codeDisplayFacet);
     const ranges = [];
     if (engine.inlineHighlighting) for (const inline of parsed.inlines) {
       const syntax = inlineLanguage(inline.text);
@@ -57,7 +77,7 @@ export function syntaxCodeWidgets(getEngine: () => SyntaxEngine, getLocale: () =
       const from = state.doc.lineAt(block.fenceFrom).from, to = block.to;
       if (state.selection.ranges.some(range => range.from <= to && from <= range.to)) continue;
       if (from >= to) continue;
-      ranges.push(Decoration.replace({ block: true, widget: new CodeWidget(engine, block, getLocale(), getDisplay(), sessions, codeDisplayKey(path, block, parsed.blocks)) }).range(from, to));
+      ranges.push(Decoration.replace({ block: true, widget: new CodeWidget(engine, block, locale, display, sessions, codeDisplayKey(path, block, parsed.blocks)) }).range(from, to));
     }
     return Decoration.set(ranges, true);
   };

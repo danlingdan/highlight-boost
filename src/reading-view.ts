@@ -9,6 +9,7 @@ import { parseDocument } from './parsing';
 import type { SyntaxEngine } from './syntax/engine';
 import { renderUnifiedCode } from './syntax/component';
 import { inlineLanguage } from './syntax/languages';
+import { unifiedCodeModel } from './syntax/model';
 
 export class ReadingHighlights extends MarkdownRenderChild {
   private observer?: MutationObserver;
@@ -44,7 +45,8 @@ export class ReadingHighlights extends MarkdownRenderChild {
       this.observer?.disconnect();
       try {
         for (const holder of this.components.keys()) if (!this.containerEl.contains(holder)) this.components.delete(holder);
-        const inlines = inlineTargets(this.containerEl, text, element => this.context.getSectionInfo(element)).filter(target => this.owns(target.code));
+        const parsed = parseDocument(text), blocks = parsed.blocks;
+        const inlines = inlineTargets(this.containerEl, text, element => this.context.getSectionInfo(element), parsed.inlines).filter(target => this.owns(target.code));
         const matchedInlines = new Set(inlines.map(target => target.code));
         for (const code of inlineCodes(this.containerEl)) if (this.owns(code) && !matchedInlines.has(code)) clearInlineCode(code);
         const engine = this.getEngine?.();
@@ -69,8 +71,8 @@ export class ReadingHighlights extends MarkdownRenderChild {
           } else { delete code.dataset.hbInlineSource; code.style.removeProperty('--hb-syntax-background'); code.style.removeProperty('--hb-syntax-foreground'); }
           renderInlineCode(code, inline);
         }
-        const blocks = parseDocument(text).blocks, display = this.getDisplay();
-        const targets = readingTargets(this.containerEl, text, element => this.context.getSectionInfo(element)).filter(target => this.owns(target.code));
+        const display = this.getDisplay(), locale = this.getLocale();
+        const targets = readingTargets(this.containerEl, text, element => this.context.getSectionInfo(element), blocks).filter(target => this.owns(target.code));
         for (const holder of this.components.keys()) {
           const code = holder.querySelector<HTMLElement>('pre > code');
           if (!code || targets.some(target => target.code === code)) continue;
@@ -95,9 +97,10 @@ export class ReadingHighlights extends MarkdownRenderChild {
               }
               continue;
             }
-            const signature = JSON.stringify({ block, display, locale: this.getLocale(), engine: engine.revision });
+            const key = codeDisplayKey(file.path, block, blocks);
+            const signature = JSON.stringify({ block, key, meta: unifiedCodeModel(block, display).meta, locale, engine: engine.revision });
             if (existing?.signature === signature && holder?.querySelector('.hb-code-display')) {
-              renderCodeDisplay(code, block, display, this.getLocale(), this.sessions, codeDisplayKey(file.path, block, blocks));
+              renderCodeDisplay(code, block, display, locale, this.sessions, key);
               continue;
             }
             const pre = code.closest('pre'); if (!pre) continue;
@@ -106,7 +109,7 @@ export class ReadingHighlights extends MarkdownRenderChild {
               const originalCode = original.querySelector('code');
               if (originalCode) { originalCode.className = block.language ? `language-${block.language}` : ''; originalCode.textContent = `${block.text}\n`; }
             }
-            const rendered = await renderUnifiedCode(engine, block, code.ownerDocument, this.getLocale(), display, this.sessions, codeDisplayKey(file.path, block, blocks));
+            const rendered = await renderUnifiedCode(engine, block, code.ownerDocument, locale, display, this.sessions, key);
             if (!this.active || revision !== this.revision) return;
             (holder ?? pre).replaceWith(rendered);
             if (holder) this.components.delete(holder);

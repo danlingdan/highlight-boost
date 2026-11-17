@@ -5,7 +5,6 @@ import { SyntaxRuntime } from './runtime';
 import { loadSyntaxResources, type SyntaxResources } from './resources';
 import type { CodeSyntaxSettings } from './settings';
 import type { Locale } from '../i18n';
-import type { CodeDisplaySettings } from '../code-options';
 import { syntaxCodeWidgets } from './widgets';
 import { EditorView, ViewPlugin } from '@codemirror/view';
 
@@ -17,7 +16,7 @@ export class SyntaxService extends Component {
   private queue: Promise<void> = Promise.resolve();
   private editors = new Set<EditorView>();
   private stopped = false;
-  constructor(private plugin: Plugin, private getSettings: () => CodeSyntaxSettings, private getLocale: () => Locale, private getDisplay: () => CodeDisplaySettings, private sessions: Map<string, boolean>, private refreshReading: () => void) { super(); }
+  constructor(private plugin: Plugin, private getSettings: () => CodeSyntaxSettings, private getLocale: () => Locale, private sessions: Map<string, boolean>, private refreshReading: () => void) { super(); }
   async reload(): Promise<void> {
     const task = this.queue.catch(() => {}).then(async () => {
       if (this.stopped) return;
@@ -37,17 +36,13 @@ export class SyntaxService extends Component {
     this.queue = task;
     return task;
   }
-  async refresh(): Promise<void> {
-    for (const view of this.editors) view.dispatch({ effects: refreshSyntax.of(this.engine.revision) });
-    this.refreshReading();
-  }
   async initialize(): Promise<void> {
     await this.reload();
     this.runtime.attach(document);
     this.registerEvent(this.plugin.app.workspace.on('window-close', (_workspaceWindow, window) => { this.runtime.detach(window.document); this.engine.detach(window.document); }));
     this.registerEvent(this.plugin.app.workspace.on('css-change', () => { void this.reload().catch(error => console.error('HB 主题更新失败', error)); }));
     this.plugin.registerEditorExtension([
-      this.editorExtension, syntaxCodeWidgets(() => this.engine, this.getLocale, this.getDisplay, this.sessions),
+      this.editorExtension, syntaxCodeWidgets(() => this.engine, this.sessions),
       EditorView.editorAttributes.of({ class: 'hb-syntax-editor' }),
       ViewPlugin.define(view => { this.editors.add(view); return { destroy: () => { this.editors.delete(view); } }; }),
     ]);

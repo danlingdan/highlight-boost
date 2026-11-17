@@ -11,6 +11,6 @@ export function unifiedCodeModel(block: CodeBlock, settings: CodeDisplaySettings
     if (/^\{\s*[\w-]+\s*=/.test(token)) return false;
     return !displayKeys.has(/^([\w-]+)/.exec(token)?.[1]?.toLowerCase() ?? '');
   });
-  const meta = [`frame=${options.frame}`, `showLineNumbers=${options.showLineNumbers}`, `startLineNumber=${options.startLine}`, `wrap=${options.wrap}`, ...(options.title || options.showTitle ? [`title=${JSON.stringify(options.title || block.language || 'Code')}`] : []), ...preserved].join(' ');
+  const meta = [`frame=${options.frame}`, `wrap=${options.wrap}`, ...(options.title || options.showTitle ? [`title=${JSON.stringify(options.title || block.language || 'Code')}`] : []), ...preserved].join(' ');
   return { block, options, diff, meta, sourceMeta: block.meta ?? '' };
 }

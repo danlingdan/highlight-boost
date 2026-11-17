@@ -54,7 +54,17 @@
   assert('performance-code-source-exact', editor.getValue() === code);
   const largeCode = '```js\n' + Array.from({ length: 5000 }, (_, i) => `const value${i} = ${i}; // ${'x'.repeat(180)}`).join('\n') + '\n```';
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } }); editor.setValue(largeCode); await plugin.index.ready;
-  await measure('selection-transaction-5000-lines', 5, async i => { const line = i % 2 ? 2 : 4999; editor.setSelection({ line, ch: 6 }, { line, ch: 12 }); editor.scrollIntoView({ from: { line, ch: 0 }, to: { line, ch: 12 } }, true); await settled(); });
+  const selectCode = async i => {
+    const line = i % 2 ? 4999 : 2;
+    editor.setSelection({ line, ch: 6 }, { line, ch: 12 });
+    editor.scrollIntoView({ from: { line, ch: 0 }, to: { line, ch: 12 } }, true);
+    await settled();
+  };
+  await measure('initial-color-5000-lines', 1, async () => {
+    if (!await until(() => [...editor.cm.dom.querySelectorAll('.hb-syntax-token')].some(node => node.textContent === 'value0'))) throw new Error('Large code syntax tokens missing');
+    await settled();
+  });
+  await measure('selection-transaction-5000-lines-warm', 5, selectCode);
   assert('performance-large-code-source-exact', editor.getValue() === largeCode);
   const fs = window.require('fs'), nodePath = window.require('path');
   const buildSha256 = window.require('crypto').createHash('sha256').update(fs.readFileSync(nodePath.join(app.vault.adapter.basePath, plugin.manifest.dir, 'main.js'))).digest('hex');

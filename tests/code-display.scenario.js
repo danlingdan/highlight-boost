@@ -76,10 +76,12 @@
   component('change.patch').querySelector('[data-hb-display-action="toggle"]').click();
   assert('display-diff-and-human-mark-coexist', component('change.patch').querySelector('[data-hb-diff="insert"] .hb-text.hb-red')?.textContent === 'newCall');
   assert('display-diff-note-kept', component('change.patch').textContent.includes('diff 人工批注'));
+  const readingRow = component('src/<demo>.js').querySelector('.ec-line');
   plugin.settings.codeDisplay.showLineNumbers = false; plugin.settings.codeDisplay.diff = false; await plugin.saveSettings();
   assert('display-live-toggle-clears-numbers-and-diff', await until(() => !root.querySelector('[data-hb-number]') && !root.querySelector('[data-hb-diff]')));
   plugin.settings.codeDisplay.showLineNumbers = true; plugin.settings.codeDisplay.diff = true; plugin.settings.codeDisplay.startLine = 20; await plugin.saveSettings();
   assert('display-live-start-number-change', await until(() => component('src/<demo>.js')?.querySelector('[data-hb-number="20"]')));
+  assert('display-reading-retains-syntax-rows', component('src/<demo>.js').querySelector('.ec-line') === readingRow);
   assert('display-settings-source-unchanged', editor.getValue() === saved);
   await plugin.openPanel('note');
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
@@ -103,6 +105,9 @@
   const ecRows = component('src/<demo>.js').querySelectorAll('.ec-line');
   assert('display-builtin-wrap', await until(() => ecRows[1].getBoundingClientRect().height > ecRows[2].getBoundingClientRect().height * 3));
   assert('display-builtin-logical-start', ecRows[0].dataset.hbNumber === '20');
+  plugin.settings.codeDisplay.startLine = 21; await plugin.saveSettings();
+  assert('display-live-preview-updates-number-in-place', await until(() => component('src/<demo>.js')?.querySelector('.ec-line')?.dataset.hbNumber === '21') && component('src/<demo>.js').querySelector('.ec-line') === ecRows[0], { previous: ecRows[0].dataset.hbNumber, connected: ecRows[0].isConnected, current: component('src/<demo>.js')?.querySelector('.ec-line')?.dataset.hbNumber });
+  plugin.settings.codeDisplay.startLine = 20; await plugin.saveSettings();
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } }); select('newCall');
   await plugin.copyDiffAfter(editor); assert('display-diff-copy-command', copied === 'newCall();\nshared();');
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: false } }); editor.setCursor({ line: 0, ch: 0 });

@@ -7,8 +7,7 @@ export function inlineCodes(root: HTMLElement): HTMLElement[] {
   return [...root.querySelectorAll<HTMLElement>('code')].filter(code => !code.closest('pre'));
 }
 
-export function inlineTargets(root: HTMLElement, text: string, sectionOf: (element: HTMLElement) => ReadingSection | null): { code: HTMLElement; inline: InlineCode }[] {
-  const inlines = parseDocument(text).inlines;
+export function inlineTargets(root: HTMLElement, text: string, sectionOf: (element: HTMLElement) => ReadingSection | null, inlines = parseDocument(text).inlines): { code: HTMLElement; inline: InlineCode }[] {
   const codes = inlineCodes(root), used = new Set<InlineCode>();
   const result: { code: HTMLElement; inline: InlineCode }[] = [];
   const candidatesByCode = new Map(codes.map(code => {

@@ -10,13 +10,29 @@ export function logicalOffset(block: CodeBlock, source: number): number {
   return block.text.length;
 }
 
+const logicalLineEnds = new WeakMap<CodeBlock, number[]>();
+
 export function sourceOffset(block: CodeBlock, logical: number): number {
-  let offset = 0;
-  for (const line of block.lines) {
-    if (logical <= offset + line.text.length) return line.from + Math.max(0, logical - offset);
-    offset += line.text.length + 1;
+  let ends = logicalLineEnds.get(block);
+  if (!ends) {
+    let offset = 0;
+    ends = block.lines.map(line => {
+      const end = offset + line.text.length;
+      offset = end + 1;
+      return end;
+    });
+    logicalLineEnds.set(block, ends);
   }
-  return block.lines.at(-1)?.to ?? block.fenceFrom;
+  let first = 0, last = ends.length;
+  while (first < last) {
+    const middle = Math.floor((first + last) / 2);
+    if (logical <= ends[middle]!) last = middle;
+    else first = middle + 1;
+  }
+  const line = block.lines[first];
+  if (!line) return block.lines.at(-1)?.to ?? block.fenceFrom;
+  const start = first === 0 ? 0 : ends[first - 1]! + 1;
+  return line.from + Math.max(0, logical - start);
 }
 
 export function resolveMark(block: CodeBlock, mark: CodeMark): { span: Span; status: HighlightItem['status'] } {

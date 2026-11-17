@@ -4,13 +4,13 @@ import { renderedCodeText } from './rendering';
 
 export interface ReadingSection { lineStart: number; lineEnd: number }
 
-export function readingTargets(root: HTMLElement, text: string, sectionOf: (element: HTMLElement) => ReadingSection | null): { code: HTMLElement; block: CodeBlock }[] {
-  const blocks = parseDocument(text).blocks;
+export function readingTargets(root: HTMLElement, text: string, sectionOf: (element: HTMLElement) => ReadingSection | null, blocks = parseDocument(text).blocks): { code: HTMLElement; block: CodeBlock }[] {
   const codes = [...root.querySelectorAll<HTMLElement>('pre > code')];
+  const values = codes.map(code => code.closest<HTMLElement>('.hb-unified-code')?.dataset.hbSourceCode ?? renderedCodeText(code));
   const result: { code: HTMLElement; block: CodeBlock }[] = [];
   const used = new Set<CodeBlock>();
-  for (const code of codes) {
-    const value = renderedCodeText(code);
+  for (const [index, code] of codes.entries()) {
+    const value = values[index];
     const section = sectionOf(code) ?? sectionOf(root);
     const candidates = blocks.filter(block => {
       const line = text.slice(0, block.fenceFrom).split('\n').length - 1;
@@ -19,7 +19,7 @@ export function readingTargets(root: HTMLElement, text: string, sectionOf: (elem
     let block: CodeBlock | undefined;
     if (candidates.length === 1) block = candidates[0];
     else {
-      const matching = codes.filter(other => renderedCodeText(other) === value);
+      const matching = codes.filter((_, other) => values[other] === value);
       if (matching.length === candidates.length) block = candidates[matching.indexOf(code)];
     }
     if (!block || used.has(block)) continue;

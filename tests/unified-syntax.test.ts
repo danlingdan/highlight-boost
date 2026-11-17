@@ -135,7 +135,7 @@ it('正则空格和字符组不破坏 meta 拆分', () => {
   expect(fenceTokens('title="my file" /one [a/b] two/ ins="new value" collapse={2-3}')).toEqual(['title="my file"', '/one [a/b] two/', 'ins="new value"', 'collapse={2-3}']);
   expect(fenceTokens('file:/demo.js ln:20 /one [a/b] two/')).toEqual(['file:/demo.js', 'ln:20', '/one [a/b] two/']);
   const model = unifiedCodeModel(parseDocument('```ts ln:7 showLineNumbers=false startLineNumber=20 frame="terminal"\nconst x=1;\n```').blocks[0]!);
-  expect(model.meta).toContain('showLineNumbers=false'); expect(model.options.startLine).toBe(20); expect(model.options.frame).toBe('terminal');
+  expect(model.options.showLineNumbers).toBe(false); expect(model.options.startLine).toBe(20); expect(model.options.frame).toBe('terminal');
 });
 
 it('编辑器精确参数映射与多行混合语法 token 取源范围一致', async () => {

@@ -72,7 +72,7 @@ export default class HighlightBoost extends Plugin {
     }, () => this.refreshPanels());
     if (JSON.stringify(loaded) !== JSON.stringify(this.settings)) await this.saveSettings();
     this.lastSyntax = JSON.stringify(this.settings.codeSyntax);
-    this.syntax = this.addChild(new SyntaxService(this, () => this.settings.codeSyntax, () => this.locale, () => this.settings.codeDisplay, this.codeDisplaySessions, () => { for (const child of this.readingChildren) child.refresh(); void this.settingTab?.refreshPreview(); }));
+    this.syntax = this.addChild(new SyntaxService(this, () => this.settings.codeSyntax, () => this.locale, this.codeDisplaySessions, () => { for (const child of this.readingChildren) child.refresh(); void this.settingTab?.refreshPreview(); }));
     await this.syntax.initialize();
     const listenBlocks = (doc: Document) => {
       this.registerDomEvent(doc, 'hb-edit-mark' as keyof DocumentEventMap, event => {
@@ -101,7 +101,7 @@ export default class HighlightBoost extends Plugin {
     this.registerEvent(this.app.workspace.on('window-open', (_window, win) => listenBlocks(win.document)));
     this.registerEvent(this.app.workspace.on('window-close', (_window, win) => { for (const modal of this.uiModals) if (modal.containerEl.ownerDocument === win.document) modal.close(); }));
     this.addTranslatedCommand({ id: 'reload-code-resources', callback: () => { void this.syntax?.reload().catch(error => console.error('HB 代码资源更新失败', error)); } }, () => this.t('reloadCodeResources'));
-    this.uiExtensions.push(metadataLocale.of(this.locale), codeDisplayFacet.of(this.settings.codeDisplay), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField), selectionToolbar(this), unfoldSelectedCode);
+    this.uiExtensions.push(metadataLocale.of(this.locale), codeDisplayFacet.of({ ...this.settings.codeDisplay }), composingState, compositionEvents, highlightExtension, editorHistory, createMetadataFolding(editorLivePreviewField), selectionToolbar(this), unfoldSelectedCode);
     this.registerEditorExtension(this.uiExtensions);
     this.registerEditorExtension(ViewPlugin.define(view => {
       let editor = view.state.field(editorInfoField).editor;
@@ -215,23 +215,19 @@ export default class HighlightBoost extends Plugin {
     if (syntax !== this.lastSyntax) { this.lastSyntax = syntax; if (this.syntax) updates.push(this.syntax.reload()); }
     const display = JSON.stringify(this.settings.codeDisplay), displayChanged = display !== this.lastDisplay;
     this.lastDisplay = display;
-    if (displayChanged && this.uiExtensions.length) {
-      this.uiExtensions.splice(1, 1, codeDisplayFacet.of(this.settings.codeDisplay));
+    if ((displayChanged || changed) && this.uiExtensions.length) {
+      if (displayChanged) this.uiExtensions.splice(1, 1, codeDisplayFacet.of({ ...this.settings.codeDisplay }));
+      if (changed) this.uiExtensions.splice(0, 1, metadataLocale.of(locale));
       this.app.workspace.updateOptions();
-      if (this.syntax) updates.push(this.syntax.refresh());
-      for (const child of this.readingChildren) child.refresh();
     }
     if (changed && this.uiExtensions.length) {
-      this.uiExtensions.splice(0, 1, metadataLocale.of(locale));
-      this.app.workspace.updateOptions();
       if (this.ribbon) setTooltip(this.ribbon, this.t('panelTitle'));
       for (const picker of this.colorPickers) picker.refreshLocale();
       for (const modal of this.uiModals) modal.refreshLocale();
       this.settingTab?.update();
       for (const leaf of this.app.workspace.getLeavesOfType(VIEW)) updates.push(leaf.setViewState(leaf.getViewState()));
-      if (this.syntax) updates.push(this.syntax.refresh());
-      for (const child of this.readingChildren) child.refresh();
     }
+    if (displayChanged || changed) for (const child of this.readingChildren) child.refresh();
     this.refreshPanels();
     for (const toolbar of this.toolbars) toolbar.refresh();
     const snapshot = structuredClone(this.settings);

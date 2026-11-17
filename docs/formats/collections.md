@@ -1,6 +1,6 @@
 # 集合与索引配置
 
-集合保存在插件配置中，当前沿用 schemaVersion 2。笔记的正文、行内和代码 v1 格式保持不变。
+集合保存在插件配置中，当前使用 schemaVersion 3。集合结构及笔记的正文、行内和代码 v1 格式保持不变。
 
 ```ts
 interface HighlightCollection {

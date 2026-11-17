@@ -11,8 +11,8 @@ Supports Windows, macOS and Linux. Targets the latest stable Obsidian desktop ve
 - **Prose and code highlights**: Native prose colors, whole inline-code highlights, and line or exact-range highlights inside code blocks. Apply changes across multiple selections in one undo step.
 - **Presets and annotations**: Customize the names and colors of Important, Question, Reference and Action. Annotations stay with your notes and appear in search and excerpts.
 - **Highlight workbench**: Search the current note, a folder, the vault or a collection. Combine type, semantic, color, code language and path filters, then jump to the source.
-- **Excerpt export**: Copy highlights with source links or generate excerpt notes using formatted text, plain text, blockquotes or code fences.
-- **Code display**: Choose host highlighting or built-in Shiki, with titles, line numbers, wrapping, folding, diff copy and common third-party fence parameters.
+- **Excerpt export**: Preview and copy the full filtered result or create an excerpt note with source links. Choose formatted text, plain text, blockquotes or code fences.
+- **Code display**: Offline syntax highlighting for code blocks and explicitly tagged inline code. Choose light and dark themes, add local grammars, and use line numbers, terminal frames, folding and diff copy.
 - **Migration**: Preview imports from Highlightr, Hilo and fence line markers, then apply or restore changes per file.
 
 ## Installation
@@ -34,6 +34,10 @@ For manual installation:
 3. Open **Note highlights** or **Highlight workbench** to inspect context, edit annotations, manage collections or generate excerpt notes.
 
 See the [user guide](docs/usage.md) for keyboard navigation, pop-out windows, PDF export and migration steps.
+
+## Upgrading to 1.1.0
+
+Code highlighting is enabled automatically. Existing notes, annotations, presets and collections carry over. Open **Settings → Highlight Boost → Code display** to choose code themes and display defaults. [Changelog](CHANGELOG.md)
 
 ## Data storage
 

@@ -24,8 +24,12 @@
   editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 10));
   assert('actions-mark-created', plugin.apply(editor, plugin.presetForAction('important')));
   const marked = editor.getValue();
-  for (const toolbar of plugin.toolbars) if (toolbar.matches(editor)) toolbar.open();
-  assert('actions-toolbar-ready', await until(() => popout.doc.querySelector('[data-hb-action="annotation"]')));
+  const toolbarCloses = [];
+  for (const toolbar of plugin.toolbars) if (toolbar.matches(editor)) {
+    if (window.__hbHostMode === 'multiwindow-actions-source') { const close = toolbar.close.bind(toolbar); toolbar.close = focus => { toolbarCloses.push({ focus, text: editor.getValue(), stack: new Error().stack }); close(focus); }; }
+    toolbar.open();
+  }
+  assert('actions-toolbar-ready', await until(() => popout.doc.querySelector('[data-hb-action="annotation"]')), { text: editor.getValue(), marked, toolbarCloses, toolbars: [...plugin.toolbars].filter(toolbar => toolbar.matches(editor)).map(toolbar => ({ disposed: toolbar.disposed, dismissed: toolbar.dismissed, manual: toolbar.manual, ownerIsPopout: toolbar.owner === popout.doc, hasElement: !!toolbar.element, selection: toolbar.view.state.selection.main, bounds: toolbar.view.scrollDOM.getBoundingClientRect().toJSON(), coords: toolbar.view.coordsAtPos(toolbar.view.state.selection.main.head) })) });
   phase = 'open-modal'; popout.doc.querySelector('[data-hb-action="annotation"]').click();
   assert('actions-note-owned-by-source-window', await until(() => popout.doc.querySelector('.hb-note-input')) && !document.querySelector('.hb-note-input'));
   const input = popout.doc.querySelector('.hb-note-input'); input.value = 'popout-undo-note';

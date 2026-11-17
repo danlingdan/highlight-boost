@@ -54,7 +54,9 @@ export function renderCodeDisplay(code: HTMLElement, block: CodeBlock, settings:
   if (display.signature === signature) return;
   display.signature = signature; display.header.replaceChildren();
   const doc = code.ownerDocument;
-  if (options.showTitle || frame === 'terminal') {
+  const showsTitle = options.showTitle || frame === 'terminal';
+  display.header.classList.toggle('hb-code-header-titled', showsTitle);
+  if (showsTitle) {
     const title = detachedEl(doc, 'span'); title.className = 'hb-code-title'; title.textContent = options.title || block.language || t('code'); display.header.append(title);
   }
   if (block.metadata?.marks.length) {

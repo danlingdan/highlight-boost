@@ -133,7 +133,7 @@
 .hb-quoted-code-widget { padding-inline-start: var(--size-4-2); border-inline-start: var(--blockquote-border-thickness) solid var(--blockquote-border-color); }
 .hb-code-widget > .edit-block-button { position: static; display: flex; margin-inline-start: auto; margin-block: .25rem; }
 .hb-code-display > .hb-code-body > .expressive-code > figure > .header,
-.hb-code-display > .hb-code-body > .expressive-code > figure > .copy { display: none !important; }
+.hb-code-display > .hb-code-body > .expressive-code > figure > .copy { display: none; }
 .hb-param-mark { background-color: color-mix(in srgb, var(--color-yellow) 18%, transparent); }
 .hb-param-ins { background-color: color-mix(in srgb, var(--color-green) 18%, transparent); }
 .hb-param-del { background-color: color-mix(in srgb, var(--color-red) 18%, transparent); text-decoration: line-through; }
@@ -217,7 +217,7 @@
 .hb-panel :is(button,input,select,summary):focus-visible, .hb-modal :is(button,input,textarea,select):focus-visible, .hb-selection-toolbar button:focus-visible { outline: 2px solid var(--interactive-accent); outline-offset: 2px; }
 .hb-selection-toolbar button { min-height: 28px; border-radius: var(--hb-radius-sm); font-size: 12px; }
 .hb-selection-toolbar button[aria-pressed=true] { outline: 2px solid var(--interactive-accent); outline-offset: -2px; }
-.hb-selection-toolbar [hidden], .hb-panel [hidden], .hb-modal [hidden] { display: none !important; }
+.hb-selection-toolbar [hidden], .hb-panel [hidden], .hb-modal [hidden] { display: none; }
 @container hb-panel (min-width: 320px) { .hb-filter-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @container hb-panel (min-width: 520px) { .hb-card { padding: 16px; } .hb-result-header .hb-summary { flex-basis: auto; } .hb-result-header .hb-sort { flex: 0 1 150px; } }
 @media (prefers-reduced-motion: reduce) { .hb-panel *, .hb-modal *, .hb-selection-toolbar * { transition: none; animation: none; } }
@@ -240,8 +240,8 @@
 .hb-code-mark-count { min-width: 0; max-width: 100%; white-space: normal; height: auto; text-align: start; }
 
 @media print {
-  .hb-code-edit-note { display: none !important; }
-  .hb-code-header:not(:has(.hb-code-title)) { display: none; }
+  .hb-code-notes .hb-code-edit-note { display: none; }
+  .hb-code-header:not(.hb-code-header-titled) { display: none; }
   .hb-code-notes summary { list-style: none; }
 }
 

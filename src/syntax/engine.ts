@@ -147,7 +147,7 @@ export class SyntaxEngine {
         const target = root.querySelector('pre > code');
         if (target) {
           const tokens = await this.tokens(code, 'ansi');
-          const fragment = document.createDocumentFragment();
+          const fragment = document.adoptNode(createFragment());
           let offset = 0;
           for (const [index, line] of code.split('\n').entries()) {
             const row = detachedEl(document, 'div'); row.className = 'ec-line';

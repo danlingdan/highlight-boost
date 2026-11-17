@@ -20,7 +20,8 @@
   select('alpha'); await toolbarClick('preset-important');
   assert('mark-retains-selection', editor.getSelection() === 'alpha');
   await capture('fusion-toolbar');
-  assert('palette-collapsed', toolbar().querySelector('[data-hb-action="color-red"]').hidden);
+  const red = toolbar().querySelector('[data-hb-action="color-red"]');
+  assert('palette-collapsed', red.hidden && getComputedStyle(red).display === 'none');
   await toolbarClick('annotation');
   assert('toolbar-shared-note-modal', await until(() => document.querySelector('.hb-note-input')));
   const draft = document.querySelector('.hb-note-input'); draft.value = '批注全文\n第二行'; await capture('fusion-annotation');
@@ -57,6 +58,7 @@
   panel.querySelector('[data-hb-workbench-action="preview"]').click();
   assert('excerpt-preview-opens', await until(() => document.querySelector('.hb-excerpt-preview')));
   const preview = document.querySelector('.hb-excerpt-preview'), snapshot = preview.value;
+  assert('snapshot-warning-initially-hidden', getComputedStyle(document.querySelector('.hb-snapshot-changed')).display === 'none');
   assert('excerpt-includes-note-and-code', snapshot.includes('批注全文') && snapshot.includes('value')); await capture('fusion-excerpt');
   const filter = panel.querySelector('.hb-search'); filter.value = 'alpha'; filter.dispatchEvent(new Event('input', { bubbles: true }));
   assert('snapshot-change-explicit', await until(() => !document.querySelector('.hb-snapshot-changed').hidden) && preview.value === snapshot);

@@ -10,7 +10,7 @@
   let plugin = app.plugins.plugins['highlight-boost']; const original = structuredClone(plugin.settings);
   plugin.settings.language = 'zh'; plugin.settings.selectionToolbar = true; await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
-  const path = '辅助技术验收.md', source = '# 辅助技术验收\n\n键盘重点 alpha，正文内容。\n\n行内 `inline()`。\n\n```js\nconst value = 1;\nconsole.log(value);\n```\n\n输入：\n';
+  const path = '辅助技术验收.md', source = '# 辅助技术验收\n\n键盘重点 alpha，正文内容。\n\n行内 `inline()`。\n\n```js title="src/pdf-demo.js"\nconst value = 1;\nconsole.log(value);\n```\n\n输入：\n';
   for (const existing of app.workspace.getLeavesOfType('markdown')) if (existing.view.file?.path === path) { await existing.view.save(); existing.detach(); }
   const old = app.vault.getFileByPath(path), file = old ? (await app.vault.modify(old, source), old) : await app.vault.create(path, source);
   const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
@@ -126,6 +126,7 @@
   assert('pdf-code-mark-style', pdf.rendering.codeMark === 'value' && pdf.rendering.decoration === 'underline' && (pdf.rendering.background !== 'rgba(0, 0, 0, 0)' || pdf.rendering.lineBackground !== 'rgba(0, 0, 0, 0)'), pdf.rendering);
   assert('pdf-full-code-annotation', pdf.rendering.noteVisible && pdf.rendering.note.includes('第二行批注。'), pdf.rendering);
   assert('pdf-no-interface-controls', !/编辑批注|复制当前代码块|Copy code|Edit annotation/.test(pdf.rendering.text), pdf.rendering.text);
+  assert('pdf-keeps-code-title', pdf.rendering.text.includes('src/pdf-demo.js'), pdf.rendering.text);
   assert('pdf-preserves-chinese-code', pdf.rendering.text.includes('测试') && !pdf.rendering.text.includes('ceshi'), pdf.rendering.text);
   assert('pdf-whole-line-background', pdf.rendering.line?.includes('console.log') && pdf.rendering.lineBackground !== 'rgba(0, 0, 0, 0)', pdf.rendering);
   assert('pdf-metadata-hidden', !/%%hb/.test(pdf.rendering.text));

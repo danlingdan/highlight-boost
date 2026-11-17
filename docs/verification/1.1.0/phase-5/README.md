@@ -35,6 +35,8 @@
 
 [测试精简说明](test-scope.md)记录保留范围。完整语言、主题及共存证据见[第四阶段](../phase-4/README.md)，本轮验证改动涉及的路径。Linux 窗口关闭通知检查按既定范围跳过。
 
+正式发布前，用同一候选包在 Ubuntu 26.04 WSL、Xvfb、Obsidian 1.15.1 和 Electron 43.8.9 复测 `multiwindow`，37 项通过，关闭阶段没有记录到 ResizeObserver 通知，本次没有跳过项。Openbox 因主题缺失未启动，本次结果对应无窗口管理器的 Xvfb 环境。CI 继续沿用指定关闭阶段的通知跳过规则。[Linux 窗口复测](reports/linux-window-close.json)
+
 截图：[实时预览代码](images/live-preview.png) · [滚动后的代码](images/frame-scroll.png) · [工作台分页](images/workbench-pagination.png)。
 
 ## 候选与安装

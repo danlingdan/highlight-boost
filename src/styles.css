@@ -132,8 +132,7 @@
 .hb-nested-code-widget { margin-inline-start: var(--hb-code-indent, 0); }
 .hb-quoted-code-widget { padding-inline-start: var(--size-4-2); border-inline-start: var(--blockquote-border-thickness) solid var(--blockquote-border-color); }
 .hb-code-widget > .edit-block-button { position: static; display: flex; margin-inline-start: auto; margin-block: .25rem; }
-.hb-code-display > .hb-code-body > .expressive-code > figure > .header,
-.hb-code-display > .hb-code-body > .expressive-code > figure > .copy { display: none; }
+.hb-code-display[data-hb-frame] > .hb-code-body > .expressive-code > figure.frame > :is(.header, .copy)[hidden] { display: none; }
 .hb-param-mark { background-color: color-mix(in srgb, var(--color-yellow) 18%, transparent); }
 .hb-param-ins { background-color: color-mix(in srgb, var(--color-green) 18%, transparent); }
 .hb-param-del { background-color: color-mix(in srgb, var(--color-red) 18%, transparent); text-decoration: line-through; }

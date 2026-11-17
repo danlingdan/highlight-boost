@@ -4,9 +4,11 @@
 
 1.1.0 的社区目录审核拒绝了禁用 `obsidianmd/no-forbidden-elements` 的源码例外。1.1.1 通过各窗口自身的 CSSOM 样式表加载自定义代码主题，移除了该例外。卸载插件、替换主题或关闭窗口时释放对应的样式表。
 
-本机候选为 `dist/highlight-boost-1.1.1-9003154a/highlight-boost.zip`，源码提交为 `9003154`。工程检查与禁用行内配置的 ESLint 均通过，34 个单测文件共 225 项。实际 Obsidian 1.15.1 的 8 个专项共 369 项，覆盖主题重载、阅读、实时预览、行内代码、多窗口释放、新库安装与重启。原始结果在隔离工作树的 `.local/cache/review/1.1.1/`。[发布正文](1.1.1.md)
+首轮候选 `9003154` 通过 225 项单测及 369 项 Obsidian 1.15.1 宿主断言，覆盖主题重载、阅读、实时预览、行内代码、多窗口释放、安装与重启。社区目录预审为 **Completed**，报告列出 HTML 元素辅助函数和 CSS 警告。
 
-候选 ZIP SHA-256 为 `587ed0f5061e72cb4207313cc39a155d6275438280b48ad45aa63a1e4070e2f0`。Obsidian 社区目录对 `9003154` 的分支预审为 **Completed**，没有阻断错误。HTML 元素辅助函数和 CSS 提示为警告。[社区审核](https://community.obsidian.md/account/plugins/highlight-boost)
+当前候选为 `dist/highlight-boost-1.1.1-a74e708e/highlight-boost.zip`，源码提交为 `a74e708`，ZIP SHA-256 为 `4dc10389cc3a3edd3e12d8d09abc8b6424a508a70380d27062edc171013ff6e1`。沿用 Obsidian 的文档片段辅助方法，移除三处 `!important` 和打印样式的 `:has()`。回归验证了隐藏控件、终端标题栏、PDF 标题与批注、分页、统一代码、全新安装和重启，共 385 项宿主断言。原始结果在隔离工作树的 `.local/cache/review/1.1.1/warnings/`。[发布正文](1.1.1.md)
+
+社区目录对 `a74e708` 的预审为 **Completed**。仅余一组 `text-decoration` 兼容性提示，涉及三处代码下划线样式，提示对应 Obsidian 1.11.4。候选最低版本为 1.15.1，已在该版本验证下划线和 PDF 输出。[社区审核](https://community.obsidian.md/account/plugins/highlight-boost)
 
 ## 1.1.0 发布记录
 

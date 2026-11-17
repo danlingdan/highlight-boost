@@ -15,15 +15,12 @@ net.Server.prototype.listen = function (...args) {
 const root = path.resolve(__dirname, '..');
 const desktop = process.env.HB_DESKTOP === '1';
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
-const suite = { journey: 'journey', responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', 'multiwindow-actions-source': 'multiwindow', 'multiwindow-native-actions': 'multiwindow', 'multiwindow-baseline': 'multiwindow', 'multiwindow-combined': 'multiwindow', 'multiwindow-actions': 'multiwindow', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
+const suite = { performance: 'performance', journey: 'journey', responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', 'multiwindow-actions': 'multiwindow', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
 const profile = paths.profile(suite);
 const vault = paths.vault(suite);
 const runtime = require('./obsidian-runtime.cjs')(root);
 const source = runtime.source;
 const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
-scenarios['multiwindow-actions-source'] = ['multiwindow-actions.scenario.js', 'host-multiwindow-actions-source-results.json'];
-scenarios['multiwindow-native-actions'] = ['multiwindow-native-actions.scenario.js', 'host-multiwindow-native-actions-results.json'];
-scenarios['multiwindow-combined'] = ['multiwindow-combined.scenario.js', 'host-multiwindow-combined-results.json'];
 scenarios['multiwindow-actions'] = ['multiwindow-actions.scenario.js', 'host-multiwindow-actions-results.json'];
 scenarios.journey = ['journey.scenario.js', 'host-journey-results.json'];
 scenarios.fusion = ['fusion.scenario.js', 'host-fusion-results.json'];
@@ -46,12 +43,10 @@ scenarios.performance = ['performance.scenario.js', 'host-performance-results.js
 scenarios.scale = ['scale.scenario.js', 'host-scale-results.json'];
 scenarios.responsive = ['responsive.scenario.js', 'host-responsive-results.json'];
 scenarios.lifecycle = ['lifecycle.scenario.js', 'host-lifecycle-results.json'];
-scenarios['lifecycle-shiki'] = ['lifecycle.scenario.js', 'host-lifecycle-shiki-results.json'];
 scenarios.pagination = ['pagination.scenario.js', 'host-pagination-results.json'];
 scenarios.compatibility = ['compatibility.scenario.js', 'host-compatibility-results.json'];
 scenarios.multiwindow = ['multiwindow.scenario.js', 'host-multiwindow-results.json'];
 scenarios['multiwindow-restart'] = ['multiwindow-restart.scenario.js', 'host-multiwindow-restart-results.json'];
-scenarios['multiwindow-baseline'] = ['multiwindow-baseline.scenario.js', 'host-multiwindow-baseline-results.json'];
 scenarios.accessibility = ['accessibility.scenario.js', 'host-accessibility-results.json'];
 scenarios.frames = ['frames.scenario.js', 'host-frames-results.json'];
 scenarios.install = ['install.scenario.js', 'host-install-results.json'];
@@ -62,11 +57,9 @@ scenarios.parameters = ['fence-params.scenario.js', 'host-parameters-results.jso
 scenarios['i18n-restart'] = ['i18n-restart.scenario.js', 'host-i18n-restart-results.json'];
 scenarios['prose-restart'] = ['prose-restart.scenario.js', 'host-prose-restart-results.json'];
 scenarios['inline-restart'] = ['inline-restart.scenario.js', 'host-inline-restart-results.json'];
-scenarios['shiki-live-077'] = ['shiki-live.scenario.js', 'host-shiki-live-077-results.json'];
-scenarios['shiki-live-080'] = ['shiki-live.scenario.js', 'host-shiki-live-080-results.json'];
 const mode = process.env.HB_HOST_MODE in scenarios ? process.env.HB_HOST_MODE : 'functional';
-if (mode === 'multiwindow' || mode === 'multiwindow-actions' || mode === 'multiwindow-actions-source' || mode === 'multiwindow-combined') { const layout = path.join(vault, '.obsidian', 'workspace.json'); if (fs.existsSync(layout)) fs.unlinkSync(layout); }
-const lifecycle = mode === 'lifecycle' || mode === 'lifecycle-shiki';
+if (mode === 'multiwindow' || mode === 'multiwindow-actions') { const layout = path.join(vault, '.obsidian', 'workspace.json'); if (fs.existsSync(layout)) fs.unlinkSync(layout); }
+const lifecycle = mode === 'lifecycle';
 const captureModes = ['selection', 'phase-d', 'phase-e', 'notes', 'display', 'parameters', 'migration', 'pagination', 'compatibility', 'fusion'];
 if (mode === 'display') electron.ipcMain.handle('hb-display-viewport', async event => {
   if (!event.sender.debugger.isAttached()) event.sender.debugger.attach('1.3');
@@ -189,21 +182,11 @@ function finish(error) {
   app.exit(error ? 1 : 0);
 }
 
-const resizeTraceSource = `(() => {
-  if(window.__hbResizeTraceInstalled)return; window.__hbResizeTraceInstalled=true;
-  const NativeResizeObserver=window.ResizeObserver, calls=[]; let errors=0;
-  window.ResizeObserver=class extends NativeResizeObserver { constructor(callback) { const stack=new Error().stack; super((entries,observer)=>{ calls.push({stack,targets:entries.map(entry=>({class:entry.target.className,width:entry.contentRect.width,height:entry.contentRect.height}))}); if(calls.length>12)calls.shift(); callback(entries,observer); }); } };
-  window.addEventListener('error', event=>{ if(/ResizeObserver/.test(event.message)&&errors++<2)console.warn('HB resize trace: '+JSON.stringify(calls)); });
-})();`;
 let mainWindow;
 app.on('browser-window-created', (_event, window) => {
   if (!desktop) window.on('show', () => window.hide());
   if (!mainWindow) { mainWindow = window; window.setSize(1400, 1000); }
   const contents = window.webContents;
-  if (mode.startsWith('multiwindow') && process.env.HB_RO_TRACE === '1') {
-    contents.debugger.attach('1.3');
-    void contents.debugger.sendCommand('Page.addScriptToEvaluateOnNewDocument', { source: resizeTraceSource });
-  }
   if (mode === 'accessibility') {
     const print = contents.printToPDF.bind(contents);
     contents.printToPDF = async options => {
@@ -219,7 +202,6 @@ app.on('browser-window-created', (_event, window) => {
   });
   contents.on('did-finish-load', async () => {
     if (desktop) { window.show(); window.focus(); }
-    if (mode.startsWith('multiwindow') && process.env.HB_RO_TRACE === '1') await contents.executeJavaScript(resizeTraceSource);
     if (!contents.getURL().includes('index.html')) {
       if (mode.startsWith('multiwindow')) {
         if (!contents.debugger.isAttached()) contents.debugger.attach('1.3');
@@ -256,6 +238,7 @@ app.on('browser-window-created', (_event, window) => {
       if (process.env.HB_TRACE === '1') await contents.executeJavaScript(`Object.defineProperty(window, '__hbChecks', { configurable: true, set(checks) { this.__hbTraceChecks = checks; const push = checks.push; Object.defineProperty(checks, 'push', { configurable: true, value(...items) { for (const item of items) console.warn('HB check: ' + item.name); return push.apply(this, items); } }); }, get() { return this.__hbTraceChecks; } }); void 0;`);
       await contents.executeJavaScript(`window.__hbHostMode = ${JSON.stringify(mode)}`);
       await contents.executeJavaScript(`window.__hbProjectRoot = ${JSON.stringify(root)}`);
+      await contents.executeJavaScript(`window.__hbPerformanceLabel = ${JSON.stringify(process.env.HB_BENCH_LABEL ?? 'current')}`);
       await contents.executeJavaScript(`window.__hbPerformanceProfile = ${process.env.HB_PERF_PROFILE === '1'}`);
       await contents.executeJavaScript(`window.__hbFrameBaseline = ${process.env.HB_FRAME_BASELINE === '1'}`);
       await contents.executeJavaScript(`window.__hbMemoryProfile = ${process.env.HB_MEMORY_PROFILE === '1'}`);
@@ -266,6 +249,8 @@ app.on('browser-window-created', (_event, window) => {
       if (matrix) results.languageMatrix = matrix;
       const observations = await contents.executeJavaScript('window.__hbObservations ?? null');
       if (observations) results.observations = observations;
+      const skipped = await contents.executeJavaScript('window.__hbSkippedChecks ?? []');
+      if (skipped.length) results.skipped = skipped;
       finish();
     } catch (error) {
       try { results.checks.push(...await contents.executeJavaScript('window.__hbChecks ?? []')); } catch { /* The renderer may have exited. */ }

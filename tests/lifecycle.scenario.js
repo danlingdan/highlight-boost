@@ -8,7 +8,7 @@
   app.workspace.updateOptions(); await tick();
   const settingsPath = '.obsidian/plugins/highlight-boost/data.json';
   const originalSettings = await app.vault.adapter.exists(settingsPath) ? await app.vault.adapter.read(settingsPath) : undefined;
-  const settings = JSON.parse(originalSettings ?? '{}'); settings.syntaxProvider = window.__hbHostMode === 'lifecycle-shiki' ? 'shiki' : 'native';
+  const settings = JSON.parse(originalSettings ?? '{}'); if (settings.schemaVersion !== 3) settings.syntaxProvider = 'shiki';
   await app.vault.adapter.write(settingsPath, JSON.stringify(settings));
   const name = '资源回收.md', text = '# Lifecycle\n\n' + Array.from({ length: 100 }, (_, i) => `==item-${i}==`).join('\n\n');
   const existing = app.vault.getFileByPath(name), previous = existing ? await app.vault.read(existing) : undefined;

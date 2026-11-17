@@ -1,32 +1,12 @@
 name: Desktop host
 on:
   workflow_dispatch:
-    inputs:
-      window_diagnostics:
-        description: 仅运行窗口观察器诊断
-        type: boolean
-        default: false
-      diagnostic_os:
-        description: 窗口诊断平台
-        type: choice
-        options: [ubuntu-latest, windows-latest, macos-latest]
-        default: macos-latest
-      diagnostic_scenario:
-        description: 桌面专项
-        type: choice
-        options: [multiwindow, window-native, window-actions, window-actions-source, journey]
-        default: multiwindow
-      resize_trace:
-        description: 记录窗口观察目标与调用栈
-        type: boolean
-        default: false
   push:
     paths: ['src/**', 'tests/**', 'scripts/**', 'styles.css', 'manifest.json', 'package.json', 'pnpm-lock.yaml', '.github/workflows/host.yml']
 permissions:
   contents: read
 jobs:
   host:
-    if: ${{ !inputs.window_diagnostics }}
     strategy:
       fail-fast: false
       matrix:
@@ -36,7 +16,6 @@ jobs:
     env:
       HB_DESKTOP: '1'
       HB_TRACE: '1'
-      HB_RO_TRACE: ${{ inputs.resize_trace && '1' || '0' }}
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -87,56 +66,3 @@ jobs:
             .local/vaults/multiwindow/.obsidian/hb-window-restore.json
             dist/**/candidate.json
             dist/**/highlight-boost.zip
-  window-diagnostics:
-    if: ${{ inputs.window_diagnostics }}
-    runs-on: ${{ inputs.diagnostic_os || 'macos-latest' }}
-    timeout-minutes: 10
-    env:
-      HB_DESKTOP: '1'
-      HB_TRACE: '1'
-      HB_RO_TRACE: ${{ inputs.resize_trace && '1' || '0' }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 11.25.0
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 24
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - run: pnpm prepare:runtime
-      - if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji openbox
-      - run: node scripts/prepare-host-ci.mjs
-      - run: pnpm build && node scripts/prepare-vault.mjs --suite=multiwindow
-      - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'multiwindow'
-        run: node scripts/test-host.mjs --mode=multiwindow-baseline && node scripts/test-host.mjs --mode=multiwindow-native-actions && pnpm test:multiwindow
-      - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'multiwindow'
-        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-baseline && node scripts/test-host.mjs --mode=multiwindow-native-actions && pnpm test:multiwindow'
-      - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'window-actions'
-        run: node scripts/test-host.mjs --mode=multiwindow-actions
-      - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'window-actions'
-        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-actions'
-      - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'window-actions-source'
-        run: node scripts/test-host.mjs --mode=multiwindow-actions-source
-      - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'window-actions-source'
-        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-actions-source'
-      - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'window-native'
-        run: node scripts/test-host.mjs --mode=multiwindow-native-actions
-      - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'window-native'
-        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-native-actions'
-      - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'journey'
-        run: pnpm test:journey
-      - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'journey'
-        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:journey'
-      - if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: window-diagnostics
-          path: |
-            docs/verification/host-multiwindow*-results.json
-            docs/verification/host-journey-results.json
-            .local/vaults/multiwindow/.obsidian/workspace.json
-            .local/vaults/multiwindow/.obsidian/hb-window-restore.json
-          include-hidden-files: true

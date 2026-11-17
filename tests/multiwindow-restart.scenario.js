@@ -3,7 +3,9 @@
   const assert = (name, value, details) => { if (!value) throw new Error(`${name}: ${JSON.stringify(details)}`); checks.push({ name, passed: true }); };
   const tick = () => new Promise(resolve => setTimeout(resolve, 100));
   const until = async predicate => { for (let i = 0; i < 80 && !predicate(); i++) await tick(); return predicate(); };
-  window.addEventListener('error', event => errors.push(event.message));
+  let closing = false; const events = [];
+  const recordError = event => { errors.push(event.message); events.push({ phase: closing ? 'close' : 'restore', message: event.message }); };
+  window.addEventListener('error', recordError);
   const saved = JSON.parse(await app.vault.adapter.read(`${app.vault.configDir}/hb-window-restore.json`));
   const plugin = app.plugins.plugins['highlight-boost']; await plugin.index.ready;
   const source = () => app.workspace.getLeavesOfType('markdown').find(leaf => leaf.view.file?.path === saved.path && leaf.view.containerEl.ownerDocument !== document);
@@ -16,19 +18,19 @@
   assert('window-restart-workbench-restored', await until(() => Boolean(panel())));
   const panelLeaf = panel(), panelDoc = panelLeaf.view.containerEl.ownerDocument;
   assert('window-restart-two-distinct-windows', panelDoc !== sourceDoc);
-  sourceDoc.defaultView.addEventListener('error', event => errors.push(event.message)); panelDoc.defaultView.addEventListener('error', event => errors.push(event.message));
+  sourceDoc.defaultView.addEventListener('error', recordError); panelDoc.defaultView.addEventListener('error', recordError);
   app.workspace.setActiveLeaf(sourceLeaf, { focus: true }); plugin.refreshPanels();
   assert('window-restart-three-cards', await until(() => panelDoc.querySelectorAll('.hb-card').length === 3));
   const quote = [...panelDoc.querySelectorAll('.hb-quote')].find(element => element.textContent === 'value'); quote.click();
   assert('window-restart-jump', await until(() => editor.getSelection() === 'value'));
   const panelWindow = panelDoc.defaultView, sourceWindow = sourceDoc.defaultView;
-  panelWindow.close(); sourceWindow.close();
+  closing = true; panelWindow.close(); sourceWindow.close();
   assert('window-restart-closed', await until(() => panelWindow.closed && sourceWindow.closed));
   assert('window-restart-documents-released', await until(() => !plugin.syntax.runtime.documents.has(sourceDoc) && ![...plugin.editorViews.values()].some(view => view.dom.ownerDocument === sourceDoc)));
   assert('window-restart-source-preserved', await app.vault.read(app.vault.getFileByPath(saved.path)) === saved.text);
   plugin.settings = saved.original; await plugin.saveSettings();
   await app.workspace.requestSaveLayout.run();
   await new Promise(resolve => setTimeout(resolve, 1000));
-  assert('window-restart-no-page-errors', errors.length === 0, errors);
+  window.__hbUI.windowErrors('window-restart-no-page-errors', errors, checks, events);
   window.__hbObservations = { errors, restoredWindows: 2, sourcePath: saved.path }; return checks;
 })()

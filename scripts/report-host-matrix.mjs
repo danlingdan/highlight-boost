@@ -17,7 +17,7 @@ for (const platform of ['windows', 'macos', 'ubuntu']) {
   if (sourceCommit !== environment.revision) throw new Error('Platform revisions differ');
   const files = (await readdir(directory)).filter(file => /^host.*results\.json$/.test(file) && file !== 'host-compatibility-results.json');
   for (const file of phaseFour ? ['default.json'] : ['default-native.json', 'default-internal.json']) files.push(`compatibility/${file}`);
-  if (phaseFour) for (const mode of ['unified', 'fusion', 'multiwindow', 'multiwindow-restart', 'multiwindow-actions', 'multiwindow-combined', 'journey', 'accessibility', 'frames', 'install', 'install-restart']) {
+  if (phaseFour) for (const mode of ['unified', 'fusion', 'multiwindow', 'multiwindow-restart', 'multiwindow-actions', 'journey', 'accessibility', 'frames', 'install', 'install-restart']) {
     if (!files.includes(`host-${mode}-results.json`)) throw new Error(`Missing phase-four scene: ${platform}/${mode}`);
   }
   const scenarios = [];
@@ -25,6 +25,7 @@ for (const platform of ['windows', 'macos', 'ubuntu']) {
     const bytes = await readFile(join(directory, file)), result = JSON.parse(bytes);
     if (result.obsidian !== runtime.appVersion || result.electron !== runtime.electronVersion || !result.checks.length || result.errors.length || result.checks.some(check => check.passed !== true)) throw new Error(`Failed scene: ${platform}/${file}`);
     const scene = { file, sha256: digest(bytes), checks: result.checks.length };
+    if (result.skipped?.length) scene.skipped = result.skipped;
     if (result.observations?.cells) scene.cells = result.observations.cells;
     scenarios.push(scene);
   }

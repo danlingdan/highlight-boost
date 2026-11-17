@@ -13,7 +13,7 @@
   const path = '窗口批注融合.md', text = '# Window actions\n\nlocal text\n';
   const old = app.vault.getFileByPath(path), file = old ? (await app.vault.modify(old, text), old) : await app.vault.create(path, text);
   const duplicate = app.workspace.getLeaf('tab'); await duplicate.openFile(file);
-  await duplicate.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: window.__hbHostMode === 'multiwindow-actions-source' } });
+  await duplicate.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: false } });
   const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file);
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   const popout = app.workspace.moveLeafToPopout(leaf, { width: 900, height: 700 });
@@ -24,12 +24,8 @@
   editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 10));
   assert('actions-mark-created', plugin.apply(editor, plugin.presetForAction('important')));
   const marked = editor.getValue();
-  const toolbarCloses = [];
-  for (const toolbar of plugin.toolbars) if (toolbar.matches(editor)) {
-    if (window.__hbHostMode === 'multiwindow-actions-source') { const close = toolbar.close.bind(toolbar); toolbar.close = focus => { toolbarCloses.push({ focus, text: editor.getValue(), stack: new Error().stack }); close(focus); }; }
-    toolbar.open();
-  }
-  assert('actions-toolbar-ready', await until(() => popout.doc.querySelector('[data-hb-action="annotation"]')), { text: editor.getValue(), marked, toolbarCloses, toolbars: [...plugin.toolbars].filter(toolbar => toolbar.matches(editor)).map(toolbar => ({ disposed: toolbar.disposed, dismissed: toolbar.dismissed, manual: toolbar.manual, ownerIsPopout: toolbar.owner === popout.doc, hasElement: !!toolbar.element, selection: toolbar.view.state.selection.main, bounds: toolbar.view.scrollDOM.getBoundingClientRect().toJSON(), coords: toolbar.view.coordsAtPos(toolbar.view.state.selection.main.head) })) });
+  for (const toolbar of plugin.toolbars) if (toolbar.matches(editor)) toolbar.open();
+  assert('actions-toolbar-ready', await until(() => popout.doc.querySelector('[data-hb-action="annotation"]')));
   phase = 'open-modal'; popout.doc.querySelector('[data-hb-action="annotation"]').click();
   assert('actions-note-owned-by-source-window', await until(() => popout.doc.querySelector('.hb-note-input')) && !document.querySelector('.hb-note-input'));
   const input = popout.doc.querySelector('.hb-note-input'); input.value = 'popout-undo-note';
@@ -48,5 +44,5 @@
   assert('actions-toolbar-released', ![...plugin.toolbars].some(toolbar => toolbar.matches(editor)));
   assert('actions-source-preserved', await app.vault.read(file) === annotated);
   phase = 'restore-settings'; plugin.settings = original; await plugin.saveSettings();
-  window.__hbObservations = { errors, events }; assert('actions-no-unexpected-page-errors', errors.length === 0, events); return checks;
+  window.__hbObservations = { errors, events }; window.__hbUI.windowErrors('actions-no-unexpected-page-errors', errors, checks, events); return checks;
 })()

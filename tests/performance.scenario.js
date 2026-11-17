@@ -9,20 +9,25 @@
     const samplesMs = []; for (let i = 0; i < count; i++) { if (setup) await setup(); const start = performance.now(); await action(i); samplesMs.push(performance.now() - start); }
     const sorted = [...samplesMs].sort((a, b) => a - b); metrics[name] = { samplesMs, p50Ms: sorted[Math.ceil(count * .5) - 1], p95Ms: sorted[Math.ceil(count * .95) - 1] };
   };
-  await app.plugins.loadManifests(); await app.plugins.setEnable(true); await app.plugins.enablePlugin('highlight-boost');
-  let plugin = app.plugins.plugins['highlight-boost']; const original = structuredClone(plugin.settings);
+  await app.plugins.loadManifests(); await app.plugins.setEnable(true);
+  assert('performance-cold-plugin-not-preloaded', !app.plugins.plugins['highlight-boost']);
+  let plugin;
+  await measure('load-to-index-ready', 1, async () => { await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost']; await plugin.index.ready; });
+  const original = structuredClone(plugin.settings);
   const path = '性能验收.md', old = app.vault.getFileByPath(path), previous = old ? await app.vault.read(old) : undefined;
   const file = old ? (await app.vault.modify(old, '# Performance\n'), old) : await app.vault.create(path, '# Performance\n');
   const leaf = app.workspace.getLeaf(false); await leaf.openFile(file); app.workspace.setActiveLeaf(leaf, { focus: true });
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   const view = leaf.view, editor = view.editor;
-  for (const provider of ['native', 'shiki']) {
-    plugin.settings.syntaxProvider = provider; await plugin.saveSettings();
+  const legacy = plugin.settings.schemaVersion !== 3;
+  for (const provider of legacy ? ['native', 'shiki'] : ['unified']) {
+    if (legacy) plugin.settings.syntaxProvider = provider; await plugin.saveSettings();
     await measure(`${provider}-enable`, 3, async () => {
       await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost']; await plugin.index.ready;
     }, () => app.plugins.disablePlugin('highlight-boost'));
   }
-  plugin.settings.syntaxProvider = 'native'; plugin.settings.selectionToolbar = false; await plugin.saveSettings();
+  if (legacy) plugin.settings.syntaxProvider = 'shiki';
+  plugin.settings.selectionToolbar = false; await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost']; await plugin.index.ready;
   const prefix = '# Performance\n\nneedle and ==second==\n\n', paragraph = 'A paragraph with plain text and **formatting**.\n\n';
   const medium = prefix + paragraph.repeat(Math.ceil((200 * 1024 - prefix.length) / paragraph.length)).slice(0, 200 * 1024 - prefix.length);
@@ -38,6 +43,11 @@
   assert('performance-medium-source', editor.getValue().includes('needle') && editor.getValue().length >= 200 * 1024);
   const code = '```js\n' + Array.from({ length: 500 }, (_, i) => `const value${i} = ${i};`).join('\n') + '\n```';
   editor.setValue(code); await plugin.index.ready;
+  await measure('enable-to-first-color-500-lines', 3, async () => {
+    await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
+    if (!await until(() => editor.cm.dom.querySelector('.hb-syntax-token'))) throw new Error('Initial syntax tokens missing');
+    await settled();
+  }, () => app.plugins.disablePlugin('highlight-boost'));
   plugin.settings.codeDisplay.showLineNumbers = true; await plugin.saveSettings();
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'preview' } });
   const root = view.containerEl.querySelector('.markdown-preview-view');
@@ -53,7 +63,7 @@
   assert('performance-large-code-source-exact', editor.getValue() === largeCode);
   const fs = window.require('fs'), nodePath = window.require('path');
   const buildSha256 = window.require('crypto').createHash('sha256').update(fs.readFileSync(nodePath.join(app.vault.adapter.basePath, plugin.manifest.dir, 'main.js'))).digest('hex');
-  const observations = { metrics, errors, buildSha256, timing: 'DOM-ready with forced layout; no animation-frame wait', fixtures: { mediumBytes: new TextEncoder().encode(medium).length, codeLines: 500, largeCodeLines: 5000, largeCodeBytes: new TextEncoder().encode(largeCode).length }, rendererHeap: window.require('v8').getHeapStatistics(), indexNotes: plugin.index.notes.size };
+  const observations = { metrics, errors, buildSha256, engine: legacy ? '1.0.1 Shiki' : 'unified', timing: 'DOM-ready with forced layout; no animation-frame wait', fixtures: { mediumBytes: new TextEncoder().encode(medium).length, codeLines: 500, largeCodeLines: 5000, largeCodeBytes: new TextEncoder().encode(largeCode).length }, rendererHeap: window.require('v8').getHeapStatistics(), indexNotes: plugin.index.notes.size };
   window.__hbObservations = observations;
   const label = window.__hbPerformanceLabel ?? 'current';
   await app.vault.adapter.write(`${app.vault.configDir}/hb-performance-${label}.json`, JSON.stringify(observations));

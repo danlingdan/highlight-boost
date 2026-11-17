@@ -6,7 +6,7 @@ const research = path.join(local, 'cache', 'research');
 const bench = path.join(local, 'cache', 'bench');
 const pdf = path.join(local, 'exports', 'pdf');
 const design = path.join(local, 'design', '1.1.0');
-const suites = new Set(['default', 'compat', 'accessibility', 'journey', 'multiwindow', 'frames', 'install', 'responsive', 'scale']);
+const suites = new Set(['default', 'compat', 'accessibility', 'performance', 'journey', 'multiwindow', 'frames', 'install', 'responsive', 'scale']);
 function suitePath(kind, suite = 'default') {
   suite ??= 'default';
   if (!suites.has(suite)) throw new Error(`Unknown test suite: ${suite}`);

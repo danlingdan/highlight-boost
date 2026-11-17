@@ -13,7 +13,9 @@
   };
   await app.plugins.loadManifests(); await app.plugins.setEnable(true); await app.plugins.enablePlugin('highlight-boost');
   let plugin = app.plugins.plugins['highlight-boost']; const original = structuredClone(plugin.settings), metrics = {};
-  plugin.settings.syntaxProvider = 'native'; plugin.settings.selectionToolbar = false; await plugin.saveSettings();
+  const legacy = plugin.settings.schemaVersion !== 3;
+  if (legacy) plugin.settings.syntaxProvider = 'shiki';
+  plugin.settings.selectionToolbar = false; await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
   const path = '帧与滚动验收.md', prefix = '# Frames\n\nneedle and plain text.\n\n', source = prefix + 'A paragraph with plain text and **formatting**.\n\n'.repeat(4360).slice(0, 200 * 1024 - prefix.length);
   for (const existing of app.workspace.getLeavesOfType('markdown')) if (existing.view.file?.path === path) existing.detach();
@@ -31,13 +33,13 @@
   });
   const code = '```js\n' + Array.from({ length: 5000 }, (_, i) => `const value${i} = ${i}; // ${'x'.repeat(180)}`).join('\n') + '\n```\n';
   editor.setValue(code); await leaf.view.save();
-  for (const provider of ['native', 'shiki']) {
-    plugin.settings.syntaxProvider = provider; await plugin.saveSettings(); await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
+  for (const provider of legacy ? ['native', 'shiki'] : ['unified']) {
+    if (legacy) plugin.settings.syntaxProvider = provider; await plugin.saveSettings(); await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
     let tokenizations = 0;
-    if (provider === 'shiki') {
+    if (provider !== 'native') {
       const engine = plugin.syntax.engine, tokenize = engine.tokens.bind(engine);
       engine.tokens = (...arguments_) => { tokenizations++; return tokenize(...arguments_); };
-      assert('shiki-initial-tokens-ready', await until(() => editor.cm.dom.querySelector('.hb-syntax-token')));
+      assert(`${provider}-initial-tokens-ready`, await until(() => editor.cm.dom.querySelector('.hb-syntax-token')));
     }
     const initialTokenizations = tokenizations;
     await measure(`${provider}-scroll-to-frame-5000-lines`, 6, async i => {
@@ -50,15 +52,12 @@
       assert(`${provider}-scroll-selection-exact`, editor.getSelection() === word);
       await frame('frame-scroll', cm.scrollDOM);
     });
-    if (provider === 'shiki') {
+    if (provider !== 'native') {
       const reused = tokenizations === initialTokenizations;
-      if (window.__hbFrameBaseline) checks.push({ name: 'shiki-scroll-tokenizations-observed', passed: true, tokenizations, initialTokenizations });
-      else {
-        assert('shiki-scroll-reuses-document-tokens', reused, { tokenizations, initialTokenizations });
-        editor.replaceRange('let', { line: 1, ch: 0 }, { line: 1, ch: 5 });
-        assert('shiki-edit-rebuilds-tokens', await until(() => tokenizations > initialTokenizations && [...editor.cm.dom.querySelectorAll('.hb-syntax-token')].some(node => node.textContent === 'let')));
-        editor.undo(); assert('shiki-edit-undo-source-exact', editor.getValue() === code);
-      }
+      assert(`${provider}-scroll-reuses-document-tokens`, reused, { tokenizations, initialTokenizations });
+      editor.replaceRange('let', { line: 1, ch: 0 }, { line: 1, ch: 5 });
+      assert(`${provider}-edit-rebuilds-tokens`, await until(() => tokenizations > initialTokenizations && [...editor.cm.dom.querySelectorAll('.hb-syntax-token')].some(node => node.textContent === 'let')));
+      editor.undo(); assert(`${provider}-edit-undo-source-exact`, editor.getValue() === code);
     }
     assert(`${provider}-scroll-source-exact`, editor.getValue() === code);
   }

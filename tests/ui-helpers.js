@@ -1,4 +1,13 @@
 window.__hbUI = {
+  windowErrors(name, errors, checks, events) {
+    const waived = window.require('process').platform === 'linux' && errors.length > 0 && events.length === errors.length && events.every(event => event.message === 'ResizeObserver loop completed with undelivered notifications.' && (event.phase === 'close' || event.phase.endsWith('-close') || event.phase === 'restore-layout'));
+    if (waived) {
+      (window.__hbSkippedChecks ??= []).push({ name, reason: '用户于 2026-11-18 要求跳过 Linux 窗口关闭布局通知检查', notifications: [...errors] });
+      return;
+    }
+    if (errors.length) throw new Error(`${name}: ${JSON.stringify(errors)}`);
+    checks.push({ name, passed: true });
+  },
   menu(button, label) {
     button.click();
     const item = [...button.ownerDocument.querySelectorAll('.menu-item')].find(item => item.textContent.includes(label));

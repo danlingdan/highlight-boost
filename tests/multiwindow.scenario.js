@@ -5,8 +5,8 @@
   const clipboard = (action, text) => window.require('electron').ipcRenderer.invoke('hb-window-clipboard', action, text);
   const activate = async leaf => { const doc = leaf.view.containerEl.ownerDocument; doc.defaultView.electronWindow.focus(); app.workspace.setActiveLeaf(leaf, { focus: true }); await until(() => doc.hasFocus()); };
   const until = async predicate => { for (let i = 0; i < 80 && !predicate(); i++) await tick(); return predicate(); };
-  let phase = 'load'; const phases = {};
-  const recordError = event => { errors.push(event.message); phases[phase]=(phases[phase]??0)+1; };
+  let phase = 'load'; const phases = {}, events = [];
+  const recordError = event => { errors.push(event.message); events.push({ phase, message: event.message }); phases[phase]=(phases[phase]??0)+1; };
   window.addEventListener('error', recordError);
   await app.plugins.loadManifests(); await app.plugins.setEnable(true); await app.plugins.enablePlugin('highlight-boost');
   let plugin = app.plugins.plugins['highlight-boost']; const original = structuredClone(plugin.settings);
@@ -34,6 +34,14 @@
     assert(`${provider}-popout-mark-prose`, plugin.apply(editor, plugin.presetForAction('important')));
     select('inline_window'); assert(`${provider}-popout-mark-inline`, plugin.apply(editor, plugin.presetForAction('question')));
     select('value'); assert(`${provider}-popout-mark-code`, plugin.apply(editor, plugin.presetForAction('reference')));
+    const beforeNote = editor.getValue(); select('window prose'); for (const toolbar of plugin.toolbars) if (toolbar.matches(editor)) toolbar.open();
+    assert('popout-toolbar-annotation-ready', await until(() => popout.doc.querySelector('[data-hb-action="annotation"]')));
+    popout.doc.querySelector('[data-hb-action="annotation"]').click();
+    assert('popout-toolbar-annotation-owned', await until(() => popout.doc.querySelector('.hb-note-input')));
+    const localNote = popout.doc.querySelector('.hb-note-input'); localNote.value = 'popout-undo-note';
+    [...localNote.closest('.modal').querySelectorAll('button')].find(button => button.textContent === '保存').click();
+    assert('popout-toolbar-note-saved', await until(() => !localNote.isConnected && editor.getValue().includes('popout-undo-note')));
+    editor.undo(); assert('popout-note-undo-in-original-editor', editor.getValue() === beforeNote);
     const marked = editor.getValue(); await leaf.view.save(); await plugin.index.ready;
     assert(`${provider}-host-saved-source`, await app.vault.read(file) === marked);
     assert(`${provider}-duplicate-synchronized`, await until(() => duplicate.view.editor.getValue() === marked));
@@ -108,5 +116,5 @@
   assert('restore-layout-saved', JSON.stringify(savedLayout).includes(path) && savedLayout.floating?.children.length === 2, savedLayout.floating);
   await new Promise(resolve => setTimeout(resolve, 1000));
   window.__hbObservations = { errors, phases, mode: 'unified' };
-  assert('multiwindow-no-page-errors', errors.length === 0, { errors, phases }); return checks;
+  window.__hbUI.windowErrors('multiwindow-no-page-errors', errors, checks, events); return checks;
 })()

@@ -7,7 +7,7 @@
   const saved = JSON.parse(await app.vault.adapter.read(`${app.vault.configDir}/hb-window-restore.json`));
   const plugin = app.plugins.plugins['highlight-boost']; await plugin.index.ready;
   const source = () => app.workspace.getLeavesOfType('markdown').find(leaf => leaf.view.file?.path === saved.path && leaf.view.containerEl.ownerDocument !== document);
-  assert('window-restart-source-restored', await until(() => source()?.view.editor.getValue() === saved.text));
+  assert('window-restart-source-restored', await until(() => source()?.view.editor.getValue() === saved.text), { layout: app.workspace.getLayout(), leaves: app.workspace.getLeavesOfType('markdown').map(leaf => ({ state: leaf.getViewState(), file: leaf.view.file?.path, main: leaf.view.containerEl.ownerDocument === document, deferred: leaf.isDeferred })) });
   const sourceLeaf = source(), editor = sourceLeaf.view.editor, sourceDoc = sourceLeaf.view.containerEl.ownerDocument;
   assert('window-restart-unified-engine', plugin.settings.schemaVersion === 3 && Boolean(plugin.syntax.engine) && !('syntaxProvider' in plugin.settings));
   assert('window-restart-source-tokens', await until(() => sourceDoc.querySelector('.hb-syntax-token')));

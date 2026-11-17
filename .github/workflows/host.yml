@@ -46,26 +46,26 @@ jobs:
       - run: pnpm prepare:runtime
       - run: node scripts/prepare-host-ci.mjs
       - if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji openbox
       - if: runner.os != 'Linux'
         run: pnpm test:host
       - if: runner.os == 'Linux'
-        run: xvfb-run -a pnpm test:host
+        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:host'
       - if: runner.os != 'Linux'
         run: pnpm test:multiwindow && pnpm test:accessibility && pnpm test:journey
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'pnpm test:multiwindow && pnpm test:accessibility && pnpm test:journey'
+        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:multiwindow && pnpm test:accessibility && pnpm test:journey'
       - run: pnpm package:candidate
       - run: node scripts/prepare-install.mjs --current
       - if: runner.os != 'Linux'
         run: pnpm test:install && pnpm test:frames
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'pnpm test:install && pnpm test:frames'
+        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & pnpm test:install && pnpm test:frames'
       - run: node scripts/prepare-vault.mjs --suite=compat && node scripts/prepare-compatibility.mjs --core
       - if: runner.os != 'Linux'
         run: node scripts/test-compatibility.mjs --case=default
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'node scripts/test-compatibility.mjs --case=default'
+        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-compatibility.mjs --case=default'
       - if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -78,6 +78,8 @@ jobs:
             docs/verification/images/
             docs/verification/compatibility/default.json
             .local/exports/pdf/*.pdf
+            .local/vaults/multiwindow/.obsidian/workspace.json
+            .local/vaults/multiwindow/.obsidian/hb-window-restore.json
             dist/**/candidate.json
             dist/**/highlight-boost.zip
   window-diagnostics:
@@ -100,14 +102,19 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm prepare:runtime
       - if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji
+        run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji openbox
+      - run: node scripts/prepare-host-ci.mjs
       - run: pnpm build && node scripts/prepare-vault.mjs --suite=multiwindow
       - if: runner.os != 'Linux'
         run: node scripts/test-host.mjs --mode=multiwindow-baseline && pnpm test:multiwindow
       - if: runner.os == 'Linux'
-        run: xvfb-run -a sh -c 'node scripts/test-host.mjs --mode=multiwindow-baseline && pnpm test:multiwindow'
+        run: xvfb-run -a sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-baseline && pnpm test:multiwindow'
       - if: always()
         uses: actions/upload-artifact@v4
         with:
           name: window-diagnostics
-          path: docs/verification/host-multiwindow*-results.json
+          path: |
+            docs/verification/host-multiwindow*-results.json
+            .local/vaults/multiwindow/.obsidian/workspace.json
+            .local/vaults/multiwindow/.obsidian/hb-window-restore.json
+          include-hidden-files: true

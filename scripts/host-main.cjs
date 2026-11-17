@@ -15,7 +15,7 @@ net.Server.prototype.listen = function (...args) {
 const root = path.resolve(__dirname, '..');
 const desktop = process.env.HB_DESKTOP === '1';
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
-const suite = { journey: 'journey', responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', 'multiwindow-combined': 'multiwindow', 'multiwindow-actions': 'multiwindow', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
+const suite = { journey: 'journey', responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', 'multiwindow-baseline': 'multiwindow', 'multiwindow-combined': 'multiwindow', 'multiwindow-actions': 'multiwindow', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
 const profile = paths.profile(suite);
 const vault = paths.vault(suite);
 const runtime = require('./obsidian-runtime.cjs')(root);

@@ -18,9 +18,10 @@
   const popout = app.workspace.moveLeafToPopout(leaf, { width: 900, height: 700 });
   assert('actions-real-popout', await until(() => popout.doc?.body && popout.win.__hbPopoutReady));
   popout.win.addEventListener('error', observe); activate(leaf);
+  assert('actions-editor-ready', await until(() => leaf.view.editor.getValue() === text && [...plugin.toolbars].some(toolbar => toolbar.matches(leaf.view.editor))));
   const editor = leaf.view.editor, from = editor.getValue().indexOf('local text');
   editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 10));
-  plugin.apply(editor, plugin.presetForAction('important'));
+  assert('actions-mark-created', plugin.apply(editor, plugin.presetForAction('important')));
   const marked = editor.getValue();
   for (const toolbar of plugin.toolbars) if (toolbar.matches(editor)) toolbar.open();
   assert('actions-toolbar-ready', await until(() => popout.doc.querySelector('[data-hb-action="annotation"]')));

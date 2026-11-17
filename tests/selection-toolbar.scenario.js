@@ -32,6 +32,9 @@
   select('alpha');
   assert('toolbar-auto-opens', await until(() => toolbar()?.textContent.includes('正文')));
   assert('toolbar-accessible', toolbar().getAttribute('role') === 'toolbar' && [...toolbar().querySelectorAll('button')].every(button => button.getAttribute('aria-label')));
+  editor.cm.dispatch({ changes: { from: 0, to: editor.cm.state.doc.length, insert: editor.getValue() }, selection: editor.cm.state.selection });
+  await tick();
+  assert('toolbar-equal-source-reload-keeps-selection', Boolean(toolbar()) && editor.getSelection() === 'alpha');
   await plugin.openPanel('note'); editor.focus(); select('alpha');
   await click('preset-important');
   assert('toolbar-marks-prose', prose()[0]?.semantic === 'important' && editor.getSelection() === 'alpha');

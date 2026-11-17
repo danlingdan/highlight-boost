@@ -1,10 +1,10 @@
 # 更新日志
 
-## 1.1.0
+## 1.1.0 · 2026-11-18
 
 统一离线代码着色及展示。选区工具栏和工作台共用批注、集合操作，摘录支持预览并复制完整筛选结果。更新时自动转换插件配置，继续使用已有笔记与集合。
 
-详见 [1.1.0 发布说明](docs/releases/1.1.0.md)。
+详见 [1.1.0 发布说明](docs/releases/1.1.0.md)及 [GitHub Release](https://github.com/danlingdan/highlight-boost/releases/tag/1.1.0)。
 
 ## 1.0.1 · 2026-11-16
 

@@ -45,4 +45,4 @@
 
 从候选 ZIP 的解压文件安装到全新测试库，校验版本及文件摘要，并测试标注、撤销重做、批注、复制和阅读展示。独立进程重启验证设置、笔记和批注恢复。16 个专项进程共 587 项断言通过，其中全新安装 25 项、重启 18 项。[候选摘要](reports/candidate.json) · [全新安装](reports/install-after.json) · [安装后重启](reports/install-restart-after.json)
 
-候选可交付维护者审阅发布正文及附件。正式标签和 GitHub Release 由发布流程处理。
+1.1.0 已于 2026-11-18 发布，标签提交为 `0e68661`。正式附件逐项核对了 CI 摘要和来源证明。`main.js` 与已安装的候选逐字节一致，`manifest.json` 和 `styles.css` 仅换行符有差异。[GitHub Release](https://github.com/danlingdan/highlight-boost/releases/tag/1.1.0) · [正式构建摘要](reports/release-proof.json)

@@ -1,8 +1,10 @@
 # 发布维护
 
-## 1.1.0 发布准备
+## 1.1.0 发布记录
 
-2026-11-18，本机候选 `dist/highlight-boost-1.1.0-2518fa37/highlight-boost.zip` 已完成构建、解压摘要核对、全新安装及独立进程重启。性能与宿主结果见[第五阶段验证记录](../verification/1.1.0/phase-5/README.md)。维护者审阅 [1.1.0 发布正文](1.1.0.md)及正式构建附件后可按下方流程发布。
+2026-11-18 发布 [1.1.0](https://github.com/danlingdan/highlight-boost/releases/tag/1.1.0)，标签对应提交 `0e68661`。三个附件的 SHA-256 和 GitHub 来源证明均已核对。[发布正文](1.1.0.md) · [构建运行](https://github.com/danlingdan/highlight-boost/actions/runs/44190381244) · [正式附件摘要](../verification/1.1.0/phase-5/reports/release-proof.json)
+
+本机候选完成解压核对、全新安装及独立进程重启。性能、宿主结果和发布前 Linux 窗口复测见[第五阶段验证记录](../verification/1.1.0/phase-5/README.md)。
 
 ## 1.0.1 发布与审核
 

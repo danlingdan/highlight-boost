@@ -3,7 +3,7 @@
   const assert = (name, value, details) => { if (!value) throw new Error(`${name}: ${JSON.stringify(details)}`); checks.push({ name, passed: true }); };
   const tick = () => new Promise(resolve => setTimeout(resolve, 100));
   const clipboard = (action, text) => window.require('electron').ipcRenderer.invoke('hb-window-clipboard', action, text);
-  const activate = leaf => app.workspace.setActiveLeaf(leaf, { focus: true });
+  const activate = async leaf => { const doc = leaf.view.containerEl.ownerDocument; doc.defaultView.electronWindow.focus(); app.workspace.setActiveLeaf(leaf, { focus: true }); await until(() => doc.hasFocus()); };
   const until = async predicate => { for (let i = 0; i < 80 && !predicate(); i++) await tick(); return predicate(); };
   let phase = 'load'; const phases = {};
   const recordError = event => { errors.push(event.message); phases[phase]=(phases[phase]??0)+1; };
@@ -19,14 +19,14 @@
     for (const existing of app.workspace.getLeavesOfType('markdown')) if (existing.view.file?.path === path) existing.detach();
     await app.vault.modify(file, source);
     const duplicate = app.workspace.getLeaf('tab'); await duplicate.openFile(file);
-    const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file); activate(leaf);
+    const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file); await activate(leaf);
     await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
     const popout = app.workspace.moveLeafToPopout(leaf, { width: 1000, height: 800 });
     assert(`${provider}-actual-popout`, await until(() => popout.doc?.body && leaf.view.containerEl.ownerDocument === popout.doc));
     assert(`${provider}-popout-ready`, await until(() => popout.win.__hbPopoutReady));
     const popoutWindow = popout.win, popoutDocument = popout.doc;
     popout.win.addEventListener('error', recordError);
-    activate(leaf);
+    await activate(leaf);
     const editor = leaf.view.editor;
     const select = word => { const from = editor.getValue().lastIndexOf(word); editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length)); editor.scrollIntoView({ from: editor.offsetToPos(from), to: editor.offsetToPos(from + word.length) }, true); };
     select('window prose');
@@ -53,16 +53,16 @@
     const panelWindow = app.workspace.moveLeafToPopout(panelLeaf, { width: 500, height: 800 });
     assert(`${provider}-workbench-moved`, await until(() => panelWindow.doc?.querySelectorAll('.hb-card').length === 3));
     const workbenchWindow = panelWindow.win;
-    activate(leaf); plugin.refreshPanels(); activate(panelLeaf);
+    await activate(leaf); plugin.refreshPanels(); await activate(panelLeaf);
     assert(`${provider}-workbench-source-context`, panelLeaf.view.note === leaf.view);
     phase = `${provider}-jump`; const codeCard = [...panelWindow.doc.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'value'); codeCard.querySelector('.hb-quote').click();
     assert(`${provider}-cross-window-jump`, await until(() => leaf.view.getMode() === 'source' && editor.getSelection() === 'value'), { mode: leaf.view.getMode(), selection: editor.getSelection() });
     phase = `${provider}-excerpt`; const proseCard = [...panelWindow.doc.querySelectorAll('.hb-card')].find(card => card.querySelector('.hb-quote').textContent === 'window prose');
-    await clipboard('write', 'pending'); proseCard.querySelector('.hb-copy-excerpt').click();
+    await activate(panelLeaf); await clipboard('write', 'pending'); proseCard.querySelector('.hb-copy-excerpt').click();
     let excerpt = ''; for(let i=0;i<30&&!excerpt;i++){await tick();const value=await clipboard('read');if(value!=='pending')excerpt=value;}
     assert(`${provider}-popup-copy-excerpt`, excerpt.includes('window prose'), excerpt);
     phase = `${provider}-modal`;
-    activate(panelLeaf);
+    await activate(panelLeaf);
     const annotationTrigger = panelWindow.doc.querySelector('.hb-edit-note'); annotationTrigger.focus(); annotationTrigger.click();
     assert('popout-shared-annotation-owned-by-window', await until(() => panelWindow.doc.querySelector('.hb-note-input')) && !document.querySelector('.hb-note-input'));
     const modalInput = panelWindow.doc.querySelector('.hb-note-input'); modalInput.value = '窗口草稿';
@@ -92,7 +92,7 @@
   phase = 'restore-layout'; plugin.settings = original; await plugin.saveSettings(); await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost');
   plugin = app.plugins.plugins['highlight-boost']; plugin.settings.selectionToolbar = true; await plugin.saveSettings();
   await app.plugins.disablePlugin('highlight-boost'); await app.plugins.enablePlugin('highlight-boost'); plugin = app.plugins.plugins['highlight-boost'];
-  const restoredLeaf = app.workspace.getLeaf('tab'); await restoredLeaf.openFile(file); activate(restoredLeaf);
+  const restoredLeaf = app.workspace.getLeaf('tab'); await restoredLeaf.openFile(file); await activate(restoredLeaf);
   await restoredLeaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   const restoredWindow = app.workspace.moveLeafToPopout(restoredLeaf, { width: 1000, height: 800 });
   assert('restore-layout-source-window', await until(() => restoredWindow.doc?.body && restoredWindow.win.__hbPopoutReady));
@@ -101,7 +101,7 @@
   const restoredPanelWindow = app.workspace.moveLeafToPopout(restoredPanel, { width: 500, height: 800 });
   assert('restore-layout-workbench-window', await until(() => restoredPanelWindow.win.__hbPopoutReady && restoredPanelWindow.doc?.querySelectorAll('.hb-card').length === 3));
   restoredPanelWindow.win.addEventListener('error', recordError);
-  activate(restoredLeaf);
+  await activate(restoredLeaf);
   await app.vault.adapter.write(`${app.vault.configDir}/hb-window-restore.json`, JSON.stringify({ path, text: await app.vault.read(file), original }));
   await app.workspace.requestSaveLayout.run();
   const savedLayout = JSON.parse(await app.vault.adapter.read(`${app.vault.configDir}/workspace.json`));

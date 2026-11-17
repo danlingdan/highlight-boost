@@ -1,7 +1,7 @@
 (async () => {
   const checks = [], errors = []; window.__hbChecks = checks;
   const tick = () => new Promise(resolve => setTimeout(resolve, 100));
-  const activate = leaf => app.workspace.setActiveLeaf(leaf, { focus: true });
+  const activate = async leaf => { const doc = leaf.view.containerEl.ownerDocument; doc.defaultView.electronWindow.focus(); app.workspace.setActiveLeaf(leaf, { focus: true }); await until(() => doc.hasFocus()); };
   const until = async predicate => { for (let i = 0; i < 60 && !predicate(); i++) await tick(); return predicate(); };
   const assert = (name, value, details) => { if (!value) throw new Error(`${name}: ${JSON.stringify(details)}`); checks.push({ name, passed: true }); };
   let phase = 'open'; const events = [];
@@ -17,7 +17,7 @@
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
   const popout = app.workspace.moveLeafToPopout(leaf, { width: 900, height: 700 });
   assert('actions-real-popout', await until(() => popout.doc?.body && popout.win.__hbPopoutReady));
-  popout.win.addEventListener('error', observe); activate(leaf);
+  popout.win.addEventListener('error', observe); await activate(leaf);
   assert('actions-editor-ready', await until(() => leaf.view.editor.getValue() === text && [...plugin.toolbars].some(toolbar => toolbar.matches(leaf.view.editor))));
   const editor = leaf.view.editor, from = editor.getValue().indexOf('local text');
   editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 10));

@@ -1,10 +1,10 @@
 # 更新日志
 
-## 1.1.1
+## 1.1.1 · 2026-11-18
 
 修正自定义代码主题的样式加载方式。阅读视图、实时预览和独立窗口继续使用已选择的代码主题。
 
-详见 [1.1.1 发布说明](docs/releases/1.1.1.md)。
+详见 [1.1.1 发布说明](docs/releases/1.1.1.md)及 [GitHub Release](https://github.com/danlingdan/highlight-boost/releases/tag/1.1.1)。
 
 ## 1.1.0 · 2026-11-18
 

@@ -1,0 +1,19 @@
+{
+  "version": "1.1.1",
+  "revision": "a74e708e59ba1fa74aad1933c4c70c927d41e137",
+  "node": "v24.22.2",
+  "files": {
+    "main.js": {
+      "bytes": 3525910,
+      "sha256": "61ee79989b984b2657025cd71c668cf9f53e37e3114764bfb384d6a3197d0b75"
+    },
+    "manifest.json": {
+      "bytes": 312,
+      "sha256": "a22eda1542fcbac9456cf7d4ef8c3611a7e8369dd1b41ed8c67c5e5eed2aa197"
+    },
+    "styles.css": {
+      "bytes": 46925,
+      "sha256": "4b57ae7407c3c6df25ccaee99ba291237ca2953e1ad73b9f46d156d1164083b1"
+    }
+  }
+}

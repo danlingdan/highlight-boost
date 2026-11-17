@@ -24,6 +24,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
     private frame?: number;
     private frameWindow?: Window;
     private readonly reposition = () => this.refresh();
+    private readonly pagehide = () => this.destroy();
     private readonly outside = (event: Event) => {
       if (this.element && !event.composedPath().includes(this.element)) this.close(false);
     };
@@ -43,6 +44,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
       this.owner?.removeEventListener('keydown', this.escape, true);
       this.owner?.removeEventListener('hb-modal-close', this.modalClose);
       this.owner?.defaultView?.removeEventListener('resize', this.reposition);
+      this.owner?.defaultView?.removeEventListener('pagehide', this.pagehide);
       this.owner = undefined;
     }
     private bindDocument(): void {
@@ -52,6 +54,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
       document.addEventListener('keydown', this.escape, true);
       document.addEventListener('hb-modal-close', this.modalClose);
       document.defaultView?.addEventListener('resize', this.reposition);
+      document.defaultView?.addEventListener('pagehide', this.pagehide, { once: true });
     }
     update(update: ViewUpdate): void {
       if (update.selectionSet && !update.startState.selection.eq(update.state.selection)) { this.dismissed = false; if (!this.executing) this.mode = 'text'; }
@@ -197,6 +200,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
       this.takeFocus = false;
     }
     destroy(): void {
+      if (this.disposed) return;
       this.cancelFrame();
       this.disposed = true; this.element?.remove();
       this.unbindDocument();

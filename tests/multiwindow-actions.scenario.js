@@ -39,6 +39,7 @@
   phase = 'close'; const sourceDoc = popout.doc, sourceWindow = popout.win; sourceWindow.close();
   assert('actions-window-closed', await until(() => sourceWindow.closed));
   assert('actions-runtime-released', await until(() => !plugin.syntax.runtime.documents.has(sourceDoc)));
+  assert('actions-toolbar-released', ![...plugin.toolbars].some(toolbar => toolbar.matches(editor)));
   assert('actions-source-preserved', await app.vault.read(file) === annotated);
   phase = 'restore-settings'; plugin.settings = original; await plugin.saveSettings();
   window.__hbObservations = { errors, events }; assert('actions-no-unexpected-page-errors', errors.length === 0, events); return checks;

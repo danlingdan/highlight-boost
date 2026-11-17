@@ -254,7 +254,7 @@ app.on('browser-window-created', (_event, window) => {
       await contents.executeJavaScript(`window.__hbPerformanceProfile = ${process.env.HB_PERF_PROFILE === '1'}`);
       await contents.executeJavaScript(`window.__hbFrameBaseline = ${process.env.HB_FRAME_BASELINE === '1'}`);
       await contents.executeJavaScript(`window.__hbMemoryProfile = ${process.env.HB_MEMORY_PROFILE === '1'}`);
-      await contents.executeJavaScript(`window.__hbCompatibilityCase = ${JSON.stringify(process.env.HB_COMPAT_CASE ?? 'default-native')}`);
+      await contents.executeJavaScript(`window.__hbCompatibilityCase = ${JSON.stringify(process.env.HB_COMPAT_CASE ?? 'default')}`);
       const outcome = await contents.executeJavaScript(script);
       results.checks.push(...outcome);
       const matrix = await contents.executeJavaScript('window.__hbLanguageMatrix ?? null');
@@ -264,6 +264,7 @@ app.on('browser-window-created', (_event, window) => {
       finish();
     } catch (error) {
       try { results.checks.push(...await contents.executeJavaScript('window.__hbChecks ?? []')); } catch { /* The renderer may have exited. */ }
+      try { results.observations = await contents.executeJavaScript('window.__hbObservations ?? null'); } catch { /* The renderer may have exited. */ }
       finish(error);
     }
   });

@@ -106,5 +106,6 @@
   await app.workspace.requestSaveLayout.run();
   assert('restore-layout-saved', (await app.vault.adapter.read(`${app.vault.configDir}/workspace.json`)).includes(path));
   await new Promise(resolve => setTimeout(resolve, 1000));
-  assert('multiwindow-no-page-errors', errors.length === 0, phases); window.__hbObservations = { errors, mode: 'unified' }; return checks;
+  window.__hbObservations = { errors, phases, mode: 'unified' };
+  assert('multiwindow-no-page-errors', errors.length === 0, { errors, phases }); return checks;
 })()

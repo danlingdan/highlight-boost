@@ -9,7 +9,7 @@ export function action(parent: HTMLElement, label: string, icon: string, run: ()
 }
 
 export function menuAt(button: HTMLElement, build: (menu: Menu) => void): void {
-  const menu = new Menu(); build(menu);
+  const menu = new Menu().setUseNativeMenu(false); build(menu);
   const rect = button.getBoundingClientRect();
   const document = button.ownerDocument, window = document.defaultView!;
   let escaped = false;

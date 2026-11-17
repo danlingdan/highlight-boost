@@ -58,7 +58,7 @@ export function selectionToolbar(plugin: HighlightBoost) {
     }
     update(update: ViewUpdate): void {
       if (update.selectionSet && !update.startState.selection.eq(update.state.selection)) { this.dismissed = false; if (!this.executing) this.mode = 'text'; }
-      if (update.docChanged && !this.executing) { this.close(false); return; }
+      if (update.docChanged && !update.startState.doc.eq(update.state.doc) && !this.executing) { this.close(false); return; }
       if (update.selectionSet || update.focusChanged || update.geometryChanged || update.viewportChanged || update.transactions.some(t => t.effects.length)) this.refresh();
     }
     matches(editor: Editor): boolean { return this.view.state.field(editorInfoField, false)?.editor === editor; }

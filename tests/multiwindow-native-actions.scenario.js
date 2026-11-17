@@ -8,7 +8,8 @@
   const text = '# Window actions\n\n==🟡local text==%%hbp:{"v":1,"id":"e6928137-d570-4dd4-bd5d-1de57e96452d","semantic":"important","label":"重点","noteRef":"hb-48698177-a679-49c5-8044-7dc5115ff2f5"}%%[^hb-48698177-a679-49c5-8044-7dc5115ff2f5]\n\n[^hb-48698177-a679-49c5-8044-7dc5115ff2f5]: popout-undo-note\n';
   const path = '原生批注窗口对照.md';
   let file = app.vault.getFileByPath(path);
-  if (file) await app.vault.modify(file, text); else file = await app.vault.create(path, text);
+  const initial = '# Window actions\n\nlocal text\n';
+  if (file) await app.vault.modify(file, initial); else file = await app.vault.create(path, initial);
   const duplicate = app.workspace.getLeaf('tab'); await duplicate.openFile(file);
   const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file);
   await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
@@ -16,8 +17,17 @@
   assert('native-actions-window-open', await until(() => popup.doc?.body && popup.win.__hbPopoutReady));
   popup.win.addEventListener('error', event => errors.push(event.message));
   app.workspace.setActiveLeaf(leaf, { focus: true });
-  const editor = leaf.view.editor, from = text.indexOf('local text');
+  assert('native-actions-editor-loaded', await until(() => leaf.view.editor.getValue() === initial));
+  const editor = leaf.view.editor, from = initial.indexOf('local text');
+  assert('native-actions-extensions-removed', !editor.cm.dom.classList.contains('hb-syntax-editor'));
   editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 10));
+  const marked = initial.replace('local text', '==🟡local text==');
+  editor.transaction({ changes: [{ from: editor.offsetToPos(0), to: editor.offsetToPos(editor.getValue().length), text: marked }] }, 'highlight-boost');
+  await tick();
+  editor.transaction({ changes: [{ from: editor.offsetToPos(0), to: editor.offsetToPos(editor.getValue().length), text }] }, 'highlight-boost');
+  await tick(); editor.undo(); await tick();
+  assert('native-actions-undo', editor.getValue() !== text);
+  editor.redo(); await tick(); assert('native-actions-redo', editor.getValue() === text);
   await leaf.view.save();
   assert('native-actions-duplicate-synced', await until(() => duplicate.view.editor.getValue() === text));
   await tick(); const popupWindow = popup.win; popupWindow.close();
@@ -25,6 +35,6 @@
   await new Promise(resolve => setTimeout(resolve, 1000));
   assert('native-actions-plugin-disabled', !app.plugins.plugins['highlight-boost']);
   assert('native-actions-source-preserved', await app.vault.read(file) === text);
-  window.__hbObservations = { errors, pluginEnabled: false, input: '相同正文标注元数据与批注脚注、相同重复编辑器及窗口尺寸' };
+  window.__hbObservations = { errors, pluginEnabled: false, input: '相同正文元数据、批注脚注、重复编辑器、窗口尺寸及编辑后撤销重做' };
   return checks;
 })()

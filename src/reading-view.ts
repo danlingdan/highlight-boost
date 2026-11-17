@@ -61,11 +61,11 @@ export class ReadingHighlights extends MarkdownRenderChild {
             code.replaceChildren(); let cursor = 0;
             for (const token of tokens) {
               code.append(code.ownerDocument.createTextNode(syntax.code.slice(cursor, token.from)));
-              const span = code.ownerDocument.createElement('span'); span.textContent = syntax.code.slice(token.from, token.to); span.style.color = token.color;
+              const span = code.createSpan(); span.textContent = syntax.code.slice(token.from, token.to); span.style.color = token.color;
               if (token.fontStyle & 1) span.classList.add('hb-token-italic'); if (token.fontStyle & 2) span.classList.add('hb-token-bold');
               span.style.textDecoration = [token.fontStyle & 4 ? 'underline' : '', token.fontStyle & 8 ? 'line-through' : ''].filter(Boolean).join(' ');
               if (token.background) span.style.backgroundColor = token.background;
-              code.append(span); cursor = token.to;
+              cursor = token.to;
             }
             code.append(code.ownerDocument.createTextNode(syntax.code.slice(cursor)));
           } else { delete code.dataset.hbInlineSource; code.style.removeProperty('--hb-syntax-background'); code.style.removeProperty('--hb-syntax-foreground'); }

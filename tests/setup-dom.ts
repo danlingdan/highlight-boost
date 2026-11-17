@@ -8,4 +8,8 @@ if (typeof Node !== 'undefined') {
       return element;
     },
   });
+  Object.defineProperty(Node.prototype, 'createSpan', {
+    configurable: true,
+    value(this: Node) { return this.createEl('span'); },
+  });
 }

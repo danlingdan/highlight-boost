@@ -11,6 +11,7 @@ import { resolveLanguage, knownLanguage, resolveCodeOwner } from './languages';
 import type { SyntaxResources, CustomTheme } from './resources';
 import { fenceParameters, parameterValue } from '../fence-params';
 import { structuredRows, rowText } from '../code-rows';
+import { detachedEl } from '../dom';
 
 pluginFramesTexts.addLocale('zh', { terminalWindowFallbackTitle: '终端窗口', copyButtonTooltip: '复制到剪贴板', copyButtonCopied: '已复制！' });
 pluginCollapsibleSectionsTexts.addLocale('zh', { collapsedLines: '已折叠 {lineCount} 行' });
@@ -26,8 +27,7 @@ export class SyntaxEngine {
   private disposed = false;
   private themeName = OBSIDIAN_THEME.name;
   private themeCss = '';
-  private styles = new Map<Document, HTMLStyleElement>();
-  private pagehide = new Map<Document, () => void>();
+  private styles = new Map<Document, { sheet: CSSStyleSheet; release: () => void }>();
   private custom: LanguageRegistration[] = [];
   private customThemes: CustomTheme[] = [];
   private settings = defaultCodeSyntax;
@@ -123,10 +123,13 @@ export class SyntaxEngine {
   async render(code: string, language: string, meta: string, document: Document, locale: Locale = 'en'): Promise<Node> {
     this.attachRuntime?.(document);
     if (!this.styles.has(document)) {
-      // eslint-disable-next-line obsidianmd/no-forbidden-elements -- 自定义代码主题在运行时生成局部样式。
-      const style = document.createElement('style'); style.dataset.hbTheme = this.id; style.textContent = this.themeCss;
-      document.head.append(style); this.styles.set(document, style);
-      const release = () => this.detach(document); this.pagehide.set(document, release); document.defaultView?.addEventListener('pagehide', release, { once: true });
+      const window = document.defaultView!;
+      const sheet = new window.CSSStyleSheet();
+      sheet.replaceSync(this.themeCss);
+      document.adoptedStyleSheets.push(sheet);
+      const release = () => this.detach(document);
+      this.styles.set(document, { sheet, release });
+      window.addEventListener('pagehide', release, { once: true });
     }
     const block = new ExpressiveCodeBlock({ code: '', language: this.codeLanguage(language, meta), meta, locale });
     block.insertLines(0, code.split(/\r?\n/));
@@ -147,18 +150,18 @@ export class SyntaxEngine {
           const fragment = document.createDocumentFragment();
           let offset = 0;
           for (const [index, line] of code.split('\n').entries()) {
-            const row = document.createElement('div'); row.className = 'ec-line';
-            const content = document.createElement('span'); content.className = 'code'; row.append(content);
+            const row = detachedEl(document, 'div'); row.className = 'ec-line';
+            const content = row.createSpan(); content.className = 'code';
             let cursor = offset;
             for (const token of tokens.filter(token => offset <= token.from && token.from <= offset + line.length)) {
-              if (cursor < token.from) { const control = document.createElement('span'); control.className = 'hb-ansi-control'; control.hidden = true; control.textContent = code.slice(cursor, token.from); content.append(control); }
-              const span = document.createElement('span'); span.textContent = code.slice(token.from, token.to);
+              if (cursor < token.from) { const control = content.createSpan(); control.className = 'hb-ansi-control'; control.hidden = true; control.textContent = code.slice(cursor, token.from); }
+              const span = content.createSpan(); span.textContent = code.slice(token.from, token.to);
               span.style.color = token.color; if (token.background) span.style.backgroundColor = token.background;
               if (token.fontStyle & 1) span.classList.add('shiki-italic'); if (token.fontStyle & 2) span.classList.add('shiki-bold');
               span.style.textDecoration = [token.fontStyle & 4 ? 'underline' : '', token.fontStyle & 8 ? 'line-through' : ''].filter(Boolean).join(' ');
-              content.append(span); cursor = token.to;
+              cursor = token.to;
             }
-            if (cursor < offset + line.length) { const control = document.createElement('span'); control.hidden = true; control.className = 'hb-ansi-control'; control.textContent = code.slice(cursor, offset + line.length); content.append(control); }
+            if (cursor < offset + line.length) { const control = content.createSpan(); control.hidden = true; control.className = 'hb-ansi-control'; control.textContent = code.slice(cursor, offset + line.length); }
             if (index) fragment.append(document.createTextNode('\n')); fragment.append(row); offset += line.length + 1;
           }
           target.replaceChildren(fragment);
@@ -171,7 +174,7 @@ export class SyntaxEngine {
 
   async markers(code: string, language: string, meta: string, document: Document): Promise<{ from: number; to: number; kind: string; label: string; line?: boolean }[]> {
     if (!meta || this.disposed) return [];
-    const root = document.createElement('div'); root.append(await this.render(code, language, meta, document));
+    const root = detachedEl(document, 'div'); root.append(await this.render(code, language, meta, document));
     const target = root.querySelector<HTMLElement>('pre > code'); if (!target) return [];
     const result: { from: number; to: number; kind: string; label: string; line?: boolean }[] = []; let offset = 0;
     for (const row of structuredRows(target)) {
@@ -189,8 +192,11 @@ export class SyntaxEngine {
   }
 
   detach(document: Document): void {
-    this.styles.get(document)?.remove(); this.styles.delete(document);
-    const release = this.pagehide.get(document); if (release) document.defaultView?.removeEventListener('pagehide', release); this.pagehide.delete(document);
+    const style = this.styles.get(document);
+    if (!style) return;
+    document.adoptedStyleSheets = document.adoptedStyleSheets.filter(sheet => sheet !== style.sheet);
+    document.defaultView?.removeEventListener('pagehide', style.release);
+    this.styles.delete(document);
   }
   dispose(): void { this.disposed = true; this.shiki?.dispose(); for (const document of this.styles.keys()) this.detach(document); }
 }

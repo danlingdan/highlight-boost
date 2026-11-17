@@ -20,13 +20,20 @@ async function engine() { const result = new SyntaxEngine(); engines.push(result
 it('关闭预览所在文档时释放该文档主题，其他窗口继续着色', async () => {
   const syntax = await engine(), frame = document.createElement('iframe'); document.body.append(frame);
   const target = frame.contentDocument!;
+  const unrelated = new target.defaultView!.CSSStyleSheet();
+  target.adoptedStyleSheets.push(unrelated);
   await syntax.render('const preview = 1;', 'js', '', target);
+  await syntax.render('const second = 2;', 'js', '', target);
   await syntax.render('const main = 2;', 'js', '', document);
-  expect(target.querySelector('style[data-hb-theme]')).not.toBeNull();
+  expect(target.adoptedStyleSheets).toHaveLength(2);
+  expect(document.adoptedStyleSheets).toHaveLength(1);
+  expect(target.adoptedStyleSheets[1]).not.toBe(document.adoptedStyleSheets[0]);
   frame.contentWindow!.dispatchEvent(new Event('pagehide'));
-  expect(target.querySelector('style[data-hb-theme]')).toBeNull();
-  expect(document.querySelector('style[data-hb-theme]')).not.toBeNull();
+  expect(target.adoptedStyleSheets).toEqual([unrelated]);
+  expect(document.adoptedStyleSheets).toHaveLength(1);
   expect((await syntax.tokens('const main = 3;', 'js')).length).toBeGreaterThan(0);
+  syntax.dispose();
+  expect(document.adoptedStyleSheets).toHaveLength(0);
   frame.remove();
 });
 

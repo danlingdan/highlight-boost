@@ -13,6 +13,7 @@ import { refreshSyntax } from './editor';
 import { inlineLanguage, inlineSourceOffsets } from './languages';
 import { unifiedCodeModel } from './model';
 import { renderCodeDisplay } from '../code-display';
+import { detachedEl } from '../dom';
 
 const pendingRenders = new WeakSet<HTMLElement>();
 
@@ -33,14 +34,14 @@ class CodeWidget extends WidgetType {
     return true;
   }
   toDOM(view: EditorView): HTMLElement {
-    const holder = view.dom.ownerDocument.createElement('div'); holder.className = 'hb-code-widget';
+    const holder = detachedEl(view.dom.ownerDocument, 'div'); holder.className = 'hb-code-widget';
     if (this.block.prefix) {
       holder.classList.add('hb-nested-code-widget');
       holder.style.setProperty('--hb-code-indent', `${this.block.prefix.replaceAll('>', '').length}ch`);
       if (this.block.prefix.includes('>')) holder.classList.add('hb-quoted-code-widget');
     }
-    const loading = view.dom.ownerDocument.createElement('pre'); loading.textContent = this.block.text; holder.append(loading);
-    const edit = view.dom.ownerDocument.createElement('button'); edit.className = 'edit-block-button'; edit.textContent = this.locale === 'zh' ? '编辑代码' : 'Edit code';
+    const loading = holder.createEl('pre'); loading.textContent = this.block.text;
+    const edit = detachedEl(holder.ownerDocument, 'button'); edit.className = 'edit-block-button'; edit.textContent = this.locale === 'zh' ? '编辑代码' : 'Edit code';
     edit.setAttribute('aria-label', edit.textContent);
     const anchor = this.block.lines[0]?.from ?? this.block.fenceFrom;
     const enter = () => { view.dispatch({ selection: { anchor } }); view.focus(); };

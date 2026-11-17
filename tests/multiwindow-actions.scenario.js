@@ -1,5 +1,5 @@
 (async () => {
-  const checks = [], errors = [], nativeLayoutNotifications = []; window.__hbChecks = checks;
+  const checks = [], errors = []; window.__hbChecks = checks;
   const tick = () => new Promise(resolve => setTimeout(resolve, 100));
   const activate = leaf => app.workspace.setActiveLeaf(leaf, { focus: true });
   const until = async predicate => { for (let i = 0; i < 60 && !predicate(); i++) await tick(); return predicate(); };
@@ -40,5 +40,5 @@
   assert('actions-runtime-released', await until(() => !plugin.syntax.runtime.documents.has(sourceDoc)));
   assert('actions-source-preserved', await app.vault.read(file) === annotated);
   plugin.settings = original; await plugin.saveSettings();
-  assert('actions-no-unexpected-page-errors', errors.length === 0, errors); window.__hbObservations = { nativeLayoutNotifications, errors }; return checks;
+  assert('actions-no-unexpected-page-errors', errors.length === 0, errors); window.__hbObservations = { errors }; return checks;
 })()

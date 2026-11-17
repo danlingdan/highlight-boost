@@ -4,7 +4,8 @@ import { resolve, join } from 'node:path';
 import { createHash } from 'node:crypto';
 const run = process.argv.find(value => value.startsWith('--run='))?.slice(6);
 if (!/^\d+$/.test(run ?? '')) throw new Error('Pass --run=<GitHub run ID>');
-const root = resolve(paths.research, 'ci', run), output = resolve('docs/verification/platforms');
+const phaseFour = process.argv.includes('--phase-four');
+const root = resolve(paths.research, 'ci', run), output = resolve(phaseFour ? 'docs/verification/1.1.0/phase-4/platforms' : 'docs/verification/platforms');
 const runtime = JSON.parse(await readFile('tests/runtime.json', 'utf8'));
 const digest = bytes => createHash('sha256').update(bytes).digest('hex');
 await mkdir(output, { recursive: true });
@@ -15,7 +16,10 @@ for (const platform of ['windows', 'macos', 'ubuntu']) {
   sourceCommit ??= environment.revision;
   if (sourceCommit !== environment.revision) throw new Error('Platform revisions differ');
   const files = (await readdir(directory)).filter(file => /^host.*results\.json$/.test(file) && file !== 'host-compatibility-results.json');
-  for (const file of ['default-native.json', 'default-internal.json']) files.push(`compatibility/${file}`);
+  for (const file of phaseFour ? ['default.json'] : ['default-native.json', 'default-internal.json']) files.push(`compatibility/${file}`);
+  if (phaseFour) for (const mode of ['unified', 'fusion', 'multiwindow', 'multiwindow-restart', 'multiwindow-actions', 'multiwindow-combined', 'journey', 'accessibility', 'frames', 'install', 'install-restart']) {
+    if (!files.includes(`host-${mode}-results.json`)) throw new Error(`Missing phase-four scene: ${platform}/${mode}`);
+  }
   const scenarios = [];
   for (const file of files.sort()) {
     const bytes = await readFile(join(directory, file)), result = JSON.parse(bytes);

@@ -37,6 +37,7 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile
+      - run: pnpm check
       - run: pnpm prepare:runtime
       - run: node scripts/prepare-host-ci.mjs
       - if: runner.os == 'Linux'

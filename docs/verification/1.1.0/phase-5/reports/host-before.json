@@ -1,0 +1,124 @@
+{
+  "desktop": false,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "performance-cold-plugin-not-preloaded",
+      "passed": true
+    },
+    {
+      "name": "performance-medium-source",
+      "passed": true
+    },
+    {
+      "name": "performance-code-500-rows",
+      "passed": true
+    },
+    {
+      "name": "performance-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "performance-large-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "performance-settings-restored",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": true,
+  "observations": {
+    "metrics": {
+      "load-to-index-ready": {
+        "samplesMs": [
+          210.80000000074506
+        ],
+        "p50Ms": 210.80000000074506,
+        "p95Ms": 210.80000000074506
+      },
+      "unified-enable": {
+        "samplesMs": [
+          106.59999999776483,
+          59.899999998509884,
+          85.20000000298023
+        ],
+        "p50Ms": 85.20000000298023,
+        "p95Ms": 106.59999999776483
+      },
+      "edit-to-sidebar-200KiB": {
+        "samplesMs": [
+          210.30000000074506,
+          262.69999999925494,
+          180.69999999925494,
+          193.40000000223517,
+          217
+        ],
+        "p50Ms": 210.30000000074506,
+        "p95Ms": 262.69999999925494
+      },
+      "enable-to-first-color-500-lines": {
+        "samplesMs": [
+          1009.5,
+          970.3000000007451,
+          979.1999999992549
+        ],
+        "p50Ms": 979.1999999992549,
+        "p95Ms": 1009.5
+      },
+      "render-500-code-lines": {
+        "samplesMs": [
+          271.5,
+          146.90000000223517,
+          116.5,
+          113.29999999701977,
+          203.80000000074506,
+          156.19999999925494,
+          149.70000000298023
+        ],
+        "p50Ms": 149.70000000298023,
+        "p95Ms": 271.5
+      },
+      "selection-transaction-5000-lines": {
+        "samplesMs": [
+          2909.699999999255,
+          16.599999997764826,
+          9.800000000745058,
+          8.699999999254942,
+          8.700000002980232
+        ],
+        "p50Ms": 9.800000000745058,
+        "p95Ms": 2909.699999999255
+      }
+    },
+    "errors": [],
+    "buildSha256": "cabd46e1c072a5c1307bade5138cb81c964296cc02e027523779ec1a32fae905",
+    "engine": "unified",
+    "timing": "DOM-ready with forced layout; no animation-frame wait",
+    "fixtures": {
+      "mediumBytes": 204800,
+      "codeLines": 500,
+      "largeCodeLines": 5000,
+      "largeCodeBytes": 1037789
+    },
+    "rendererHeap": {
+      "total_heap_size": 167825408,
+      "total_heap_size_executable": 6553600,
+      "total_physical_size": 167825408,
+      "total_available_size": 4262510936,
+      "used_heap_size": 129175860,
+      "heap_size_limit": 4395630592,
+      "malloced_memory": 544804,
+      "peak_malloced_memory": 35828716,
+      "does_zap_garbage": 0,
+      "number_of_native_contexts": 5,
+      "number_of_detached_contexts": 0,
+      "total_global_handles_size": 4429344,
+      "used_global_handles_size": 3515168,
+      "external_memory": 22979525
+    },
+    "indexNotes": 2
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "version": "1.1.0",
+  "minAppVersion": "1.15.1",
+  "sourceCommit": "2518fa37c98e5fcf7529efdf038efb979576843e",
+  "files": {
+    "LICENSE": "7fda7b20bcb287c1e6c669a8c507c46287920f7211cfd64373cfbce97ed8202d",
+    "licenses/Expressive-Code-MIT.txt": "6f7819c01d385dd627bc92d069823f9c7921eda6a11897df86116c7dfefcd59f",
+    "licenses/Shiki-Highlighter-MIT.txt": "3fb1457aa472de410511dff4969e736641cf9c46f4b422ee450c9064aa55eea0",
+    "licenses/Shiki-MIT.txt": "dee9ba158e159d48f49487dbcf36e49b33c2a6454a9351aaafb1b0a68b3a8b54",
+    "main.js": "763a8b3eb21d21861805c09ad6376ed05dc4038c3bfab12d169f4e439bee3763",
+    "manifest.json": "f8e8be4d16fe69ab05b8703a902456154abfe220e12bc4c88b39e4f480be715f",
+    "styles.css": "c7d59a679175fd71d8e9dc94d34cf64c134cc50079daf66f29433dc9facb947a",
+    "THIRD_PARTY_NOTICES.md": "051f2bb4f99fbbba4adec40bfe425d05fe3cbebcbfd88baef6a0ffea7ec12168"
+  },
+  "archiveSha256": "e0829b2c3fa58fe345bcc72a8518b5151139dfe36309ac910300835d169757a7",
+  "archive": "dist/highlight-boost-1.1.0-2518fa37/highlight-boost.zip",
+  "extractedPlugin": "dist/highlight-boost-1.1.0-2518fa37/unpacked/highlight-boost"
+}

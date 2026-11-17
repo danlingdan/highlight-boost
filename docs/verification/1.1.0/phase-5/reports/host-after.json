@@ -1,0 +1,131 @@
+{
+  "desktop": false,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "performance-cold-plugin-not-preloaded",
+      "passed": true
+    },
+    {
+      "name": "performance-medium-source",
+      "passed": true
+    },
+    {
+      "name": "performance-code-500-rows",
+      "passed": true
+    },
+    {
+      "name": "performance-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "performance-large-code-source-exact",
+      "passed": true
+    },
+    {
+      "name": "performance-settings-restored",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "metrics": {
+      "load-to-index-ready": {
+        "samplesMs": [
+          151.10000000149012
+        ],
+        "p50Ms": 151.10000000149012,
+        "p95Ms": 151.10000000149012
+      },
+      "unified-enable": {
+        "samplesMs": [
+          86.39999999850988,
+          59.100000001490116,
+          52.100000001490116
+        ],
+        "p50Ms": 59.100000001490116,
+        "p95Ms": 86.39999999850988
+      },
+      "edit-to-sidebar-200KiB": {
+        "samplesMs": [
+          223.20000000298023,
+          167.60000000149012,
+          156.39999999850988,
+          154.69999999552965,
+          152.10000000149012
+        ],
+        "p50Ms": 156.39999999850988,
+        "p95Ms": 223.20000000298023
+      },
+      "enable-to-first-color-500-lines": {
+        "samplesMs": [
+          593.7000000029802,
+          986,
+          979.5999999940395
+        ],
+        "p50Ms": 979.5999999940395,
+        "p95Ms": 986
+      },
+      "render-500-code-lines": {
+        "samplesMs": [
+          132.39999999850988,
+          17.899999998509884,
+          16,
+          17.299999997019768,
+          20.30000000447035,
+          21,
+          22.69999999552965
+        ],
+        "p50Ms": 20.30000000447035,
+        "p95Ms": 132.39999999850988
+      },
+      "initial-color-5000-lines": {
+        "samplesMs": [
+          2370.39999999851
+        ],
+        "p50Ms": 2370.39999999851,
+        "p95Ms": 2370.39999999851
+      },
+      "selection-transaction-5000-lines-warm": {
+        "samplesMs": [
+          2,
+          11.900000005960464,
+          6,
+          9.399999998509884,
+          87.79999999701977
+        ],
+        "p50Ms": 9.399999998509884,
+        "p95Ms": 87.79999999701977
+      }
+    },
+    "errors": [],
+    "buildSha256": "763a8b3eb21d21861805c09ad6376ed05dc4038c3bfab12d169f4e439bee3763",
+    "engine": "unified",
+    "timing": "DOM-ready with forced layout; no animation-frame wait",
+    "fixtures": {
+      "mediumBytes": 204800,
+      "codeLines": 500,
+      "largeCodeLines": 5000,
+      "largeCodeBytes": 1037789
+    },
+    "rendererHeap": {
+      "total_heap_size": 198025216,
+      "total_heap_size_executable": 7340032,
+      "total_physical_size": 198025216,
+      "total_available_size": 4247469540,
+      "used_heap_size": 131142872,
+      "heap_size_limit": 4395630592,
+      "malloced_memory": 544804,
+      "peak_malloced_memory": 25011668,
+      "does_zap_garbage": 0,
+      "number_of_native_contexts": 3,
+      "number_of_detached_contexts": 0,
+      "total_global_handles_size": 3223896,
+      "used_global_handles_size": 2658960,
+      "external_memory": 24639016
+    },
+    "indexNotes": 2
+  }
+}

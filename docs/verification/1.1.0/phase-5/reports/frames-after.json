@@ -1,0 +1,227 @@
+{
+  "desktop": false,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "frame-sidebar-inside-viewport",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-current-color",
+      "passed": true
+    },
+    {
+      "name": "frame-sidebar-painted",
+      "passed": true
+    },
+    {
+      "name": "unified-initial-tokens-ready",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-mounted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-target-visible",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-selection-exact",
+      "passed": true
+    },
+    {
+      "name": "frame-scroll-painted",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-reuses-document-tokens",
+      "passed": true
+    },
+    {
+      "name": "unified-edit-rebuilds-tokens",
+      "passed": true
+    },
+    {
+      "name": "unified-edit-undo-source-exact",
+      "passed": true
+    },
+    {
+      "name": "unified-scroll-source-exact",
+      "passed": true
+    },
+    {
+      "name": "frames-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false,
+  "observations": {
+    "metrics": {
+      "edit-to-sidebar-frame-200KiB": {
+        "samplesMs": [
+          224.60000000149012,
+          168.29999999701977,
+          163.39999999850988,
+          185.89999999850988,
+          163,
+          150.5,
+          154.60000000149012
+        ],
+        "p50Ms": 163.39999999850988,
+        "p95Ms": 224.60000000149012
+      },
+      "unified-scroll-to-frame-5000-lines": {
+        "samplesMs": [
+          38.899999998509884,
+          33.70000000298023,
+          32.29999999701977,
+          49.100000001490116,
+          51.20000000298023,
+          33
+        ],
+        "p50Ms": 33.70000000298023,
+        "p95Ms": 51.20000000298023
+      }
+    },
+    "errors": [],
+    "buildSha256": "763a8b3eb21d21861805c09ad6376ed05dc4038c3bfab12d169f4e439bee3763",
+    "viewport": {
+      "width": 1400,
+      "height": 1001
+    },
+    "rendering": "Electron offscreen software rendering; two animation frames followed by native capturePage",
+    "mediumBytes": 204800,
+    "largeCodeBytes": 1037790
+  }
+}

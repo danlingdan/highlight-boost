@@ -1,0 +1,209 @@
+{
+  "desktop": false,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "builtin-engine-loaded",
+      "passed": true
+    },
+    {
+      "name": "no-external-shiki-plugin",
+      "passed": true
+    },
+    {
+      "name": "sql-cold-live-widget",
+      "passed": true
+    },
+    {
+      "name": "sql-live-copy-button",
+      "passed": true
+    },
+    {
+      "name": "sql-live-edit-button",
+      "passed": true
+    },
+    {
+      "name": "sql-edit-without-changing-source-has-tokens",
+      "passed": true
+    },
+    {
+      "name": "sql-navigation-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "sql-highlight-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "sql-editor-highlight-and-syntax",
+      "passed": true
+    },
+    {
+      "name": "sql-highlight-single-undo",
+      "passed": true
+    },
+    {
+      "name": "sql-preview-restores-after-edit",
+      "passed": true
+    },
+    {
+      "name": "sql-live-highlight",
+      "passed": true
+    },
+    {
+      "name": "sql-reading-highlight",
+      "passed": true
+    },
+    {
+      "name": "sql-copy-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "sql-source-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "abap-cold-live-widget",
+      "passed": true
+    },
+    {
+      "name": "abap-live-copy-button",
+      "passed": true
+    },
+    {
+      "name": "abap-live-edit-button",
+      "passed": true
+    },
+    {
+      "name": "abap-edit-without-changing-source-has-tokens",
+      "passed": true
+    },
+    {
+      "name": "abap-navigation-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "abap-highlight-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "abap-editor-highlight-and-syntax",
+      "passed": true
+    },
+    {
+      "name": "abap-highlight-single-undo",
+      "passed": true
+    },
+    {
+      "name": "abap-preview-restores-after-edit",
+      "passed": true
+    },
+    {
+      "name": "abap-live-highlight",
+      "passed": true
+    },
+    {
+      "name": "abap-reading-highlight",
+      "passed": true
+    },
+    {
+      "name": "abap-copy-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "abap-source-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "asm-cold-live-widget",
+      "passed": true
+    },
+    {
+      "name": "asm-live-copy-button",
+      "passed": true
+    },
+    {
+      "name": "asm-live-edit-button",
+      "passed": true
+    },
+    {
+      "name": "asm-edit-without-changing-source-has-tokens",
+      "passed": true
+    },
+    {
+      "name": "asm-navigation-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "asm-highlight-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "asm-editor-highlight-and-syntax",
+      "passed": true
+    },
+    {
+      "name": "asm-highlight-single-undo",
+      "passed": true
+    },
+    {
+      "name": "asm-preview-restores-after-edit",
+      "passed": true
+    },
+    {
+      "name": "asm-live-highlight",
+      "passed": true
+    },
+    {
+      "name": "asm-reading-highlight",
+      "passed": true
+    },
+    {
+      "name": "asm-copy-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "asm-source-keeps-code",
+      "passed": true
+    },
+    {
+      "name": "source-mode-has-syntax",
+      "passed": true
+    },
+    {
+      "name": "composition-keeps-one-commit",
+      "passed": true
+    },
+    {
+      "name": "composition-restores-syntax",
+      "passed": true
+    },
+    {
+      "name": "composition-single-undo",
+      "passed": true
+    },
+    {
+      "name": "composition-redo",
+      "passed": true
+    },
+    {
+      "name": "distant-block-scroll-without-edit-has-syntax",
+      "passed": true
+    },
+    {
+      "name": "distant-block-keeps-source",
+      "passed": true
+    },
+    {
+      "name": "builtin-style-cleanup",
+      "passed": true
+    },
+    {
+      "name": "unified-engine-restored",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

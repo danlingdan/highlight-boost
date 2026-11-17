@@ -62,9 +62,8 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 - `pnpm test:i18n`：运行界面语言切换及独立进程恢复验收。
 - `pnpm test:prose`：运行正文语义宿主验收及独立进程恢复。
 - `pnpm test:inline`：运行行内代码宿主验收及独立进程恢复。
-- `pnpm test:embedded`：单独运行内置 Shiki 验收。
+- `pnpm test:embedded`：单独运行嵌套容器与代码归属验收。
 - `pnpm test:shiki`：准备固定版本 Shiki Highlighter 0.8.0，在两个独立进程中验证协作行为和语言对照。
-- `pnpm test:shiki-live`：对照上游 0.7.7 与 0.8.0，记录冷打开、移动光标、滚动、输入和阅读路径。
 
 宿主测试优先使用 Electron JavaScript、[官方 CLI](https://obsidian.md/help/cli) 和 CDP。当前测试通过 `webContents.executeJavaScript` 操作项目样例，使用原生 Editor 和 WorkspaceLeaf 接口执行变更与切换视图。
 
@@ -79,7 +78,7 @@ Live Preview 中点击“代码标注”按钮展开元数据，键盘 Enter/空
 3. 在独立 Electron 43.8.9 中加载 Obsidian 1.15.1 的 `obsidian.asar`，复用真实解析、编辑与阅读渲染代码。
 4. 为测试 CLI 管道添加独立后缀，避免和日常应用争用同名管道。
 5. 经路径校验后执行宿主断言，每个进程将结果写入 `docs/verification/host-*-results.json` 后退出。
-6. 重启场景读取基础场景保存的测试库与设置，写入 `host-restart-results.json`；随后内置场景切换语法提供者，完成后还原设置。
+6. 重启场景读取基础场景保存的测试库与设置，写入 `host-restart-results.json`；统一代码场景验证配置迁移、主题和语言资源，完成后还原设置。
 
 测试启动器保留既有系统协议注册，测试配置与输出均位于项目目录。
 

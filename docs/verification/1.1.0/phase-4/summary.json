@@ -608,9 +608,10 @@
   },
   "platforms": {
     "windows-local": "passed",
-    "windows-ci": "pending",
-    "macos-ci": "pending",
-    "linux-ci": "pending"
+    "windows-ci": "passed",
+    "macos-ci": "passed",
+    "linux-ci": "failed-window-close-check-waived"
   },
+  "ci": { "run": "44134884567", "sourceCommit": "6ea523c" },
   "optionalEnhancementsAdded": false
 }

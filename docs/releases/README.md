@@ -1,6 +1,12 @@
 # 发布维护
 
-## 1.0.1 审核修复
+## 1.1.0 发布准备
+
+2026-11-18，本机候选 `dist/highlight-boost-1.1.0-2518fa37/highlight-boost.zip` 已完成构建、解压摘要核对、全新安装及独立进程重启。性能与宿主结果见[第五阶段验证记录](../verification/1.1.0/phase-5/README.md)。维护者审阅 [1.1.0 发布正文](1.1.0.md)及正式构建附件后可按下方流程发布。
+
+## 1.0.1 发布与审核
+
+[1.0.1](https://github.com/danlingdan/highlight-boost/releases/tag/1.0.1) 已于 2026-11-16 发布，源码标签为 `ac8dd6e`，由 [CI](https://github.com/danlingdan/highlight-boost/actions/runs/43752974351) 构建。
 
 本版本处理 1.0.0 的官方自动审核。源码改动、对应警告和验证范围见 [1.0.1 验证记录](../verification/1.0.1/README.md)，用户发布说明见 [1.0.1](1.0.1.md)。
 

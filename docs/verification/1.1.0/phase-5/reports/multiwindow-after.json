@@ -1,0 +1,162 @@
+{
+  "desktop": true,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "unified-actual-popout",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-ready",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-toolbar",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-mark-prose",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-mark-inline",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-mark-code",
+      "passed": true
+    },
+    {
+      "name": "popout-toolbar-annotation-ready",
+      "passed": true
+    },
+    {
+      "name": "popout-toolbar-annotation-owned",
+      "passed": true
+    },
+    {
+      "name": "popout-toolbar-note-saved",
+      "passed": true
+    },
+    {
+      "name": "popout-note-undo-in-original-editor",
+      "passed": true
+    },
+    {
+      "name": "unified-host-saved-source",
+      "passed": true
+    },
+    {
+      "name": "unified-duplicate-synchronized",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-index",
+      "passed": true
+    },
+    {
+      "name": "unified-popup-copy-command",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-source-tokens",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-reading",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-style",
+      "passed": true
+    },
+    {
+      "name": "unified-popout-source-kept",
+      "passed": true
+    },
+    {
+      "name": "unified-workbench-moved",
+      "passed": true
+    },
+    {
+      "name": "unified-workbench-source-context",
+      "passed": true
+    },
+    {
+      "name": "unified-cross-window-jump",
+      "passed": true
+    },
+    {
+      "name": "unified-popup-copy-excerpt",
+      "passed": true
+    },
+    {
+      "name": "popout-shared-annotation-owned-by-window",
+      "passed": true
+    },
+    {
+      "name": "popout-cancel-keeps-source-and-restores-focus",
+      "passed": true
+    },
+    {
+      "name": "popout-excerpt-owned-by-window",
+      "passed": true
+    },
+    {
+      "name": "popout-excerpt-current-filter",
+      "passed": true
+    },
+    {
+      "name": "popout-modal-language-updates",
+      "passed": true
+    },
+    {
+      "name": "workbench-window-query-isolation",
+      "passed": true
+    },
+    {
+      "name": "unified-workbench-window-closed",
+      "passed": true
+    },
+    {
+      "name": "unified-source-window-closed",
+      "passed": true
+    },
+    {
+      "name": "unified-closed-document-released",
+      "passed": true
+    },
+    {
+      "name": "unified-closed-window-runtime-released",
+      "passed": true
+    },
+    {
+      "name": "unified-source-restored",
+      "passed": true
+    },
+    {
+      "name": "restore-layout-source-window",
+      "passed": true
+    },
+    {
+      "name": "restore-layout-workbench-window",
+      "passed": true
+    },
+    {
+      "name": "restore-layout-saved",
+      "passed": true
+    },
+    {
+      "name": "multiwindow-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": true,
+  "observations": {
+    "errors": [],
+    "phases": {},
+    "mode": "unified"
+  }
+}

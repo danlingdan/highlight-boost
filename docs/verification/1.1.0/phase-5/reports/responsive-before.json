@@ -1,0 +1,80 @@
+{
+  "desktop": false,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "responsive-real-files",
+      "passed": true
+    },
+    {
+      "name": "responsive-search-during-rebuild",
+      "passed": true
+    },
+    {
+      "name": "responsive-final-results",
+      "passed": true
+    },
+    {
+      "name": "responsive-search-during-rebuild",
+      "passed": true
+    },
+    {
+      "name": "responsive-final-results",
+      "passed": true
+    },
+    {
+      "name": "responsive-search-during-rebuild",
+      "passed": true
+    },
+    {
+      "name": "responsive-final-results",
+      "passed": true
+    },
+    {
+      "name": "responsive-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": true,
+  "observations": {
+    "samples": [
+      {
+        "elapsedMs": 3829.2000000029802,
+        "longestGapMs": 108.89999999850988,
+        "notifications": 38,
+        "inputMs": 5.600000001490116,
+        "exact": true,
+        "focusRetained": true,
+        "cardRetained": true
+      },
+      {
+        "elapsedMs": 3825.5,
+        "longestGapMs": 20.899999998509884,
+        "notifications": 38,
+        "inputMs": 5.600000001490116,
+        "exact": true,
+        "focusRetained": true,
+        "cardRetained": true
+      },
+      {
+        "elapsedMs": 3861.10000000149,
+        "longestGapMs": 27.900000005960464,
+        "notifications": 38,
+        "inputMs": 5.399999998509884,
+        "exact": true,
+        "focusRetained": true,
+        "cardRetained": true
+      }
+    ],
+    "errors": [],
+    "fixture": {
+      "notes": 1000,
+      "bytes": 10486000,
+      "visibleCards": 50
+    },
+    "method": "Fresh HighlightIndex over actual Vault.read, production refreshPanels callback, workbench open throughout, search and focus probe after 100 indexed notes; 10 ms timer; OS file cache retained.",
+    "buildSha256": "cabd46e1c072a5c1307bade5138cb81c964296cc02e027523779ec1a32fae905"
+  }
+}

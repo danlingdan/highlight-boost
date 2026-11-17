@@ -1,0 +1,10 @@
+{
+  "verifiedOn": "2026-11-18",
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "sdk": "1.14.4",
+  "obsidianSource": "https://github.com/obsidianmd/obsidian-releases/releases/tag/v1.15.1",
+  "sdkSource": "https://registry.npmjs.org/obsidian/latest",
+  "baselineTag": "1.0.1",
+  "baselineRevision": "ac8dd6e"
+}

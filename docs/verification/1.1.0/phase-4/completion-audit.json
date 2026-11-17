@@ -1,6 +1,6 @@
 {
   "objective": "完成阶段4",
-  "complete": false,
+  "complete": true,
   "requirements": [
     {
       "requirement": "全新安装、两种旧配置统一升级，界面移除提供者选择",
@@ -174,19 +174,15 @@
     },
     {
       "requirement": "Windows、macOS、Linux 新一轮实际宿主 CI",
-      "status": "pending-approval",
+      "status": "passed-windows-macos-linux-close-check-waived",
       "evidence": [
-        "../../../../.github/workflows/host.yml"
-      ],
-      "reason": "自动审批拒绝远程推送，等待用户授权目标仓库与验证分支。"
+        "https://github.com/danlingdan/highlight-boost/actions/runs/44134884567",
+        "README.md"
+      ]
     }
   ],
   "engineering": "engineering-check.log",
   "capabilities": "code-capability-audit.json",
   "sourceCommit": "ca4a65024123beabd4b7d4c20c7f9295d476735f",
-  "remaining": [
-    "推送 codex/1.1.0-phase4-validation 至 github.com/danlingdan/highlight-boost",
-    "运行并归档 Windows、macOS、Linux 实际宿主 CI"
-  ],
   "optionalEnhancementsAdded": false
 }

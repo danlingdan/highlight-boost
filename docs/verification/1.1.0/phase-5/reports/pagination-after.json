@@ -1,0 +1,129 @@
+{
+  "desktop": false,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "pagination-first-page-bounded",
+      "passed": true
+    },
+    {
+      "name": "pagination-full-summary",
+      "passed": true
+    },
+    {
+      "name": "pagination-controls-labelled",
+      "passed": true
+    },
+    {
+      "name": "pagination-previous-disabled",
+      "passed": true
+    },
+    {
+      "name": "pagination-second-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-focus-after-turn",
+      "passed": true
+    },
+    {
+      "name": "pagination-refresh-keeps-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-unchanged-card-retained",
+      "passed": true
+    },
+    {
+      "name": "pagination-progress-retains-focus",
+      "passed": true
+    },
+    {
+      "name": "pagination-unchanged-options-retained",
+      "passed": true
+    },
+    {
+      "name": "pagination-state-saves-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-state-restores-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-last-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-previous-order",
+      "passed": true
+    },
+    {
+      "name": "pagination-filter-resets-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-empty-no-controls",
+      "passed": true
+    },
+    {
+      "name": "pagination-clear-filter-starts-first",
+      "passed": true
+    },
+    {
+      "name": "pagination-sort-resets-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-scope-resets-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-group-heading-on-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-language-keeps-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-english-status",
+      "passed": true
+    },
+    {
+      "name": "pagination-export-all-hits",
+      "passed": true
+    },
+    {
+      "name": "pagination-export-first-last",
+      "passed": true
+    },
+    {
+      "name": "pagination-collection-second-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-collection-change-resets-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-removal-clamps-page",
+      "passed": true
+    },
+    {
+      "name": "pagination-restored-page-clamped",
+      "passed": true
+    },
+    {
+      "name": "pagination-invalid-page-first",
+      "passed": true
+    },
+    {
+      "name": "pagination-unload-removes-controls",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

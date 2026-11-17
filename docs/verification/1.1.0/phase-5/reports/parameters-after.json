@@ -1,0 +1,153 @@
+{
+  "desktop": false,
+  "obsidian": "1.15.1",
+  "electron": "43.8.9",
+  "checks": [
+    {
+      "name": "native-parameter-source-mark",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-source-ins-del",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-four-components",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-title-text",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-fold",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-unfold",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-number-offset",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-number-off",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-restricted-text",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-hugo-callout",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-ec-kinds",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-manual-mark",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-source-exact",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-collapsed-copy",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-live-callout",
+      "passed": true
+    },
+    {
+      "name": "native-parameter-unload-clean",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-source-mark",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-source-ins-del",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-four-components",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-title-text",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-fold",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-unfold",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-number-offset",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-number-off",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-restricted-text",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-hugo-callout",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-ec-kinds",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-manual-mark",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-source-exact",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-collapsed-copy",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-live-callout",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-live-components",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-live-ins",
+      "passed": true
+    },
+    {
+      "name": "shiki-parameter-unload-clean",
+      "passed": true
+    },
+    {
+      "name": "parameter-settings-restored",
+      "passed": true
+    },
+    {
+      "name": "parameter-no-page-errors",
+      "passed": true
+    }
+  ],
+  "errors": [],
+  "testVaultTrustAccepted": false
+}

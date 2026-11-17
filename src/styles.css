@@ -239,7 +239,7 @@
 .hb-code-mark-count { min-width: 0; max-width: 100%; white-space: normal; height: auto; text-align: start; }
 
 @media print {
-  .hb-code-notes .hb-code-edit-note { display: none; }
+  .hb-code-display .hb-code-notes [data-hb-note-id] > .hb-code-edit-note { display: none; }
   .hb-code-header:not(.hb-code-header-titled) { display: none; }
   .hb-code-notes summary { list-style: none; }
 }

@@ -1,0 +1,30 @@
+(async () => {
+  const checks = [], errors = []; window.__hbChecks = checks;
+  const tick = () => new Promise(resolve => setTimeout(resolve, 100));
+  const until = async predicate => { for (let i = 0; i < 60 && !predicate(); i++) await tick(); return predicate(); };
+  const assert = (name, value) => { if (!value) throw new Error(name); checks.push({ name, passed: true }); };
+  window.addEventListener('error', event => errors.push(event.message));
+  await app.plugins.disablePlugin('highlight-boost');
+  const text = '# Window actions\n\n==🟡local text==%%hbp:{"v":1,"id":"e6928137-d570-4dd4-bd5d-1de57e96452d","semantic":"important","label":"重点","noteRef":"hb-48698177-a679-49c5-8044-7dc5115ff2f5"}%%[^hb-48698177-a679-49c5-8044-7dc5115ff2f5]\n\n[^hb-48698177-a679-49c5-8044-7dc5115ff2f5]: popout-undo-note\n';
+  const path = '原生批注窗口对照.md';
+  let file = app.vault.getFileByPath(path);
+  if (file) await app.vault.modify(file, text); else file = await app.vault.create(path, text);
+  const duplicate = app.workspace.getLeaf('tab'); await duplicate.openFile(file);
+  const leaf = app.workspace.getLeaf('tab'); await leaf.openFile(file);
+  await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
+  const popup = app.workspace.moveLeafToPopout(leaf, { width: 900, height: 700 });
+  assert('native-actions-window-open', await until(() => popup.doc?.body && popup.win.__hbPopoutReady));
+  popup.win.addEventListener('error', event => errors.push(event.message));
+  app.workspace.setActiveLeaf(leaf, { focus: true });
+  const editor = leaf.view.editor, from = text.indexOf('local text');
+  editor.focus(); editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + 10));
+  await leaf.view.save();
+  assert('native-actions-duplicate-synced', await until(() => duplicate.view.editor.getValue() === text));
+  await tick(); const popupWindow = popup.win; popupWindow.close();
+  assert('native-actions-window-closed', await until(() => popupWindow.closed));
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  assert('native-actions-plugin-disabled', !app.plugins.plugins['highlight-boost']);
+  assert('native-actions-source-preserved', await app.vault.read(file) === text);
+  window.__hbObservations = { errors, pluginEnabled: false, input: '相同正文标注元数据与批注脚注、相同重复编辑器及窗口尺寸' };
+  return checks;
+})()

@@ -106,9 +106,9 @@ jobs:
       - run: node scripts/prepare-host-ci.mjs
       - run: pnpm build && node scripts/prepare-vault.mjs --suite=multiwindow
       - if: runner.os != 'Linux'
-        run: node scripts/test-host.mjs --mode=multiwindow-baseline && pnpm test:multiwindow
+        run: node scripts/test-host.mjs --mode=multiwindow-baseline && node scripts/test-host.mjs --mode=multiwindow-native-actions && pnpm test:multiwindow
       - if: runner.os == 'Linux'
-        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-baseline && pnpm test:multiwindow'
+        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-baseline && node scripts/test-host.mjs --mode=multiwindow-native-actions && pnpm test:multiwindow'
       - if: always()
         uses: actions/upload-artifact@v4
         with:

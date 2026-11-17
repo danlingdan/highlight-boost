@@ -15,12 +15,13 @@ net.Server.prototype.listen = function (...args) {
 const root = path.resolve(__dirname, '..');
 const desktop = process.env.HB_DESKTOP === '1';
 const scale = ['scale', 'responsive'].includes(process.env.HB_HOST_MODE);
-const suite = { journey: 'journey', responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', 'multiwindow-baseline': 'multiwindow', 'multiwindow-combined': 'multiwindow', 'multiwindow-actions': 'multiwindow', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
+const suite = { journey: 'journey', responsive: 'responsive', scale: 'scale', compatibility: 'compat', accessibility: 'accessibility', 'multiwindow-native-actions': 'multiwindow', 'multiwindow-baseline': 'multiwindow', 'multiwindow-combined': 'multiwindow', 'multiwindow-actions': 'multiwindow', multiwindow: 'multiwindow', 'multiwindow-restart': 'multiwindow', frames: 'frames', install: 'install', 'install-restart': 'install' }[process.env.HB_HOST_MODE];
 const profile = paths.profile(suite);
 const vault = paths.vault(suite);
 const runtime = require('./obsidian-runtime.cjs')(root);
 const source = runtime.source;
 const scenarios = { functional: ['host.scenario.js', 'host-results.json'], advanced: ['advanced.scenario.js', 'host-advanced-results.json'], restart: ['restart.scenario.js', 'host-restart-results.json'], shiki: ['shiki.scenario.js', 'host-shiki-results.json'], languages: ['languages.scenario.js', 'host-languages-results.json'], 'languages-shiki': ['languages.scenario.js', 'host-languages-shiki-results.json'], layout: ['layout.scenario.js', 'host-layout-results.json'] };
+scenarios['multiwindow-native-actions'] = ['multiwindow-native-actions.scenario.js', 'host-multiwindow-native-actions-results.json'];
 scenarios['multiwindow-combined'] = ['multiwindow-combined.scenario.js', 'host-multiwindow-combined-results.json'];
 scenarios['multiwindow-actions'] = ['multiwindow-actions.scenario.js', 'host-multiwindow-actions-results.json'];
 scenarios.journey = ['journey.scenario.js', 'host-journey-results.json'];

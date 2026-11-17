@@ -53,8 +53,6 @@
   border: 1px solid var(--background-modifier-border);
   border-radius: var(--radius-s);
 }
-.hb-syntax-editor .cm-scroller { scrollbar-gutter: stable; }
-
 .hb-selection-toolbar {
   left: 8px;
   top: 8px;

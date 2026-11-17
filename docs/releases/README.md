@@ -1,5 +1,13 @@
 # 发布维护
 
+## 1.1.1 审核修复
+
+1.1.0 的社区目录审核拒绝了禁用 `obsidianmd/no-forbidden-elements` 的源码例外。1.1.1 通过各窗口自身的 CSSOM 样式表加载自定义代码主题，移除了该例外。卸载插件、替换主题或关闭窗口时释放对应的样式表。
+
+本机候选为 `dist/highlight-boost-1.1.1-9003154a/highlight-boost.zip`，源码提交为 `9003154`。工程检查与禁用行内配置的 ESLint 均通过，34 个单测文件共 225 项。实际 Obsidian 1.15.1 的 8 个专项共 369 项，覆盖主题重载、阅读、实时预览、行内代码、多窗口释放、新库安装与重启。原始结果在隔离工作树的 `.local/cache/review/1.1.1/`。[发布正文](1.1.1.md)
+
+候选 ZIP SHA-256 为 `587ed0f5061e72cb4207313cc39a155d6275438280b48ad45aa63a1e4070e2f0`。Obsidian 社区目录对 `9003154` 的分支预审为 **Completed**，没有阻断错误。HTML 元素辅助函数和 CSS 提示为警告。[社区审核](https://community.obsidian.md/account/plugins/highlight-boost)
+
 ## 1.1.0 发布记录
 
 2026-11-18 发布 [1.1.0](https://github.com/danlingdan/highlight-boost/releases/tag/1.1.0)，标签对应提交 `0e68661`。三个附件的 SHA-256 和 GitHub 来源证明均已核对。[发布正文](1.1.0.md) · [构建运行](https://github.com/danlingdan/highlight-boost/actions/runs/44190381244) · [正式附件摘要](../verification/1.1.0/phase-5/reports/release-proof.json)

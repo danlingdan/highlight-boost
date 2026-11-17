@@ -11,5 +11,6 @@ for (const file of ['main.js', 'manifest.json', 'styles.css']) await copyFile(fi
 await writeFile(resolve(vault, '.obsidian/community-plugins.json'), JSON.stringify(suite === 'performance' ? [] : ['highlight-boost']));
 await writeFile(resolve(vault, '.obsidian/app.json'), JSON.stringify({ livePreview: true }));
 await copyFile('tests/fixtures/原型验证.md', resolve(vault, '原型验证.md'));
-if (suite === 'performance') await rm(resolve(vault, '.obsidian/workspace.json'), { force: true });
+if (suite === 'performance' || suite === 'frames') await rm(resolve(vault, '.obsidian/workspace.json'), { force: true });
+if (suite === 'frames') await rm(resolve(vault, '帧与滚动验收.md'), { force: true });
 console.log(`Test vault ready: ${vault}`);

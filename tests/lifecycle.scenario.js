@@ -6,10 +6,6 @@
   await app.plugins.loadManifests(); await app.plugins.setEnable(true);
   await app.plugins.disablePlugin('highlight-boost');
   app.workspace.updateOptions(); await tick();
-  const settingsPath = '.obsidian/plugins/highlight-boost/data.json';
-  const originalSettings = await app.vault.adapter.exists(settingsPath) ? await app.vault.adapter.read(settingsPath) : undefined;
-  const settings = JSON.parse(originalSettings ?? '{}'); if (settings.schemaVersion !== 3) settings.syntaxProvider = 'shiki';
-  await app.vault.adapter.write(settingsPath, JSON.stringify(settings));
   const name = '资源回收.md', text = '# Lifecycle\n\n' + Array.from({ length: 100 }, (_, i) => `==item-${i}==`).join('\n\n');
   const existing = app.vault.getFileByPath(name), previous = existing ? await app.vault.read(existing) : undefined;
   const file = existing ? (await app.vault.modify(existing, text), existing) : await app.vault.create(name, text);
@@ -44,7 +40,6 @@
   await tick();
   if (window.__hbMemoryProfile) await window.require('electron').ipcRenderer.invoke('hb-memory-snapshot');
   if (previous === undefined) await app.vault.delete(file); else await app.vault.modify(file, previous);
-  if (originalSettings === undefined) await app.vault.adapter.remove(settingsPath); else await app.vault.adapter.write(settingsPath, originalSettings);
   await app.plugins.enablePlugin('highlight-boost'); await app.plugins.plugins['highlight-boost'].index.ready;
   assert('lifecycle-reenable-works', Boolean(app.plugins.plugins['highlight-boost']));
   window.__hbObservations = { samples, method: 'Baseline and three complete enable/open/select/disable cycles, CDP HeapProfiler.collectGarbage followed by Runtime.getHeapUsage and Memory.getDOMCounters; plugin and view references leave the cycle scope before collection.' };

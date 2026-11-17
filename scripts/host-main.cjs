@@ -240,7 +240,6 @@ app.on('browser-window-created', (_event, window) => {
       await contents.executeJavaScript(`window.__hbProjectRoot = ${JSON.stringify(root)}`);
       await contents.executeJavaScript(`window.__hbPerformanceLabel = ${JSON.stringify(process.env.HB_BENCH_LABEL ?? 'current')}`);
       await contents.executeJavaScript(`window.__hbPerformanceProfile = ${process.env.HB_PERF_PROFILE === '1'}`);
-      await contents.executeJavaScript(`window.__hbFrameBaseline = ${process.env.HB_FRAME_BASELINE === '1'}`);
       await contents.executeJavaScript(`window.__hbMemoryProfile = ${process.env.HB_MEMORY_PROFILE === '1'}`);
       await contents.executeJavaScript(`window.__hbCompatibilityCase = ${JSON.stringify(process.env.HB_COMPAT_CASE ?? 'default')}`);
       const outcome = await contents.executeJavaScript(script);

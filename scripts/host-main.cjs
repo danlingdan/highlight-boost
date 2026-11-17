@@ -198,7 +198,7 @@ app.on('browser-window-created', (_event, window) => {
   if (!desktop) window.on('show', () => window.hide());
   if (!mainWindow) { mainWindow = window; window.setSize(1400, 1000); }
   const contents = window.webContents;
-  if (mode === 'multiwindow' && process.env.HB_RO_TRACE === '1') {
+  if (mode.startsWith('multiwindow') && process.env.HB_RO_TRACE === '1') {
     contents.debugger.attach('1.3');
     void contents.debugger.sendCommand('Page.addScriptToEvaluateOnNewDocument', { source: resizeTraceSource });
   }

@@ -18,6 +18,7 @@
   const select = word => {
     const from = editor.getValue().lastIndexOf(word); editor.focus();
     editor.setSelection(editor.offsetToPos(from), editor.offsetToPos(from + word.length));
+    editor.scrollIntoView({ from: editor.offsetToPos(from), to: editor.offsetToPos(from + word.length) }, true);
   };
   const mark = (word, id) => { select(word); app.commands.executeCommandById(`highlight-boost:${id}`); };
   const codes = () => [...editor.getValue().matchAll(/%%hb:(.+?)%%/g)].map(match => JSON.parse(match[1]));
@@ -63,7 +64,9 @@
       assert('d-reading-inline-literal', await until(() => [...view.containerEl.querySelectorAll('code.hb-inline')].some(node => node.textContent === 'a==b')));
       for (const word of ['src', 'print', 'add ax, 1']) assert(`d-reading-${word}-decorated`, await until(() => [...view.containerEl.querySelectorAll('pre .hb-text, pre .hb-line')].some(node => node.textContent.includes(word))));
     } else {
+      select('src');
       assert(`d-${mode}-code-render`, await until(() => [...view.containerEl.querySelectorAll('.hb-text')].some(node => node.textContent === 'src')));
+      select('a==b');
       assert(`d-${mode}-inline-render`, await until(() => Boolean(view.containerEl.querySelector('.hb-inline'))));
     }
     await plugin.openPanel('note');

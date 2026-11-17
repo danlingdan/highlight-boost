@@ -14,7 +14,7 @@ on:
       diagnostic_scenario:
         description: 桌面专项
         type: choice
-        options: [multiwindow, journey]
+        options: [multiwindow, window-actions, journey]
         default: multiwindow
       resize_trace:
         description: 记录窗口观察目标与调用栈
@@ -110,10 +110,14 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y fonts-noto-cjk fonts-noto-color-emoji openbox
       - run: node scripts/prepare-host-ci.mjs
       - run: pnpm build && node scripts/prepare-vault.mjs --suite=multiwindow
-      - if: runner.os != 'Linux' && inputs.diagnostic_scenario != 'journey'
+      - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'multiwindow'
         run: node scripts/test-host.mjs --mode=multiwindow-baseline && node scripts/test-host.mjs --mode=multiwindow-native-actions && pnpm test:multiwindow
-      - if: runner.os == 'Linux' && inputs.diagnostic_scenario != 'journey'
+      - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'multiwindow'
         run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-baseline && node scripts/test-host.mjs --mode=multiwindow-native-actions && pnpm test:multiwindow'
+      - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'window-actions'
+        run: node scripts/test-host.mjs --mode=multiwindow-actions
+      - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'window-actions'
+        run: xvfb-run -a -s "-screen 0 1920x1200x24" sh -c 'openbox >.local/openbox.log 2>&1 & node scripts/test-host.mjs --mode=multiwindow-actions'
       - if: runner.os != 'Linux' && inputs.diagnostic_scenario == 'journey'
         run: pnpm test:journey
       - if: runner.os == 'Linux' && inputs.diagnostic_scenario == 'journey'

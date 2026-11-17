@@ -36,7 +36,7 @@
   phase = 'save-file'; await leaf.view.save();
   assert('actions-duplicate-synchronized', await until(() => duplicate.view.editor.getValue() === annotated));
   await tick();
-  phase = 'close'; const sourceDoc = popout.doc, sourceWindow = popout.win; sourceWindow.close();
+  phase = 'close'; const sourceDoc = popout.doc, sourceWindow = popout.win; sourceWindow.electronWindow.close();
   assert('actions-window-closed', await until(() => sourceWindow.closed));
   assert('actions-runtime-released', await until(() => !plugin.syntax.runtime.documents.has(sourceDoc)));
   assert('actions-toolbar-released', ![...plugin.toolbars].some(toolbar => toolbar.matches(editor)));

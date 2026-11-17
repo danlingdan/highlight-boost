@@ -217,10 +217,12 @@ app.on('browser-window-created', (_event, window) => {
     if (event.level === 'error' || event.level === 'warning') console.log(event.message);
   });
   contents.on('did-finish-load', async () => {
+    if (desktop) { window.show(); window.focus(); }
     if (mode.startsWith('multiwindow') && process.env.HB_RO_TRACE === '1') await contents.executeJavaScript(resizeTraceSource);
     if (!contents.getURL().includes('index.html')) {
       if (mode.startsWith('multiwindow')) {
-        if (!contents.debugger.isAttached()) contents.debugger.attach('1.3'); await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
+        if (!contents.debugger.isAttached()) contents.debugger.attach('1.3');
+        if (!desktop) await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
         await contents.executeJavaScript('window.__hbPopoutReady = true');
       }
       return;
@@ -246,7 +248,7 @@ app.on('browser-window-created', (_event, window) => {
       })()`);
       if (mode === 'unified' || mode === 'embedded' || mode === 'inline' || mode === 'prose' || mode === 'i18n' || captureModes.includes(mode) || mode === 'performance' || mode === 'responsive' || mode === 'multiwindow' || mode === 'accessibility' || mode === 'journey' || mode === 'frames' || mode.startsWith('install') || lifecycle) {
         if (!contents.debugger.isAttached()) contents.debugger.attach('1.3');
-        await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
+        if (!desktop) await contents.debugger.sendCommand('Emulation.setFocusEmulationEnabled', { enabled: true });
       }
       await contents.executeJavaScript(fs.readFileSync(path.join(root, 'tests/ui-helpers.js'), 'utf8'));
       const script = fs.readFileSync(path.join(root, 'tests', scenarioName), 'utf8');

@@ -23,7 +23,7 @@
     await leaf.setViewState({ type: 'markdown', state: { file: path, mode: 'source', source: true } });
     const popout = app.workspace.moveLeafToPopout(leaf, { width: 1000, height: 800 });
     assert(`${provider}-actual-popout`, await until(() => popout.doc?.body && leaf.view.containerEl.ownerDocument === popout.doc));
-    assert(`${provider}-popout-focus-emulated`, await until(() => popout.win.__hbPopoutReady));
+    assert(`${provider}-popout-ready`, await until(() => popout.win.__hbPopoutReady));
     const popoutWindow = popout.win, popoutDocument = popout.doc;
     popout.win.addEventListener('error', recordError);
     activate(leaf);
